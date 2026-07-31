@@ -14,7 +14,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`, `start`, `deploy:commands:global`, `deploy:commands:guild`, `typecheck`, `clean`
+- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:global`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.
@@ -49,7 +49,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 - **Location:** `packages/discord/`
 - **Responsibility:** Discord runtime module, Discord.js client lifecycle, slash-command discovery, registration, dispatch, and permission enforcement.
 - **Declared dependencies:** `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, `discord.js`
-- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
+- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `DiscordInteractionHandler`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
 
 ## `@qbox/logger`
 
@@ -168,6 +168,12 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 - **Defined in:** `packages/discord/src/commands/CommandRegistry.ts`
 - **Instantiated in:** The `DiscordService` constructor.
 - **Purpose:** Atomically stores validated command instances and aliases, produces deployment data, enforces command permissions, and invokes command handlers.
+
+## `DiscordInteractionHandler`
+
+- **Defined in:** `packages/discord/src/interactions/DiscordInteractionHandler.ts`
+- **Instantiated in:** The `DiscordService` constructor.
+- **Purpose:** Dispatches supported interactions, records non-secret execution diagnostics, enforces acknowledgement and execution timeouts, and sends state-aware ephemeral error responses.
 
 ## `CommandLoader`
 
@@ -306,14 +312,16 @@ Environment variable names recognized by current source or `.env.example`:
 
 - `NODE_ENV`
 - `DISCORD_TOKEN`
+- `DISCORD_APPLICATION_ID`
 - `DISCORD_GUILD_ID`
+- `DISCORD_COMMAND_TIMEOUT_MS`
 - `DATABASE_URL`
 - `REDIS_URL`
 - `OPENAI_API_KEY`
 - `ADMIN_ROLE_IDS`
 - `LOG_LEVEL`
 
-`DISCORD_TOKEN` is explicitly required when starting `DiscordService`. The remaining variables receive defaults or are not consumed by an implemented integration. The shared environment loader also expects the root `.env` file to be readable.
+`DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`. The shared environment loader expects the root `.env` file to be readable.
 
 # Build Pipeline
 
@@ -332,12 +340,12 @@ The repository uses pnpm workspaces and TypeScript compilation.
 | `pnpm build` | Runs `pnpm -r build` across workspaces defining `build` |
 | `pnpm dev` | Runs application `dev` scripts in parallel |
 | `pnpm typecheck` | Runs workspace `typecheck` scripts where defined |
-| `pnpm test` | Runs the permission and Discord workspace Vitest suites |
+| `pnpm test` | Runs the permission, Discord, and bot deployment Vitest suites |
 | `pnpm clean` | Removes generated `dist/` directories across TypeScript workspaces |
 
 Workspace build scripts run `tsc`. For workspaces with configured output directories, compilation writes JavaScript, source maps, declaration files, and declaration maps to ignored `dist/` directories.
 
-The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover `PermissionService` authorization behavior and `CommandRegistry` permission enforcement.
+The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover permission behavior, command registration and interaction handling, and deployment target safeguards.
 
 There is no configured CI workflow, deployment pipeline, lint script, or formatting script in the repository.
 

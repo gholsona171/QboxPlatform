@@ -17,6 +17,9 @@ export interface CommandLoadDiagnostics {
   readonly discovered: number;
   readonly validated: number;
   readonly loadDurationMs: number;
+  readonly commandFiles: readonly string[];
+  readonly commandNames: readonly string[];
+  readonly commandAliases: readonly string[];
   readonly warnings: readonly CommandDiagnostic[];
   readonly failures: readonly CommandDiagnostic[];
 }
@@ -115,6 +118,9 @@ export class CommandLoader {
           discovered: files.length,
           validated: 0,
           loadDurationMs: performance.now() - startedAt,
+          commandFiles: files,
+          commandNames: [],
+          commandAliases: [],
           warnings: discoveryWarnings,
           failures: duplicateFailures
         }
@@ -149,6 +155,13 @@ export class CommandLoader {
         discovered: files.length,
         validated: validation.commands.length,
         loadDurationMs: performance.now() - startedAt,
+        commandFiles: files,
+        commandNames: validation.commands.map(
+          (command) => command.data.name
+        ),
+        commandAliases: validation.commands.flatMap(
+          (command) => command.aliases ?? []
+        ),
         warnings: [
           ...discoveryWarnings,
           ...validation.warnings
@@ -179,6 +192,9 @@ export class CommandLoader {
             discovered: files.length,
             validated: error.validatedCount,
             loadDurationMs: performance.now() - startedAt,
+            commandFiles: files,
+            commandNames: [],
+            commandAliases: [],
             warnings: [
               ...discoveryWarnings,
               ...error.warnings

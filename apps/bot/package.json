@@ -10,8 +10,10 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "deploy:commands:global": "node dist/deployCommands.js global",
-    "deploy:commands:guild": "tsx src/deployCommands.ts guild",
+    "deploy:commands:dev": "pnpm typecheck && tsx src/deployCommands.ts guild",
+    "deploy:commands:guild": "pnpm run deploy:commands:dev",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run test",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },
   "dependencies": {

@@ -6,7 +6,13 @@ import {
 import { logger } from "@qbox/logger";
 import { env } from "@qbox/shared";
 
-type DeploymentScope = "global" | "guild";
+import {
+  executeCommandDeployment,
+  resolveCommandDeploymentTarget
+} from "./commandDeployment.js";
+import type {
+  DeploymentScope
+} from "./commandDeployment.js";
 
 function readDeploymentScope(): DeploymentScope {
   const scope = process.argv[2];
@@ -21,17 +27,14 @@ function readDeploymentScope(): DeploymentScope {
 }
 
 async function main(): Promise<void> {
-  const scope = readDeploymentScope();
-  const guildId = scope === "guild"
-    ? env.DISCORD_GUILD_ID
-    : undefined;
-
-  if (scope === "guild" && !guildId) {
-    throw new Error(
-      "DISCORD_GUILD_ID is required for guild command deployment."
-    );
-  }
-
+  const target = resolveCommandDeploymentTarget(
+    readDeploymentScope(),
+    {
+      applicationId: env.DISCORD_APPLICATION_ID,
+      guildId: env.DISCORD_GUILD_ID,
+      confirmGlobal: process.argv.includes("--confirm-global")
+    }
+  );
   const kernel = new PlatformKernel();
   kernel.registerModule(new DiscordModule());
   let started = false;
@@ -41,16 +44,7 @@ async function main(): Promise<void> {
     started = true;
 
     const discord = kernel.services.get<DiscordService>("discord");
-    const deployed = await discord.deployCommands(guildId);
-
-    logger.info(
-      {
-        scope,
-        guildId,
-        deployed
-      },
-      "Discord commands deployed."
-    );
+    await executeCommandDeployment(target, discord, logger);
   } finally {
     if (started) {
       await kernel.stop();
@@ -64,7 +58,7 @@ void main().catch((error: unknown) => {
       err: error,
       stack: error instanceof Error ? error.stack : undefined
     },
-    "Discord command deployment failed."
+    "Discord command deployment process failed."
   );
 
   process.exitCode = 1;

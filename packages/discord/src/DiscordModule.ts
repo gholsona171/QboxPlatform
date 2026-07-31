@@ -52,6 +52,9 @@ export class DiscordModule implements PlatformModule {
             validated: error.diagnostics.validated,
             registered: 0,
             loadDurationMs: error.diagnostics.loadDurationMs,
+            commandFiles: error.diagnostics.commandFiles,
+            commandNames: error.diagnostics.commandNames,
+            commandAliases: error.diagnostics.commandAliases,
             warnings: error.diagnostics.warnings,
             failures: error.diagnostics.failures
           },
@@ -76,6 +79,9 @@ export class DiscordModule implements PlatformModule {
           validated: loadResult.diagnostics.validated,
           registered: 0,
           loadDurationMs: loadResult.diagnostics.loadDurationMs,
+          commandFiles: loadResult.diagnostics.commandFiles,
+          commandNames: loadResult.diagnostics.commandNames,
+          commandAliases: loadResult.diagnostics.commandAliases,
           warnings: loadResult.diagnostics.warnings,
           failures: [
             {
@@ -108,6 +114,9 @@ export class DiscordModule implements PlatformModule {
         validated: loadResult.diagnostics.validated,
         registered,
         loadDurationMs: loadResult.diagnostics.loadDurationMs,
+        commandFiles: loadResult.diagnostics.commandFiles,
+        commandNames: loadResult.diagnostics.commandNames,
+        commandAliases: loadResult.diagnostics.commandAliases,
         warnings: loadResult.diagnostics.warnings,
         failures: loadResult.diagnostics.failures
       },

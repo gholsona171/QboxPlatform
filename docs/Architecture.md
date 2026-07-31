@@ -68,11 +68,14 @@ The bot follows this sequence:
 10. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
 11. The permission and Discord services are registered.
 12. `DiscordService` installs its interaction listener and logs in with `DISCORD_TOKEN`.
-13. After all modules start, the kernel emits `platform.started` and logs the module count.
+13. Startup verifies that the connected application matches `DISCORD_APPLICATION_ID` and logs the non-secret bot identity and connected guild count.
+14. After all modules start, the kernel emits `platform.started` and logs the module count.
 
 If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`.
 
-Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. Guild-scoped development deployment uses `pnpm --filter @qbox/bot deploy:commands:guild` with `DISCORD_GUILD_ID`; global deployment uses a compiled bot build and `pnpm --filter @qbox/bot deploy:commands:global`.
+Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. Guild-scoped development deployment uses `pnpm --filter @qbox/bot deploy:commands:dev` with `DISCORD_APPLICATION_ID` and `DISCORD_GUILD_ID`; global deployment uses a compiled bot build and `pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global`.
+
+`DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and selects `reply` or `followUp` according to the interaction state. Commands opt into an early ephemeral defer with command metadata; fast commands reply directly.
 
 ## Shutdown flow
 

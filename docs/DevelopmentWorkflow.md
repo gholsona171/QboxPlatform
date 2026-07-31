@@ -26,13 +26,16 @@ The repository includes `.env.example`. Local execution expects a repository-roo
 ```dotenv
 NODE_ENV=development
 DISCORD_TOKEN=
+DISCORD_APPLICATION_ID=
+DISCORD_GUILD_ID=
+DISCORD_COMMAND_TIMEOUT_MS=15000
 DATABASE_URL=
 REDIS_URL=
 OPENAI_API_KEY=
 ADMIN_ROLE_IDS=
 ```
 
-`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN`; the other URLs and API key are loaded but are not consumed by the current placeholder integrations.
+`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID`. Development command deployment also requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` is a positive integer and defaults to 15 seconds. The other URLs and API key are loaded but are not consumed by the current placeholder integrations.
 
 The local `.env` file is ignored by Git and should not be committed.
 
@@ -82,19 +85,19 @@ Normal bot startup validates and registers local command handlers but does not d
 Deploy commands to the configured development guild:
 
 ```sh
-pnpm --filter @qbox/bot deploy:commands:guild
+pnpm --filter @qbox/bot deploy:commands:dev
 ```
 
-This requires `DISCORD_TOKEN` and `DISCORD_GUILD_ID`.
+This typechecks the bot workspace, validates and loads the command set, verifies that the logged-in Discord application matches `DISCORD_APPLICATION_ID`, replaces commands only in `DISCORD_GUILD_ID`, reports the deployed command names, and exits cleanly.
 
 Deploy commands globally after building the repository:
 
 ```sh
 pnpm build
-pnpm --filter @qbox/bot deploy:commands:global
+pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global
 ```
 
-Global deployment uses `dist/deployCommands.js` and requires `DISCORD_TOKEN`. Both workflows load and validate the complete command set before replacing commands in their selected scope.
+Global deployment uses `dist/deployCommands.js` and requires the explicit `--confirm-global` guard. Both workflows load and validate the complete command set before replacing commands in their selected scope. Normal bot startup never deploys commands.
 
 Some library packages also define watch commands. They can be run directly with filters, for example:
 
@@ -140,7 +143,7 @@ pnpm test
 pnpm clean
 ```
 
-The test workflow runs focused Vitest suites in `@qbox/permissions` and `@qbox/discord`. Other workspaces do not currently define test suites.
+The test workflow runs focused Vitest suites in `@qbox/permissions`, `@qbox/discord`, and `@qbox/bot`.
 
 The clean workflow removes generated `dist/` directories from each TypeScript workspace.
 

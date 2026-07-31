@@ -119,6 +119,7 @@ Observed error-handling patterns include:
 - Catching errors at application or external-event boundaries.
 - Logging structured error context before setting a nonzero process exit code.
 - Returning generic Discord error messages rather than exposing internal error details.
+- Logging Discord application, guild, user, interaction, command, duration, and reply-state identifiers as structured fields while never logging tokens, authorization headers, or environment secret values.
 - Checking whether an interaction was already replied to or deferred before choosing `reply()` or `followUp()`.
 - Guarding shutdown with a boolean so repeated signals do not run shutdown concurrently.
 

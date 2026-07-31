@@ -8,6 +8,7 @@ import type {
 } from "@qbox/permissions";
 
 import type {
+  CommandExecutionContext,
   DiscordCommand
 } from "./DiscordCommand.js";
 
@@ -87,7 +88,10 @@ export class CommandRegistry {
   }
 
   public async execute(
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
+    context: CommandExecutionContext = {
+      signal: new AbortController().signal
+    }
   ): Promise<void> {
     const command = this.get(interaction.commandName);
 
@@ -134,6 +138,6 @@ export class CommandRegistry {
       }
     }
 
-    await command.execute(interaction);
+    await command.execute(interaction, context);
   }
 }

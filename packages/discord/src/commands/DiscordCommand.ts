@@ -7,6 +7,10 @@ import type {
   Permission
 } from "@qbox/permissions";
 
+export interface CommandExecutionContext {
+  readonly signal: AbortSignal;
+}
+
 export interface DiscordCommand {
   readonly type: "chat-input";
 
@@ -16,7 +20,10 @@ export interface DiscordCommand {
 
   readonly requiredPermissions?: readonly Permission[];
 
+  readonly deferReply?: boolean;
+
   execute(
-    interaction: ChatInputCommandInteraction
+    interaction: ChatInputCommandInteraction,
+    context: CommandExecutionContext
   ): Promise<void>;
 }

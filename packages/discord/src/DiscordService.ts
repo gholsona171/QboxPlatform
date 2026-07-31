@@ -12,6 +12,26 @@ import type {
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
+import {
+  DiscordInteractionHandler
+} from "./interactions/DiscordInteractionHandler.js";
+
+export interface CommandDeploymentResult {
+  readonly commandCount: number;
+  readonly commandNames: readonly string[];
+}
+
+function readExecutionTimeout(): number {
+  const timeout = Number(env.DISCORD_COMMAND_TIMEOUT_MS);
+
+  if (!Number.isInteger(timeout) || timeout <= 0) {
+    throw new Error(
+      "DISCORD_COMMAND_TIMEOUT_MS must be a positive integer."
+    );
+  }
+
+  return timeout;
+}
 
 export class DiscordService {
   public readonly client = new Client({
@@ -24,12 +44,19 @@ export class DiscordService {
   });
 
   public readonly commands: CommandRegistry;
+  private readonly interactions: DiscordInteractionHandler;
 
   public constructor(
     permissionService: PermissionService
   ) {
     this.commands = new CommandRegistry(
       permissionService
+    );
+    this.interactions = new DiscordInteractionHandler(
+      this.commands,
+      {
+        executionTimeoutMs: readExecutionTimeout()
+      }
     );
   }
 
@@ -44,48 +71,76 @@ export class DiscordService {
       throw new Error("DISCORD_TOKEN is missing.");
     }
 
-    this.client.on(
-      Events.InteractionCreate,
-      async (interaction) => {
-        if (!interaction.isChatInputCommand()) {
-          return;
-        }
+    if (!env.DISCORD_APPLICATION_ID) {
+      throw new Error("DISCORD_APPLICATION_ID is missing.");
+    }
 
-        try {
-          await this.commands.execute(interaction);
-        } catch (error) {
-          logger.error(
-            {
-              err: error,
-              commandName: interaction.commandName
-            },
-            "Command execution failed."
-          );
+    this.client.on(Events.InteractionCreate, (interaction) => {
+      void this.interactions.handle(interaction).catch((error: unknown) => {
+        logger.error(
+          {
+            err: error,
+            stack: error instanceof Error ? error.stack : undefined,
+            interactionId: interaction.id,
+            interactionType: interaction.type
+          },
+          "Unhandled Discord interaction listener failure."
+        );
+      });
+    });
 
-          const response = {
-            content:
-              "Something went wrong while running that command.",
-            ephemeral: true
-          } as const;
-
-          if (interaction.replied || interaction.deferred) {
-            await interaction.followUp(response);
-          } else {
-            await interaction.reply(response);
-          }
-        }
-      }
+    logger.info(
+      {
+        listener: Events.InteractionCreate
+      },
+      "Discord interaction listener attached."
     );
 
     await this.client.login(env.DISCORD_TOKEN);
+
+    const applicationId = this.client.application?.id;
+    const user = this.client.user;
+
+    if (!applicationId || !user) {
+      throw new Error(
+        "Discord client became ready without application identity."
+      );
+    }
+
+    if (applicationId !== env.DISCORD_APPLICATION_ID) {
+      this.client.destroy();
+      throw new Error(
+        `Discord application mismatch: expected '${env.DISCORD_APPLICATION_ID}', connected '${applicationId}'.`
+      );
+    }
+
+    logger.info(
+      {
+        applicationId,
+        botUsername: user.tag,
+        botUserId: user.id,
+        connectedGuildCount: this.client.guilds.cache.size
+      },
+      "Discord client connected."
+    );
+  }
+
+  public applicationId(): string {
+    const applicationId = this.client.application?.id;
+
+    if (!applicationId) {
+      throw new Error("Discord application identity is unavailable.");
+    }
+
+    return applicationId;
   }
 
   public async deployCommands(
     guildId?: string
-  ): Promise<number> {
-    if (!this.client.isReady() || !this.client.application) {
+  ): Promise<CommandDeploymentResult> {
+    if (!this.client.application) {
       throw new Error(
-        "Discord client must be ready before deploying commands."
+        "Discord application identity is unavailable for command deployment."
       );
     }
 
@@ -100,7 +155,10 @@ export class DiscordService {
       await this.client.application.commands.set(commandData);
     }
 
-    return commandData.length;
+    return {
+      commandCount: commandData.length,
+      commandNames: commandData.map((command) => command.name)
+    };
   }
 
   public async stop(): Promise<void> {

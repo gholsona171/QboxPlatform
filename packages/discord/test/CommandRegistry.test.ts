@@ -76,7 +76,12 @@ describe("CommandRegistry permission enforcement", () => {
     await registry.execute(interaction);
 
     expect(execute).toHaveBeenCalledOnce();
-    expect(execute).toHaveBeenCalledWith(interaction);
+    expect(execute).toHaveBeenCalledWith(
+      interaction,
+      expect.objectContaining({
+        signal: expect.any(AbortSignal)
+      })
+    );
     expect(reply).not.toHaveBeenCalled();
   });
 

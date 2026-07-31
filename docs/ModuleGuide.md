@@ -44,7 +44,7 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 - Registers each command with `DiscordService`.
 - Publishes permission and Discord services through the service container.
 - Starts and stops the Discord client.
-- Logs lifecycle information.
+- Logs command discovery, connected application identity, interaction dispatch, execution timing, and failures without logging credentials.
 
 ### Dependencies
 
@@ -63,7 +63,8 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 5. Register `permissions` in the shared service container.
 6. Register `discord` in the shared service container.
 7. Start `DiscordService` and log in.
-8. Log the connected user, command count, and administrator-role count.
+8. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
+9. Log the connected user, application ID, guild count, command count, and administrator-role count.
 
 ### Stop lifecycle
 
@@ -97,6 +98,7 @@ Responsibilities:
 - Apply permission checks before protected commands execute.
 - Validate command modules, metadata, aliases, permissions, and handlers before registration.
 - Deploy guild or global application commands only through the dedicated deployment workflow.
+- Route interactions through `DiscordInteractionHandler`, with acknowledgement and execution timeouts and state-aware error responses.
 
 Dependencies: `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, and `discord.js`.
 
@@ -105,7 +107,7 @@ Existing commands:
 - `PingCommand`: implements `/ping` and replies ephemerally with `Pong.`
 - `AdminPingCommand`: implements `/adminping`, requires `platform.admin`, and returns an ephemeral confirmation.
 
-`DiscordCommand` defines chat-input command metadata and execution. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands before `CommandRegistry` atomically registers the complete set.
+`DiscordCommand` defines chat-input command metadata, optional early deferral, and execution with an abort signal. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands before `CommandRegistry` atomically registers the complete set. `DiscordInteractionHandler` records non-secret interaction context, rejects stale command names, prevents duplicate initial replies, and reports failures through an ephemeral reply or follow-up.
 
 ## Logger package
 

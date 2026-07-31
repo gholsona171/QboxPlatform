@@ -184,6 +184,16 @@ export class CommandValidator {
     }
 
     if (
+      candidate.deferReply !== undefined &&
+      typeof candidate.deferReply !== "boolean"
+    ) {
+      failures.push({
+        file,
+        message: "Command deferReply metadata must be a boolean."
+      });
+    }
+
+    if (
       candidate.aliases !== undefined &&
       !Array.isArray(candidate.aliases)
     ) {
