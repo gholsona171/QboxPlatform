@@ -1,0 +1,18 @@
+{
+  "name": "@qbox/discord",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@qbox/core": "workspace:*",
+    "@qbox/logger": "workspace:*",
+    "@qbox/permissions": "workspace:*",
+    "@qbox/shared": "workspace:*",
+    "discord.js": "^14"
+  }
+}
