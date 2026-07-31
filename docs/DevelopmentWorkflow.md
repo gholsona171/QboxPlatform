@@ -108,9 +108,7 @@ Run the repository-defined typecheck command:
 pnpm typecheck
 ```
 
-This invokes `typecheck` only in workspaces that define that script. At the time this documentation was written, the command fails because the API and worker import `CORE_VERSION`, which `@qbox/core` does not export.
-
-The bot, database, Discord, OpenAI, permissions, and scheduler workspaces do not currently define `typecheck` scripts, so the root command does not cover them.
+This invokes `typecheck` in every TypeScript application and package. Each workspace runs `tsc --noEmit`, so validation does not write compiled output.
 
 ## Tests, linting, formatting, and cleaning
 
@@ -121,20 +119,23 @@ pnpm test
 pnpm clean
 ```
 
-However, no workspace currently defines a `test` or `clean` script, and no test files exist. Vitest is installed but not configured.
+The test workflow runs focused Vitest suites in `@qbox/permissions` and `@qbox/discord`. Other workspaces do not currently define test suites.
+
+The clean workflow removes generated `dist/` directories from each TypeScript workspace.
 
 ESLint and Prettier are installed as development dependencies, but the repository has no lint or formatting scripts and no corresponding configuration files.
 
 ## Running compiled applications
 
-The API and worker define production-style start commands:
+The API, bot, and worker define production-style start commands:
 
 ```sh
 pnpm --filter @qbox/api start
+pnpm --filter @qbox/bot start
 pnpm --filter @qbox/worker start
 ```
 
-These commands run their compiled `dist/index.js` files and therefore require a successful build first. The bot currently has no `start` script; its available scripts are `build` and `dev`.
+These commands run their compiled `dist/index.js` files and therefore require a successful build first.
 
 ## Git workflow
 

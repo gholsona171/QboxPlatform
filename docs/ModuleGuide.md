@@ -182,11 +182,11 @@ Both methods currently emit console messages only. The package does not use Bull
 
 Package: `@qbox/api`
 
-Current responsibility: executable placeholder that logs its startup and attempts to log a core version.
+Current responsibility: executable placeholder that logs its startup.
 
 Dependency: `@qbox/core`.
 
-It does not construct a `PlatformKernel`, register modules, or run an HTTP server. Its current `CORE_VERSION` import is not exported by core.
+It does not construct a `PlatformKernel`, register modules, or run an HTTP server.
 
 ## Bot application
 
@@ -208,8 +208,8 @@ This is the only application currently exercising the complete runtime module li
 
 Package: `@qbox/worker`
 
-Current responsibility: executable placeholder that logs its startup and attempts to log a core version.
+Current responsibility: executable placeholder that logs its startup.
 
 Dependency: `@qbox/core`.
 
-It does not construct a kernel, register modules, connect to Redis, or create a queue worker. Its current `CORE_VERSION` import is not exported by core.
+It does not construct a kernel, register modules, connect to Redis, or create a queue worker.

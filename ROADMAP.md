@@ -2,7 +2,7 @@
 
 ## Status and estimation notes
 
-QboxPlatform is currently in its foundation phase. The repository has an implemented TypeScript monorepo structure, a small platform kernel, in-process events, named service registration, in-memory permissions, structured logging, and a Discord bot with two slash commands. The API, worker, database, Prisma, scheduler, OpenAI, FiveM/Qbox, and feature-module areas are placeholders or empty directories.
+QboxPlatform is currently in its foundation phase. The repository has an implemented TypeScript monorepo structure, a small platform kernel, in-process events, named service registration, in-memory permissions, structured logging, and a Discord bot with two slash commands. Full-workspace type checking passes, and focused permission and Discord command authorization tests run through the root test workflow. The API, worker, database, Prisma, scheduler, OpenAI, FiveM/Qbox, and feature-module areas are placeholders or empty directories.
 
 This roadmap separates existing functionality from planned work. A listed milestone does not indicate that its work is already implemented.
 
@@ -21,13 +21,15 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - `PlatformKernel`, `ModuleLoader`, `EventBus`, and `ServiceContainer`.
 - Shared Pino logger.
 - Root development, build, typecheck, test, and clean command definitions.
+- Typecheck and clean scripts across all TypeScript workspaces.
+- Focused Vitest coverage for permission behavior and Discord command permission enforcement.
 - Architecture and engineering documentation.
 
 ## Milestone 1.1 — Restore a reliable workspace baseline
 
-- **Goal:** Make installation, type checking, building, testing, and cleaning consistent across every workspace. Resolve the missing `CORE_VERSION` contract or remove its stale API and worker usage; standardize workspace scripts; choose pnpm as the single lockfile owner; and ensure direct dependencies are declared by consuming workspaces.
-- **Why it matters:** The current root typecheck fails, several workspaces are skipped by it, no workspace implements the root test or clean contract, and two package-manager lockfiles are tracked. Feature work cannot rely on a trustworthy baseline until these inconsistencies are resolved.
-- **Dependencies:** Existing manifests, TypeScript configurations, pnpm workspace configuration, and agreement on whether API/worker startup output needs a core version export.
+- **Goal:** Complete the remaining workspace baseline work by choosing pnpm as the single lockfile owner and ensuring direct dependencies are declared by consuming workspaces.
+- **Why it matters:** Type checking, focused tests, and cleaning now have working root workflows, but two package-manager lockfiles remain tracked and some packages rely on dependencies declared only at the repository root.
+- **Dependencies:** Existing manifests, TypeScript configurations, and pnpm workspace configuration.
 - **Estimated complexity:** Medium.
 - **Estimated effort:** 2–4 engineer days.
 - **Risks:** Script normalization may expose additional compile failures; lockfile cleanup may change dependency resolution; package-local dependency corrections may reveal reliance on root hoisting.
@@ -35,7 +37,7 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 ## Milestone 1.2 — Establish automated quality checks
 
 - **Goal:** Configure and run formatting, linting, full-workspace type checking, unit tests, and builds in continuous integration.
-- **Why it matters:** ESLint, Prettier, and Vitest are installed but not configured, `.github/` is empty, and there are no tests. Automated checks are necessary to prevent regressions as more modules are added.
+- **Why it matters:** Focused Vitest tests now exist, but ESLint and Prettier remain unconfigured and `.github/` is empty. Automated checks are necessary to prevent regressions as more modules are added.
 - **Dependencies:** Milestone 1.1 and decisions on formatting and lint rules consistent with existing TypeScript conventions.
 - **Estimated complexity:** Medium.
 - **Estimated effort:** 3–5 engineer days.
@@ -70,6 +72,7 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - `/ping` and permission-protected `/adminping` commands.
 - In-memory administrator grants based on `ADMIN_ROLE_IDS`.
 - Graceful handling of `SIGINT` and `SIGTERM` in the bot process.
+- Focused tests for command permission enforcement and permission-service behavior.
 
 ## Milestone 2.1 — Stabilize command loading and deployment
 

@@ -3,11 +3,10 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Current API process placeholder. It prints startup text and attempts to print a core version; it does not start an HTTP server.
+- **Purpose:** Current API process placeholder. It prints startup text; it does not start an HTTP server.
 - **Entry point:** `apps/api/src/index.ts`
 - **Declared dependency:** `@qbox/core`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`
-- **Current limitation:** Its `CORE_VERSION` import is not exported by `@qbox/core`.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
 
 ## `@qbox/bot`
 
@@ -15,7 +14,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.
@@ -23,11 +22,10 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/worker`
 
 - **Location:** `apps/worker/`
-- **Purpose:** Current background-worker process placeholder. It prints startup text and attempts to print a core version; it does not start a queue worker.
+- **Purpose:** Current background-worker process placeholder. It prints startup text; it does not start a queue worker.
 - **Entry point:** `apps/worker/src/index.ts`
 - **Declared dependency:** `@qbox/core`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`
-- **Current limitation:** Its `CORE_VERSION` import is not exported by `@qbox/core`.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
 
 # Packages
 
@@ -328,14 +326,14 @@ The repository uses pnpm workspaces and TypeScript compilation.
 | `pnpm build` | Runs `pnpm -r build` across workspaces defining `build` |
 | `pnpm dev` | Runs application `dev` scripts in parallel |
 | `pnpm typecheck` | Runs workspace `typecheck` scripts where defined |
-| `pnpm test` | Attempts to run workspace `test` scripts; none currently exist |
-| `pnpm clean` | Attempts to run workspace `clean` scripts; none currently exist |
+| `pnpm test` | Runs the permission and Discord workspace Vitest suites |
+| `pnpm clean` | Removes generated `dist/` directories across TypeScript workspaces |
 
 Workspace build scripts run `tsc`. For workspaces with configured output directories, compilation writes JavaScript, source maps, declaration files, and declaration maps to ignored `dist/` directories.
 
-The current root typecheck does not pass because `@qbox/api` and `@qbox/worker` import a nonexistent `CORE_VERSION` export. Several workspaces also lack a `typecheck` script, so the recursive root typecheck does not cover every project.
+The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover `PermissionService` authorization behavior and `CommandRegistry` permission enforcement.
 
-There is no configured CI workflow, deployment pipeline, lint script, formatting script, or working test suite in the repository.
+There is no configured CI workflow, deployment pipeline, lint script, or formatting script in the repository.
 
 # Future Placeholders
 

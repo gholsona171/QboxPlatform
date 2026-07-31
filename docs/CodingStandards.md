@@ -142,4 +142,4 @@ The repository currently has more than one configuration abstraction. Code shoul
 
 ## Testing and automated enforcement
 
-No tests currently exist. Vitest, ESLint, and Prettier are installed at the root, but none has project configuration or a working repository-wide script. These tools therefore do not currently enforce the inferred standards described above.
+Focused Vitest tests cover permission-service authorization and Discord command permission enforcement. The root test workflow runs these workspace suites. ESLint and Prettier are installed at the root, but neither has project configuration or a working repository-wide script, so formatting and lint standards are not currently enforced automatically.
