@@ -63,13 +63,16 @@ The bot follows this sequence:
 5. `PlatformKernel.start()` registers the core logger, event bus, and module loader services.
 6. The kernel calls `ModuleLoader.startAll()` in module registration order.
 7. `DiscordModule.start()` clears and configures permission grants from `ADMIN_ROLE_IDS`.
-8. `CommandLoader` scans the Discord package's `commands` directory and instantiates command classes.
-9. The commands, permission service, and Discord service are registered.
-10. `DiscordService` installs its interaction and ready listeners and logs in with `DISCORD_TOKEN`.
-11. When Discord reports that the client is ready, the service replaces the application's global command list with the discovered commands.
-12. After all modules start, the kernel emits `platform.started` and logs the module count.
+8. `CommandLoader` scans for `.command.ts` or `.command.js` files in deterministic filename order and imports each module's named `command` export.
+9. `CommandValidator` validates all discovered commands before registration. Any validation failure aborts registration.
+10. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
+11. The permission and Discord services are registered.
+12. `DiscordService` installs its interaction listener and logs in with `DISCORD_TOKEN`.
+13. After all modules start, the kernel emits `platform.started` and logs the module count.
 
 If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`.
+
+Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. Guild-scoped development deployment uses `pnpm --filter @qbox/bot deploy:commands:guild` with `DISCORD_GUILD_ID`; global deployment uses a compiled bot build and `pnpm --filter @qbox/bot deploy:commands:global`.
 
 ## Shutdown flow
 

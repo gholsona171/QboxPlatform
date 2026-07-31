@@ -31,7 +31,7 @@ Observed conventions include:
 | Source files containing a main class/interface | PascalCase | `ModuleLoader.ts`, `Permission.ts` |
 | Package entry points | `index.ts` | `packages/core/src/index.ts` |
 
-Discord command implementation filenames end in `Command.ts`. The runtime loader depends on this suffix and excludes `DiscordCommand.ts`, which contains the interface.
+Discord command implementation filenames end in `.command.ts`. Each file exports a named `command` instance. The runtime loader uses this exact suffix and export name; it does not infer commands from arbitrary classes or exports.
 
 ## File organization
 

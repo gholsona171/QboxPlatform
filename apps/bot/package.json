@@ -9,6 +9,8 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
+    "deploy:commands:global": "node dist/deployCommands.js global",
+    "deploy:commands:guild": "tsx src/deployCommands.ts guild",
     "typecheck": "tsc --noEmit",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },

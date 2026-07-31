@@ -95,7 +95,8 @@ Responsibilities:
 - Own the Discord.js client.
 - Discover, register, and execute slash commands.
 - Apply permission checks before protected commands execute.
-- Register global application commands when the client becomes ready.
+- Validate command modules, metadata, aliases, permissions, and handlers before registration.
+- Deploy guild or global application commands only through the dedicated deployment workflow.
 
 Dependencies: `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, and `discord.js`.
 
@@ -104,7 +105,7 @@ Existing commands:
 - `PingCommand`: implements `/ping` and replies ephemerally with `Pong.`
 - `AdminPingCommand`: implements `/adminping`, requires `platform.admin`, and returns an ephemeral confirmation.
 
-`DiscordCommand` defines the command shape, `CommandRegistry` stores and executes commands, and `CommandLoader` discovers command files ending in `Command.ts` or `Command.js`.
+`DiscordCommand` defines chat-input command metadata and execution. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands before `CommandRegistry` atomically registers the complete set.
 
 ## Logger package
 

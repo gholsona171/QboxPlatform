@@ -49,6 +49,7 @@ function createProtectedCommand(): {
 
   return {
     command: {
+      type: "chat-input",
       data: new SlashCommandBuilder()
         .setName("secure")
         .setDescription("A protected test command."),
@@ -113,5 +114,38 @@ describe("CommandRegistry permission enforcement", () => {
       content: "This command can only be used in a server.",
       ephemeral: true
     });
+  });
+});
+
+describe("CommandRegistry registration", () => {
+  it("registers commands and aliases successfully", () => {
+    const registry = new CommandRegistry(
+      new PermissionService()
+    );
+    const { command } = createProtectedCommand();
+    const commandWithAlias: DiscordCommand = {
+      ...command,
+      aliases: ["secure-alias"]
+    };
+
+    expect(registry.registerAll([commandWithAlias])).toBe(1);
+    expect(registry.get("secure")).toBe(commandWithAlias);
+    expect(registry.get("secure-alias")).toBe(commandWithAlias);
+    expect(registry.list()).toEqual([commandWithAlias]);
+  });
+
+  it("aborts registration without partial writes on a duplicate", () => {
+    const registry = new CommandRegistry(
+      new PermissionService()
+    );
+    const { command } = createProtectedCommand();
+    const duplicate: DiscordCommand = {
+      ...command,
+      aliases: ["secure"]
+    };
+
+    expect(() => registry.registerAll([command, duplicate]))
+      .toThrow("Command name or alias 'secure' is already registered.");
+    expect(registry.list()).toEqual([]);
   });
 });

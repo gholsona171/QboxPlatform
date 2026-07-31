@@ -20,6 +20,7 @@ export const env = {
   DATABASE_URL: process.env.DATABASE_URL ?? "",
   REDIS_URL: process.env.REDIS_URL ?? "",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
+  DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
 
   ADMIN_ROLE_IDS: (process.env.ADMIN_ROLE_IDS ?? "")
     .split(",")

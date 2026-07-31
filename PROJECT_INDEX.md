@@ -14,7 +14,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
+- **Scripts:** `build`, `dev`, `start`, `deploy:commands:global`, `deploy:commands:guild`, `typecheck`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.
@@ -49,8 +49,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 - **Location:** `packages/discord/`
 - **Responsibility:** Discord runtime module, Discord.js client lifecycle, slash-command discovery, registration, dispatch, and permission enforcement.
 - **Declared dependencies:** `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, `discord.js`
-- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `PingCommand`, and `CommandLoader`.
-- **Note:** `AdminPingCommand` exists but is not re-exported from the package entry point. It is discovered at runtime by `CommandLoader`.
+- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
 
 ## `@qbox/logger`
 
@@ -162,19 +161,25 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 - **Defined in:** `packages/discord/src/DiscordService.ts`
 - **Instantiated in:** As a private field of each `DiscordModule` instance.
-- **Purpose:** Owns the Discord.js client, dispatches interactions, and registers global application commands.
+- **Purpose:** Owns the Discord.js client, dispatches interactions, and performs explicitly requested guild or global application-command deployments.
 
 ## `CommandRegistry`
 
 - **Defined in:** `packages/discord/src/commands/CommandRegistry.ts`
 - **Instantiated in:** The `DiscordService` constructor.
-- **Purpose:** Stores command instances, prevents duplicate command names, enforces command permissions, and invokes command handlers.
+- **Purpose:** Atomically stores validated command instances and aliases, produces deployment data, enforces command permissions, and invokes command handlers.
 
 ## `CommandLoader`
 
 - **Defined in:** `packages/discord/src/loaders/CommandLoader.ts`
 - **Instantiated in:** As a private field of each `DiscordModule` instance.
-- **Purpose:** Scans the Discord command directory and instantiates exported command classes.
+- **Purpose:** Deterministically scans `.command.ts` or `.command.js` files, imports their named `command` exports, and returns validated commands with load diagnostics.
+
+## `CommandValidator`
+
+- **Defined in:** `packages/discord/src/validation/CommandValidator.ts`
+- **Instantiated in:** `CommandLoader` by default.
+- **Purpose:** Validates file identity, explicit exports, command type, metadata, description, aliases, permissions, execution handlers, and cross-command name uniqueness before registration.
 
 ## `PermissionService`
 
@@ -246,7 +251,7 @@ Discord.js events such as `InteractionCreate` and `ClientReady` are handled by `
 
 ## `/ping`
 
-- **Implementation:** `packages/discord/src/commands/PingCommand.ts`
+- **Implementation:** `packages/discord/src/commands/Ping.command.ts`
 - **Class:** `PingCommand`
 - **Description:** Checks whether the bot is responding.
 - **Required platform permissions:** None.
@@ -254,13 +259,13 @@ Discord.js events such as `InteractionCreate` and `ClientReady` are handled by `
 
 ## `/adminping`
 
-- **Implementation:** `packages/discord/src/commands/AdminPingCommand.ts`
+- **Implementation:** `packages/discord/src/commands/AdminPing.command.ts`
 - **Class:** `AdminPingCommand`
 - **Description:** Tests whether the caller has platform administrator permission.
 - **Required platform permission:** `platform.admin`
 - **Response:** Ephemeral administrator confirmation when authorized.
 
-`CommandLoader` discovers both classes by scanning for filenames ending in `Command.ts` or `Command.js`, excluding the `DiscordCommand` interface file. `CommandRegistry` handles lookup, guild checks, role extraction, permission checks, and execution.
+Each command file exports a named `command` instance. `CommandLoader` discovers command files in deterministic filename order, `CommandValidator` validates the full set, and `CommandRegistry` handles primary names, aliases, guild checks, role extraction, permission checks, and execution.
 
 # Configuration
 
@@ -301,6 +306,7 @@ Environment variable names recognized by current source or `.env.example`:
 
 - `NODE_ENV`
 - `DISCORD_TOKEN`
+- `DISCORD_GUILD_ID`
 - `DATABASE_URL`
 - `REDIS_URL`
 - `OPENAI_API_KEY`

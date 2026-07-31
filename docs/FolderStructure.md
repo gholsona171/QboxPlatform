@@ -143,10 +143,12 @@ packages/discord/src/
 |-- commands/
 |   |-- DiscordCommand.ts
 |   |-- CommandRegistry.ts
-|   |-- PingCommand.ts
-|   `-- AdminPingCommand.ts
+|   |-- Ping.command.ts
+|   `-- AdminPing.command.ts
 |-- loaders/
 |   `-- CommandLoader.ts
+|-- validation/
+|   `-- CommandValidator.ts
 |-- DiscordModule.ts
 |-- DiscordService.ts
 `-- index.ts

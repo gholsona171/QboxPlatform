@@ -1,4 +1,4 @@
-﻿import {
+import {
   SlashCommandBuilder
 } from "discord.js";
 
@@ -15,6 +15,8 @@ import type {
 } from "./DiscordCommand.js";
 
 export class AdminPingCommand implements DiscordCommand {
+  public readonly type = "chat-input" as const;
+
   public readonly data = new SlashCommandBuilder()
     .setName("adminping")
     .setDescription(
@@ -35,3 +37,5 @@ export class AdminPingCommand implements DiscordCommand {
     });
   }
 }
+
+export const command = new AdminPingCommand();

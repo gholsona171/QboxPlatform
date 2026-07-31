@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   ChatInputCommandInteraction,
   GuildMember
 } from "discord.js";
@@ -12,7 +12,11 @@ import type {
 } from "./DiscordCommand.js";
 
 export class CommandRegistry {
-  private readonly commands = new Map<
+  private readonly commandsByName = new Map<
+    string,
+    DiscordCommand
+  >();
+  private readonly primaryCommands = new Map<
     string,
     DiscordCommand
   >();
@@ -22,25 +26,64 @@ export class CommandRegistry {
   ) {}
 
   public register(command: DiscordCommand): void {
-    const commandName = command.data.name;
+    this.registerAll([command]);
+  }
 
-    if (this.commands.has(commandName)) {
-      throw new Error(
-        `Command '${commandName}' is already registered.`
-      );
+  public registerAll(
+    commands: readonly DiscordCommand[]
+  ): number {
+    const pendingNames = new Set(this.commandsByName.keys());
+
+    for (const command of commands) {
+      const names = [command.data.name, ...(command.aliases ?? [])];
+
+      for (const name of names) {
+        if (pendingNames.has(name)) {
+          throw new Error(
+            `Command name or alias '${name}' is already registered.`
+          );
+        }
+
+        pendingNames.add(name);
+      }
     }
 
-    this.commands.set(commandName, command);
+    for (const command of commands) {
+      this.primaryCommands.set(command.data.name, command);
+      this.commandsByName.set(command.data.name, command);
+
+      for (const alias of command.aliases ?? []) {
+        this.commandsByName.set(alias, command);
+      }
+    }
+
+    return commands.length;
   }
 
   public get(
     commandName: string
   ): DiscordCommand | undefined {
-    return this.commands.get(commandName);
+    return this.commandsByName.get(commandName);
   }
 
   public list(): readonly DiscordCommand[] {
-    return [...this.commands.values()];
+    return [...this.primaryCommands.values()];
+  }
+
+  public deploymentData(): ReturnType<
+    DiscordCommand["data"]["toJSON"]
+  >[] {
+    return this.list().flatMap((command) => {
+      const data = command.data.toJSON();
+
+      return [
+        data,
+        ...(command.aliases ?? []).map((alias) => ({
+          ...data,
+          name: alias
+        }))
+      ];
+    });
   }
 
   public async execute(

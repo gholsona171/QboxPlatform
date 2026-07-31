@@ -75,6 +75,27 @@ pnpm --filter @qbox/bot dev
 
 The API and worker currently print startup messages only. The bot starts the implemented kernel and Discord integration.
 
+Normal bot startup validates and registers local command handlers but does not deploy Discord application commands.
+
+## Discord command deployment
+
+Deploy commands to the configured development guild:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:guild
+```
+
+This requires `DISCORD_TOKEN` and `DISCORD_GUILD_ID`.
+
+Deploy commands globally after building the repository:
+
+```sh
+pnpm build
+pnpm --filter @qbox/bot deploy:commands:global
+```
+
+Global deployment uses `dist/deployCommands.js` and requires `DISCORD_TOKEN`. Both workflows load and validate the complete command set before replacing commands in their selected scope.
+
 Some library packages also define watch commands. They can be run directly with filters, for example:
 
 ```sh

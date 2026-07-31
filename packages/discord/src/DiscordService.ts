@@ -1,4 +1,4 @@
-﻿import {
+import {
   Client,
   Events,
   GatewayIntentBits
@@ -33,8 +33,10 @@ export class DiscordService {
     );
   }
 
-  public registerCommand(command: DiscordCommand): void {
-    this.commands.register(command);
+  public registerCommands(
+    commands: readonly DiscordCommand[]
+  ): number {
+    return this.commands.registerAll(commands);
   }
 
   public async start(): Promise<void> {
@@ -75,28 +77,30 @@ export class DiscordService {
       }
     );
 
-    this.client.once(
-      Events.ClientReady,
-      async (readyClient) => {
-        const commandData = this.commands
-          .list()
-          .map((command) => command.data.toJSON());
-
-        await readyClient.application.commands.set(
-          commandData
-        );
-
-        logger.info(
-          {
-            user: readyClient.user.tag,
-            commandCount: commandData.length
-          },
-          "Discord commands registered."
-        );
-      }
-    );
-
     await this.client.login(env.DISCORD_TOKEN);
+  }
+
+  public async deployCommands(
+    guildId?: string
+  ): Promise<number> {
+    if (!this.client.isReady() || !this.client.application) {
+      throw new Error(
+        "Discord client must be ready before deploying commands."
+      );
+    }
+
+    const commandData = this.commands.deploymentData();
+
+    if (guildId) {
+      await this.client.application.commands.set(
+        commandData,
+        guildId
+      );
+    } else {
+      await this.client.application.commands.set(commandData);
+    }
+
+    return commandData.length;
   }
 
   public async stop(): Promise<void> {

@@ -8,7 +8,11 @@ import type {
 } from "@qbox/permissions";
 
 export interface DiscordCommand {
+  readonly type: "chat-input";
+
   readonly data: SlashCommandBuilder;
+
+  readonly aliases?: readonly string[];
 
   readonly requiredPermissions?: readonly Permission[];
 

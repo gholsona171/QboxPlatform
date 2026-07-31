@@ -73,15 +73,17 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - In-memory administrator grants based on `ADMIN_ROLE_IDS`.
 - Graceful handling of `SIGINT` and `SIGTERM` in the bot process.
 - Focused tests for command permission enforcement and permission-service behavior.
+- Deterministic command discovery with explicit exports and validation before atomic registration.
+- Dedicated guild-scoped and global command deployment workflows separated from bot startup.
 
-## Milestone 2.1 — Stabilize command loading and deployment
+## Milestone 2.1 — Stabilize command loading and deployment (implemented)
 
-- **Goal:** Make command discovery deterministic, validate command definitions, separate command deployment from client startup, and support a controlled development registration path.
-- **Why it matters:** The current loader depends on filenames and selects a matching runtime export. Startup replaces all global application commands, which couples deployment to every bot restart.
+- **Goal:** Maintain deterministic command discovery, validation, diagnostics, and explicit guild/global deployment workflows.
+- **Why it matters:** Command loading now uses a single named export contract, rejects the complete batch on validation failure, and no longer mutates global Discord commands during normal startup.
 - **Dependencies:** Phase 1 lifecycle, validation, test, and configuration foundations.
 - **Estimated complexity:** Medium.
 - **Estimated effort:** 3–5 engineer days.
-- **Risks:** Discord global command propagation is external and asynchronous; changing discovery may affect how new commands are authored; separate deployment requires an explicit operator workflow.
+- **Risks:** Discord global command propagation remains external and asynchronous; deployment requires valid live Discord credentials and has not been exercised by automated tests.
 
 ## Milestone 2.2 — Strengthen Discord authorization
 

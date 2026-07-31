@@ -1,4 +1,4 @@
-﻿import {
+import {
   SlashCommandBuilder
 } from "discord.js";
 
@@ -11,6 +11,8 @@ import type {
 } from "./DiscordCommand.js";
 
 export class PingCommand implements DiscordCommand {
+  public readonly type = "chat-input" as const;
+
   public readonly data = new SlashCommandBuilder()
     .setName("ping")
     .setDescription("Checks whether the bot is responding.");
@@ -24,3 +26,5 @@ export class PingCommand implements DiscordCommand {
     });
   }
 }
+
+export const command = new PingCommand();
