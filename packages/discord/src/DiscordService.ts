@@ -33,6 +33,18 @@ function readExecutionTimeout(): number {
   return timeout;
 }
 
+function readShutdownTimeout(): number {
+  const timeout = Number(env.DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS);
+
+  if (!Number.isInteger(timeout) || timeout <= 0) {
+    throw new Error(
+      "DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS must be a positive integer."
+    );
+  }
+
+  return timeout;
+}
+
 export class DiscordService {
   public readonly client = new Client({
     intents: [
@@ -162,6 +174,7 @@ export class DiscordService {
   }
 
   public async stop(): Promise<void> {
+    await this.interactions.shutdown(readShutdownTimeout());
     this.client.destroy();
   }
 }

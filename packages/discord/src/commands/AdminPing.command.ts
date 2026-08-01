@@ -3,14 +3,7 @@ import {
 } from "discord.js";
 
 import type {
-  ChatInputCommandInteraction
-} from "discord.js";
-
-import type {
-  Permission
-} from "@qbox/permissions";
-
-import type {
+  CommandExecutionContext,
   DiscordCommand
 } from "./DiscordCommand.js";
 
@@ -23,17 +16,29 @@ export class AdminPingCommand implements DiscordCommand {
       "Tests whether you have platform administrator permission."
     );
 
-  public readonly requiredPermissions:
-    readonly Permission[] = [
-      "platform.admin"
-    ];
+  public readonly policy = {
+    contexts: "guild",
+    permissions: {
+      required: ["platform.admin"],
+      mode: "all",
+      administratorOverride: false
+    },
+    response: {
+      acknowledgement: "immediate",
+      visibility: "ephemeral"
+    },
+    cooldown: {
+      scope: "user",
+      durationMs: 1_000
+    },
+    concurrency: "user"
+  } as const;
 
   public async execute(
-    interaction: ChatInputCommandInteraction
+    context: CommandExecutionContext
   ): Promise<void> {
-    await interaction.reply({
-      content: "Administrator permission confirmed.",
-      ephemeral: true
+    await context.reply({
+      content: "Administrator permission confirmed."
     });
   }
 }

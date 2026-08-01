@@ -1,26 +1,29 @@
 import type {
-  ChatInputCommandInteraction,
+  APIInteractionGuildMember,
   GuildMember
 } from "discord.js";
 
-import type {
-  PermissionService
-} from "@qbox/permissions";
+import type { PermissionService } from "@qbox/permissions";
 
 import type {
   CommandExecutionContext,
+  ConcurrencyScope,
   DiscordCommand
 } from "./DiscordCommand.js";
 
+function roleIds(
+  member: GuildMember | APIInteractionGuildMember
+): readonly string[] {
+  return Array.isArray(member.roles)
+    ? member.roles
+    : [...member.roles.cache.keys()];
+}
+
 export class CommandRegistry {
-  private readonly commandsByName = new Map<
-    string,
-    DiscordCommand
-  >();
-  private readonly primaryCommands = new Map<
-    string,
-    DiscordCommand
-  >();
+  private readonly commandsByName = new Map<string, DiscordCommand>();
+  private readonly primaryCommands = new Map<string, DiscordCommand>();
+  private readonly cooldowns = new Map<string, number>();
+  private readonly activeConcurrencyKeys = new Set<string>();
 
   public constructor(
     private readonly permissionService: PermissionService
@@ -30,9 +33,7 @@ export class CommandRegistry {
     this.registerAll([command]);
   }
 
-  public registerAll(
-    commands: readonly DiscordCommand[]
-  ): number {
+  public registerAll(commands: readonly DiscordCommand[]): number {
     const pendingNames = new Set(this.commandsByName.keys());
 
     for (const command of commands) {
@@ -61,9 +62,7 @@ export class CommandRegistry {
     return commands.length;
   }
 
-  public get(
-    commandName: string
-  ): DiscordCommand | undefined {
+  public get(commandName: string): DiscordCommand | undefined {
     return this.commandsByName.get(commandName);
   }
 
@@ -71,9 +70,7 @@ export class CommandRegistry {
     return [...this.primaryCommands.values()];
   }
 
-  public deploymentData(): ReturnType<
-    DiscordCommand["data"]["toJSON"]
-  >[] {
+  public deploymentData(): ReturnType<DiscordCommand["data"]["toJSON"]>[] {
     return this.list().flatMap((command) => {
       const data = command.data.toJSON();
 
@@ -87,57 +84,172 @@ export class CommandRegistry {
     });
   }
 
-  public async execute(
-    interaction: ChatInputCommandInteraction,
-    context: CommandExecutionContext = {
-      signal: new AbortController().signal
-    }
-  ): Promise<void> {
+  public async execute(context: CommandExecutionContext): Promise<void> {
+    const { interaction } = context;
     const command = this.get(interaction.commandName);
 
     if (!command) {
-      await interaction.reply({
-        content: "That command is not registered.",
-        ephemeral: true
-      });
-
+      await context.reply({ content: "That command is not registered." });
       return;
     }
 
-    const requiredPermissions =
-      command.requiredPermissions ?? [];
+    if (!await this.authorize(command, context)) {
+      return;
+    }
 
-    if (requiredPermissions.length > 0) {
-      if (!interaction.inGuild()) {
-        await interaction.reply({
-          content: "This command can only be used in a server.",
-          ephemeral: true
+    const cooldownKey = this.cooldownKey(command, context);
+    const now = Date.now();
+    this.pruneExpiredCooldowns(now);
+
+    if (cooldownKey) {
+      const expiresAt = this.cooldowns.get(cooldownKey) ?? 0;
+
+      if (expiresAt > now) {
+        const seconds = Math.max(1, Math.ceil((expiresAt - now) / 1_000));
+        await context.reply({
+          content: `Please wait ${seconds} second(s) before using this command again.`
         });
-
-        return;
-      }
-
-      const member = interaction.member as GuildMember;
-
-      const allowed =
-        this.permissionService.hasEveryPermission(
-          {
-            userId: interaction.user.id,
-            roleIds: [...member.roles.cache.keys()]
-          },
-          requiredPermissions
-        );
-
-      if (!allowed) {
-        await interaction.reply({
-          content: "You do not have permission to use this command.",
-          ephemeral: true
-        });
-
         return;
       }
     }
 
-    await command.execute(interaction, context);
+    const concurrencyKey = this.concurrencyKey(command, context);
+
+    if (concurrencyKey && this.activeConcurrencyKeys.has(concurrencyKey)) {
+      await context.reply({
+        content: "This command is already running for the selected scope."
+      });
+      return;
+    }
+
+    if (cooldownKey && command.policy.cooldown) {
+      this.cooldowns.set(
+        cooldownKey,
+        now + command.policy.cooldown.durationMs
+      );
+    }
+
+    if (concurrencyKey) {
+      this.activeConcurrencyKeys.add(concurrencyKey);
+    }
+
+    try {
+      await command.execute(context);
+    } finally {
+      if (concurrencyKey) {
+        this.activeConcurrencyKeys.delete(concurrencyKey);
+      }
+    }
+  }
+
+  private async authorize(
+    command: DiscordCommand,
+    context: CommandExecutionContext
+  ): Promise<boolean> {
+    const { interaction } = context;
+    const inGuild = interaction.inGuild();
+
+    if (command.policy.contexts === "guild" && !inGuild) {
+      await context.reply({
+        content: "This command can only be used in a server."
+      });
+      return false;
+    }
+
+    if (command.policy.contexts === "dm" && inGuild) {
+      await context.reply({
+        content: "This command can only be used in a direct message."
+      });
+      return false;
+    }
+
+    const permissionPolicy = command.policy.permissions;
+
+    if (!permissionPolicy || permissionPolicy.required.length === 0) {
+      return true;
+    }
+
+    if (!inGuild) {
+      await context.reply({
+        content: "This command requires server permissions."
+      });
+      return false;
+    }
+
+    const subject = {
+      userId: interaction.user.id,
+      roleIds: roleIds(interaction.member)
+    };
+    const administratorAllowed =
+      permissionPolicy.administratorOverride &&
+      this.permissionService.hasPermission(subject, "platform.admin");
+    const permissionAllowed = permissionPolicy.mode === "all"
+      ? this.permissionService.hasEveryPermission(
+          subject,
+          permissionPolicy.required
+        )
+      : this.permissionService.hasAnyPermission(
+          subject,
+          permissionPolicy.required
+        );
+
+    if (!administratorAllowed && !permissionAllowed) {
+      await context.reply({
+        content: "You do not have permission to use this command."
+      });
+      return false;
+    }
+
+    return true;
+  }
+
+  private cooldownKey(
+    command: DiscordCommand,
+    context: CommandExecutionContext
+  ): string | undefined {
+    const cooldown = command.policy.cooldown;
+
+    if (!cooldown) {
+      return undefined;
+    }
+
+    const subject = cooldown.scope === "user"
+      ? context.interaction.user.id
+      : context.interaction.guildId;
+
+    return subject
+      ? `${command.data.name}:cooldown:${cooldown.scope}:${subject}`
+      : undefined;
+  }
+
+  private pruneExpiredCooldowns(now: number): void {
+    for (const [key, expiresAt] of this.cooldowns) {
+      if (expiresAt <= now) {
+        this.cooldowns.delete(key);
+      }
+    }
+  }
+
+  private concurrencyKey(
+    command: DiscordCommand,
+    context: CommandExecutionContext
+  ): string | undefined {
+    const scope: ConcurrencyScope = command.policy.concurrency;
+
+    if (scope === "unlimited") {
+      return undefined;
+    }
+
+    if (scope === "single") {
+      return `${command.data.name}:concurrency:single`;
+    }
+
+    const subject = scope === "user"
+      ? context.interaction.user.id
+      : context.interaction.guildId;
+
+    return subject
+      ? `${command.data.name}:concurrency:${scope}:${subject}`
+      : undefined;
   }
 }

@@ -1,28 +1,10 @@
 import { basename } from "node:path";
 
-import { SlashCommandBuilder } from "discord.js";
-import type {
-  ChatInputCommandInteraction
-} from "discord.js";
 import { describe, expect, it, vi } from "vitest";
 
-import type {
-  DiscordCommand
-} from "../src/commands/DiscordCommand.js";
 import { CommandLoader } from "../src/loaders/CommandLoader.js";
 import { CommandLoadError } from "../src/loaders/CommandLoader.js";
-
-function createCommand(name: string): DiscordCommand {
-  return {
-    type: "chat-input",
-    data: new SlashCommandBuilder()
-      .setName(name)
-      .setDescription(`Runs the ${name} command.`),
-    async execute(
-      _interaction: ChatInputCommandInteraction
-    ): Promise<void> {}
-  };
-}
+import { createCommand } from "./CommandTestFactory.js";
 
 describe("CommandLoader", () => {
   it("discovers and imports command files in deterministic order", async () => {

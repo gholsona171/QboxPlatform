@@ -29,13 +29,14 @@ DISCORD_TOKEN=
 DISCORD_APPLICATION_ID=
 DISCORD_GUILD_ID=
 DISCORD_COMMAND_TIMEOUT_MS=15000
+DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS=10000
 DATABASE_URL=
 REDIS_URL=
 OPENAI_API_KEY=
 ADMIN_ROLE_IDS=
 ```
 
-`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID`. Development command deployment also requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` is a positive integer and defaults to 15 seconds. The other URLs and API key are loaded but are not consumed by the current placeholder integrations.
+`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID`. Development command deployment also requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to 15 seconds, and `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to 10 seconds; both must be positive integers. The other URLs and API key are loaded but are not consumed by the current placeholder integrations.
 
 The local `.env` file is ignored by Git and should not be committed.
 

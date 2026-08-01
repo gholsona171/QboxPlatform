@@ -33,6 +33,8 @@ Observed conventions include:
 
 Discord command implementation filenames end in `.command.ts`. Each file exports a named `command` instance. The runtime loader uses this exact suffix and export name; it does not infer commands from arbitrary classes or exports.
 
+Every Discord command declares an explicit `policy` covering execution context, response behavior, concurrency, and any permission or cooldown requirements. Command implementations respond through the supplied execution-context helpers so public/ephemeral and immediate/deferred behavior remains centralized.
+
 ## File organization
 
 - Executable application startup belongs in `apps/<application>/src/index.ts`.

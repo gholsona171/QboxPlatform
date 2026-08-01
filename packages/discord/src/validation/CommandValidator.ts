@@ -183,15 +183,7 @@ export class CommandValidator {
       });
     }
 
-    if (
-      candidate.deferReply !== undefined &&
-      typeof candidate.deferReply !== "boolean"
-    ) {
-      failures.push({
-        file,
-        message: "Command deferReply metadata must be a boolean."
-      });
-    }
+    failures.push(...this.validatePolicy(file, candidate.policy));
 
     if (
       candidate.aliases !== undefined &&
@@ -223,35 +215,156 @@ export class CommandValidator {
       }
     }
 
-    if (
-      candidate.requiredPermissions !== undefined &&
-      !Array.isArray(candidate.requiredPermissions)
-    ) {
+    return failures;
+  }
+
+  private validatePolicy(
+    file: string,
+    value: unknown
+  ): CommandDiagnostic[] {
+    const failures: CommandDiagnostic[] = [];
+
+    if (!isRecord(value)) {
+      return [{ file, message: "Command policy metadata is required." }];
+    }
+
+    if (!["guild", "dm", "both"].includes(String(value.contexts))) {
       failures.push({
         file,
-        message: "Required permissions must be an array."
+        message: "Command context policy is invalid."
       });
-    } else if (Array.isArray(candidate.requiredPermissions)) {
-      const localPermissions = new Set<Permission>();
+    }
 
-      for (const permission of candidate.requiredPermissions) {
+    if (!isRecord(value.response)) {
+      failures.push({
+        file,
+        message: "Command response policy is required."
+      });
+    } else {
+      if (!["immediate", "deferred"].includes(
+        String(value.response.acknowledgement)
+      )) {
+        failures.push({
+          file,
+          message: "Command response acknowledgement policy is invalid."
+        });
+      }
+
+      if (!["ephemeral", "public"].includes(
+        String(value.response.visibility)
+      )) {
+        failures.push({
+          file,
+          message: "Command response visibility policy is invalid."
+        });
+      }
+    }
+
+    if (!["single", "user", "guild", "unlimited"].includes(
+      String(value.concurrency)
+    )) {
+      failures.push({
+        file,
+        message: "Command concurrency policy is invalid."
+      });
+    }
+
+    if (value.cooldown !== undefined) {
+      if (!isRecord(value.cooldown)) {
+        failures.push({
+          file,
+          message: "Command cooldown policy is invalid."
+        });
+      } else {
+        if (!["user", "guild"].includes(String(value.cooldown.scope))) {
+          failures.push({
+            file,
+            message: "Command cooldown scope is invalid."
+          });
+        }
+
         if (
-          typeof permission !== "string" ||
-          !permissionValues.has(permission)
+          typeof value.cooldown.durationMs !== "number" ||
+          !Number.isInteger(value.cooldown.durationMs) ||
+          value.cooldown.durationMs <= 0
         ) {
           failures.push({
             file,
-            message: `Required permission '${String(permission)}' is unsupported.`
+            message: "Command cooldown duration must be a positive integer."
           });
-        } else if (localPermissions.has(permission as Permission)) {
-          failures.push({
-            file,
-            message: `Required permission '${permission}' is duplicated.`
-          });
-        } else {
-          localPermissions.add(permission as Permission);
         }
       }
+    }
+
+    if (value.permissions !== undefined) {
+      if (!isRecord(value.permissions)) {
+        failures.push({
+          file,
+          message: "Command permission policy is invalid."
+        });
+      } else {
+        const required = value.permissions.required;
+
+        if (!Array.isArray(required) || required.length === 0) {
+          failures.push({
+            file,
+            message: "Command permission policy requires a non-empty permission array."
+          });
+        } else {
+          const localPermissions = new Set<Permission>();
+
+          for (const permission of required) {
+            if (
+              typeof permission !== "string" ||
+              !permissionValues.has(permission)
+            ) {
+              failures.push({
+                file,
+                message: `Required permission '${String(permission)}' is unsupported.`
+              });
+            } else if (localPermissions.has(permission as Permission)) {
+              failures.push({
+                file,
+                message: `Required permission '${permission}' is duplicated.`
+              });
+            } else {
+              localPermissions.add(permission as Permission);
+            }
+          }
+        }
+
+        if (!["all", "any"].includes(String(value.permissions.mode))) {
+          failures.push({
+            file,
+            message: "Command permission evaluation mode is invalid."
+          });
+        }
+
+        if (typeof value.permissions.administratorOverride !== "boolean") {
+          failures.push({
+            file,
+            message: "Command administrator override policy must be a boolean."
+          });
+        }
+      }
+    }
+
+    if (
+      value.contexts !== "guild" &&
+      (value.concurrency === "guild" ||
+        (isRecord(value.cooldown) && value.cooldown.scope === "guild"))
+    ) {
+      failures.push({
+        file,
+        message: "Guild-scoped cooldown or concurrency requires a guild-only command."
+      });
+    }
+
+    if (value.contexts !== "guild" && value.permissions !== undefined) {
+      failures.push({
+        file,
+        message: "Role-based permission policy requires a guild-only command."
+      });
     }
 
     return failures;

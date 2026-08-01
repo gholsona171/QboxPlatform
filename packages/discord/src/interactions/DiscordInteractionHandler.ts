@@ -1,11 +1,18 @@
 import type {
   ChatInputCommandInteraction,
-  Interaction
+  Interaction,
+  InteractionEditReplyOptions,
+  InteractionReplyOptions
 } from "discord.js";
 
 import { logger } from "@qbox/logger";
 
 import type { CommandRegistry } from "../commands/CommandRegistry.js";
+import type {
+  CommandExecutionContext,
+  CommandReplyOptions,
+  DiscordCommand
+} from "../commands/DiscordCommand.js";
 
 interface InteractionLogger {
   debug(context: object, message: string): void;
@@ -48,6 +55,9 @@ export class DiscordInteractionHandler {
   private readonly executionTimeoutMs: number;
   private readonly acknowledgementTimeoutMs: number;
   private readonly log: InteractionLogger;
+  private readonly activeExecutions = new Set<Promise<void>>();
+  private readonly activeControllers = new Set<AbortController>();
+  private acceptingExecutions = true;
 
   public constructor(
     private readonly commands: CommandRegistry,
@@ -59,8 +69,7 @@ export class DiscordInteractionHandler {
     );
     this.acknowledgementTimeoutMs = validateTimeout(
       "acknowledgementTimeoutMs",
-      options.acknowledgementTimeoutMs ??
-        defaultAcknowledgementTimeoutMs
+      options.acknowledgementTimeoutMs ?? defaultAcknowledgementTimeoutMs
     );
     this.log = options.log ?? logger;
   }
@@ -74,11 +83,72 @@ export class DiscordInteractionHandler {
         },
         "Ignoring unsupported Discord interaction type."
       );
-
       return;
     }
 
-    await this.handleChatInputCommand(interaction);
+    if (!this.acceptingExecutions) {
+      this.log.warn(
+        {
+          interactionId: interaction.id,
+          commandName: interaction.commandName
+        },
+        "Discord command rejected during shutdown."
+      );
+      await this.sendErrorResponse(
+        interaction,
+        "The bot is shutting down. Please try again shortly.",
+        { interactionId: interaction.id, commandName: interaction.commandName }
+      );
+      return;
+    }
+
+    const execution = this.handleChatInputCommand(interaction);
+    this.activeExecutions.add(execution);
+
+    try {
+      await execution;
+    } finally {
+      this.activeExecutions.delete(execution);
+    }
+  }
+
+  public async shutdown(timeoutMs: number): Promise<void> {
+    this.acceptingExecutions = false;
+    const timeout = validateTimeout("shutdownTimeoutMs", timeoutMs);
+
+    if (this.activeExecutions.size === 0) {
+      return;
+    }
+
+    this.log.info(
+      { activeExecutionCount: this.activeExecutions.size, shutdownTimeoutMs: timeout },
+      "Waiting for active Discord commands to finish."
+    );
+
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const completed = Promise.allSettled([...this.activeExecutions]);
+    const expired = new Promise<"expired">((resolve) => {
+      timer = setTimeout(() => resolve("expired"), timeout);
+    });
+    const result = await Promise.race([
+      completed.then(() => "completed" as const),
+      expired
+    ]);
+
+    if (timer) {
+      clearTimeout(timer);
+    }
+
+    if (result === "expired") {
+      for (const controller of this.activeControllers) {
+        controller.abort();
+      }
+
+      this.log.warn(
+        { activeExecutionCount: this.activeExecutions.size, shutdownTimeoutMs: timeout },
+        "Discord command shutdown deadline exceeded; active commands were aborted."
+      );
+    }
   }
 
   private async handleChatInputCommand(
@@ -86,7 +156,7 @@ export class DiscordInteractionHandler {
   ): Promise<void> {
     const startedAt = performance.now();
     const command = this.commands.get(interaction.commandName);
-    const context = {
+    const logContext = {
       commandName: interaction.commandName,
       interactionId: interaction.id,
       guildId: interaction.guildId,
@@ -94,79 +164,73 @@ export class DiscordInteractionHandler {
     };
 
     this.log.info(
-      {
-        ...context,
-        commandFound: Boolean(command)
-      },
+      { ...logContext, commandFound: Boolean(command) },
       "Discord command interaction received."
     );
 
     if (!command) {
       this.log.warn(
-        {
-          ...context,
-          commandFound: false
-        },
+        { ...logContext, commandFound: false },
         "Discord command is unknown or stale."
       );
-
       await this.sendErrorResponse(
         interaction,
         "That command is no longer available.",
-        context
+        logContext
       );
       return;
     }
 
     const controller = new AbortController();
+    this.activeControllers.add(controller);
     let executionTimer: ReturnType<typeof setTimeout> | undefined;
     let acknowledgementTimer: ReturnType<typeof setTimeout> | undefined;
 
     try {
-      if (command.deferReply && !interaction.replied && !interaction.deferred) {
-        await interaction.deferReply({ ephemeral: true });
+      if (
+        command.policy.response.acknowledgement === "deferred" &&
+        !interaction.replied &&
+        !interaction.deferred
+      ) {
+        await interaction.deferReply({
+          ephemeral: command.policy.response.visibility === "ephemeral"
+        });
       }
+
+      const context = this.createExecutionContext(
+        command,
+        interaction,
+        controller.signal
+      );
 
       this.log.info(
         {
-          ...context,
+          ...logContext,
           deferred: interaction.deferred,
           replied: interaction.replied
         },
         "Discord command execution started."
       );
 
-      const execution = this.commands.execute(interaction, {
-        signal: controller.signal
-      });
+      const execution = this.commands.execute(context);
       const executionTimeout = new Promise<never>((_resolve, reject) => {
         executionTimer = setTimeout(() => {
-          reject(
-            new CommandExecutionTimeoutError(
-              this.executionTimeoutMs
-            )
-          );
+          reject(new CommandExecutionTimeoutError(this.executionTimeoutMs));
         }, this.executionTimeoutMs);
       });
-      const acknowledgementTimeout = new Promise<never>(
-        (_resolve, reject) => {
-          acknowledgementTimer = setTimeout(() => {
-            if (!interaction.replied && !interaction.deferred) {
-              reject(
-                new InteractionAcknowledgementTimeoutError(
-                  this.acknowledgementTimeoutMs
-                )
-              );
-            }
-          }, this.acknowledgementTimeoutMs);
-        }
-      );
+      const acknowledgementTimeout = new Promise<never>((_resolve, reject) => {
+        acknowledgementTimer = setTimeout(() => {
+          if (!interaction.replied && !interaction.deferred) {
+            reject(
+              new InteractionAcknowledgementTimeoutError(
+                this.acknowledgementTimeoutMs
+              )
+            );
+          }
+        }, this.acknowledgementTimeoutMs);
+      });
 
-      await Promise.race([
-        execution,
-        executionTimeout,
-        acknowledgementTimeout
-      ]);
+      await Promise.race([execution, executionTimeout, acknowledgementTimeout]);
 
       if (!interaction.replied && !interaction.deferred) {
         throw new Error(
@@ -176,7 +240,7 @@ export class DiscordInteractionHandler {
 
       this.log.info(
         {
-          ...context,
+          ...logContext,
           executionDurationMs: performance.now() - startedAt,
           deferred: interaction.deferred,
           replied: interaction.replied
@@ -185,10 +249,9 @@ export class DiscordInteractionHandler {
       );
     } catch (error) {
       controller.abort();
-
       this.log.error(
         {
-          ...context,
+          ...logContext,
           err: error,
           stack: error instanceof Error ? error.stack : undefined,
           executionDurationMs: performance.now() - startedAt,
@@ -197,21 +260,48 @@ export class DiscordInteractionHandler {
         },
         "Discord command execution failed."
       );
-
       await this.sendErrorResponse(
         interaction,
         "Something went wrong while running that command.",
-        context
+        logContext
       );
     } finally {
-      if (executionTimer) {
-        clearTimeout(executionTimer);
-      }
+      this.activeControllers.delete(controller);
 
-      if (acknowledgementTimer) {
-        clearTimeout(acknowledgementTimer);
-      }
+      if (executionTimer) clearTimeout(executionTimer);
+      if (acknowledgementTimer) clearTimeout(acknowledgementTimer);
     }
+  }
+
+  private createExecutionContext(
+    command: DiscordCommand,
+    interaction: ChatInputCommandInteraction,
+    signal: AbortSignal
+  ): CommandExecutionContext {
+    const ephemeral = command.policy.response.visibility === "ephemeral";
+
+    return {
+      interaction,
+      signal,
+      reply: async (options: CommandReplyOptions): Promise<void> => {
+        if (interaction.deferred && !interaction.replied) {
+          await interaction.editReply(options);
+        } else if (interaction.replied || interaction.deferred) {
+          await interaction.followUp({
+            ...options,
+            ephemeral
+          } as InteractionReplyOptions);
+        } else {
+          await interaction.reply({
+            ...options,
+            ephemeral
+          } as InteractionReplyOptions);
+        }
+      },
+      editReply: async (options: InteractionEditReplyOptions): Promise<void> => {
+        await interaction.editReply(options);
+      }
+    };
   }
 
   private async sendErrorResponse(
@@ -221,15 +311,9 @@ export class DiscordInteractionHandler {
   ): Promise<void> {
     try {
       if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({
-          content,
-          ephemeral: true
-        });
+        await interaction.followUp({ content, ephemeral: true });
       } else {
-        await interaction.reply({
-          content,
-          ephemeral: true
-        });
+        await interaction.reply({ content, ephemeral: true });
       }
     } catch (error) {
       this.log.error(

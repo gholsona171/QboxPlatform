@@ -98,7 +98,8 @@ Responsibilities:
 - Apply permission checks before protected commands execute.
 - Validate command modules, metadata, aliases, permissions, and handlers before registration.
 - Deploy guild or global application commands only through the dedicated deployment workflow.
-- Route interactions through `DiscordInteractionHandler`, with acknowledgement and execution timeouts and state-aware error responses.
+- Route interactions through `DiscordInteractionHandler`, with acknowledgement and execution timeouts, active-execution tracking, bounded shutdown draining, and state-aware error responses.
+- Apply required command policies for guild/DM scope, permission evaluation and administrator override, response acknowledgement and visibility, cooldown, and concurrency.
 
 Dependencies: `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, and `discord.js`.
 
@@ -107,7 +108,7 @@ Existing commands:
 - `PingCommand`: implements `/ping` and replies ephemerally with `Pong.`
 - `AdminPingCommand`: implements `/adminping`, requires `platform.admin`, and returns an ephemeral confirmation.
 
-`DiscordCommand` defines chat-input command metadata, optional early deferral, and execution with an abort signal. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands before `CommandRegistry` atomically registers the complete set. `DiscordInteractionHandler` records non-secret interaction context, rejects stale command names, prevents duplicate initial replies, and reports failures through an ephemeral reply or follow-up.
+`DiscordCommand` defines chat-input metadata, a required execution policy, and execution through a context that supplies the interaction, abort signal, and policy-aware response helpers. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands and policies before `CommandRegistry` atomically registers the complete set. `CommandRegistry` enforces context, authorization, cooldown, and concurrency policies. `DiscordInteractionHandler` records non-secret interaction context, tracks active work, rejects new work during shutdown, and reports failures through an ephemeral reply or follow-up.
 
 ## Logger package
 

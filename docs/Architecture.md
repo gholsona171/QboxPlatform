@@ -75,7 +75,7 @@ If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`
 
 Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. Guild-scoped development deployment uses `pnpm --filter @qbox/bot deploy:commands:dev` with `DISCORD_APPLICATION_ID` and `DISCORD_GUILD_ID`; global deployment uses a compiled bot build and `pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global`.
 
-`DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and selects `reply` or `followUp` according to the interaction state. Commands opt into an early ephemeral defer with command metadata; fast commands reply directly.
+`DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and applies each command's immediate/deferred and public/ephemeral response policy. `CommandRegistry` applies explicit guild/DM scope, all/any permission evaluation, administrator override, cooldown, and concurrency policies before invoking a command.
 
 ## Shutdown flow
 
@@ -83,7 +83,7 @@ On `SIGINT` or `SIGTERM`, the bot calls `PlatformKernel.stop()` once:
 
 1. The kernel emits `platform.stopping`.
 2. `ModuleLoader.stopAll()` stops registered modules in reverse registration order.
-3. `DiscordModule.stop()` destroys the Discord client.
+3. `DiscordModule.stop()` rejects new command executions, waits up to `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` for active commands, aborts their cooperative cancellation signals if the deadline expires, and destroys the Discord client.
 4. The kernel logs that the platform stopped.
 
 The bot records shutdown failure and sets a nonzero exit code if an exception is thrown.

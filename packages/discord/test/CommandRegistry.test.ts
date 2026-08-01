@@ -1,156 +1,282 @@
-import { SlashCommandBuilder } from "discord.js";
-import type {
-  ChatInputCommandInteraction
-} from "discord.js";
+import type { ChatInputCommandInteraction } from "discord.js";
 import { describe, expect, it, vi } from "vitest";
 
 import { PermissionService } from "@qbox/permissions";
 
 import type {
+  CommandExecutionContext,
+  CommandExecutionPolicy,
   DiscordCommand
 } from "../src/commands/DiscordCommand.js";
-import {
-  CommandRegistry
-} from "../src/commands/CommandRegistry.js";
+import { CommandRegistry } from "../src/commands/CommandRegistry.js";
+import { createCommand, defaultPolicy } from "./CommandTestFactory.js";
 
-function createInteraction(
-  roleIds: readonly string[],
-  inGuild = true
-): {
-  interaction: ChatInputCommandInteraction;
-  reply: ReturnType<typeof vi.fn>;
-} {
+function createContext(options: {
+  commandName?: string;
+  userId?: string;
+  guildId?: string | null;
+  roleIds?: readonly string[];
+} = {}) {
+  const guildId = options.guildId === undefined ? "guild-1" : options.guildId;
   const reply = vi.fn(async () => undefined);
-
   const interaction = {
-    commandName: "secure",
-    inGuild: () => inGuild,
+    commandName: options.commandName ?? "secure",
+    guildId,
+    inGuild: () => guildId !== null,
     member: {
       roles: {
-        cache: new Map(roleIds.map((roleId) => [roleId, {}]))
+        cache: new Map((options.roleIds ?? []).map((id) => [id, {}]))
       }
     },
-    user: {
-      id: "user-1"
-    },
-    reply
+    user: { id: options.userId ?? "user-1" }
   } as unknown as ChatInputCommandInteraction;
+  const context = {
+    interaction,
+    signal: new AbortController().signal,
+    reply,
+    editReply: vi.fn(async () => undefined)
+  } as unknown as CommandExecutionContext;
 
-  return { interaction, reply };
+  return { context, reply };
 }
 
-function createProtectedCommand(): {
-  command: DiscordCommand;
-  execute: ReturnType<typeof vi.fn>;
-} {
-  const execute = vi.fn(
-    async (_interaction: ChatInputCommandInteraction) => undefined
-  );
-
+function protectedPolicy(
+  overrides: Partial<CommandExecutionPolicy> = {}
+): CommandExecutionPolicy {
   return {
-    command: {
-      type: "chat-input",
-      data: new SlashCommandBuilder()
-        .setName("secure")
-        .setDescription("A protected test command."),
-      requiredPermissions: ["platform.admin"],
-      execute
+    ...defaultPolicy,
+    contexts: "guild",
+    permissions: {
+      required: ["moderation.warn", "moderation.kick"],
+      mode: "all",
+      administratorOverride: false
     },
-    execute
+    ...overrides
   };
 }
 
-describe("CommandRegistry permission enforcement", () => {
-  it("executes a protected command for a role with every permission", async () => {
+describe("CommandRegistry authorization policy", () => {
+  it.each([
+    ["guild", "guild-1", true],
+    ["guild", null, false],
+    ["dm", "guild-1", false],
+    ["dm", null, true],
+    ["both", "guild-1", true],
+    ["both", null, true]
+  ] as const)("enforces %s context policy", async (
+    contexts,
+    guildId,
+    expectedExecution
+  ) => {
+    const execute = vi.fn(async () => undefined);
+    const command = createCommand("secure", {
+      policy: { ...defaultPolicy, contexts },
+      execute
+    });
+    const registry = new CommandRegistry(new PermissionService());
+    const { context, reply } = createContext({ guildId });
+    registry.register(command);
+
+    await registry.execute(context);
+
+    expect(execute).toHaveBeenCalledTimes(expectedExecution ? 1 : 0);
+    expect(reply).toHaveBeenCalledTimes(expectedExecution ? 0 : 1);
+  });
+
+  it("supports all and any permission evaluation", async () => {
     const permissions = new PermissionService();
+    permissions.registerGrant({ roleId: "moderator", permissions: ["moderation.warn"] });
     const registry = new CommandRegistry(permissions);
-    const { command, execute } = createProtectedCommand();
-    const { interaction, reply } = createInteraction(["admin"]);
-
-    permissions.registerGrant({
-      roleId: "admin",
-      permissions: ["platform.admin"]
-    });
-    registry.register(command);
-
-    await registry.execute(interaction);
-
-    expect(execute).toHaveBeenCalledOnce();
-    expect(execute).toHaveBeenCalledWith(
-      interaction,
-      expect.objectContaining({
-        signal: expect.any(AbortSignal)
+    const allExecute = vi.fn(async () => undefined);
+    const anyExecute = vi.fn(async () => undefined);
+    registry.registerAll([
+      createCommand("all", { policy: protectedPolicy(), execute: allExecute }),
+      createCommand("any", {
+        policy: protectedPolicy({
+          permissions: {
+            required: ["moderation.warn", "moderation.kick"],
+            mode: "any",
+            administratorOverride: false
+          }
+        }),
+        execute: anyExecute
       })
-    );
-    expect(reply).not.toHaveBeenCalled();
+    ]);
+
+    await registry.execute(createContext({ commandName: "all", roleIds: ["moderator"] }).context);
+    await registry.execute(createContext({ commandName: "any", roleIds: ["moderator"] }).context);
+
+    expect(allExecute).not.toHaveBeenCalled();
+    expect(anyExecute).toHaveBeenCalledOnce();
   });
 
-  it("rejects a protected command when the member lacks permission", async () => {
-    const registry = new CommandRegistry(
-      new PermissionService()
-    );
-    const { command, execute } = createProtectedCommand();
-    const { interaction, reply } = createInteraction(["member"]);
+  it("allows an administrator override only when enabled", async () => {
+    const permissions = new PermissionService();
+    permissions.registerGrant({ roleId: "admin", permissions: ["platform.admin"] });
+    const registry = new CommandRegistry(permissions);
+    const denied = vi.fn(async () => undefined);
+    const allowed = vi.fn(async () => undefined);
+    registry.registerAll([
+      createCommand("denied", { policy: protectedPolicy(), execute: denied }),
+      createCommand("allowed", {
+        policy: protectedPolicy({
+          permissions: {
+            required: ["moderation.warn"],
+            mode: "all",
+            administratorOverride: true
+          }
+        }),
+        execute: allowed
+      })
+    ]);
 
-    registry.register(command);
+    await registry.execute(createContext({ commandName: "denied", roleIds: ["admin"] }).context);
+    await registry.execute(createContext({ commandName: "allowed", roleIds: ["admin"] }).context);
 
-    await registry.execute(interaction);
+    expect(denied).not.toHaveBeenCalled();
+    expect(allowed).toHaveBeenCalledOnce();
+  });
+});
 
-    expect(execute).not.toHaveBeenCalled();
-    expect(reply).toHaveBeenCalledWith({
-      content: "You do not have permission to use this command.",
-      ephemeral: true
-    });
+describe("CommandRegistry cooldown policy", () => {
+  it.each(["user", "guild"] as const)(
+    "enforces a per-%s cooldown and allows execution after expiry",
+    async (scope) => {
+      const now = vi.spyOn(Date, "now").mockReturnValue(1_000);
+      const execute = vi.fn(async () => undefined);
+      const command = createCommand("secure", {
+        policy: {
+          ...defaultPolicy,
+          contexts: scope === "guild" ? "guild" : "both",
+          cooldown: { scope, durationMs: 5_000 }
+        },
+        execute
+      });
+      const registry = new CommandRegistry(new PermissionService());
+      registry.register(command);
+
+      await registry.execute(createContext().context);
+      const rejected = createContext();
+      await registry.execute(rejected.context);
+      now.mockReturnValue(6_000);
+      await registry.execute(createContext().context);
+
+      expect(execute).toHaveBeenCalledTimes(2);
+      expect(rejected.reply).toHaveBeenCalledWith({
+        content: "Please wait 5 second(s) before using this command again."
+      });
+      now.mockRestore();
+    }
+  );
+
+  it.each([
+    ["user", { userId: "user-2" }],
+    ["guild", { guildId: "guild-2" }]
+  ] as const)("isolates %s cooldowns by scope", async (scope, secondSubject) => {
+    const execute = vi.fn(async () => undefined);
+    const registry = new CommandRegistry(new PermissionService());
+    registry.register(createCommand("secure", {
+      policy: {
+        ...defaultPolicy,
+        contexts: scope === "guild" ? "guild" : "both",
+        cooldown: { scope, durationMs: 5_000 }
+      },
+      execute
+    }));
+
+    await registry.execute(createContext().context);
+    await registry.execute(createContext(secondSubject).context);
+
+    expect(execute).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("CommandRegistry concurrency policy", () => {
+  it.each(["single", "user", "guild"] as const)(
+    "rejects overlapping %s executions",
+    async (concurrency) => {
+      let release: (() => void) | undefined;
+      const execute = vi.fn(async () => await new Promise<void>((resolve) => {
+        release = resolve;
+      }));
+      const command = createCommand("secure", {
+        policy: {
+          ...defaultPolicy,
+          contexts: concurrency === "guild" ? "guild" : "both",
+          concurrency
+        },
+        execute
+      });
+      const registry = new CommandRegistry(new PermissionService());
+      registry.register(command);
+      const first = registry.execute(createContext().context);
+      const rejected = createContext();
+
+      await registry.execute(rejected.context);
+      release?.();
+      await first;
+
+      expect(execute).toHaveBeenCalledOnce();
+      expect(rejected.reply).toHaveBeenCalledWith({
+        content: "This command is already running for the selected scope."
+      });
+    }
+  );
+
+  it("allows overlapping executions when concurrency is unlimited", async () => {
+    const execute = vi.fn(async () => undefined);
+    const registry = new CommandRegistry(new PermissionService());
+    registry.register(createCommand("secure", { execute }));
+
+    await Promise.all([
+      registry.execute(createContext().context),
+      registry.execute(createContext().context)
+    ]);
+
+    expect(execute).toHaveBeenCalledTimes(2);
   });
 
-  it("rejects a protected command outside a guild", async () => {
-    const registry = new CommandRegistry(
-      new PermissionService()
-    );
-    const { command, execute } = createProtectedCommand();
-    const { interaction, reply } = createInteraction([], false);
+  it.each([
+    ["user", { userId: "user-2" }],
+    ["guild", { guildId: "guild-2" }]
+  ] as const)("allows different %s scopes concurrently", async (
+    concurrency,
+    secondSubject
+  ) => {
+    let release: (() => void) | undefined;
+    const pending = new Promise<void>((resolve) => { release = resolve; });
+    const execute = vi.fn(async () => await pending);
+    const registry = new CommandRegistry(new PermissionService());
+    registry.register(createCommand("secure", {
+      policy: {
+        ...defaultPolicy,
+        contexts: concurrency === "guild" ? "guild" : "both",
+        concurrency
+      },
+      execute
+    }));
 
-    registry.register(command);
-
-    await registry.execute(interaction);
-
-    expect(execute).not.toHaveBeenCalled();
-    expect(reply).toHaveBeenCalledWith({
-      content: "This command can only be used in a server.",
-      ephemeral: true
-    });
+    const first = registry.execute(createContext().context);
+    const second = registry.execute(createContext(secondSubject).context);
+    await Promise.resolve();
+    expect(execute).toHaveBeenCalledTimes(2);
+    release?.();
+    await Promise.all([first, second]);
   });
 });
 
 describe("CommandRegistry registration", () => {
-  it("registers commands and aliases successfully", () => {
-    const registry = new CommandRegistry(
-      new PermissionService()
-    );
-    const { command } = createProtectedCommand();
-    const commandWithAlias: DiscordCommand = {
-      ...command,
-      aliases: ["secure-alias"]
-    };
+  it("registers commands and aliases atomically", () => {
+    const registry = new CommandRegistry(new PermissionService());
+    const command = createCommand("secure", { aliases: ["secure-alias"] });
 
-    expect(registry.registerAll([commandWithAlias])).toBe(1);
-    expect(registry.get("secure")).toBe(commandWithAlias);
-    expect(registry.get("secure-alias")).toBe(commandWithAlias);
-    expect(registry.list()).toEqual([commandWithAlias]);
-  });
+    expect(registry.registerAll([command])).toBe(1);
+    expect(registry.get("secure-alias")).toBe(command);
 
-  it("aborts registration without partial writes on a duplicate", () => {
-    const registry = new CommandRegistry(
-      new PermissionService()
-    );
-    const { command } = createProtectedCommand();
-    const duplicate: DiscordCommand = {
-      ...command,
+    const duplicate: DiscordCommand = createCommand("other", {
       aliases: ["secure"]
-    };
-
-    expect(() => registry.registerAll([command, duplicate]))
-      .toThrow("Command name or alias 'secure' is already registered.");
-    expect(registry.list()).toEqual([]);
+    });
+    expect(() => registry.registerAll([duplicate])).toThrow("already registered");
+    expect(registry.get("other")).toBeUndefined();
   });
 });

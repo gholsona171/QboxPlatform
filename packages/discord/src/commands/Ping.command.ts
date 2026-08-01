@@ -3,10 +3,7 @@ import {
 } from "discord.js";
 
 import type {
-  ChatInputCommandInteraction
-} from "discord.js";
-
-import type {
+  CommandExecutionContext,
   DiscordCommand
 } from "./DiscordCommand.js";
 
@@ -17,12 +14,24 @@ export class PingCommand implements DiscordCommand {
     .setName("ping")
     .setDescription("Checks whether the bot is responding.");
 
+  public readonly policy = {
+    contexts: "both",
+    response: {
+      acknowledgement: "immediate",
+      visibility: "ephemeral"
+    },
+    cooldown: {
+      scope: "user",
+      durationMs: 1_000
+    },
+    concurrency: "user"
+  } as const;
+
   public async execute(
-    interaction: ChatInputCommandInteraction
+    context: CommandExecutionContext
   ): Promise<void> {
-    await interaction.reply({
-      content: "Pong.",
-      ephemeral: true
+    await context.reply({
+      content: "Pong."
     });
   }
 }

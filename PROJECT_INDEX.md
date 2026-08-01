@@ -167,13 +167,13 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 - **Defined in:** `packages/discord/src/commands/CommandRegistry.ts`
 - **Instantiated in:** The `DiscordService` constructor.
-- **Purpose:** Atomically stores validated command instances and aliases, produces deployment data, enforces command permissions, and invokes command handlers.
+- **Purpose:** Atomically stores validated command instances and aliases, produces deployment data, enforces context, permission, administrator-override, cooldown, and concurrency policies, and invokes command handlers.
 
 ## `DiscordInteractionHandler`
 
 - **Defined in:** `packages/discord/src/interactions/DiscordInteractionHandler.ts`
 - **Instantiated in:** The `DiscordService` constructor.
-- **Purpose:** Dispatches supported interactions, records non-secret execution diagnostics, enforces acknowledgement and execution timeouts, and sends state-aware ephemeral error responses.
+- **Purpose:** Dispatches supported interactions, applies response policies, records non-secret execution diagnostics, enforces acknowledgement and execution timeouts, tracks active executions, drains work during shutdown, and sends state-aware ephemeral error responses.
 
 ## `CommandLoader`
 
@@ -315,13 +315,14 @@ Environment variable names recognized by current source or `.env.example`:
 - `DISCORD_APPLICATION_ID`
 - `DISCORD_GUILD_ID`
 - `DISCORD_COMMAND_TIMEOUT_MS`
+- `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS`
 - `DATABASE_URL`
 - `REDIS_URL`
 - `OPENAI_API_KEY`
 - `ADMIN_ROLE_IDS`
 - `LOG_LEVEL`
 
-`DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`. The shared environment loader expects the root `.env` file to be readable.
+`DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`; `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to `10000`. The shared environment loader expects the root `.env` file to be readable.
 
 # Build Pipeline
 
