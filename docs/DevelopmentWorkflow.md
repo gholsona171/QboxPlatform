@@ -137,9 +137,34 @@ pnpm --filter @qbox/prisma prisma:validate
 pnpm --filter @qbox/prisma prisma:generate
 ```
 
-The schema currently contains a PostgreSQL datasource and ESM `prisma-client` generator only. It has no domain models or migrations. These commands do not connect to PostgreSQL.
+The schema contains the persistent-permission foundation. Formatting, validation, and generation do not connect to PostgreSQL.
 
 Generated TypeScript is committed under `packages/prisma/src/generated/client`. Package generation applies a deterministic whitespace-only normalization because Prisma 7 output otherwise fails the repository whitespace gate. Package build regenerates it before TypeScript compilation, and CI fails if regeneration changes the committed schema or generated output. Do not edit generated files manually. Applications import the public `@qbox/prisma` package boundary, never generated paths.
+
+### Disposable local PostgreSQL
+
+Docker Compose defines separate pinned PostgreSQL 17.6 development and test services. Both bind to loopback only. Set `QBOX_POSTGRES_PASSWORD` in the local shell before starting either service; no local database password is committed:
+
+```sh
+docker compose -f compose.postgres.yml up -d postgres-test
+```
+
+The disposable test URL is:
+
+```text
+postgresql://qbox_local:<local-password>@127.0.0.1:54330/qbox_permissions_local_test
+```
+
+Set that URL only in the current shell, apply committed migrations, and run the integration suite:
+
+```sh
+pnpm --filter @qbox/prisma prisma:migrate:deploy
+pnpm test:database
+```
+
+The suite refuses destructive cleanup unless the database name contains `test`. It never runs `migrate reset` or `db push`. The `postgres-test` data directory is a container-local tmpfs and is disposable; the `postgres-dev` service instead uses the named `qbox-postgres-dev` volume and database `qbox_permissions_dev` on loopback port 54329.
+
+Create new migrations against a disposable development database, inspect the SQL before applying it, and commit migration history. CI uses `prisma migrate deploy`; production must do the same only after a backup and migration review. Never edit a migration that has been applied to a shared environment.
 
 ## Build
 

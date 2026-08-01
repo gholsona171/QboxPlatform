@@ -8,4 +8,10 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Guild.js'
+export type * from './models/PermissionPrincipal.js'
+export type * from './models/PermissionDefinition.js'
+export type * from './models/PermissionAssignment.js'
+export type * from './models/PermissionAuditEvent.js'
+export type * from './models/PermissionCatalogState.js'
 export type * from './commonInputTypes.js'

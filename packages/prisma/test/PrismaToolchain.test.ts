@@ -33,7 +33,7 @@ describe("Prisma 7 toolchain", () => {
     expect(configuration.default.datasource?.url).toBe(placeholderUrl);
   });
 
-  it("uses only a PostgreSQL datasource and datasource/generator shell", async () => {
+  it("uses PostgreSQL and only the approved permission-foundation models", async () => {
     const schema = await readFile(
       resolve(repositoryRoot, "prisma/schema.prisma"),
       "utf8",
@@ -41,8 +41,18 @@ describe("Prisma 7 toolchain", () => {
     expect(schema).toContain('provider = "postgresql"');
     expect(schema).toContain('provider               = "prisma-client"');
     expect(schema).toContain('moduleFormat           = "esm"');
-    expect(schema).not.toMatch(/^model\s/m);
-    expect(schema).not.toMatch(/^enum\s/m);
+    const models = [...schema.matchAll(/^model\s+(\w+)/gm)].map(
+      ([, model]) => model,
+    );
+    expect(models).toEqual([
+      "Guild",
+      "PermissionPrincipal",
+      "PermissionDefinition",
+      "PermissionAssignment",
+      "PermissionAuditEvent",
+      "PermissionCatalogState",
+    ]);
+    expect(schema).not.toMatch(/FiveM|PlatformUser|ApiService|ResourceScope/);
   });
 
   it("exports the generated client through an ESM-compatible package source", () => {

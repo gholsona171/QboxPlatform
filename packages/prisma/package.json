@@ -21,8 +21,10 @@
     "prisma:format": "prisma format --config prisma.config.ts",
     "prisma:validate": "prisma validate --config prisma.config.ts",
     "prisma:generate": "prisma generate --config prisma.config.ts && node scripts/normalizeGenerated.mjs",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run test",
+    "prisma:migrate:deploy": "prisma migrate deploy --config prisma.config.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.integration.json",
+    "test": "vitest run --dir test",
+    "test:integration": "vitest run --dir integration",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },
   "dependencies": {

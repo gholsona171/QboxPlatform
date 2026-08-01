@@ -22,7 +22,7 @@ PostgreSQL
 
 Application modules consume domain repositories or application services. They do not instantiate or import Prisma directly.
 
-The foundation now includes pure database lifecycle contracts and the Prisma 7 schema/generation toolchain. It does not connect to PostgreSQL, define domain models, or create migrations.
+The foundation includes pure database lifecycle contracts, the Prisma 7 schema/generation toolchain, and the first persistent-permission migration. Repository adapters and application database composition remain deferred.
 
 ## Why PostgreSQL
 
@@ -92,12 +92,18 @@ The `prisma-client` generator emits ESM TypeScript with `.js` import specifiers 
 
 `PrismaClientFactory` creates a distinct client using `@prisma/adapter-pg` without calling `$connect`. It configures warning/error events only and owns no singleton or lifecycle. `@qbox/database` remains responsible for future connection startup, readiness, and shutdown.
 
+## Permission schema implementation
+
+The initial schema contains only guilds, Discord principals, compiled permission metadata, assignments, immutable audit events, and the catalog synchronization singleton. PostgreSQL generates internal UUIDs with `gen_random_uuid()`; Discord snowflakes remain strings. This avoids a runtime ID dependency and works consistently with the pinned PostgreSQL 17 development and CI services.
+
+PostgreSQL-specific checks, partial unique indexes, and triggers supplement Prisma where its schema language cannot precisely express tenant/scope consistency, active-row uniqueness with nullable guild IDs, immutable timestamps, or append-only auditing. Ordinary records are disabled or revoked rather than physically deleted, and all historical relationships use restrictive foreign keys.
+
+The database cannot independently prevent revocation of the last active `platform.owner` because that invariant depends on current time, enabled/expiry state, and a concurrent mutation decision. A future repository must enforce it in the mutation transaction by locking the applicable active-owner assignment rows before counting and revoking them.
+
 ## Deferred decisions
 
 The following remain for approved later subphases:
 
-- Schema and migration design.
 - Pool sizing and deployed SSL certificate details.
 - Repository implementations.
-- CI PostgreSQL service.
 - Backup and production rollout implementation.

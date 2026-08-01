@@ -119,10 +119,7 @@ Discord.js builders remain the command-definition API. Required options precede 
 
 ```ts
 import { SlashCommandBuilder } from "discord.js";
-import type {
-  CommandExecutionContext,
-  DiscordCommand
-} from "@qbox/discord";
+import type { CommandExecutionContext, DiscordCommand } from "@qbox/discord";
 
 export class ExampleCommand implements DiscordCommand {
   public readonly type = "chat-input" as const;
@@ -130,24 +127,30 @@ export class ExampleCommand implements DiscordCommand {
   public readonly data = new SlashCommandBuilder()
     .setName("example")
     .setDescription("Demonstrates typed command input.")
-    .addSubcommand((subcommand) => subcommand
-      .setName("create")
-      .setDescription("Creates an example.")
-      .addStringOption((option) => option
-        .setName("reason")
-        .setDescription("Why the example is needed.")
-        .setRequired(true))
-      .addIntegerOption((option) => option
-        .setName("duration")
-        .setDescription("Optional duration in minutes.")));
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("create")
+        .setDescription("Creates an example.")
+        .addStringOption((option) =>
+          option
+            .setName("reason")
+            .setDescription("Why the example is needed.")
+            .setRequired(true),
+        )
+        .addIntegerOption((option) =>
+          option
+            .setName("duration")
+            .setDescription("Optional duration in minutes."),
+        ),
+    );
 
   public readonly policy = {
     contexts: "guild",
     response: {
       acknowledgement: "immediate",
-      visibility: "ephemeral"
+      visibility: "ephemeral",
     },
-    concurrency: "user"
+    concurrency: "user",
   } as const;
 
   public async execute(context: CommandExecutionContext): Promise<void> {
@@ -157,11 +160,9 @@ export class ExampleCommand implements DiscordCommand {
         const duration = context.options.optionalInteger("duration");
 
         await context.reply({
-          content: duration
-            ? `${reason} (${duration} minutes)`
-            : reason
+          content: duration ? `${reason} (${duration} minutes)` : reason,
         });
-      }
+      },
     });
   }
 }
@@ -216,9 +217,9 @@ Current responsibility: owns the authoritative typed PostgreSQL configuration va
 
 `DatabaseService` uses an injected `ClientFactory`; it does not connect to PostgreSQL and has no Prisma dependency in this phase. It reports `LIVE`, `READY`, or `DEGRADED`, rejects database readiness until a client starts, and attempts client cleanup after startup failure. The obsolete console-only singleton has been removed.
 
-`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root-schema tooling, committed ESM generated client, and disconnected PostgreSQL client factory. It contains no domain models, migrations, repository adapters, or real database health query. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
+`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root schema and migration tooling, committed ESM generated client, disconnected PostgreSQL client factory, and schema integration tests. It contains no repository adapters or real database health query. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
 
-The canonical schema is `prisma/schema.prisma`. It currently contains only the PostgreSQL datasource and `prisma-client` generator. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
+The canonical schema is `prisma/schema.prisma`. It contains the PostgreSQL datasource, `prisma-client` generator, and initial persistent-permission models. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
 
 The package declares no dependencies.
 
@@ -226,7 +227,7 @@ The package declares no dependencies.
 
 Package: `@qbox/prisma`
 
-The entry point currently exports nothing. There is no Prisma client wrapper, schema, generated client, migration, or lifecycle behavior.
+The entry point exports the generated Prisma client and disconnected `PrismaClientFactory`. Migration history remains under root `prisma/migrations`; lifecycle behavior remains outside this package.
 
 The package declares no dependencies of its own.
 

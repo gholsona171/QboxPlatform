@@ -51,7 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-
+  Guild: 'Guild',
+  PermissionPrincipal: 'PermissionPrincipal',
+  PermissionDefinition: 'PermissionDefinition',
+  PermissionAssignment: 'PermissionAssignment',
+  PermissionAuditEvent: 'PermissionAuditEvent',
+  PermissionCatalogState: 'PermissionCatalogState'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -68,3 +73,144 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const GuildScalarFieldEnum = {
+  id: 'id',
+  discordGuildId: 'discordGuildId',
+  enabled: 'enabled',
+  disabledAt: 'disabledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GuildScalarFieldEnum = (typeof GuildScalarFieldEnum)[keyof typeof GuildScalarFieldEnum]
+
+
+export const PermissionPrincipalScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  guildId: 'guildId',
+  externalId: 'externalId',
+  enabled: 'enabled',
+  disabledAt: 'disabledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionPrincipalScalarFieldEnum = (typeof PermissionPrincipalScalarFieldEnum)[keyof typeof PermissionPrincipalScalarFieldEnum]
+
+
+export const PermissionDefinitionScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  description: 'description',
+  category: 'category',
+  enabled: 'enabled',
+  disabledAt: 'disabledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionDefinitionScalarFieldEnum = (typeof PermissionDefinitionScalarFieldEnum)[keyof typeof PermissionDefinitionScalarFieldEnum]
+
+
+export const PermissionAssignmentScalarFieldEnum = {
+  id: 'id',
+  principalId: 'principalId',
+  permissionDefinitionId: 'permissionDefinitionId',
+  scope: 'scope',
+  guildId: 'guildId',
+  effect: 'effect',
+  enabled: 'enabled',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionAssignmentScalarFieldEnum = (typeof PermissionAssignmentScalarFieldEnum)[keyof typeof PermissionAssignmentScalarFieldEnum]
+
+
+export const PermissionAuditEventScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  actorType: 'actorType',
+  actorPrincipalId: 'actorPrincipalId',
+  actorPrincipalType: 'actorPrincipalType',
+  actorExternalId: 'actorExternalId',
+  actorGuildDiscordId: 'actorGuildDiscordId',
+  actorService: 'actorService',
+  targetPrincipalId: 'targetPrincipalId',
+  targetPrincipalType: 'targetPrincipalType',
+  targetExternalId: 'targetExternalId',
+  targetGuildDiscordId: 'targetGuildDiscordId',
+  scope: 'scope',
+  scopeGuildId: 'scopeGuildId',
+  scopeGuildDiscordId: 'scopeGuildDiscordId',
+  permissionDefinitionId: 'permissionDefinitionId',
+  permissionKey: 'permissionKey',
+  assignmentId: 'assignmentId',
+  reasonCode: 'reasonCode',
+  reason: 'reason',
+  correlationId: 'correlationId',
+  beforeSnapshot: 'beforeSnapshot',
+  afterSnapshot: 'afterSnapshot',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type PermissionAuditEventScalarFieldEnum = (typeof PermissionAuditEventScalarFieldEnum)[keyof typeof PermissionAuditEventScalarFieldEnum]
+
+
+export const PermissionCatalogStateScalarFieldEnum = {
+  id: 'id',
+  version: 'version',
+  checksum: 'checksum',
+  syncedAt: 'syncedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PermissionCatalogStateScalarFieldEnum = (typeof PermissionCatalogStateScalarFieldEnum)[keyof typeof PermissionCatalogStateScalarFieldEnum]
+
+
+export const SortOrder = {
+  asc: 'asc',
+  desc: 'desc'
+} as const
+
+export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+} as const
+
+export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]

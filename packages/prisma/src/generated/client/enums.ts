@@ -9,7 +9,54 @@
 * 🟢 You can import this file directly.
 */
 
+export const PermissionPrincipalType = {
+  DISCORD_USER: 'DISCORD_USER',
+  DISCORD_ROLE: 'DISCORD_ROLE'
+} as const
+
+export type PermissionPrincipalType = (typeof PermissionPrincipalType)[keyof typeof PermissionPrincipalType]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const PermissionScopeType = {
+  PLATFORM: 'PLATFORM',
+  DISCORD_GUILD: 'DISCORD_GUILD'
+} as const
+
+export type PermissionScopeType = (typeof PermissionScopeType)[keyof typeof PermissionScopeType]
+
+
+export const PermissionAssignmentEffect = {
+  ALLOW: 'ALLOW',
+  DENY: 'DENY'
+} as const
+
+export type PermissionAssignmentEffect = (typeof PermissionAssignmentEffect)[keyof typeof PermissionAssignmentEffect]
+
+
+export const PermissionAuditAction = {
+  SET_ASSIGNMENT: 'SET_ASSIGNMENT',
+  REVOKE_ASSIGNMENT: 'REVOKE_ASSIGNMENT'
+} as const
+
+export type PermissionAuditAction = (typeof PermissionAuditAction)[keyof typeof PermissionAuditAction]
+
+
+export const PermissionMutationReasonCode = {
+  BOOTSTRAP: 'BOOTSTRAP',
+  ADMINISTRATOR_ACTION: 'ADMINISTRATOR_ACTION',
+  SECURITY_RESPONSE: 'SECURITY_RESPONSE',
+  ROLE_SYNCHRONIZATION: 'ROLE_SYNCHRONIZATION',
+  MIGRATION: 'MIGRATION',
+  EXPIRATION: 'EXPIRATION',
+  SYSTEM_MAINTENANCE: 'SYSTEM_MAINTENANCE'
+} as const
+
+export type PermissionMutationReasonCode = (typeof PermissionMutationReasonCode)[keyof typeof PermissionMutationReasonCode]
+
+
+export const PermissionAuditActorType = {
+  PRINCIPAL: 'PRINCIPAL',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type PermissionAuditActorType = (typeof PermissionAuditActorType)[keyof typeof PermissionAuditActorType]

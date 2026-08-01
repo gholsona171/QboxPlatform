@@ -8,6 +8,7 @@
     "dev": "pnpm --parallel --filter ./apps/* dev",
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
+    "test:database": "pnpm --filter @qbox/prisma test:integration",
     "clean": "pnpm -r clean"
   },
   "keywords": [

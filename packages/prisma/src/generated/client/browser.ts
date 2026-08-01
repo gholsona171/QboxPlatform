@@ -17,3 +17,33 @@ import * as Prisma from './internal/prismaNamespaceBrowser.js'
 export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
+/**
+ * Model Guild
+ *
+ */
+export type Guild = Prisma.GuildModel
+/**
+ * Model PermissionPrincipal
+ *
+ */
+export type PermissionPrincipal = Prisma.PermissionPrincipalModel
+/**
+ * Model PermissionDefinition
+ *
+ */
+export type PermissionDefinition = Prisma.PermissionDefinitionModel
+/**
+ * Model PermissionAssignment
+ *
+ */
+export type PermissionAssignment = Prisma.PermissionAssignmentModel
+/**
+ * Model PermissionAuditEvent
+ *
+ */
+export type PermissionAuditEvent = Prisma.PermissionAuditEventModel
+/**
+ * Model PermissionCatalogState
+ *
+ */
+export type PermissionCatalogState = Prisma.PermissionCatalogStateModel
