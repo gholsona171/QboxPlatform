@@ -216,7 +216,9 @@ Current responsibility: owns the authoritative typed PostgreSQL configuration va
 
 `DatabaseService` uses an injected `ClientFactory`; it does not connect to PostgreSQL and has no Prisma dependency in this phase. It reports `LIVE`, `READY`, or `DEGRADED`, rejects database readiness until a client starts, and attempts client cleanup after startup failure. The obsolete console-only singleton has been removed.
 
-`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` remains the lower-level generated-client placeholder. No schema, migration, generated client, repository adapter, or real database health query exists yet. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
+`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root-schema tooling, committed ESM generated client, and disconnected PostgreSQL client factory. It contains no domain models, migrations, repository adapters, or real database health query. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
+
+The canonical schema is `prisma/schema.prisma`. It currently contains only the PostgreSQL datasource and `prisma-client` generator. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
 
 The package declares no dependencies.
 

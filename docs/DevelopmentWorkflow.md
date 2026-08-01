@@ -127,6 +127,20 @@ pnpm --filter @qbox/core dev
 pnpm --filter @qbox/shared dev
 ```
 
+## Prisma tooling
+
+`@qbox/prisma` owns the Prisma 7 toolchain while the canonical schema remains at `prisma/schema.prisma`. Supply a non-secret PostgreSQL-format `DATABASE_URL` for tooling, then run:
+
+```bash
+pnpm --filter @qbox/prisma prisma:format
+pnpm --filter @qbox/prisma prisma:validate
+pnpm --filter @qbox/prisma prisma:generate
+```
+
+The schema currently contains a PostgreSQL datasource and ESM `prisma-client` generator only. It has no domain models or migrations. These commands do not connect to PostgreSQL.
+
+Generated TypeScript is committed under `packages/prisma/src/generated/client`. Package generation applies a deterministic whitespace-only normalization because Prisma 7 output otherwise fails the repository whitespace gate. Package build regenerates it before TypeScript compilation, and CI fails if regeneration changes the committed schema or generated output. Do not edit generated files manually. Applications import the public `@qbox/prisma` package boundary, never generated paths.
+
 ## Build
 
 Build every workspace that defines a build script:

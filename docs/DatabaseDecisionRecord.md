@@ -22,7 +22,7 @@ PostgreSQL
 
 Application modules consume domain repositories or application services. They do not instantiate or import Prisma directly.
 
-This subphase establishes configuration and pure lifecycle contracts only. It does not connect to PostgreSQL, generate Prisma Client, create a schema, or create migrations.
+The foundation now includes pure database lifecycle contracts and the Prisma 7 schema/generation toolchain. It does not connect to PostgreSQL, define domain models, or create migrations.
 
 ## Why PostgreSQL
 
@@ -84,12 +84,18 @@ Generic CRUD repositories are not required. Each repository should expose the sm
 
 Permission infrastructure uses soft deletion during ordinary operation. Records are disabled or assignments are revoked. Ordinary repository contracts must not expose physical deletion. Audit history remains append-only. A physical deletion path requires separate approval for an explicit retention, privacy, or recovery procedure.
 
+## Prisma toolchain implementation
+
+`@qbox/prisma` owns exact-version Prisma 7.9.1 CLI and client dependencies plus the official PostgreSQL driver adapter. Its package-local `prisma.config.ts` resolves the canonical root `prisma/schema.prisma` independently of the caller's working directory. Prisma 7 reads the datasource URL from configuration rather than the schema.
+
+The `prisma-client` generator emits ESM TypeScript with `.js` import specifiers into `packages/prisma/src/generated/client`. Generated output is committed because `@qbox/prisma` exports and compiles it as package source. A package-owned post-generation script normalizes trailing whitespace only so generated files satisfy the repository patch-quality gate. Builds regenerate before compilation; CI validates, generates, and verifies that tracked output remains unchanged.
+
+`PrismaClientFactory` creates a distinct client using `@prisma/adapter-pg` without calling `$connect`. It configures warning/error events only and owns no singleton or lifecycle. `@qbox/database` remains responsible for future connection startup, readiness, and shutdown.
+
 ## Deferred decisions
 
 The following remain for approved later subphases:
 
-- Prisma 7 generator and ESM output configuration.
-- PostgreSQL client/adapter construction.
 - Schema and migration design.
 - Pool sizing and deployed SSL certificate details.
 - Repository implementations.

@@ -12,6 +12,8 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://tooling:tooling@127.0.0.1:5432/qbox_tooling
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -25,6 +27,14 @@ jobs:
         run: cp .env.example .env
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Format Prisma schema
+        run: pnpm --filter @qbox/prisma prisma:format
+      - name: Validate Prisma schema
+        run: pnpm --filter @qbox/prisma prisma:validate
+      - name: Generate Prisma client
+        run: pnpm --filter @qbox/prisma prisma:generate
+      - name: Verify generated Prisma artifacts
+        run: git diff --exit-code -- prisma/schema.prisma packages/prisma/src/generated
       - name: Build
         run: pnpm build
       - name: Typecheck
