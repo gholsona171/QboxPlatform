@@ -113,7 +113,7 @@ Severity usage currently includes:
 - `error` for recoverable command and shutdown failures.
 - `fatal` for application startup failure.
 
-The API, worker, placeholder packages, simple legacy kernel, and bot error handlers also use `console.log` or `console.error`. Structured logging is therefore the pattern in the implemented runtime path, but it is not applied consistently across all files.
+The API transport now uses injected structured request logging. The worker, placeholder packages, simple legacy kernel, and bot error handlers also use `console.log` or `console.error`. Structured logging is therefore the pattern in implemented runtime paths, but it is not applied consistently across all files.
 
 ## Error handling
 

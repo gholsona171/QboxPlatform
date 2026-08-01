@@ -33,7 +33,7 @@ Contains executable applications. Each application is a private pnpm workspace w
 Examples:
 
 - `apps/bot/` contains the Discord bot startup code and signal handling.
-- `apps/api/` contains an API startup placeholder.
+- `apps/api/` contains the unbound Fastify transport foundation and its injection tests; process lifecycle and socket binding are not implemented yet.
 - `apps/worker/` contains a background-worker startup placeholder.
 
 Some applications have local ignored `dist/` directories containing TypeScript output.

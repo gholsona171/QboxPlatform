@@ -251,11 +251,11 @@ Both methods currently emit console messages only. The package does not use Bull
 
 Package: `@qbox/api`
 
-Current responsibility: executable placeholder that logs its startup.
+Current responsibility: testable HTTP transport plus an explicit, persistence-backed process lifecycle. Importing the package has no environment, database, signal, or socket side effects.
 
-Dependency: `@qbox/core`.
+Dependencies: `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
 
-It does not construct a `PlatformKernel`, register modules, or run an HTTP server.
+It exports an unbound Fastify server factory, immutable API configuration, reusable Zod transport schemas, one typed route-input parser, strict host/content/header policy, cooperative request cancellation, lifecycle health aggregation, typed Problem Details errors, safe logging hooks, and metrics/rate-limit boundaries. `createApiApplication()` composes `PlatformKernel`, the database-backed permission infrastructure, catalog synchronization, and `ApiModule`. The executable `run.ts` loads environment input and installs idempotent signal handling. CORS and rate limiting remain disabled; the package does not authenticate users or expose domain routes.
 
 ## Bot application
 

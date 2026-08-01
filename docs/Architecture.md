@@ -10,7 +10,7 @@ The implemented runtime architecture is centered on `@qbox/core`. Its `PlatformK
 - `EventBus`, an in-process publish/subscribe mechanism.
 - `ModuleLoader`, which registers modules and controls their lifecycle.
 
-The Discord bot is currently the only application that uses the complete kernel/module lifecycle. It also composes the PostgreSQL permission repository lifecycle before starting Discord. The API and worker are startup placeholders; OpenAI and scheduler remain unintegrated.
+The Discord bot and API both use the kernel/module lifecycle. Each composes PostgreSQL permission persistence before its transport starts. The API binds Fastify only after the database starts and the compiled permission catalog synchronizes. The worker remains a startup placeholder; OpenAI and scheduler remain unintegrated.
 
 ## Applications, packages, and modules
 
@@ -19,7 +19,7 @@ The Discord bot is currently the only application that uses the complete kernel/
 Applications are executable workspace projects:
 
 - `@qbox/bot` constructs a `PlatformKernel`, registers `DiscordModule`, and starts the platform.
-- `@qbox/api` currently prints startup information. It does not start a Fastify server.
+- `@qbox/api` exports a validated, unbound Fastify server for tests and an explicit process composition root for operation. Its persistence module starts the database and synchronizes permissions before its HTTP module binds; reverse module shutdown closes HTTP before persistence.
 - `@qbox/worker` currently prints startup information. It does not start a BullMQ worker.
 
 ### Packages
@@ -42,7 +42,12 @@ The currently implemented dependency direction is:
   -> @qbox/logger
   -> @qbox/shared
 
-@qbox/api    -> @qbox/core
+@qbox/api
+  -> @qbox/core
+  -> @qbox/database
+  -> @qbox/logger
+  -> @qbox/permissions
+  -> @qbox/shared
 @qbox/worker -> @qbox/core
 @qbox/core   -> @qbox/logger
 ```
@@ -53,7 +58,11 @@ Other packages exist in the workspace but are not connected to an application li
 
 A runtime module implements the `PlatformModule` interface. A module has a `name`, a `version`, a required `start(context)` method, and an optional `stop(context)` method.
 
-`DiscordModule` is the only current implementation. The top-level `modules/` workspace directory contains no modules.
+The bot registers permission persistence and `DiscordModule`. The API registers permission persistence and `ApiModule`; registration order establishes persistence-first startup and reverse-order HTTP-first shutdown. The top-level `modules/` workspace directory contains no domain modules.
+
+### API transport boundary
+
+`createApiServer()` applies body/header limits, strict host and proxy policy, bodyless health semantics, JSON-only write-route content policy, normalized Problem Details, safe response headers, cooperative deadlines, and request cancellation. Route/application adapters use reusable strict Zod schemas and `parseRouteInput()` rather than Fastify JSON Schema or direct untyped input access. CORS and rate limiting remain explicitly disabled policy boundaries.
 
 ## Bot startup flow
 
