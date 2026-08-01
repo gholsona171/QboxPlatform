@@ -187,13 +187,14 @@ Package: `@qbox/permissions`
 
 Responsibilities:
 
-- Define the current permission string union.
-- Represent permission subjects and role grants.
-- Store role-to-permission grants in memory.
-- Check one, every, or any requested permission.
-- Export a shared `PermissionService` singleton.
+- Define and version the authoritative compiled permission catalog.
+- Validate lowercase dot-separated identifiers and reject unknown persisted catalog keys.
+- Model Discord user/role principals, platform/guild scopes, exact grants, denies, expiration, mutations, and structured audit reasons without integration dependencies.
+- Define asynchronous repository and cache ports plus deterministic owner/admin/deny/all/any authorization semantics.
+- Provide process-local in-memory adapters for domain testing.
+- Preserve the synchronous role-grant `PermissionService` singleton for the current Discord integration until Phase 2.
 
-It has no external package dependencies and no persistence lifecycle. `DiscordModule.start()` clears and rebuilds its grants.
+It has no external package dependencies and no persistence lifecycle. No database synchronization, Prisma repository, Redis adapter, or Discord integration change exists yet. `DiscordModule.start()` still clears and rebuilds the legacy grants. See `docs/PermissionDomain.md` for the implemented domain contract.
 
 ## Shared package
 
