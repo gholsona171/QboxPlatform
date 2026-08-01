@@ -3,10 +3,10 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Current API process placeholder. It prints startup text; it does not start an HTTP server.
-- **Entry point:** `apps/api/src/index.ts`
-- **Declared dependency:** `@qbox/core`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
+- **Purpose:** Unbound Fastify transport foundation with validated configuration, request context, structured logging, typed errors, metrics contracts, and health endpoints. It does not yet start a process lifecycle or listen on a socket.
+- **Entry point:** `apps/api/src/index.ts` exports the transport foundation; `createApiServer()` constructs a testable unbound server.
+- **Declared dependencies:** `@qbox/core`, `@qbox/logger`, Fastify, and Zod.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `test`, `clean`
 
 ## `@qbox/bot`
 

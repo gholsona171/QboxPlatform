@@ -251,11 +251,11 @@ Both methods currently emit console messages only. The package does not use Bull
 
 Package: `@qbox/api`
 
-Current responsibility: executable placeholder that logs its startup.
+Current responsibility: testable HTTP transport foundation that is constructed without process lifecycle side effects.
 
-Dependency: `@qbox/core`.
+Dependencies: `@qbox/core`, `@qbox/logger`, Fastify, and Zod.
 
-It does not construct a `PlatformKernel`, register modules, or run an HTTP server.
+It exports an unbound Fastify server factory, immutable API configuration, request context, health aggregation, typed Problem Details errors, safe logging hooks, and a metrics recorder boundary. It does not construct a `PlatformKernel`, register modules, bind a socket, connect to PostgreSQL, authenticate users, authorize requests, or expose domain routes.
 
 ## Bot application
 

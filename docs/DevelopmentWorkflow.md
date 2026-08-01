@@ -77,7 +77,7 @@ To work only on the bot:
 pnpm --filter @qbox/bot dev
 ```
 
-The API and worker currently print startup messages only. The bot starts the implemented kernel and Discord integration.
+The API exports an unbound Fastify server factory for injection tests; its process lifecycle and socket binding are intentionally not implemented yet. The worker prints a startup message only. The bot starts the implemented kernel and Discord integration.
 
 Normal bot startup validates and registers local command handlers but does not deploy Discord application commands.
 
