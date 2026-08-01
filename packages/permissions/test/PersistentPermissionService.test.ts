@@ -268,6 +268,7 @@ describe("PersistentPermissionService mutations", () => {
       scope: guildScope(),
       effect: "allow" as const,
       reasonCode: "administrator-action" as const,
+      correlationId: "privileged-mutation-test",
     };
     await expect(service.mutate(base)).rejects.toThrow("cannot grant elevated");
     await expect(
@@ -306,6 +307,27 @@ describe("PersistentPermissionService mutations", () => {
     expect(invalidate).toHaveBeenCalledWith([guildScope()]);
   });
 
+  it("rejects an ordinary administrator attempting to grant owner", async () => {
+    const administrator = user("administrator");
+    const repository = new InMemoryPermissionRepository([
+      assignment("platform.admin", { principal: administrator }),
+    ]);
+    const service = new PersistentPermissionService(repository);
+    await expect(
+      service.mutate({
+        type: "set-assignment",
+        actor: { type: "principal", principal: administrator },
+        target: user("owner-candidate"),
+        selector: { type: "permission", permission: "platform.owner" },
+        scope: { type: "platform" },
+        effect: "allow",
+        correlationId: "ordinary-admin-owner-attempt",
+        reasonCode: "administrator-action",
+      }),
+    ).rejects.toThrow("Only an active owner");
+    expect(repository.audits.at(-1)?.action).toBe("owner-protection-rejection");
+  });
+
   it("delegates owner revocation to the repository transaction boundary", async () => {
     const owner = assignment("platform.owner", {
       id: "owner",
@@ -320,6 +342,7 @@ describe("PersistentPermissionService mutations", () => {
         type: "revoke-assignment",
         actor,
         assignmentId: "owner",
+        correlationId: "owner-revoke",
         reasonCode: "administrator-action",
       }),
     ).resolves.toBeDefined();
@@ -328,6 +351,7 @@ describe("PersistentPermissionService mutations", () => {
         type: "revoke-assignment",
         actor,
         assignmentId: "warn",
+        correlationId: "warn-revoke",
         reasonCode: "administrator-action",
       }),
     ).resolves.toBeDefined();

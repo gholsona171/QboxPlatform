@@ -10,9 +10,28 @@ import type {
   PermissionScope,
 } from "../models/Permission.js";
 import type {
+  PermissionAuditAction,
   PermissionAuditInput,
+  PermissionMutationActor,
   PermissionMutationReason,
+  PermissionMutationReasonCode,
 } from "../models/Mutation.js";
+
+/** Trusted administrative mutation context supplied by application composition. */
+export interface PermissionOperationContext {
+  readonly actor: PermissionMutationActor;
+  readonly correlationId: string;
+  readonly reasonCode: PermissionMutationReasonCode;
+  readonly reason?: string;
+  readonly occurredAt?: Date;
+}
+
+/** Append-only audit request for non-assignment infrastructure mutations. */
+export interface PermissionInfrastructureAuditInput extends PermissionOperationContext {
+  readonly action: PermissionAuditAction;
+  readonly target?: PermissionPrincipal;
+  readonly scope?: PermissionScope;
+}
 
 /** JSON-compatible immutable metadata accepted at infrastructure boundaries. */
 export type PermissionRecordMetadata = Readonly<Record<string, unknown>>;
@@ -80,8 +99,14 @@ export interface GuildRepository {
     discordGuildId: string,
     metadata: PermissionRecordMetadata,
   ): Promise<PersistedGuild>;
-  disable(discordGuildId: string, now?: Date): Promise<PersistedGuild>;
-  enable(discordGuildId: string): Promise<PersistedGuild>;
+  disable(
+    discordGuildId: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedGuild>;
+  enable(
+    discordGuildId: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedGuild>;
 }
 
 /** Discord principal persistence port with strict guild isolation. */
@@ -96,9 +121,12 @@ export interface PermissionPrincipalRepository {
   ): Promise<PersistedPermissionPrincipal>;
   disable(
     principal: PermissionPrincipal,
-    now?: Date,
+    context: PermissionOperationContext,
   ): Promise<PersistedPermissionPrincipal>;
-  enable(principal: PermissionPrincipal): Promise<PersistedPermissionPrincipal>;
+  enable(
+    principal: PermissionPrincipal,
+    context: PermissionOperationContext,
+  ): Promise<PersistedPermissionPrincipal>;
   findDiscordUser(
     guildId: string,
     externalId: string,
@@ -121,6 +149,14 @@ export interface PermissionDefinitionRepository {
   currentSynchronizationStatus(
     catalog: PermissionCatalogSnapshot,
   ): Promise<PermissionCatalogSynchronizationStatus>;
+  disable(
+    key: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedPermissionDefinition>;
+  enable(
+    key: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedPermissionDefinition>;
 }
 
 /** Append-only audit query/append port; implementations never expose mutation. */
@@ -184,6 +220,10 @@ export interface PermissionAssignmentAdministrationRepository {
     filters?: PermissionAssignmentFilters,
   ): Promise<readonly PermissionAssignment[]>;
   findHistorical(
+    filters?: PermissionAssignmentFilters,
+  ): Promise<readonly PermissionAssignment[]>;
+  findExpired(
+    expiredAt?: Date,
     filters?: PermissionAssignmentFilters,
   ): Promise<readonly PermissionAssignment[]>;
 }

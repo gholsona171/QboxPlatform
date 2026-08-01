@@ -1,14 +1,16 @@
 import { randomUUID } from "node:crypto";
 
 import {
-  DeferredOwnerProtectionService,
+  DeterministicOwnerProtectionService,
+  OwnerInvariantViolationError,
   permissionCatalog,
   PersistentPermissionService,
   UnknownPermissionCatalogEntriesError,
   type PermissionAuditInput,
   type PermissionMutation,
   type OwnerProtectionService,
-  type OwnerRevocationRequest,
+  type OwnerProtectionContext,
+  type OwnerProtectionRequest,
   type PermissionPrincipal,
 } from "@qbox/permissions";
 import { PrismaClientFactory } from "@qbox/prisma";
@@ -17,6 +19,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   DatabaseConfiguration,
   InMemoryPermissionInvalidationBus,
+  PermissionBootstrapService,
   PrismaGuildRepository,
   PrismaPermissionAuditRepository,
   PrismaPermissionCatalogRepository,
@@ -47,7 +50,7 @@ const catalogs = new PrismaPermissionCatalogRepository(client);
 const audits = new PrismaPermissionAuditRepository(client);
 const permissions = new PrismaPermissionRepository(
   client,
-  new DeferredOwnerProtectionService(),
+  new DeterministicOwnerProtectionService(),
   invalidations,
 );
 
@@ -149,7 +152,9 @@ describe("persistent permission repositories", () => {
     );
 
     expect(protection.requests).toEqual([
-      expect.objectContaining({ assignmentId }),
+      expect.objectContaining({
+        target: expect.objectContaining({ assignmentId }),
+      }),
     ]);
   });
 
@@ -165,6 +170,7 @@ describe("persistent permission repositories", () => {
         actor: { type: "system", service: "repository-integration-test" },
         assignmentId: required(granted.assignment?.id),
         expiresAt: new Date(Date.now() + 1_000),
+        correlationId: randomUUID(),
         reasonCode: "administrator-action",
       },
       audit("expire-assignment"),
@@ -189,6 +195,7 @@ describe("persistent permission repositories", () => {
         type: "disable-assignment",
         actor: { type: "system", service: "repository-integration-test" },
         assignmentId,
+        correlationId: randomUUID(),
         reasonCode: "administrator-action",
       },
       audit("disable-assignment"),
@@ -200,6 +207,7 @@ describe("persistent permission repositories", () => {
         type: "enable-assignment",
         actor: { type: "system", service: "repository-integration-test" },
         assignmentId,
+        correlationId: randomUUID(),
         reasonCode: "administrator-action",
       },
       audit("enable-assignment"),
@@ -302,12 +310,12 @@ describe("persistent permission repositories", () => {
   it("excludes assignments for disabled guilds, principals, and definitions", async () => {
     await seedPrincipal();
     await permissions.applyMutation(grant(), audit("set-assignment"));
-    await principals.disable(userOne);
+    await principals.disable(userOne, operationContext());
     expect(await permissions.findActive()).toHaveLength(0);
-    await principals.enable(userOne);
-    await guilds.disable(guildOne);
+    await principals.enable(userOne, operationContext());
+    await guilds.disable(guildOne, operationContext());
     expect(await permissions.findActive()).toHaveLength(0);
-    await guilds.enable(guildOne);
+    await guilds.enable(guildOne, operationContext());
     await client.permissionDefinition.update({
       where: { key: "moderation.warn" },
       data: { enabled: false, disabledAt: new Date() },
@@ -335,6 +343,180 @@ describe("persistent permission repositories", () => {
     await expect(
       definitions.findUnknownKeys(permissionCatalog.permissions),
     ).resolves.toEqual(["unknown.permission"]);
+  });
+
+  it("creates first and second persistent owners", async () => {
+    await seedPrincipal();
+    await permissions.applyMutation(
+      ownerGrant(userOne),
+      audit("set-assignment", { type: "platform" }),
+    );
+    const second = user("200000000000000002");
+    await principals.getOrCreateDiscordPrincipal(second);
+    await permissions.applyMutation(
+      ownerGrant(second),
+      auditFor(second, "set-assignment"),
+    );
+    expect(await permissions.countActiveOwners(new Date())).toBe(2);
+  });
+
+  it("rejects every assignment mutation that would remove the last owner", async () => {
+    await seedPrincipal();
+    const granted = await permissions.applyMutation(
+      ownerGrant(userOne),
+      audit("set-assignment", { type: "platform" }),
+    );
+    const assignmentId = required(granted.assignment?.id);
+    const attempts: Array<[PermissionMutation, PermissionAuditInput]> = [
+      [
+        { ...revoke(assignmentId), correlationId: randomUUID() },
+        audit("revoke-assignment", { type: "platform" }),
+      ],
+      [
+        {
+          type: "disable-assignment",
+          actor: systemActor(),
+          assignmentId,
+          correlationId: randomUUID(),
+          reasonCode: "administrator-action",
+        },
+        audit("disable-assignment", { type: "platform" }),
+      ],
+      [
+        {
+          type: "expire-assignment",
+          actor: systemActor(),
+          assignmentId,
+          expiresAt: new Date(Date.now() + 60_000),
+          correlationId: randomUUID(),
+          reasonCode: "expiration",
+        },
+        audit("expire-assignment", { type: "platform" }),
+      ],
+    ];
+    for (const [mutation, event] of attempts)
+      await expect(
+        permissions.applyMutation(mutation, event),
+      ).rejects.toBeInstanceOf(OwnerInvariantViolationError);
+    expect(await permissions.countActiveOwners(new Date())).toBe(1);
+    expect(
+      await client.permissionAuditEvent.count({
+        where: { action: "OWNER_PROTECTION_REJECTION" },
+      }),
+    ).toBe(3);
+  });
+
+  it("protects the last owner from principal, guild, and definition disable", async () => {
+    await seedPrincipal();
+    await permissions.applyMutation(
+      ownerGrant(userOne),
+      audit("set-assignment", { type: "platform" }),
+    );
+    await expect(
+      principals.disable(userOne, operationContext()),
+    ).rejects.toBeInstanceOf(OwnerInvariantViolationError);
+    await expect(
+      guilds.disable(guildOne, operationContext()),
+    ).rejects.toBeInstanceOf(OwnerInvariantViolationError);
+    await expect(
+      definitions.disable("platform.owner", operationContext()),
+    ).rejects.toBeInstanceOf(OwnerInvariantViolationError);
+    expect(await permissions.countActiveOwners(new Date())).toBe(1);
+  });
+
+  it("serializes concurrent owner revocations so one remains", async () => {
+    await seedPrincipal();
+    const second = user("200000000000000002");
+    await principals.getOrCreateDiscordPrincipal(second);
+    const firstGrant = await permissions.applyMutation(
+      ownerGrant(userOne),
+      auditFor(userOne, "set-assignment"),
+    );
+    const secondGrant = await permissions.applyMutation(
+      ownerGrant(second),
+      auditFor(second, "set-assignment"),
+    );
+    const results = await Promise.allSettled([
+      permissions.applyMutation(
+        {
+          ...revoke(required(firstGrant.assignment?.id)),
+          correlationId: randomUUID(),
+        },
+        auditFor(userOne, "revoke-assignment"),
+      ),
+      permissions.applyMutation(
+        {
+          ...revoke(required(secondGrant.assignment?.id)),
+          correlationId: randomUUID(),
+        },
+        auditFor(second, "revoke-assignment"),
+      ),
+    ]);
+    expect(results.filter(({ status }) => status === "fulfilled")).toHaveLength(
+      1,
+    );
+    expect(results.filter(({ status }) => status === "rejected")).toHaveLength(
+      1,
+    );
+    expect(await permissions.countActiveOwners(new Date())).toBe(1);
+  });
+
+  it("bootstraps owners and legacy administrators idempotently", async () => {
+    await synchronize();
+    const bootstrap = new PermissionBootstrapService(
+      guilds,
+      principals,
+      permissions,
+      new PersistentPermissionService(permissions),
+    );
+    expect(
+      (await bootstrap.applyOwner(guildOne, userOne.externalId))
+        .createdAssignments,
+    ).toBe(1);
+    expect(
+      (await bootstrap.applyOwner(guildOne, userOne.externalId))
+        .createdAssignments,
+    ).toBe(0);
+    const roleId = "300000000000000001";
+    expect(
+      (await bootstrap.applyLegacyAdministrators(guildOne, [roleId]))
+        .createdAssignments,
+    ).toBe(1);
+    expect(
+      (await bootstrap.applyLegacyAdministrators(guildOne, [roleId]))
+        .createdAssignments,
+    ).toBe(0);
+    expect(await permissions.findActive()).toHaveLength(2);
+  });
+
+  it("queries expired assignments historically without deleting them", async () => {
+    await seedPrincipal();
+    const expiresAt = new Date(Date.now() + 1_000);
+    await permissions.applyMutation(
+      { ...grant(), expiresAt },
+      audit("set-assignment"),
+    );
+    expect(
+      await permissions.findExpired(new Date(expiresAt.getTime() + 1_000)),
+    ).toHaveLength(1);
+    expect(await permissions.findHistorical()).toHaveLength(1);
+    expect(await client.permissionAssignment.count()).toBe(1);
+  });
+
+  it("persists assignments across a disconnected client restart", async () => {
+    await seedPrincipal();
+    await permissions.applyMutation(grant(), audit("set-assignment"));
+    const restarted = new PrismaClientFactory().create(configuration);
+    await restarted.$connect();
+    try {
+      const repository = new PrismaPermissionRepository(
+        restarted,
+        new DeterministicOwnerProtectionService(),
+      );
+      await expect(repository.findHistorical()).resolves.toHaveLength(1);
+    } finally {
+      await restarted.$disconnect();
+    }
   });
 });
 
@@ -365,6 +547,36 @@ function grant(
   };
 }
 
+function ownerGrant(
+  target: PermissionPrincipal,
+): Extract<PermissionMutation, { type: "set-assignment" }> {
+  return {
+    type: "set-assignment",
+    actor: systemActor(),
+    target,
+    selector: { type: "permission", permission: "platform.owner" },
+    scope: { type: "platform" },
+    effect: "allow",
+    correlationId: randomUUID(),
+    reasonCode: "bootstrap",
+  };
+}
+
+function user(externalId: string): PermissionPrincipal {
+  return { type: "discord-user", externalId, guildId: guildOne };
+}
+
+function systemActor() {
+  return { type: "system" as const, service: "repository-integration-test" };
+}
+
+function auditFor(
+  target: PermissionPrincipal,
+  action: PermissionAuditInput["action"],
+): PermissionAuditInput {
+  return { ...audit(action, { type: "platform" }), target };
+}
+
 function revoke(
   assignmentId: string,
 ): Extract<PermissionMutation, { type: "revoke-assignment" }> {
@@ -372,6 +584,7 @@ function revoke(
     type: "revoke-assignment",
     actor: { type: "system", service: "repository-integration-test" },
     assignmentId,
+    correlationId: randomUUID(),
     reasonCode: "administrator-action",
   };
 }
@@ -400,13 +613,22 @@ function required<T>(value: T | undefined): T {
 }
 
 class RecordingOwnerProtectionService implements OwnerProtectionService {
-  public readonly requests: OwnerRevocationRequest[] = [];
+  public readonly requests: OwnerProtectionRequest[] = [];
 
   public async protect<TResult>(
-    request: OwnerRevocationRequest,
+    request: OwnerProtectionRequest,
+    _context: OwnerProtectionContext,
     operation: () => Promise<TResult>,
   ): Promise<TResult> {
     this.requests.push(request);
     return operation();
   }
+}
+
+function operationContext() {
+  return {
+    actor: { type: "system" as const, service: "repository-integration-test" },
+    correlationId: randomUUID(),
+    reasonCode: "administrator-action" as const,
+  };
 }

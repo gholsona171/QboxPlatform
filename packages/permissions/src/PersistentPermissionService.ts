@@ -31,6 +31,16 @@ export interface PersistentPermissionServiceOptions {
   readonly legacyAssignments?: readonly PermissionAssignment[];
 }
 
+/** Typed rejection for trusted-context and privileged mutation violations. */
+export class PermissionMutationAuthorizationError extends Error {
+  public readonly code = "permission-mutation-not-authorized";
+
+  public constructor(message: string) {
+    super(message);
+    this.name = "PermissionMutationAuthorizationError";
+  }
+}
+
 /**
  * Pure application-domain authorization and mutation coordinator.
  *
@@ -187,6 +197,19 @@ export class PersistentPermissionService implements PermissionAuthorizer {
         : {}),
       occurredAt: now,
     };
+    if (
+      mutation.type === "set-assignment" &&
+      mutation.selector.type === "permission" &&
+      mutation.selector.permission === "platform.owner" &&
+      mutation.actor.type === "principal" &&
+      !(await this.repository.isActiveOwner(mutation.actor.principal, now))
+    ) {
+      const error = new PermissionMutationAuthorizationError(
+        "Only an active owner or trusted system operation may grant platform.owner.",
+      );
+      await this.repository.recordRejectedMutation(mutation, audit, error.code);
+      throw error;
+    }
     const result = await this.repository.applyMutation(mutation, audit);
     let cacheInvalidated = true;
     try {
@@ -341,6 +364,13 @@ export class PersistentPermissionService implements PermissionAuthorizer {
     }
     if (mutation.reason !== undefined && mutation.reason.trim().length === 0)
       throw new Error("Permission mutation reason cannot be blank.");
+    if (
+      this.isPrivilegedMutation(mutation) &&
+      (!mutation.correlationId || mutation.correlationId.trim().length === 0)
+    )
+      throw new Error(
+        "Privileged permission mutations require a correlationId.",
+      );
     if (mutation.type === "set-assignment") {
       if (mutation.selector.type === "group")
         throw new Error("Permission groups are reserved but not implemented.");
@@ -384,6 +414,15 @@ export class PersistentPermissionService implements PermissionAuthorizer {
           "Permission assignment expiration must be in the future.",
         );
     }
+  }
+
+  private isPrivilegedMutation(mutation: PermissionMutation): boolean {
+    if (mutation.type !== "set-assignment") return true;
+    return (
+      mutation.selector.type === "permission" &&
+      (mutation.selector.permission === "platform.owner" ||
+        mutation.selector.permission === "platform.admin")
+    );
   }
 
   private decision(

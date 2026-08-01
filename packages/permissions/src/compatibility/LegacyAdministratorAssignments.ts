@@ -16,20 +16,21 @@ export interface LegacyAdministratorCompatibility {
 export function createLegacyAdministratorCompatibility(
   guildId: string,
   roleIds: readonly string[],
+  modeEnabled = true,
 ): LegacyAdministratorCompatibility {
   const uniqueRoleIds = [
     ...new Set(roleIds.map((roleId) => roleId.trim()).filter(Boolean)),
   ];
-  if (uniqueRoleIds.length > 0 && guildId.trim().length === 0) {
+  if (modeEnabled && uniqueRoleIds.length > 0 && guildId.trim().length === 0) {
     throw new Error(
       "DISCORD_GUILD_ID is required when ADMIN_ROLE_IDS compatibility is configured.",
     );
   }
   return {
-    enabled: uniqueRoleIds.length > 0,
+    enabled: modeEnabled,
     ...(uniqueRoleIds.length > 0 ? { guildId } : {}),
     roleCount: uniqueRoleIds.length,
-    assignments: uniqueRoleIds.map((roleId) => ({
+    assignments: (modeEnabled ? uniqueRoleIds : []).map((roleId) => ({
       id: `legacy-bootstrap:${guildId}:${roleId}`,
       principal: { type: "discord-role", externalId: roleId, guildId },
       selector: { type: "permission", permission: "platform.admin" },

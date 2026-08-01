@@ -1,5 +1,5 @@
 import {
-  DeferredOwnerProtectionService,
+  DeterministicOwnerProtectionService,
   type OwnerProtectionService,
   type PermissionCacheInvalidationPublisher,
 } from "@qbox/permissions";
@@ -49,15 +49,23 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
     this.client = (
       dependencies.clientFactory ?? new PrismaClientFactory()
     ).create(configuration);
+    const ownerProtection =
+      dependencies.ownerProtection ?? new DeterministicOwnerProtectionService();
     this.repositories = {
       permissions: new PrismaPermissionRepository(
         this.client,
-        dependencies.ownerProtection ?? new DeferredOwnerProtectionService(),
+        ownerProtection,
         dependencies.invalidations,
       ),
-      definitions: new PrismaPermissionDefinitionRepository(this.client),
-      principals: new PrismaPermissionPrincipalRepository(this.client),
-      guilds: new PrismaGuildRepository(this.client),
+      definitions: new PrismaPermissionDefinitionRepository(
+        this.client,
+        ownerProtection,
+      ),
+      principals: new PrismaPermissionPrincipalRepository(
+        this.client,
+        ownerProtection,
+      ),
+      guilds: new PrismaGuildRepository(this.client, ownerProtection),
       audits: new PrismaPermissionAuditRepository(this.client),
       catalog: new PrismaPermissionCatalogRepository(this.client),
     };

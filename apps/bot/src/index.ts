@@ -36,6 +36,7 @@ const database = new DatabaseService(databaseConfiguration, {
 const compatibility = createLegacyAdministratorCompatibility(
   env.DISCORD_GUILD_ID,
   env.ADMIN_ROLE_IDS,
+  env.PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED,
 );
 const authorizer = new PersistentPermissionService(
   persistence.repositories.permissions,
@@ -49,6 +50,11 @@ kernel.registerModule(
     persistence,
     persistence.repositories.definitions,
     cache,
+    {
+      enabled: compatibility.enabled,
+      ...(compatibility.guildId ? { guildId: compatibility.guildId } : {}),
+      roleIds: env.ADMIN_ROLE_IDS,
+    },
   ),
 );
 kernel.registerModule(new DiscordModule(authorizer, compatibility));

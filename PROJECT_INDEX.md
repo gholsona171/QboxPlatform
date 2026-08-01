@@ -319,9 +319,12 @@ Environment variable names recognized by current source or `.env.example`:
 - `REDIS_URL`
 - `OPENAI_API_KEY`
 - `ADMIN_ROLE_IDS`
+- `PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED`
 - `LOG_LEVEL`
 
 `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`; `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to `10000`. The shared environment loader expects the root `.env` file to be readable.
+
+`PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED` defaults to enabled and accepts the exact value `false` to request retirement. Startup then requires persistent owner and administrator recovery paths.
 
 # Build Pipeline
 

@@ -14,6 +14,8 @@
     "deploy:commands:dev": "pnpm typecheck && tsx src/deployCommands.ts guild",
     "deploy:commands:dev:dry-run": "pnpm typecheck && tsx src/deployCommands.ts guild --dry-run",
     "deploy:commands:guild": "pnpm run deploy:commands:dev",
+    "permissions:owner-bootstrap": "tsx src/permissionAdmin.ts owner-bootstrap",
+    "permissions:migrate-legacy-admin": "tsx src/permissionAdmin.ts migrate-legacy-admin",
     "typecheck": "tsc --noEmit",
     "test": "vitest run test",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""

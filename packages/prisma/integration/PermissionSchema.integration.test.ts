@@ -54,6 +54,7 @@ describe("permission foundation migration", () => {
       "20260731000000_permission_foundation",
       "20260731230000_permission_repository_metadata",
       "20260731233000_permission_assignment_lifecycle_actions",
+      "20260731234500_owner_protection_audit_actions",
     ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",

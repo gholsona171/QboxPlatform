@@ -35,18 +35,7 @@ The bot starts the database before Discord accepts interactions, synchronizes th
 
 ## Owner protection boundary
 
-Phase 4 deliberately does not enforce last-owner protection. Every existing-assignment mutation passes through the injected `OwnerProtectionService` inside the repository transaction. The current `DeferredOwnerProtectionService` delegates without rejecting mutations.
-
-Phase 5 must implement the following inside that same transaction:
-
-1. Detect a mutation that would deactivate an effective platform-scoped `platform.owner` allow assignment.
-2. Lock the relevant active owner assignment rows before counting them. Prisma does not expose row locking directly, so a reviewed PostgreSQL `SELECT ... FOR UPDATE` or equivalent advisory-lock query is expected at this boundary.
-3. Evaluate enabled, revoked, and expiration state together with enabled principal and definition state at the transaction timestamp.
-4. Reject removal when it would leave no active owner.
-5. Write the assignment mutation and append-only audit event before committing.
-6. Retry or safely fail on serialization and deadlock errors.
-
-This intentionally reserves the concurrency-safe location without claiming protection that is not yet implemented.
+`DeterministicOwnerProtectionService` enforces the last-owner invariant through a fixed PostgreSQL transaction advisory lock and a post-lock owner reload. It covers assignment revoke/disable/expiration plus principal, guild, and owner-definition disable operations. Unsafe attempts raise a typed error, roll back, and receive an append-only rejection audit. See `docs/PermissionAdministration.md` for the exact operational and concurrency model.
 
 ## Testing
 

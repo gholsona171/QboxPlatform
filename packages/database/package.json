@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.integration.json",
-    "test": "vitest run test",
+    "test": "vitest run --dir test",
     "test:integration": "vitest run --dir integration",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   }

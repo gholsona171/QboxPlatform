@@ -26,11 +26,18 @@ enum PermissionAssignmentEffect {
 }
 
 enum PermissionAuditAction {
-  SET_ASSIGNMENT     @map("set-assignment")
-  REVOKE_ASSIGNMENT  @map("revoke-assignment")
-  DISABLE_ASSIGNMENT @map("disable-assignment")
-  ENABLE_ASSIGNMENT  @map("enable-assignment")
-  EXPIRE_ASSIGNMENT  @map("expire-assignment")
+  SET_ASSIGNMENT             @map("set-assignment")
+  REVOKE_ASSIGNMENT          @map("revoke-assignment")
+  DISABLE_ASSIGNMENT         @map("disable-assignment")
+  ENABLE_ASSIGNMENT          @map("enable-assignment")
+  EXPIRE_ASSIGNMENT          @map("expire-assignment")
+  DISABLE_PRINCIPAL          @map("disable-principal")
+  ENABLE_PRINCIPAL           @map("enable-principal")
+  DISABLE_GUILD              @map("disable-guild")
+  ENABLE_GUILD               @map("enable-guild")
+  DISABLE_DEFINITION         @map("disable-definition")
+  ENABLE_DEFINITION          @map("enable-definition")
+  OWNER_PROTECTION_REJECTION @map("owner-protection-rejection")
 }
 
 enum PermissionMutationReasonCode {

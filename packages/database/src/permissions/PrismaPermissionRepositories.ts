@@ -2,6 +2,9 @@ import {
   permissionCatalog,
   permissionCatalogStatus,
   requirePermission,
+  OwnerInvariantViolationError,
+  DeterministicOwnerProtectionService,
+  PermissionMutationAuthorizationError,
   UnknownPermissionCatalogEntriesError,
   type GuildRepository,
   type OwnerProtectionService,
@@ -20,6 +23,7 @@ import {
   type PermissionDefinitionRepository,
   type PermissionMutation,
   type PermissionMutationReason,
+  type PermissionOperationContext,
   type PermissionMutationResult,
   type PermissionPrincipal,
   type PermissionPrincipalRepository,
@@ -59,7 +63,10 @@ const assignmentInclude = {
 
 /** Prisma-backed guild repository with soft-disable semantics. */
 export class PrismaGuildRepository implements GuildRepository {
-  public constructor(private readonly database: DatabaseContext) {}
+  public constructor(
+    private readonly database: PrismaClient,
+    private readonly ownerProtection: OwnerProtectionService = new DeterministicOwnerProtectionService(),
+  ) {}
 
   public async create(
     discordGuildId: string,
@@ -95,29 +102,85 @@ export class PrismaGuildRepository implements GuildRepository {
 
   public async disable(
     discordGuildId: string,
-    now = new Date(),
+    context: PermissionOperationContext,
   ): Promise<PersistedGuild> {
-    return mapGuild(
-      await this.database.guild.update({
-        where: { discordGuildId },
-        data: { enabled: false, disabledAt: now },
-      }),
-    );
+    const audit = infrastructureAudit(context, "disable-guild", {
+      scope: { type: "discord-guild", guildId: discordGuildId },
+    });
+    try {
+      return await this.database.$transaction(async (transaction) =>
+        this.ownerProtection.protect(
+          {
+            target: { type: "guild", guildId: discordGuildId },
+            now: audit.occurredAt,
+          },
+          ownerProtectionContext(transaction),
+          async () => {
+            const before = await transaction.guild.findUniqueOrThrow({
+              where: { discordGuildId },
+            });
+            const row = await transaction.guild.update({
+              where: { discordGuildId },
+              data: { enabled: false, disabledAt: audit.occurredAt },
+            });
+            await new PrismaPermissionAuditRepository(transaction).append(
+              audit,
+              {
+                beforeSnapshot: guildSnapshot(before),
+                afterSnapshot: guildSnapshot(row),
+              },
+            );
+            return mapGuild(row);
+          },
+        ),
+      );
+    } catch (error) {
+      await this.auditOwnerRejection(error, audit);
+      throw error;
+    }
   }
 
-  public async enable(discordGuildId: string): Promise<PersistedGuild> {
-    return mapGuild(
-      await this.database.guild.update({
+  public async enable(
+    discordGuildId: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedGuild> {
+    const audit = infrastructureAudit(context, "enable-guild", {
+      scope: { type: "discord-guild", guildId: discordGuildId },
+    });
+    return this.database.$transaction(async (transaction) => {
+      const before = await transaction.guild.findUniqueOrThrow({
+        where: { discordGuildId },
+      });
+      const row = await transaction.guild.update({
         where: { discordGuildId },
         data: { enabled: true, disabledAt: null },
-      }),
+      });
+      await new PrismaPermissionAuditRepository(transaction).append(audit, {
+        beforeSnapshot: guildSnapshot(before),
+        afterSnapshot: guildSnapshot(row),
+      });
+      return mapGuild(row);
+    });
+  }
+
+  private async auditOwnerRejection(
+    error: unknown,
+    audit: PermissionAuditInput,
+  ): Promise<void> {
+    if (!(error instanceof OwnerInvariantViolationError)) return;
+    await new PrismaPermissionAuditRepository(this.database).append(
+      { ...audit, action: "owner-protection-rejection" },
+      { afterSnapshot: rejectionSnapshot(audit.action, error) },
     );
   }
 }
 
 /** Prisma-backed Discord principal repository isolated by guild identity. */
 export class PrismaPermissionPrincipalRepository implements PermissionPrincipalRepository {
-  public constructor(private readonly database: DatabaseContext) {}
+  public constructor(
+    private readonly database: PrismaClient,
+    private readonly ownerProtection: OwnerProtectionService = new DeterministicOwnerProtectionService(),
+  ) {}
 
   public async getOrCreateDiscordPrincipal(
     principal: PermissionPrincipal,
@@ -153,15 +216,64 @@ export class PrismaPermissionPrincipalRepository implements PermissionPrincipalR
 
   public async disable(
     principal: PermissionPrincipal,
-    now = new Date(),
+    context: PermissionOperationContext,
   ): Promise<PersistedPermissionPrincipal> {
-    return this.update(principal, { enabled: false, disabledAt: now });
+    const audit = infrastructureAudit(context, "disable-principal", {
+      target: principal,
+    });
+    try {
+      return await this.database.$transaction(async (transaction) =>
+        this.ownerProtection.protect(
+          { target: { type: "principal", principal }, now: audit.occurredAt },
+          ownerProtectionContext(transaction),
+          async () => {
+            const existing = await requirePrincipalRow(transaction, principal);
+            const row = await transaction.permissionPrincipal.update({
+              where: { id: existing.id },
+              data: { enabled: false, disabledAt: audit.occurredAt },
+              include: { guild: true },
+            });
+            await new PrismaPermissionAuditRepository(transaction).append(
+              audit,
+              {
+                beforeSnapshot: principalSnapshot(existing),
+                afterSnapshot: principalSnapshot(row),
+              },
+            );
+            return mapPrincipal(row);
+          },
+        ),
+      );
+    } catch (error) {
+      if (error instanceof OwnerInvariantViolationError)
+        await new PrismaPermissionAuditRepository(this.database).append(
+          { ...audit, action: "owner-protection-rejection" },
+          { afterSnapshot: rejectionSnapshot(audit.action, error) },
+        );
+      throw error;
+    }
   }
 
   public async enable(
     principal: PermissionPrincipal,
+    context: PermissionOperationContext,
   ): Promise<PersistedPermissionPrincipal> {
-    return this.update(principal, { enabled: true, disabledAt: null });
+    const audit = infrastructureAudit(context, "enable-principal", {
+      target: principal,
+    });
+    return this.database.$transaction(async (transaction) => {
+      const existing = await requirePrincipalRow(transaction, principal);
+      const row = await transaction.permissionPrincipal.update({
+        where: { id: existing.id },
+        data: { enabled: true, disabledAt: null },
+        include: { guild: true },
+      });
+      await new PrismaPermissionAuditRepository(transaction).append(audit, {
+        beforeSnapshot: principalSnapshot(existing),
+        afterSnapshot: principalSnapshot(row),
+      });
+      return mapPrincipal(row);
+    });
   }
 
   public async findDiscordUser(
@@ -260,7 +372,10 @@ export class PrismaPermissionCatalogRepository implements PermissionCatalogRepos
 
 /** Prisma-backed definition repository synchronized from the compiled catalog. */
 export class PrismaPermissionDefinitionRepository implements PermissionDefinitionRepository {
-  public constructor(private readonly client: PrismaClient) {}
+  public constructor(
+    private readonly client: PrismaClient,
+    private readonly ownerProtection: OwnerProtectionService = new DeterministicOwnerProtectionService(),
+  ) {}
 
   public async synchronizeCatalog(
     catalog: PermissionCatalogSnapshot,
@@ -339,6 +454,80 @@ export class PrismaPermissionDefinitionRepository implements PermissionDefinitio
     ).current();
     return permissionCatalogStatus(state?.version, state?.checksum);
   }
+
+  public async disable(
+    key: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedPermissionDefinition> {
+    requirePermission(key);
+    const audit = infrastructureAudit(context, "disable-definition");
+    try {
+      return await this.client.$transaction(async (transaction) => {
+        const operation = async () => {
+          const before =
+            await transaction.permissionDefinition.findUniqueOrThrow({
+              where: { key },
+            });
+          const row = await transaction.permissionDefinition.update({
+            where: { key },
+            data: { enabled: false, disabledAt: audit.occurredAt },
+          });
+          await new PrismaPermissionAuditRepository(transaction).append(audit, {
+            permissionKey: key,
+            beforeSnapshot: definitionSnapshot(before),
+            afterSnapshot: definitionSnapshot(row),
+          });
+          return mapDefinition(row);
+        };
+        return key === "platform.owner"
+          ? this.ownerProtection.protect(
+              {
+                target: {
+                  type: "permission-definition",
+                  permission: "platform.owner",
+                },
+                now: audit.occurredAt,
+              },
+              ownerProtectionContext(transaction),
+              operation,
+            )
+          : operation();
+      });
+    } catch (error) {
+      if (error instanceof OwnerInvariantViolationError)
+        await new PrismaPermissionAuditRepository(this.client).append(
+          { ...audit, action: "owner-protection-rejection" },
+          {
+            permissionKey: key,
+            afterSnapshot: rejectionSnapshot(audit.action, error),
+          },
+        );
+      throw error;
+    }
+  }
+
+  public async enable(
+    key: string,
+    context: PermissionOperationContext,
+  ): Promise<PersistedPermissionDefinition> {
+    requirePermission(key);
+    const audit = infrastructureAudit(context, "enable-definition");
+    return this.client.$transaction(async (transaction) => {
+      const before = await transaction.permissionDefinition.findUniqueOrThrow({
+        where: { key },
+      });
+      const row = await transaction.permissionDefinition.update({
+        where: { key },
+        data: { enabled: true, disabledAt: null },
+      });
+      await new PrismaPermissionAuditRepository(transaction).append(audit, {
+        permissionKey: key,
+        beforeSnapshot: definitionSnapshot(before),
+        afterSnapshot: definitionSnapshot(row),
+      });
+      return mapDefinition(row);
+    });
+  }
 }
 
 /** Prisma append-only audit repository; database triggers reject mutation. */
@@ -409,14 +598,38 @@ export class PrismaPermissionRepository
     mutation: PermissionMutation,
     audit: PermissionAuditInput,
   ): Promise<PermissionMutationResult> {
-    const result = await this.client.$transaction(async (transaction) => {
-      if (mutation.type === "set-assignment")
-        return this.setAssignment(transaction, mutation, audit);
-      return this.ownerProtection.protect(
-        { assignmentId: mutation.assignmentId, now: audit.occurredAt },
-        () => this.mutateExistingAssignment(transaction, mutation, audit),
+    if (mutation.type !== "set-assignment" && !mutation.correlationId)
+      throw new PermissionMutationAuthorizationError(
+        "Privileged permission mutations require a correlationId.",
       );
-    });
+    let result: PermissionMutationResult;
+    try {
+      result = await this.client.$transaction(async (transaction) => {
+        if (mutation.type === "set-assignment")
+          return this.setAssignment(transaction, mutation, audit);
+        return this.ownerProtection.protect(
+          {
+            target: {
+              type: "assignment",
+              assignmentId: mutation.assignmentId,
+              ...(mutation.type === "expire-assignment"
+                ? { expiresAt: mutation.expiresAt }
+                : {}),
+            },
+            now: audit.occurredAt,
+          },
+          ownerProtectionContext(transaction),
+          () => this.mutateExistingAssignment(transaction, mutation, audit),
+        );
+      });
+    } catch (error) {
+      if (
+        error instanceof OwnerInvariantViolationError ||
+        error instanceof PermissionMutationAuthorizationError
+      )
+        await this.recordRejectedMutation(mutation, audit, error.code);
+      throw error;
+    }
     await this.invalidations?.publish({
       scopes: result.affectedScopes,
       occurredAt: audit.occurredAt,
@@ -434,6 +647,45 @@ export class PrismaPermissionRepository
         permissionDefinition: { key: "platform.owner", enabled: true },
       },
     });
+  }
+
+  public async isActiveOwner(
+    principal: PermissionPrincipal,
+    now: Date,
+  ): Promise<boolean> {
+    return (
+      (await this.client.permissionAssignment.count({
+        where: {
+          ...activeEntityWhere(now),
+          ...principalWhere(principal),
+          scope: PermissionScopeType.PLATFORM,
+          effect: PermissionAssignmentEffect.ALLOW,
+          permissionDefinition: { key: "platform.owner", enabled: true },
+        },
+      })) > 0
+    );
+  }
+
+  public async recordRejectedMutation(
+    mutation: PermissionMutation,
+    audit: PermissionAuditInput,
+    errorCode: string,
+  ): Promise<void> {
+    await new PrismaPermissionAuditRepository(this.client).append(
+      { ...audit, action: "owner-protection-rejection" },
+      {
+        ...(mutation.type === "set-assignment"
+          ? mutation.selector.type === "permission"
+            ? { permissionKey: mutation.selector.permission }
+            : {}
+          : { assignmentId: mutation.assignmentId }),
+        afterSnapshot: {
+          outcome: "rejected",
+          attemptedAction: mutation.type,
+          errorCode,
+        },
+      },
+    );
   }
 
   public async findByPrincipal(
@@ -458,6 +710,26 @@ export class PrismaPermissionRepository
     return this.findMany({ ...filters, includeHistorical: true });
   }
 
+  public async findExpired(
+    expiredAt = new Date(),
+    filters: PermissionAssignmentFilters = {},
+  ) {
+    const rows = await this.client.permissionAssignment.findMany({
+      where: {
+        ...(filters.principal ? principalWhere(filters.principal) : {}),
+        ...(filters.permission
+          ? { permissionDefinition: { key: filters.permission } }
+          : {}),
+        ...(filters.scope ? scopeWhere(filters.scope) : {}),
+        ...(filters.effect ? { effect: effectType(filters.effect) } : {}),
+        expiresAt: { lte: expiredAt },
+      },
+      include: assignmentInclude,
+      orderBy: { expiresAt: "asc" },
+    });
+    return rows.map(mapAssignment);
+  }
+
   private async setAssignment(
     transaction: Prisma.TransactionClient,
     mutation: Extract<PermissionMutation, { type: "set-assignment" }>,
@@ -465,6 +737,33 @@ export class PrismaPermissionRepository
   ): Promise<PermissionMutationResult> {
     if (mutation.selector.type !== "permission")
       throw new Error("Permission groups are not supported by persistence.");
+    const elevated =
+      mutation.selector.permission === "platform.owner" ||
+      mutation.selector.permission === "platform.admin";
+    if (elevated && !mutation.correlationId)
+      throw new PermissionMutationAuthorizationError(
+        "Privileged permission mutations require a correlationId.",
+      );
+    if (
+      elevated &&
+      mutation.actor.type === "principal" &&
+      samePrincipal(mutation.actor.principal, mutation.target)
+    )
+      throw new PermissionMutationAuthorizationError(
+        "A principal cannot grant elevated permission to itself.",
+      );
+    if (
+      mutation.selector.permission === "platform.owner" &&
+      mutation.actor.type === "principal" &&
+      !(await isActiveOwnerInTransaction(
+        transaction,
+        mutation.actor.principal,
+        audit.occurredAt,
+      ))
+    )
+      throw new PermissionMutationAuthorizationError(
+        "Only an active owner may grant platform.owner.",
+      );
     const principal = await findPrincipalRow(transaction, mutation.target);
     if (!principal || !principal.enabled || !principal.guild.enabled)
       throw new Error("Permission principal is unavailable or disabled.");
@@ -613,6 +912,29 @@ function activeEntityWhere(
   };
 }
 
+function ownerProtectionContext(transaction: Prisma.TransactionClient) {
+  return {
+    async acquireMutationLock(): Promise<void> {
+      await transaction.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended('qbox:platform-owner-mutation', 0))`;
+    },
+    async loadActiveOwners(
+      now: Date,
+    ): Promise<readonly PermissionAssignment[]> {
+      const rows = await transaction.permissionAssignment.findMany({
+        where: {
+          ...activeEntityWhere(now),
+          scope: PermissionScopeType.PLATFORM,
+          effect: PermissionAssignmentEffect.ALLOW,
+          permissionDefinition: { key: "platform.owner", enabled: true },
+        },
+        include: assignmentInclude,
+        orderBy: { createdAt: "asc" },
+      });
+      return rows.map(mapAssignment);
+    },
+  };
+}
+
 function principalWhere(
   principal: PermissionPrincipal,
 ): Prisma.PermissionAssignmentWhereInput {
@@ -623,6 +945,35 @@ function principalWhere(
       guild: { discordGuildId: principal.guildId },
     },
   };
+}
+
+function samePrincipal(
+  left: PermissionPrincipal,
+  right: PermissionPrincipal,
+): boolean {
+  return (
+    left.type === right.type &&
+    left.externalId === right.externalId &&
+    left.guildId === right.guildId
+  );
+}
+
+async function isActiveOwnerInTransaction(
+  transaction: Prisma.TransactionClient,
+  principal: PermissionPrincipal,
+  now: Date,
+): Promise<boolean> {
+  return (
+    (await transaction.permissionAssignment.count({
+      where: {
+        ...activeEntityWhere(now),
+        ...principalWhere(principal),
+        scope: PermissionScopeType.PLATFORM,
+        effect: PermissionAssignmentEffect.ALLOW,
+        permissionDefinition: { key: "platform.owner", enabled: true },
+      },
+    })) > 0
+  );
 }
 
 function scopeWhere(
@@ -897,6 +1248,84 @@ function assignmentSnapshot(row: AssignmentRow): PermissionRecordMetadata {
   };
 }
 
+function infrastructureAudit(
+  context: PermissionOperationContext,
+  action: PermissionAuditInput["action"],
+  identity: Pick<PermissionAuditInput, "target" | "scope"> = {},
+): PermissionAuditInput {
+  if (context.correlationId.trim().length === 0)
+    throw new Error("Privileged operations require a correlationId.");
+  return {
+    action,
+    actor: context.actor,
+    correlationId: context.correlationId,
+    reasonCode: context.reasonCode,
+    ...(context.reason ? { reason: context.reason } : {}),
+    ...identity,
+    occurredAt: context.occurredAt ?? new Date(),
+  };
+}
+
+function rejectionSnapshot(
+  attemptedAction: PermissionAuditInput["action"],
+  error: OwnerInvariantViolationError,
+): PermissionRecordMetadata {
+  return { outcome: "rejected", attemptedAction, errorCode: error.code };
+}
+
+function guildSnapshot(row: {
+  id: string;
+  discordGuildId: string;
+  enabled: boolean;
+  disabledAt: Date | null;
+}): PermissionRecordMetadata {
+  return {
+    id: row.id,
+    discordGuildId: row.discordGuildId,
+    enabled: row.enabled,
+    disabledAt: row.disabledAt?.toISOString() ?? null,
+  };
+}
+
+function principalSnapshot(row: {
+  id: string;
+  type: PermissionPrincipalType;
+  externalId: string;
+  enabled: boolean;
+  disabledAt: Date | null;
+}): PermissionRecordMetadata {
+  return {
+    id: row.id,
+    type: domainPrincipalType(row.type),
+    externalId: row.externalId,
+    enabled: row.enabled,
+    disabledAt: row.disabledAt?.toISOString() ?? null,
+  };
+}
+
+function definitionSnapshot(row: {
+  id: string;
+  key: string;
+  enabled: boolean;
+  disabledAt: Date | null;
+}): PermissionRecordMetadata {
+  return {
+    id: row.id,
+    key: row.key,
+    enabled: row.enabled,
+    disabledAt: row.disabledAt?.toISOString() ?? null,
+  };
+}
+
+async function requirePrincipalRow(
+  database: DatabaseContext,
+  principal: PermissionPrincipal,
+) {
+  const row = await findPrincipalRow(database, principal);
+  if (!row) throw new Error("Permission principal does not exist.");
+  return row;
+}
+
 function principalType(
   type: PermissionPrincipal["type"],
 ): PermissionPrincipalType {
@@ -953,6 +1382,14 @@ function auditAction(
       "disable-assignment": PermissionAuditAction.DISABLE_ASSIGNMENT,
       "enable-assignment": PermissionAuditAction.ENABLE_ASSIGNMENT,
       "expire-assignment": PermissionAuditAction.EXPIRE_ASSIGNMENT,
+      "disable-principal": PermissionAuditAction.DISABLE_PRINCIPAL,
+      "enable-principal": PermissionAuditAction.ENABLE_PRINCIPAL,
+      "disable-guild": PermissionAuditAction.DISABLE_GUILD,
+      "enable-guild": PermissionAuditAction.ENABLE_GUILD,
+      "disable-definition": PermissionAuditAction.DISABLE_DEFINITION,
+      "enable-definition": PermissionAuditAction.ENABLE_DEFINITION,
+      "owner-protection-rejection":
+        PermissionAuditAction.OWNER_PROTECTION_REJECTION,
     };
   return values[action];
 }
@@ -967,6 +1404,14 @@ function domainAuditAction(
       [PermissionAuditAction.DISABLE_ASSIGNMENT]: "disable-assignment",
       [PermissionAuditAction.ENABLE_ASSIGNMENT]: "enable-assignment",
       [PermissionAuditAction.EXPIRE_ASSIGNMENT]: "expire-assignment",
+      [PermissionAuditAction.DISABLE_PRINCIPAL]: "disable-principal",
+      [PermissionAuditAction.ENABLE_PRINCIPAL]: "enable-principal",
+      [PermissionAuditAction.DISABLE_GUILD]: "disable-guild",
+      [PermissionAuditAction.ENABLE_GUILD]: "enable-guild",
+      [PermissionAuditAction.DISABLE_DEFINITION]: "disable-definition",
+      [PermissionAuditAction.ENABLE_DEFINITION]: "enable-definition",
+      [PermissionAuditAction.OWNER_PROTECTION_REJECTION]:
+        "owner-protection-rejection",
     };
   return values[action];
 }

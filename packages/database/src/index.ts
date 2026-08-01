@@ -3,4 +3,5 @@ export * from "./contracts/DatabaseContracts.js";
 export * from "./DatabaseService.js";
 export * from "./policies/PersistencePolicies.js";
 export * from "./permissions/PrismaPermissionRepositories.js";
+export * from "./permissions/PermissionBootstrapService.js";
 export * from "./PrismaPermissionPersistenceClient.js";

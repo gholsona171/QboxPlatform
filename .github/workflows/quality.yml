@@ -51,6 +51,8 @@ jobs:
         run: git diff --exit-code -- prisma/schema.prisma prisma/migrations packages/prisma/src/generated
       - name: Apply committed migrations
         run: pnpm --filter @qbox/prisma prisma:migrate:deploy
+      - name: Check database schema drift
+        run: pnpm --filter @qbox/prisma prisma:drift:check
       - name: Test PostgreSQL constraints and transactions
         run: pnpm test:database
       - name: Build

@@ -9,6 +9,7 @@ import type {
 } from "../contracts/PermissionRepository.js";
 import type {
   PermissionAssignment,
+  PermissionPrincipal,
   PermissionScope,
 } from "../models/Permission.js";
 import type {
@@ -108,6 +109,32 @@ export class InMemoryPermissionRepository implements PermissionRepository {
         assignment.selector.type === "permission" &&
         assignment.selector.permission === "platform.owner",
     ).length;
+  }
+
+  public async isActiveOwner(
+    principal: PermissionPrincipal,
+    now: Date,
+  ): Promise<boolean> {
+    return [...this.assignments.values()].some(
+      (assignment) =>
+        assignment.enabled &&
+        (!assignment.expiresAt || assignment.expiresAt > now) &&
+        assignment.effect === "allow" &&
+        assignment.scope.type === "platform" &&
+        assignment.selector.type === "permission" &&
+        assignment.selector.permission === "platform.owner" &&
+        assignment.principal.type === principal.type &&
+        assignment.principal.externalId === principal.externalId &&
+        assignment.principal.guildId === principal.guildId,
+    );
+  }
+
+  public async recordRejectedMutation(
+    _mutation: PermissionMutation,
+    audit: PermissionAuditInput,
+    _errorCode: string,
+  ): Promise<void> {
+    this.audits.push({ ...audit, action: "owner-protection-rejection" });
   }
 
   private sameScope(left: PermissionScope, right: PermissionScope): boolean {

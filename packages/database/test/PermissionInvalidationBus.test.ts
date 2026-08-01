@@ -1,7 +1,10 @@
 import type { PermissionCacheInvalidationEvent } from "@qbox/permissions";
 import { describe, expect, it, vi } from "vitest";
 
-import { InMemoryPermissionInvalidationBus } from "../src/index.js";
+import {
+  InMemoryPermissionInvalidationBus,
+  validateDiscordSnowflake,
+} from "../src/index.js";
 
 describe("InMemoryPermissionInvalidationBus", () => {
   it("publishes committed invalidations to every current subscriber", async () => {
@@ -40,5 +43,16 @@ describe("InMemoryPermissionInvalidationBus", () => {
     });
 
     expect(listener).not.toHaveBeenCalled();
+  });
+});
+
+describe("permission bootstrap identity validation", () => {
+  it("accepts Discord snowflakes and rejects malformed identifiers", () => {
+    expect(() =>
+      validateDiscordSnowflake("guild ID", "1257928923048837201"),
+    ).not.toThrow();
+    expect(() => validateDiscordSnowflake("guild ID", "not-an-id")).toThrow(
+      "17-20 digit",
+    );
   });
 });

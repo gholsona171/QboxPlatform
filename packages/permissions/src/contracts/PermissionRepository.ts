@@ -34,4 +34,10 @@ export interface PermissionRepository {
     audit: PermissionAuditInput,
   ): Promise<PermissionMutationResult>;
   countActiveOwners(now: Date): Promise<number>;
+  isActiveOwner(principal: PermissionPrincipal, now: Date): Promise<boolean>;
+  recordRejectedMutation(
+    mutation: PermissionMutation,
+    audit: PermissionAuditInput,
+    errorCode: string,
+  ): Promise<void>;
 }

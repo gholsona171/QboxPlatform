@@ -63,6 +63,7 @@ export const permissions = new PermissionService();
 
 export * from "./catalog/PermissionCatalog.js";
 export * from "./compatibility/LegacyAdministratorAssignments.js";
+export * from "./compatibility/CompatibilityDisableGuard.js";
 export * from "./contracts/PermissionCache.js";
 export * from "./contracts/PermissionInfrastructureRepositories.js";
 export * from "./contracts/PermissionRepository.js";

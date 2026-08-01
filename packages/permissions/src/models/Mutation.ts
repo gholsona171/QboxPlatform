@@ -90,6 +90,17 @@ export type PermissionMutation =
   | EnablePermissionAssignmentMutation
   | ExpirePermissionAssignmentMutation;
 
+/** Complete append-only action catalog for assignment and infrastructure mutations. */
+export type PermissionAuditAction =
+  | PermissionMutation["type"]
+  | "disable-principal"
+  | "enable-principal"
+  | "disable-guild"
+  | "enable-guild"
+  | "disable-definition"
+  | "enable-definition"
+  | "owner-protection-rejection";
+
 /**
  * Append-only audit input written atomically with a mutation by a repository.
  * Callers never supply authoritative before/after snapshots. Repository adapters
@@ -98,7 +109,7 @@ export type PermissionMutation =
 export interface PermissionAuditInput extends PermissionMutationReason {
   /** Cross-system request identifier used to trace one mutation safely. */
   readonly correlationId: string;
-  readonly action: PermissionMutation["type"];
+  readonly action: PermissionAuditAction;
   readonly actor: PermissionMutationActor;
   readonly target?: PermissionPrincipal;
   readonly scope?: PermissionScope;
