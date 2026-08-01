@@ -1,6 +1,5 @@
 import { InteractionType } from "discord.js";
 import type {
-  ChatInputCommandInteraction,
   Interaction
 } from "discord.js";
 import { describe, expect, it, vi } from "vitest";
@@ -16,6 +15,7 @@ import { DiscordInteractionHandler } from "../src/interactions/DiscordInteractio
 import { CommandInputError } from "../src/commands/CommandInput.js";
 import { PingCommand } from "../src/commands/Ping.command.js";
 import { createCommand, defaultPolicy } from "./CommandTestFactory.js";
+import { createMockInteraction as createChatInputInteraction } from "./DiscordCommandTestKit.js";
 
 function createLogger() {
   return {
@@ -24,51 +24,6 @@ function createLogger() {
     warn: vi.fn(),
     error: vi.fn()
   };
-}
-
-function createChatInputInteraction(
-  commandName: string,
-  guildId: string | null = "guild-1"
-) {
-  const state = { replied: false, deferred: false };
-  const reply = vi.fn(async () => {
-    if (state.replied || state.deferred) {
-      throw new Error("Interaction was already acknowledged.");
-    }
-    state.replied = true;
-  });
-  const deferReply = vi.fn(async () => {
-    if (state.replied || state.deferred) {
-      throw new Error("Interaction was already acknowledged.");
-    }
-    state.deferred = true;
-  });
-  const editReply = vi.fn(async () => {
-    state.replied = true;
-  });
-  const followUp = vi.fn(async () => undefined);
-  const interaction = {
-    id: `interaction-${commandName}`,
-    type: InteractionType.ApplicationCommand,
-    commandName,
-    guildId,
-    inGuild: () => guildId !== null,
-    user: { id: "user-1" },
-    member: { roles: { cache: new Map<string, unknown>() } },
-    options: {
-      getSubcommand: () => null,
-      getSubcommandGroup: () => null
-    },
-    isChatInputCommand: () => true,
-    get replied() { return state.replied; },
-    get deferred() { return state.deferred; },
-    reply,
-    deferReply,
-    editReply,
-    followUp
-  } as unknown as ChatInputCommandInteraction;
-
-  return { interaction, state, reply, deferReply, editReply, followUp };
 }
 
 function createHandler(
@@ -91,7 +46,7 @@ function createHandler(
 describe("DiscordInteractionHandler responses", () => {
   it("dispatches ping with an immediate ephemeral reply", async () => {
     const { handler } = createHandler([new PingCommand()]);
-    const { interaction, reply, deferReply } = createChatInputInteraction("ping");
+    const { interaction, reply, deferReply } = createChatInputInteraction({ commandName: "ping" });
 
     await handler.handle(interaction);
 
@@ -111,7 +66,7 @@ describe("DiscordInteractionHandler responses", () => {
     });
     const { handler } = createHandler([command]);
     const { interaction, deferReply, editReply } =
-      createChatInputInteraction("deferred");
+      createChatInputInteraction({ commandName: "deferred" });
 
     await handler.handle(interaction);
 
@@ -121,7 +76,7 @@ describe("DiscordInteractionHandler responses", () => {
 
   it("replies clearly for an unknown command", async () => {
     const { handler, log } = createHandler([]);
-    const { interaction, reply } = createChatInputInteraction("stale");
+    const { interaction, reply } = createChatInputInteraction({ commandName: "stale" });
 
     await handler.handle(interaction);
 
@@ -141,7 +96,7 @@ describe("DiscordInteractionHandler responses", () => {
       execute: async () => { throw new Error("handler failed"); }
     });
     const { handler } = createHandler([command]);
-    const { interaction, followUp } = createChatInputInteraction("failure");
+    const { interaction, followUp } = createChatInputInteraction({ commandName: "failure" });
 
     await handler.handle(interaction);
 
@@ -158,7 +113,7 @@ describe("DiscordInteractionHandler responses", () => {
       }
     });
     const { handler, log } = createHandler([command]);
-    const { interaction, reply } = createChatInputInteraction("input");
+    const { interaction, reply } = createChatInputInteraction({ commandName: "input" });
 
     await handler.handle(interaction);
 
@@ -185,7 +140,7 @@ describe("DiscordInteractionHandler responses", () => {
     });
     const { handler, log } = createHandler([command]);
     const { interaction, deferReply, followUp } =
-      createChatInputInteraction("deferred-input");
+      createChatInputInteraction({ commandName: "deferred-input" });
 
     await handler.handle(interaction);
 
@@ -220,7 +175,7 @@ describe("DiscordInteractionHandler lifecycle", () => {
         })
     });
     const { handler, log } = createHandler([command], 10, 100);
-    const { interaction, reply } = createChatInputInteraction("timeout");
+    const { interaction, reply } = createChatInputInteraction({ commandName: "timeout" });
 
     await handler.handle(interaction);
 
@@ -234,7 +189,7 @@ describe("DiscordInteractionHandler lifecycle", () => {
   it("rejects new command executions after shutdown begins", async () => {
     const { handler } = createHandler([new PingCommand()]);
     await handler.shutdown(100);
-    const { interaction, reply } = createChatInputInteraction("ping");
+    const { interaction, reply } = createChatInputInteraction({ commandName: "ping" });
 
     await handler.handle(interaction);
 
@@ -253,7 +208,7 @@ describe("DiscordInteractionHandler lifecycle", () => {
       }
     });
     const { handler } = createHandler([command], 1_000, 1_000);
-    const { interaction } = createChatInputInteraction("active");
+    const { interaction } = createChatInputInteraction({ commandName: "active" });
     const execution = handler.handle(interaction);
     let shutdownFinished = false;
     const shutdown = handler.shutdown(1_000).then(() => {
@@ -274,7 +229,7 @@ describe("DiscordInteractionHandler lifecycle", () => {
       })
     });
     const { handler, log } = createHandler([command], 1_000, 1_000);
-    const { interaction } = createChatInputInteraction("active");
+    const { interaction } = createChatInputInteraction({ commandName: "active" });
     const execution = handler.handle(interaction);
 
     await handler.shutdown(10);

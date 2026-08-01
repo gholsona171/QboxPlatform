@@ -8,10 +8,7 @@ import type {
   CommandDeploymentConfiguration,
   CommandDeploymentTarget
 } from "../src/commandDeployment.js";
-
-function definition(name: string, description = `Runs ${name}.`) {
-  return { type: 1, name, description };
-}
+import { deploymentDefinition as definition } from "./DeploymentTestFactory.js";
 
 function configuration(
   overrides: Partial<CommandDeploymentConfiguration> = {}

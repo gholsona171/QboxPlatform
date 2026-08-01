@@ -111,6 +111,10 @@ Existing commands:
 
 `DiscordCommand` defines chat-input metadata, a required execution policy, and execution through a context that supplies the interaction, abort signal, and policy-aware response helpers. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands and policies before `CommandRegistry` atomically registers the complete set. `CommandRegistry` enforces context, authorization, cooldown, and concurrency policies. `DiscordInteractionHandler` records non-secret interaction context, tracks active work, rejects new work during shutdown, and reports failures through an ephemeral reply or follow-up.
 
+### Command authoring
+
+The complete policy, input, routing, testing, and live-verification guidance is in `docs/CommandAuthoring.md`; operating procedures are in `docs/DiscordCommandOperations.md`.
+
 ### Command authoring example
 
 Discord.js builders remain the command-definition API. Required options precede optional options inside each subcommand. Execution uses the typed option reader and route dispatcher:

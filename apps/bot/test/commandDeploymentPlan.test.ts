@@ -3,28 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   createCommandDeploymentPlan
 } from "../src/commandDeploymentPlan.js";
-import type {
-  CommandDefinition
-} from "../src/commandDeploymentPlan.js";
+import { deploymentDefinition as command } from "./DeploymentTestFactory.js";
 
 const target = {
   scope: "guild" as const,
   applicationId: "application-1",
   guildId: "guild-1"
 };
-
-function command(
-  name: string,
-  description = `Runs ${name}.`,
-  options: readonly unknown[] = []
-): CommandDefinition {
-  return {
-    type: 1,
-    name,
-    description,
-    options
-  };
-}
 
 describe("createCommandDeploymentPlan", () => {
   it("reports commands with no changes", () => {
