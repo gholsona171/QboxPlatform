@@ -28,6 +28,8 @@ export type PermissionMutationActor =
 
 /** Common, mandatory audit explanation attached to a mutation. */
 export interface PermissionMutationReason {
+  /** Optional upstream trace identifier; the service generates one when absent. */
+  readonly correlationId?: string;
   readonly reasonCode: PermissionMutationReasonCode;
   readonly reason?: string;
 }
@@ -68,6 +70,8 @@ export type PermissionMutation =
  * own persistence lifecycle, tamper controls, and concurrent transaction safety.
  */
 export interface PermissionAuditInput extends PermissionMutationReason {
+  /** Cross-system request identifier used to trace one mutation safely. */
+  readonly correlationId: string;
   readonly action: PermissionMutation["type"];
   readonly actor: PermissionMutationActor;
   readonly target?: PermissionPrincipal;

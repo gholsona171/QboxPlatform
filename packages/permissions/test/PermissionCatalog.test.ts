@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   PERMISSION_CATALOG_VERSION,
+  PERMISSION_CATALOG_CHECKSUM,
   UnknownPermissionCatalogEntriesError,
   isPermission,
   isValidPermissionIdentifier,
@@ -42,18 +43,26 @@ describe("permission catalog", () => {
   it("reports future synchronization state without persistence", () => {
     expect(permissionCatalogStatus()).toEqual({
       compiledVersion: PERMISSION_CATALOG_VERSION,
+      compiledChecksum: PERMISSION_CATALOG_CHECKSUM,
       state: "persisted-catalog-unavailable",
     });
-    expect(permissionCatalogStatus(PERMISSION_CATALOG_VERSION).state).toBe(
-      "synchronized",
-    );
+    expect(
+      permissionCatalogStatus(
+        PERMISSION_CATALOG_VERSION,
+        PERMISSION_CATALOG_CHECKSUM,
+      ).state,
+    ).toBe("synchronized");
     expect(permissionCatalogStatus("0.9.0").state).toBe("version-mismatch");
+    expect(
+      permissionCatalogStatus(PERMISSION_CATALOG_VERSION, "sha256:stale").state,
+    ).toBe("checksum-mismatch");
   });
 
   it("rejects and reports unknown persisted permission keys", () => {
     expect(() =>
       validatePersistedPermissionCatalog({
         version: "1.0.0",
+        checksum: PERMISSION_CATALOG_CHECKSUM,
         permissionKeys: [
           "platform.admin",
           "invented.permission",
@@ -64,6 +73,7 @@ describe("permission catalog", () => {
     try {
       validatePersistedPermissionCatalog({
         version: "1.0.0",
+        checksum: PERMISSION_CATALOG_CHECKSUM,
         permissionKeys: ["invented.permission"],
       });
     } catch (error) {

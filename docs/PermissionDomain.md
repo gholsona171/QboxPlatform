@@ -6,7 +6,9 @@
 
 `PERMISSIONS` is the only authoritative set of exact permission identifiers. A future database may store catalog version, descriptions, categories, and enabled state, but a database key not present in `PERMISSIONS` is rejected and cannot become executable authorization data.
 
-The compiled catalog exposes `PERMISSION_CATALOG_VERSION`, an immutable snapshot, status comparison, and validation for a future persisted descriptor. No database synchronization runs in this phase.
+The compiled catalog exposes `PERMISSION_CATALOG_VERSION`, a deterministic SHA-256 checksum, an immutable snapshot, status comparison, and validation for a future persisted descriptor. Status distinguishes unavailable persistence, version mismatch, checksum mismatch, and synchronization. No database synchronization runs in this phase.
+
+Future audit inputs carry a correlation ID in addition to the required structured reason code and optional human explanation. Mutation callers may supply an upstream correlation ID; the domain service generates one when absent. Persistence remains unimplemented.
 
 Exact permission identifiers must:
 

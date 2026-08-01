@@ -296,10 +296,12 @@ describe("PersistentPermissionService mutations", () => {
       effect: "allow",
       reasonCode: "bootstrap",
       reason: "Initial administrator role",
+      correlationId: "interaction-123",
     });
     expect(repository.audits[0]).toMatchObject({
       reasonCode: "bootstrap",
       reason: "Initial administrator role",
+      correlationId: "interaction-123",
     });
     expect(invalidate).toHaveBeenCalledWith([guildScope()]);
   });

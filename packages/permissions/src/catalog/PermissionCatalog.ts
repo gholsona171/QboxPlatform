@@ -5,6 +5,10 @@ export const PERMISSION_IDENTIFIER_PATTERN =
 /** Version of the compiled permission catalog contract. */
 export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
+/** SHA-256 checksum of the ordered authoritative permission identifiers. */
+export const PERMISSION_CATALOG_CHECKSUM =
+  "sha256:4d29682d918d871ac9fcfde06d25c1155813f0ead8f04c28046afba3ee6e1613" as const;
+
 /**
  * Exact permission identifiers compiled into this application.
  *
@@ -34,13 +38,18 @@ export type Permission = (typeof PERMISSIONS)[number];
 export interface PermissionCatalogSnapshot {
   /** Compiled catalog version understood by this process. */
   readonly version: string;
+  /** Deterministic checksum of the ordered compiled identifiers. */
+  readonly checksum: string;
   /** Exact authoritative permission identifiers. */
   readonly permissions: readonly Permission[];
 }
 
 /** Comparison state between compiled and future persisted catalog metadata. */
 export type PermissionCatalogSynchronizationState =
-  "persisted-catalog-unavailable" | "synchronized" | "version-mismatch";
+  | "persisted-catalog-unavailable"
+  | "synchronized"
+  | "version-mismatch"
+  | "checksum-mismatch";
 
 /**
  * Non-mutating catalog synchronization diagnostic for startup reporting.
@@ -50,8 +59,12 @@ export type PermissionCatalogSynchronizationState =
 export interface PermissionCatalogSynchronizationStatus {
   /** Version compiled into the running process. */
   readonly compiledVersion: string;
+  /** Checksum compiled into the running process. */
+  readonly compiledChecksum: string;
   /** Future persisted version, when a persistence adapter supplies one. */
   readonly persistedVersion?: string;
+  /** Future persisted checksum, when supplied by an adapter. */
+  readonly persistedChecksum?: string;
   /** Deterministic comparison result; this contract performs no synchronization. */
   readonly state: PermissionCatalogSynchronizationState;
 }
@@ -62,7 +75,11 @@ export interface PermissionCatalogSynchronizationStatus {
  * resolves keys against the immutable compiled catalog before synchronization.
  */
 export interface PersistedPermissionCatalogDescriptor {
+  /** Catalog version last committed by a future synchronizer. */
   readonly version: string;
+  /** Checksum last committed by a future synchronizer. */
+  readonly checksum: string;
+  /** Persisted metadata keys that must all exist in the compiled catalog. */
   readonly permissionKeys: readonly string[];
 }
 
@@ -81,6 +98,7 @@ const knownPermissions = new Set<string>(PERMISSIONS);
 /** Immutable snapshot of the authoritative compiled catalog. */
 export const permissionCatalog: PermissionCatalogSnapshot = Object.freeze({
   version: PERMISSION_CATALOG_VERSION,
+  checksum: PERMISSION_CATALOG_CHECKSUM,
   permissions: PERMISSIONS,
 });
 
@@ -119,20 +137,26 @@ export function requirePermission(value: string): Permission {
 /** Builds startup synchronization status without accessing persistence. */
 export function permissionCatalogStatus(
   persistedVersion?: string,
+  persistedChecksum?: string,
 ): PermissionCatalogSynchronizationStatus {
   if (persistedVersion === undefined) {
     return {
       compiledVersion: PERMISSION_CATALOG_VERSION,
+      compiledChecksum: PERMISSION_CATALOG_CHECKSUM,
       state: "persisted-catalog-unavailable",
     };
   }
   return {
     compiledVersion: PERMISSION_CATALOG_VERSION,
+    compiledChecksum: PERMISSION_CATALOG_CHECKSUM,
     persistedVersion,
+    ...(persistedChecksum === undefined ? {} : { persistedChecksum }),
     state:
-      persistedVersion === PERMISSION_CATALOG_VERSION
-        ? "synchronized"
-        : "version-mismatch",
+      persistedVersion !== PERMISSION_CATALOG_VERSION
+        ? "version-mismatch"
+        : persistedChecksum !== PERMISSION_CATALOG_CHECKSUM
+          ? "checksum-mismatch"
+          : "synchronized",
   };
 }
 
@@ -149,5 +173,5 @@ export function validatePersistedPermissionCatalog(
   ].sort();
   if (unknownKeys.length > 0)
     throw new UnknownPermissionCatalogEntriesError(unknownKeys);
-  return permissionCatalogStatus(descriptor.version);
+  return permissionCatalogStatus(descriptor.version, descriptor.checksum);
 }

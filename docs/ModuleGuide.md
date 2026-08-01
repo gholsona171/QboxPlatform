@@ -212,9 +212,11 @@ Environment loading happens as an import-time side effect rather than through an
 
 Package: `@qbox/database`
 
-Current responsibility: exports a `Database` class and singleton with `connect()` and `disconnect()` methods.
+Current responsibility: owns the authoritative typed PostgreSQL configuration value object, redacted diagnostics, pure lifecycle coordination, health/readiness contracts, transaction/client-factory ports, and the ordinary soft-delete policy for future permission infrastructure.
 
-Lifecycle behavior is currently limited to console messages. It does not connect to a database, consume `DATABASE_URL`, or depend on Prisma.
+`DatabaseService` uses an injected `ClientFactory`; it does not connect to PostgreSQL and has no Prisma dependency in this phase. It reports `LIVE`, `READY`, or `DEGRADED`, rejects database readiness until a client starts, and attempts client cleanup after startup failure. The obsolete console-only singleton has been removed.
+
+`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` remains the lower-level generated-client placeholder. No schema, migration, generated client, repository adapter, or real database health query exists yet. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
 
 The package declares no dependencies.
 

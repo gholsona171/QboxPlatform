@@ -1,11 +1,4 @@
-﻿export class Database {
-  async connect() {
-    console.log("Database connected.");
-  }
-
-  async disconnect() {
-    console.log("Database disconnected.");
-  }
-}
-
-export const database = new Database();
+export * from "./config/DatabaseConfiguration.js";
+export * from "./contracts/DatabaseContracts.js";
+export * from "./DatabaseService.js";
+export * from "./policies/PersistencePolicies.js";

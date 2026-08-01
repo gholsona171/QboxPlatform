@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import { isPermission } from "./catalog/PermissionCatalog.js";
 import type { Permission } from "./catalog/PermissionCatalog.js";
 import type { PermissionCache } from "./contracts/PermissionCache.js";
@@ -190,6 +192,7 @@ export class PersistentPermissionService implements PermissionAuthorizer {
       }
     }
     const audit: PermissionAuditInput = {
+      correlationId: mutation.correlationId ?? randomUUID(),
       action: mutation.type,
       actor: mutation.actor,
       reasonCode: mutation.reasonCode,
@@ -339,6 +342,11 @@ export class PersistentPermissionService implements PermissionAuthorizer {
   }
 
   private validateMutation(mutation: PermissionMutation, now: Date): void {
+    if (
+      mutation.correlationId !== undefined &&
+      mutation.correlationId.trim().length === 0
+    )
+      throw new Error("Permission mutation correlationId cannot be blank.");
     if (
       !(PERMISSION_MUTATION_REASON_CODES as readonly string[]).includes(
         mutation.reasonCode,
