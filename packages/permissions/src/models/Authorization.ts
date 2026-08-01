@@ -44,3 +44,14 @@ export interface PermissionAuthorizationDecision {
   readonly usedCache: boolean;
   readonly degraded: boolean;
 }
+
+/**
+ * Integration-facing asynchronous authorization port.
+ * Implementations must be safe for concurrent calls and fail closed through a
+ * denied decision when authoritative state cannot be loaded.
+ */
+export interface PermissionAuthorizer {
+  authorize(
+    request: PermissionAuthorizationRequest,
+  ): Promise<PermissionAuthorizationDecision>;
+}

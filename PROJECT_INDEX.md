@@ -68,9 +68,9 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/permissions`
 
 - **Location:** `packages/permissions/`
-- **Responsibility:** Permission definitions and in-memory role-to-permission grants.
+- **Responsibility:** Versioned permission catalog, asynchronous authorization domain, repository/cache contracts, and guild-bound legacy administrator compatibility.
 - **Declared dependencies:** None.
-- **Public exports:** `PermissionService`, the `permissions` singleton, `Permission`, `PermissionSubject`, and `PermissionGrant`.
+- **Public exports:** `PermissionAuthorizer`, `PersistentPermissionService`, catalog/principal/scope/assignment contracts, in-memory runtime adapters, and the deprecated legacy `PermissionService` compatibility API.
 
 ## `@qbox/prisma`
 
@@ -187,12 +187,12 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 - **Instantiated in:** `CommandLoader` by default.
 - **Purpose:** Validates file identity, explicit exports, command type, metadata, option and subcommand structure, aliases, policies, execution handlers, and cross-command name uniqueness before registration.
 
-## `PermissionService`
+## Permission authorization service
 
-- **Defined and instantiated in:** `packages/permissions/src/index.ts`
-- **Instance:** Exported singleton `permissions`.
-- **Purpose:** Stores in-memory role grants and checks individual, every, or any permission.
-- **Injected into:** `DiscordService`, then `CommandRegistry`.
+- **Defined in:** `packages/permissions/src/PersistentPermissionService.ts`
+- **Instantiated by:** the process-local permission runtime factory used by `createDiscordModule()`.
+- **Purpose:** Asynchronously evaluates direct-user and role assignments with guild isolation, deny precedence, owner/admin overrides, cache fallback, and fail-closed behavior.
+- **Injected into:** `DiscordModule`, `DiscordService`, then `CommandRegistry` through `PermissionAuthorizer`.
 
 ## Logger
 
@@ -227,13 +227,13 @@ During `DiscordModule.start()`, the module registers:
 
 | Name | Value |
 | --- | --- |
-| `permissions` | Shared `PermissionService` singleton |
+| `permissions` | Injected asynchronous `PermissionAuthorizer` |
 | `discord` | Module-owned `DiscordService` |
 
 Constructor injection is used for Discord authorization:
 
 ```text
-PermissionService
+PermissionAuthorizer
   -> DiscordService constructor
        -> CommandRegistry constructor
 ```

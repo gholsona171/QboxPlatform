@@ -10,6 +10,8 @@
  * State is process-local and must be rebuilt on startup. It is intentionally
  * retained through Phase 1 and will be replaced at the integration boundary in
  * Phase 2; new cross-system consumers should use PersistentPermissionService.
+ *
+ * @deprecated Use the injected asynchronous PermissionAuthorizer contract.
  */
 export class PermissionService {
   private readonly grants = new Map<string, Set<Permission>>();
@@ -60,10 +62,12 @@ export class PermissionService {
 export const permissions = new PermissionService();
 
 export * from "./catalog/PermissionCatalog.js";
+export * from "./compatibility/LegacyAdministratorAssignments.js";
 export * from "./contracts/PermissionCache.js";
 export * from "./contracts/PermissionRepository.js";
 export * from "./models/Authorization.js";
 export * from "./models/Permission.js";
 export * from "./models/Mutation.js";
 export * from "./PersistentPermissionService.js";
+export * from "./PermissionRuntime.js";
 export * from "./testing/InMemoryPermissionAdapters.js";

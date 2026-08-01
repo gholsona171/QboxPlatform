@@ -62,7 +62,7 @@ The bot follows this sequence:
 4. The bot attaches one-time handlers for `SIGINT` and `SIGTERM`.
 5. `PlatformKernel.start()` registers the core logger, event bus, and module loader services.
 6. The kernel calls `ModuleLoader.startAll()` in module registration order.
-7. `DiscordModule.start()` clears and configures permission grants from `ADMIN_ROLE_IDS`.
+7. `createDiscordModule()` composes an in-memory asynchronous permission runtime and guild-bound `ADMIN_ROLE_IDS` compatibility assignments.
 8. `CommandLoader` scans for `.command.ts` or `.command.js` files in deterministic filename order and imports each module's named `command` export.
 9. `CommandValidator` validates all discovered commands before registration. Any validation failure aborts registration.
 10. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
@@ -94,7 +94,7 @@ The bot records shutdown failure and sets a nonzero exit code if an exception is
 
 Dependency injection is implemented through explicit constructors and the `ServiceContainer`.
 
-Constructor injection is used inside the Discord integration: `DiscordModule` passes the singleton `PermissionService` to `DiscordService`, which passes it to `CommandRegistry`. This makes permission checks available during command execution.
+Constructor injection is used inside the Discord integration: `DiscordModule` receives a `PermissionAuthorizer`, passes it to `DiscordService`, and then to `CommandRegistry`. The authorizer is registered in the service container only after Discord startup succeeds.
 
 The module context provides shared runtime dependencies:
 
@@ -121,7 +121,7 @@ The kernel registers these services before starting modules:
 
 | Service name | Registered value |
 | --- | --- |
-| `permissions` | Shared `PermissionService` singleton |
+| `permissions` | Injected asynchronous `PermissionAuthorizer` |
 | `discord` | Module-owned `DiscordService` instance |
 
 Services are registered imperatively during startup. There is no automatic dependency discovery, scope management, or disposal in the container.

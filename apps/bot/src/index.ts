@@ -1,10 +1,10 @@
 ﻿import { PlatformKernel } from "@qbox/core";
-import { DiscordModule } from "@qbox/discord";
+import { createDiscordModule } from "@qbox/discord";
 import { logger } from "@qbox/logger";
 
 const kernel = new PlatformKernel();
 
-kernel.registerModule(new DiscordModule());
+kernel.registerModule(createDiscordModule());
 
 let shuttingDown = false;
 
@@ -25,9 +25,9 @@ async function shutdown(signal: string): Promise<void> {
     logger.error(
       {
         err: error,
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       },
-      "Platform shutdown failed."
+      "Platform shutdown failed.",
     );
 
     process.exitCode = 1;
@@ -51,9 +51,9 @@ async function main(): Promise<void> {
     logger.fatal(
       {
         err: error,
-        stack: error instanceof Error ? error.stack : undefined
+        stack: error instanceof Error ? error.stack : undefined,
       },
-      "Qbox Platform failed to start."
+      "Qbox Platform failed to start.",
     );
 
     process.exitCode = 1;

@@ -1,6 +1,6 @@
 # Permission Domain
 
-`@qbox/permissions` owns integration-independent permission contracts and deterministic authorization semantics. It does not import Discord.js, Prisma, Redis, or an HTTP framework. Phase 1 adds domain contracts only; the Discord bot continues to use the existing synchronous compatibility service until the separately approved integration phase.
+`@qbox/permissions` owns integration-independent permission contracts and deterministic authorization semantics. It does not import Discord.js, Prisma, Redis, or an HTTP framework. The Discord bot now consumes the asynchronous `PermissionAuthorizer` contract; persistence remains intentionally absent.
 
 ## Authoritative catalog
 
@@ -39,3 +39,9 @@ Disabled and expired assignments are ignored. Cross-guild principal mismatches a
 Every mutation requires a `reasonCode` from the compiled reason-code catalog. Optional free text may add context but cannot replace the structured code. The repository contract must commit the mutation and audit input atomically. The domain prevents self-elevation, invalid expiry, cross-guild assignment, group assignment, and revocation of the last active owner.
 
 Repository and cache contracts contain no adapter-specific types. The included in-memory adapters are process-local test utilities, not persistence implementations. A future Prisma repository and Redis cache can implement these interfaces without changing domain consumers.
+
+## Discord compatibility runtime
+
+Until persistence exists, process composition creates an in-memory repository/cache and a `PersistentPermissionService`. `ADMIN_ROLE_IDS` values become non-persistent, guild-scoped `platform.admin` assignments bound to `DISCORD_GUILD_ID`. Configuring legacy roles without that guild ID fails startup. Persistent deny assignments outrank compatibility grants.
+
+Discord translates only the authenticated interaction user, guild, and current member roles into principals. Command options and user-provided content never supply authorization identity. The authorizer is registered in the service container only after Discord startup succeeds; unprotected commands bypass repository access.

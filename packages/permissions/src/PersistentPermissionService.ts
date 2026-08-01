@@ -3,6 +3,7 @@ import type { Permission } from "./catalog/PermissionCatalog.js";
 import type { PermissionCache } from "./contracts/PermissionCache.js";
 import type { PermissionRepository } from "./contracts/PermissionRepository.js";
 import type {
+  PermissionAuthorizer,
   PermissionAuthorizationDecision,
   PermissionAuthorizationRequest,
 } from "./models/Authorization.js";
@@ -35,7 +36,7 @@ export interface PersistentPermissionServiceOptions {
  * cache adapters satisfy their own concurrency contracts. The service owns no
  * external resources; adapter lifecycle remains with process composition.
  */
-export class PersistentPermissionService {
+export class PersistentPermissionService implements PermissionAuthorizer {
   private readonly cacheTtlMs: number;
   private readonly legacyAssignments: readonly PermissionAssignment[];
 

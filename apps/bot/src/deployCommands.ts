@@ -1,18 +1,13 @@
 import { PlatformKernel } from "@qbox/core";
-import {
-  DiscordModule,
-  DiscordService
-} from "@qbox/discord";
+import { createDiscordModule, DiscordService } from "@qbox/discord";
 import { logger } from "@qbox/logger";
 import { env } from "@qbox/shared";
 
 import {
   executeCommandDeployment,
-  resolveCommandDeploymentTarget
+  resolveCommandDeploymentTarget,
 } from "./commandDeployment.js";
-import type {
-  DeploymentScope
-} from "./commandDeployment.js";
+import type { DeploymentScope } from "./commandDeployment.js";
 
 function readDeploymentScope(): DeploymentScope {
   const scope = process.argv[2];
@@ -22,25 +17,20 @@ function readDeploymentScope(): DeploymentScope {
   }
 
   throw new Error(
-    "Command deployment scope must be either 'global' or 'guild'."
+    "Command deployment scope must be either 'global' or 'guild'.",
   );
 }
 
 async function main(): Promise<void> {
-  const target = resolveCommandDeploymentTarget(
-    readDeploymentScope(),
-    {
-      applicationId: env.DISCORD_APPLICATION_ID,
-      guildId: env.DISCORD_GUILD_ID,
-      dryRun: process.argv.includes("--dry-run"),
-      confirmGlobal: process.argv.includes("--confirm-global"),
-      confirmGlobalRemovals: process.argv.includes(
-        "--confirm-global-removals"
-      )
-    }
-  );
+  const target = resolveCommandDeploymentTarget(readDeploymentScope(), {
+    applicationId: env.DISCORD_APPLICATION_ID,
+    guildId: env.DISCORD_GUILD_ID,
+    dryRun: process.argv.includes("--dry-run"),
+    confirmGlobal: process.argv.includes("--confirm-global"),
+    confirmGlobalRemovals: process.argv.includes("--confirm-global-removals"),
+  });
   const kernel = new PlatformKernel();
-  kernel.registerModule(new DiscordModule());
+  kernel.registerModule(createDiscordModule());
   let started = false;
 
   try {
@@ -60,9 +50,9 @@ void main().catch((error: unknown) => {
   logger.fatal(
     {
       err: error,
-      stack: error instanceof Error ? error.stack : undefined
+      stack: error instanceof Error ? error.stack : undefined,
     },
-    "Discord command deployment process failed."
+    "Discord command deployment process failed.",
   );
 
   process.exitCode = 1;

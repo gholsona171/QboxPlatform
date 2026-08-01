@@ -39,7 +39,7 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 
 `DiscordModule`:
 
-- Initializes administrator permission grants from `ADMIN_ROLE_IDS`.
+- Receives the asynchronous permission authorizer through constructor injection.
 - Discovers Discord command classes.
 - Registers each command with `DiscordService`.
 - Publishes permission and Discord services through the service container.
@@ -56,15 +56,13 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 
 ### Start lifecycle
 
-1. Clear existing grants from the shared permission service.
-2. Grant `platform.admin` to each configured administrator role ID.
-3. Load command implementations from the command directory.
-4. Register the commands in `DiscordService`.
-5. Register `permissions` in the shared service container.
-6. Register `discord` in the shared service container.
-7. Start `DiscordService` and log in.
-8. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
-9. Log the connected user, application ID, guild count, command count, and administrator-role count.
+1. Process composition creates the in-memory permission runtime and guild-bound compatibility assignments.
+2. Load command implementations from the command directory.
+3. Register the commands in `DiscordService`.
+4. Start `DiscordService` and log in.
+5. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
+6. Register the authoritative `permissions` authorizer and `discord` service only after startup succeeds.
+7. Log the connected identity, command count, and non-secret compatibility diagnostics.
 
 ### Stop lifecycle
 
@@ -192,9 +190,9 @@ Responsibilities:
 - Model Discord user/role principals, platform/guild scopes, exact grants, denies, expiration, mutations, and structured audit reasons without integration dependencies.
 - Define asynchronous repository and cache ports plus deterministic owner/admin/deny/all/any authorization semantics.
 - Provide process-local in-memory adapters for domain testing.
-- Preserve the synchronous role-grant `PermissionService` singleton for the current Discord integration until Phase 2.
+- Preserve the deprecated synchronous role-grant `PermissionService` only for legacy package compatibility tests; Discord uses `PermissionAuthorizer`.
 
-It has no external package dependencies and no persistence lifecycle. No database synchronization, Prisma repository, Redis adapter, or Discord integration change exists yet. `DiscordModule.start()` still clears and rebuilds the legacy grants. See `docs/PermissionDomain.md` for the implemented domain contract.
+It has no external package dependencies and no persistence lifecycle. No database synchronization, Prisma repository, or Redis adapter exists. A process-local factory supplies the async authorizer and environment compatibility overlay to Discord without resetting global singleton state. See `docs/PermissionDomain.md` for the implemented domain contract.
 
 ## Shared package
 

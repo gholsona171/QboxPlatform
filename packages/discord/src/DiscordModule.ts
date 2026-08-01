@@ -1,45 +1,37 @@
-import type {
-  PlatformModule,
-  PlatformModuleContext
-} from "@qbox/core";
+import type { PlatformModule, PlatformModuleContext } from "@qbox/core";
 
 import { logger } from "@qbox/logger";
+import type { PermissionAuthorizer } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
-import {
-  permissions
-} from "@qbox/permissions";
-
 import { DiscordService } from "./DiscordService.js";
-import {
-  CommandLoadError,
-  CommandLoader
-} from "./loaders/CommandLoader.js";
+import { CommandLoadError, CommandLoader } from "./loaders/CommandLoader.js";
 
 export class DiscordModule implements PlatformModule {
   public readonly name = "discord";
   public readonly version = "0.1.0";
 
-  private readonly discordService =
-    new DiscordService(permissions);
+  private readonly discordService: DiscordService;
+  private readonly commandLoader: CommandLoader;
 
-  private readonly commandLoader =
-    new CommandLoader();
+  public constructor(
+    private readonly permissionAuthorizer: PermissionAuthorizer,
+    private readonly compatibility: {
+      readonly enabled: boolean;
+      readonly roleCount: number;
+      readonly guildId?: string;
+    },
+    dependencies: {
+      readonly discordService?: DiscordService;
+      readonly commandLoader?: CommandLoader;
+    } = {},
+  ) {
+    this.discordService =
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer);
+    this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
+  }
 
-  public async start(
-    context: PlatformModuleContext
-  ): Promise<void> {
-    permissions.clear();
-
-    for (const roleId of env.ADMIN_ROLE_IDS) {
-      permissions.registerGrant({
-        roleId,
-        permissions: [
-          "platform.admin"
-        ]
-      });
-    }
-
+  public async start(context: PlatformModuleContext): Promise<void> {
     let loadResult;
 
     try {
@@ -56,9 +48,9 @@ export class DiscordModule implements PlatformModule {
             commandNames: error.diagnostics.commandNames,
             commandAliases: error.diagnostics.commandAliases,
             warnings: error.diagnostics.warnings,
-            failures: error.diagnostics.failures
+            failures: error.diagnostics.failures,
           },
-          "Discord command loading failed."
+          "Discord command loading failed.",
         );
       }
 
@@ -68,9 +60,7 @@ export class DiscordModule implements PlatformModule {
     let registered: number;
 
     try {
-      registered = this.discordService.registerCommands(
-        loadResult.commands
-      );
+      registered = this.discordService.registerCommands(loadResult.commands);
     } catch (error) {
       logger.error(
         {
@@ -86,27 +76,18 @@ export class DiscordModule implements PlatformModule {
           failures: [
             {
               file: "registry",
-              message: error instanceof Error
-                ? error.message
-                : "Registration failed with a non-Error value."
-            }
-          ]
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Registration failed with a non-Error value.",
+            },
+          ],
         },
-        "Discord command registration failed."
+        "Discord command registration failed.",
       );
 
       throw error;
     }
-
-    context.services.register(
-      "permissions",
-      permissions
-    );
-
-    context.services.register(
-      "discord",
-      this.discordService
-    );
 
     logger.info(
       {
@@ -118,21 +99,25 @@ export class DiscordModule implements PlatformModule {
         commandNames: loadResult.diagnostics.commandNames,
         commandAliases: loadResult.diagnostics.commandAliases,
         warnings: loadResult.diagnostics.warnings,
-        failures: loadResult.diagnostics.failures
+        failures: loadResult.diagnostics.failures,
       },
-      "Discord commands loaded."
+      "Discord commands loaded.",
     );
 
     await this.discordService.start();
+
+    context.services.register("permissions", this.permissionAuthorizer);
+    context.services.register("discord", this.discordService);
 
     logger.info(
       {
         user: this.discordService.client.user?.tag,
         commandCount: registered,
-        administratorRoleCount:
-          env.ADMIN_ROLE_IDS.length
+        permissionCompatibilityEnabled: this.compatibility.enabled,
+        permissionCompatibilityRoleCount: this.compatibility.roleCount,
+        permissionCompatibilityGuildId: this.compatibility.guildId,
       },
-      "Discord module started."
+      "Discord module started.",
     );
   }
 
