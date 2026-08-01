@@ -78,6 +78,7 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const GuildScalarFieldEnum = {
   id: 'id',
   discordGuildId: 'discordGuildId',
+  metadata: 'metadata',
   enabled: 'enabled',
   disabledAt: 'disabledAt',
   createdAt: 'createdAt',
@@ -92,6 +93,7 @@ export const PermissionPrincipalScalarFieldEnum = {
   type: 'type',
   guildId: 'guildId',
   externalId: 'externalId',
+  metadata: 'metadata',
   enabled: 'enabled',
   disabledAt: 'disabledAt',
   createdAt: 'createdAt',
@@ -183,6 +185,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
@@ -199,14 +208,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -214,3 +215,11 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]

@@ -306,7 +306,7 @@ describe("PersistentPermissionService mutations", () => {
     expect(invalidate).toHaveBeenCalledWith([guildScope()]);
   });
 
-  it("protects the last active owner but permits unrelated revocation", async () => {
+  it("delegates owner revocation to the repository transaction boundary", async () => {
     const owner = assignment("platform.owner", {
       id: "owner",
       scope: { type: "platform" },
@@ -322,7 +322,7 @@ describe("PersistentPermissionService mutations", () => {
         assignmentId: "owner",
         reasonCode: "administrator-action",
       }),
-    ).rejects.toThrow("last active owner");
+    ).resolves.toBeDefined();
     await expect(
       service.mutate({
         type: "revoke-assignment",

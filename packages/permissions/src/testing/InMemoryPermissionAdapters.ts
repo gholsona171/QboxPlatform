@@ -58,10 +58,31 @@ export class InMemoryPermissionRepository implements PermissionRepository {
     audit: PermissionAuditInput,
   ): Promise<PermissionMutationResult> {
     this.audits.push(audit);
-    if (mutation.type === "revoke-assignment") {
+    if (
+      mutation.type === "revoke-assignment" ||
+      mutation.type === "disable-assignment"
+    ) {
       const assignment = this.assignments.get(mutation.assignmentId);
-      this.assignments.delete(mutation.assignmentId);
-      return { affectedScopes: assignment ? [assignment.scope] : [] };
+      if (!assignment) return { affectedScopes: [] };
+      this.assignments.set(mutation.assignmentId, {
+        ...assignment,
+        enabled: false,
+      });
+      return { affectedScopes: [assignment.scope] };
+    }
+    if (mutation.type === "enable-assignment") {
+      const assignment = this.assignments.get(mutation.assignmentId);
+      if (!assignment) return { affectedScopes: [] };
+      const enabled = { ...assignment, enabled: true };
+      this.assignments.set(mutation.assignmentId, enabled);
+      return { assignment: enabled, affectedScopes: [assignment.scope] };
+    }
+    if (mutation.type === "expire-assignment") {
+      const assignment = this.assignments.get(mutation.assignmentId);
+      if (!assignment) return { affectedScopes: [] };
+      const expired = { ...assignment, expiresAt: mutation.expiresAt };
+      this.assignments.set(mutation.assignmentId, expired);
+      return { assignment: expired, affectedScopes: [assignment.scope] };
     }
     const assignment: PermissionAssignment = {
       id: `assignment-${this.nextId++}`,

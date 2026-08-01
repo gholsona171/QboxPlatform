@@ -66,12 +66,18 @@ importers:
       '@qbox/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@qbox/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@qbox/discord':
         specifier: workspace:*
         version: link:../../packages/discord
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@qbox/permissions':
+        specifier: workspace:*
+        version: link:../../packages/permissions
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -88,7 +94,14 @@ importers:
         specifier: workspace:*
         version: link:../logger
 
-  packages/database: {}
+  packages/database:
+    dependencies:
+      '@qbox/permissions':
+        specifier: workspace:*
+        version: link:../permissions
+      '@qbox/prisma':
+        specifier: workspace:*
+        version: link:../prisma
 
   packages/discord:
     dependencies:

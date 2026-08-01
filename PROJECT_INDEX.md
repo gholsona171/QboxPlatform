@@ -40,9 +40,9 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/database`
 
 - **Location:** `packages/database/`
-- **Responsibility:** Placeholder database abstraction. `connect()` and `disconnect()` currently print messages only.
-- **Declared dependencies:** None.
-- **Public exports:** `Database` and the `database` singleton.
+- **Responsibility:** PostgreSQL configuration and lifecycle, Prisma-backed persistent-permission repositories, transaction boundaries, and cache invalidation infrastructure.
+- **Declared dependencies:** `@qbox/permissions`, `@qbox/prisma`
+- **Public exports:** database configuration/lifecycle contracts, `PrismaPermissionPersistenceClient`, six permission repository implementations, and `InMemoryPermissionInvalidationBus`.
 
 ## `@qbox/discord`
 
@@ -75,9 +75,9 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/prisma`
 
 - **Location:** `packages/prisma/`
-- **Responsibility:** Current Prisma package placeholder.
-- **Declared dependencies:** None.
-- **Public exports:** None; `src/index.ts` contains only `export {}`.
+- **Responsibility:** Prisma 7 toolchain, committed NodeNext/ESM generated client, schema/migration ownership, and disconnected client factory.
+- **Declared runtime dependencies:** `@prisma/adapter-pg`, `@prisma/client`, `pg`
+- **Public exports:** `PrismaClient`, `PrismaClientFactory`, Prisma types, and generated permission enums.
 
 ## `@qbox/scheduler`
 
@@ -117,16 +117,16 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 
 `pnpm-workspace.yaml` includes `modules/*`. The following directories currently exist, but contain no source files, manifests, commands, services, events, or exports:
 
-| Directory | Current contents |
-| --- | --- |
+| Directory               | Current contents            |
+| ----------------------- | --------------------------- |
 | `modules/applications/` | Empty placeholder directory |
-| `modules/birthdays/` | Empty placeholder directory |
-| `modules/fivem/` | Empty placeholder directory |
-| `modules/knowledge/` | Empty placeholder directory |
-| `modules/moderation/` | Empty placeholder directory |
-| `modules/polls/` | Empty placeholder directory |
-| `modules/staff/` | Empty placeholder directory |
-| `modules/tickets/` | Empty placeholder directory |
+| `modules/birthdays/`    | Empty placeholder directory |
+| `modules/fivem/`        | Empty placeholder directory |
+| `modules/knowledge/`    | Empty placeholder directory |
+| `modules/moderation/`   | Empty placeholder directory |
+| `modules/polls/`        | Empty placeholder directory |
+| `modules/staff/`        | Empty placeholder directory |
+| `modules/tickets/`      | Empty placeholder directory |
 | `modules/verification/` | Empty placeholder directory |
 
 Because they have no `package.json`, these directories are not currently pnpm workspace packages despite matching the configured path pattern.
@@ -190,7 +190,7 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 ## Permission authorization service
 
 - **Defined in:** `packages/permissions/src/PersistentPermissionService.ts`
-- **Instantiated by:** the process-local permission runtime factory used by `createDiscordModule()`.
+- **Instantiated by:** bot composition with `PrismaPermissionRepository`, an in-memory cache, and the guild-bound compatibility overlay.
 - **Purpose:** Asynchronously evaluates direct-user and role assignments with guild isolation, deny precedence, owner/admin overrides, cache fallback, and fail-closed behavior.
 - **Injected into:** `DiscordModule`, `DiscordService`, then `CommandRegistry` through `PermissionAuthorizer`.
 
@@ -202,7 +202,6 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 ## Placeholder service instances
 
-- `database` is instantiated in `packages/database/src/index.ts`.
 - `ai` is instantiated in `packages/openai/src/index.ts`.
 - `scheduler` is instantiated in `packages/scheduler/src/index.ts`.
 - `configuration` is instantiated in `packages/shared/src/config/Configuration.ts`.
@@ -215,20 +214,20 @@ The current implementation combines a named service registry with constructor in
 
 When `PlatformKernel.start()` runs, it registers:
 
-| Name | Value |
-| --- | --- |
-| `logger` | Shared Pino `logger` singleton |
-| `events` | Kernel-owned `EventBus` |
-| `modules` | Kernel-owned `ModuleLoader` |
+| Name      | Value                          |
+| --------- | ------------------------------ |
+| `logger`  | Shared Pino `logger` singleton |
+| `events`  | Kernel-owned `EventBus`        |
+| `modules` | Kernel-owned `ModuleLoader`    |
 
 The kernel passes a `PlatformModuleContext` containing `services` and `events` to every module during startup and shutdown.
 
 During `DiscordModule.start()`, the module registers:
 
-| Name | Value |
-| --- | --- |
+| Name          | Value                                        |
+| ------------- | -------------------------------------------- |
 | `permissions` | Injected asynchronous `PermissionAuthorizer` |
-| `discord` | Module-owned `DiscordService` |
+| `discord`     | Module-owned `DiscordService`                |
 
 Constructor injection is used for Discord authorization:
 
@@ -246,10 +245,10 @@ The container uses string keys and caller-supplied generic return types. It does
 
 Known events:
 
-| Event | Emitter | Payload | Current subscribers |
-| --- | --- | --- | --- |
-| `platform.started` | `PlatformKernel.start()` | `{ startedAt: Date }` | None in the repository |
-| `platform.stopping` | `PlatformKernel.stop()` | `{ stoppedAt: Date }` | None in the repository |
+| Event               | Emitter                  | Payload               | Current subscribers    |
+| ------------------- | ------------------------ | --------------------- | ---------------------- |
+| `platform.started`  | `PlatformKernel.start()` | `{ startedAt: Date }` | None in the repository |
+| `platform.stopping` | `PlatformKernel.stop()`  | `{ stoppedAt: Date }` | None in the repository |
 
 Discord.js events such as `InteractionCreate` and `ClientReady` are handled by `DiscordService`, but they are Discord client events rather than events emitted through the platform `EventBus`.
 
@@ -277,18 +276,18 @@ Each command file exports a named `command` instance. `CommandLoader` discovers 
 
 ## Root configuration
 
-| File | Controls |
-| --- | --- |
-| `package.json` | Root metadata, supported Node and pnpm versions, recursive scripts, and root dependencies |
-| `pnpm-workspace.yaml` | Workspace discovery under `apps/*`, `packages/*`, and `modules/*` |
-| `pnpm-lock.yaml` | pnpm dependency resolution |
-| `package-lock.json` | npm dependency resolution; present alongside the pnpm lockfile |
-| `tsconfig.json` | Shared strict TypeScript, NodeNext ESM, declaration, and source-map settings |
-| `.gitignore` | Ignored secrets, dependencies, generated output, coverage, logs, editor files, and temporary files |
-| `.env.example` | Names of environment settings recognized by the repository |
-| `.env` | Local environment values; ignored by Git and loaded by `@qbox/shared` |
-| `AGENTS.md` | Operating instructions for AI coding agents |
-| `PROJECT_CHARTER.md` | Repository engineering principles and definition of done |
+| File                  | Controls                                                                                           |
+| --------------------- | -------------------------------------------------------------------------------------------------- |
+| `package.json`        | Root metadata, supported Node and pnpm versions, recursive scripts, and root dependencies          |
+| `pnpm-workspace.yaml` | Workspace discovery under `apps/*`, `packages/*`, and `modules/*`                                  |
+| `pnpm-lock.yaml`      | pnpm dependency resolution                                                                         |
+| `package-lock.json`   | npm dependency resolution; present alongside the pnpm lockfile                                     |
+| `tsconfig.json`       | Shared strict TypeScript, NodeNext ESM, declaration, and source-map settings                       |
+| `.gitignore`          | Ignored secrets, dependencies, generated output, coverage, logs, editor files, and temporary files |
+| `.env.example`        | Names of environment settings recognized by the repository                                         |
+| `.env`                | Local environment values; ignored by Git and loaded by `@qbox/shared`                              |
+| `AGENTS.md`           | Operating instructions for AI coding agents                                                        |
+| `PROJECT_CHARTER.md`  | Repository engineering principles and definition of done                                           |
 
 ## Workspace configuration
 
@@ -298,13 +297,13 @@ Most workspace TypeScript configurations set `src` as `rootDir` and `dist` as `o
 
 ## Source configuration
 
-| File | Controls |
-| --- | --- |
-| `packages/shared/src/env.ts` | Loads the root `.env` and exposes parsed environment values |
-| `packages/shared/src/config/Configuration.ts` | Exposes a `Configuration` instance backed directly by `process.env` |
-| `packages/shared/src/config.ts` | Defines non-exported `AppConfig` application metadata and debug state |
-| `packages/logger/src/index.ts` | Configures logger level and base service metadata |
-| `apps/bot/src/bootstrap/environment.ts` | Defines an additional dotenv loader; currently unused |
+| File                                          | Controls                                                              |
+| --------------------------------------------- | --------------------------------------------------------------------- |
+| `packages/shared/src/env.ts`                  | Loads the root `.env` and exposes parsed environment values           |
+| `packages/shared/src/config/Configuration.ts` | Exposes a `Configuration` instance backed directly by `process.env`   |
+| `packages/shared/src/config.ts`               | Defines non-exported `AppConfig` application metadata and debug state |
+| `packages/logger/src/index.ts`                | Configures logger level and base service metadata                     |
+| `apps/bot/src/bootstrap/environment.ts`       | Defines an additional dotenv loader; currently unused                 |
 
 # Environment Variables
 
@@ -336,13 +335,13 @@ The repository uses pnpm workspaces and TypeScript compilation.
 
 ## Root commands
 
-| Command | Current behavior |
-| --- | --- |
-| `pnpm build` | Runs `pnpm -r build` across workspaces defining `build` |
-| `pnpm dev` | Runs application `dev` scripts in parallel |
-| `pnpm typecheck` | Runs workspace `typecheck` scripts where defined |
-| `pnpm test` | Runs the permission, Discord, and bot deployment Vitest suites |
-| `pnpm clean` | Removes generated `dist/` directories across TypeScript workspaces |
+| Command          | Current behavior                                                   |
+| ---------------- | ------------------------------------------------------------------ |
+| `pnpm build`     | Runs `pnpm -r build` across workspaces defining `build`            |
+| `pnpm dev`       | Runs application `dev` scripts in parallel                         |
+| `pnpm typecheck` | Runs workspace `typecheck` scripts where defined                   |
+| `pnpm test`      | Runs the permission, Discord, and bot deployment Vitest suites     |
+| `pnpm clean`     | Removes generated `dist/` directories across TypeScript workspaces |
 
 Workspace build scripts run `tsc`. For workspaces with configured output directories, compilation writes JavaScript, source maps, declaration files, and declaration maps to ignored `dist/` directories.
 
@@ -356,8 +355,6 @@ The following systems have repository locations or placeholder classes but no fu
 
 - API server: `apps/api/` does not create or listen with Fastify.
 - Background worker: `apps/worker/` does not create BullMQ or Redis workers.
-- Database service: `packages/database/` does not connect to a database.
-- Prisma integration: `packages/prisma/` exports nothing, and root `prisma/` contains no schema, migrations, or seeds.
 - OpenAI integration: `packages/openai/` does not construct or call an OpenAI client.
 - Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ.
 - FiveM/Qbox integration: `modules/fivem/` is empty.

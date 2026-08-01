@@ -176,21 +176,6 @@ export class PersistentPermissionService implements PermissionAuthorizer {
     now = new Date(),
   ): Promise<PermissionMutationOutcome> {
     this.validateMutation(mutation, now);
-    if (mutation.type === "revoke-assignment") {
-      const assignment = await this.repository.findAssignment(
-        mutation.assignmentId,
-      );
-      if (
-        assignment?.selector.type === "permission" &&
-        assignment.selector.permission === "platform.owner" &&
-        assignment.effect === "allow" &&
-        (await this.repository.countActiveOwners(now)) <= 1
-      ) {
-        throw new Error(
-          "The last active owner cannot be revoked through the general mutation service.",
-        );
-      }
-    }
     const audit: PermissionAuditInput = {
       correlationId: mutation.correlationId ?? randomUUID(),
       action: mutation.type,
@@ -389,6 +374,15 @@ export class PersistentPermissionService implements PermissionAuthorizer {
           "A principal cannot grant elevated platform permission to itself.",
         );
       }
+    } else {
+      if (mutation.assignmentId.trim().length === 0)
+        throw new Error(
+          "Permission assignment mutation requires an assignment ID.",
+        );
+      if (mutation.type === "expire-assignment" && mutation.expiresAt <= now)
+        throw new Error(
+          "Permission assignment expiration must be in the future.",
+        );
     }
   }
 

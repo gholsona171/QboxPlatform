@@ -42,13 +42,19 @@ afterAll(async () => {
 
 describe("permission foundation migration", () => {
   it("applies the committed migration to an empty database", async () => {
-    const migrations = await client.$queryRawUnsafe<Array<{ count: bigint }>>(
-      'SELECT count(*) AS "count" FROM "_prisma_migrations" WHERE "finished_at" IS NOT NULL AND "rolled_back_at" IS NULL',
+    const migrations = await client.$queryRawUnsafe<
+      Array<{ migration_name: string }>
+    >(
+      'SELECT "migration_name" FROM "_prisma_migrations" WHERE "finished_at" IS NOT NULL AND "rolled_back_at" IS NULL ORDER BY "migration_name"',
     );
     const tables = await client.$queryRawUnsafe<Array<{ table_name: string }>>(
       "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'permission_%'",
     );
-    expect(migrations[0]?.count).toBe(1n);
+    expect(migrations.map(({ migration_name }) => migration_name)).toEqual([
+      "20260731000000_permission_foundation",
+      "20260731230000_permission_repository_metadata",
+      "20260731233000_permission_assignment_lifecycle_actions",
+    ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",
       "permission_audit_events",

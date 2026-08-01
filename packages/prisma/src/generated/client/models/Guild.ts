@@ -45,6 +45,7 @@ export type GuildMaxAggregateOutputType = {
 export type GuildCountAggregateOutputType = {
   id: number
   discordGuildId: number
+  metadata: number
   enabled: number
   disabledAt: number
   createdAt: number
@@ -74,6 +75,7 @@ export type GuildMaxAggregateInputType = {
 export type GuildCountAggregateInputType = {
   id?: true
   discordGuildId?: true
+  metadata?: true
   enabled?: true
   disabledAt?: true
   createdAt?: true
@@ -156,6 +158,7 @@ export type GuildGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type GuildGroupByOutputType = {
   id: string
   discordGuildId: string
+  metadata: runtime.JsonValue
   enabled: boolean
   disabledAt: Date | null
   createdAt: Date
@@ -186,6 +189,7 @@ export type GuildWhereInput = {
   NOT?: Prisma.GuildWhereInput | Prisma.GuildWhereInput[]
   id?: Prisma.UuidFilter<"Guild"> | string
   discordGuildId?: Prisma.StringFilter<"Guild"> | string
+  metadata?: Prisma.JsonFilter<"Guild">
   enabled?: Prisma.BoolFilter<"Guild"> | boolean
   disabledAt?: Prisma.DateTimeNullableFilter<"Guild"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Guild"> | Date | string
@@ -198,6 +202,7 @@ export type GuildWhereInput = {
 export type GuildOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   discordGuildId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -213,6 +218,7 @@ export type GuildWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.GuildWhereInput | Prisma.GuildWhereInput[]
   OR?: Prisma.GuildWhereInput[]
   NOT?: Prisma.GuildWhereInput | Prisma.GuildWhereInput[]
+  metadata?: Prisma.JsonFilter<"Guild">
   enabled?: Prisma.BoolFilter<"Guild"> | boolean
   disabledAt?: Prisma.DateTimeNullableFilter<"Guild"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Guild"> | Date | string
@@ -225,6 +231,7 @@ export type GuildWhereUniqueInput = Prisma.AtLeast<{
 export type GuildOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   discordGuildId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -240,6 +247,7 @@ export type GuildScalarWhereWithAggregatesInput = {
   NOT?: Prisma.GuildScalarWhereWithAggregatesInput | Prisma.GuildScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Guild"> | string
   discordGuildId?: Prisma.StringWithAggregatesFilter<"Guild"> | string
+  metadata?: Prisma.JsonWithAggregatesFilter<"Guild">
   enabled?: Prisma.BoolWithAggregatesFilter<"Guild"> | boolean
   disabledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Guild"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Guild"> | Date | string
@@ -249,6 +257,7 @@ export type GuildScalarWhereWithAggregatesInput = {
 export type GuildCreateInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -261,6 +270,7 @@ export type GuildCreateInput = {
 export type GuildUncheckedCreateInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -273,6 +283,7 @@ export type GuildUncheckedCreateInput = {
 export type GuildUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -285,6 +296,7 @@ export type GuildUpdateInput = {
 export type GuildUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -297,6 +309,7 @@ export type GuildUncheckedUpdateInput = {
 export type GuildCreateManyInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -306,6 +319,7 @@ export type GuildCreateManyInput = {
 export type GuildUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -315,6 +329,7 @@ export type GuildUpdateManyMutationInput = {
 export type GuildUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -324,6 +339,7 @@ export type GuildUncheckedUpdateManyInput = {
 export type GuildCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   discordGuildId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -423,6 +439,7 @@ export type GuildUpdateOneWithoutAuditScopeEventsNestedInput = {
 export type GuildCreateWithoutPrincipalsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -434,6 +451,7 @@ export type GuildCreateWithoutPrincipalsInput = {
 export type GuildUncheckedCreateWithoutPrincipalsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -461,6 +479,7 @@ export type GuildUpdateToOneWithWhereWithoutPrincipalsInput = {
 export type GuildUpdateWithoutPrincipalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -472,6 +491,7 @@ export type GuildUpdateWithoutPrincipalsInput = {
 export type GuildUncheckedUpdateWithoutPrincipalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -483,6 +503,7 @@ export type GuildUncheckedUpdateWithoutPrincipalsInput = {
 export type GuildCreateWithoutAssignmentsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -494,6 +515,7 @@ export type GuildCreateWithoutAssignmentsInput = {
 export type GuildUncheckedCreateWithoutAssignmentsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -521,6 +543,7 @@ export type GuildUpdateToOneWithWhereWithoutAssignmentsInput = {
 export type GuildUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -532,6 +555,7 @@ export type GuildUpdateWithoutAssignmentsInput = {
 export type GuildUncheckedUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -543,6 +567,7 @@ export type GuildUncheckedUpdateWithoutAssignmentsInput = {
 export type GuildCreateWithoutAuditScopeEventsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -554,6 +579,7 @@ export type GuildCreateWithoutAuditScopeEventsInput = {
 export type GuildUncheckedCreateWithoutAuditScopeEventsInput = {
   id?: string
   discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -581,6 +607,7 @@ export type GuildUpdateToOneWithWhereWithoutAuditScopeEventsInput = {
 export type GuildUpdateWithoutAuditScopeEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +619,7 @@ export type GuildUpdateWithoutAuditScopeEventsInput = {
 export type GuildUncheckedUpdateWithoutAuditScopeEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -652,6 +680,7 @@ export type GuildCountOutputTypeCountAuditScopeEventsArgs<ExtArgs extends runtim
 export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   discordGuildId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -665,6 +694,7 @@ export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type GuildSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   discordGuildId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -674,6 +704,7 @@ export type GuildSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type GuildSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   discordGuildId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -683,13 +714,14 @@ export type GuildSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type GuildSelectScalar = {
   id?: boolean
   discordGuildId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GuildOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "discordGuildId" | "enabled" | "disabledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["guild"]>
+export type GuildOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "discordGuildId" | "metadata" | "enabled" | "disabledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["guild"]>
 export type GuildInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   principals?: boolean | Prisma.Guild$principalsArgs<ExtArgs>
   assignments?: boolean | Prisma.Guild$assignmentsArgs<ExtArgs>
@@ -709,6 +741,7 @@ export type $GuildPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     discordGuildId: string
+    metadata: runtime.JsonValue
     enabled: boolean
     disabledAt: Date | null
     createdAt: Date
@@ -1141,6 +1174,7 @@ export interface Prisma__GuildClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface GuildFieldRefs {
   readonly id: Prisma.FieldRef<"Guild", 'String'>
   readonly discordGuildId: Prisma.FieldRef<"Guild", 'String'>
+  readonly metadata: Prisma.FieldRef<"Guild", 'Json'>
   readonly enabled: Prisma.FieldRef<"Guild", 'Boolean'>
   readonly disabledAt: Prisma.FieldRef<"Guild", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Guild", 'DateTime'>

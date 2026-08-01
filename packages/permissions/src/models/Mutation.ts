@@ -60,9 +60,35 @@ export interface RevokePermissionAssignmentMutation extends PermissionMutationRe
   readonly assignmentId: string;
 }
 
+/** Disables an assignment without physically deleting its historical record. */
+export interface DisablePermissionAssignmentMutation extends PermissionMutationReason {
+  readonly type: "disable-assignment";
+  readonly actor: PermissionMutationActor;
+  readonly assignmentId: string;
+}
+
+/** Re-enables a previously disabled assignment through an audited mutation. */
+export interface EnablePermissionAssignmentMutation extends PermissionMutationReason {
+  readonly type: "enable-assignment";
+  readonly actor: PermissionMutationActor;
+  readonly assignmentId: string;
+}
+
+/** Changes assignment expiry through an audited mutation. */
+export interface ExpirePermissionAssignmentMutation extends PermissionMutationReason {
+  readonly type: "expire-assignment";
+  readonly actor: PermissionMutationActor;
+  readonly assignmentId: string;
+  readonly expiresAt: Date;
+}
+
 /** Mutation union designed for future mutation kinds without persistence leakage. */
 export type PermissionMutation =
-  SetPermissionAssignmentMutation | RevokePermissionAssignmentMutation;
+  | SetPermissionAssignmentMutation
+  | RevokePermissionAssignmentMutation
+  | DisablePermissionAssignmentMutation
+  | EnablePermissionAssignmentMutation
+  | ExpirePermissionAssignmentMutation;
 
 /**
  * Append-only audit input written atomically with a mutation by a repository.

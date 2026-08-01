@@ -35,7 +35,10 @@ export type PermissionAssignmentEffect = (typeof PermissionAssignmentEffect)[key
 
 export const PermissionAuditAction = {
   SET_ASSIGNMENT: 'SET_ASSIGNMENT',
-  REVOKE_ASSIGNMENT: 'REVOKE_ASSIGNMENT'
+  REVOKE_ASSIGNMENT: 'REVOKE_ASSIGNMENT',
+  DISABLE_ASSIGNMENT: 'DISABLE_ASSIGNMENT',
+  ENABLE_ASSIGNMENT: 'ENABLE_ASSIGNMENT',
+  EXPIRE_ASSIGNMENT: 'EXPIRE_ASSIGNMENT'
 } as const
 
 export type PermissionAuditAction = (typeof PermissionAuditAction)[keyof typeof PermissionAuditAction]

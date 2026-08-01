@@ -51,6 +51,7 @@ export type PermissionPrincipalCountAggregateOutputType = {
   type: number
   guildId: number
   externalId: number
+  metadata: number
   enabled: number
   disabledAt: number
   createdAt: number
@@ -86,6 +87,7 @@ export type PermissionPrincipalCountAggregateInputType = {
   type?: true
   guildId?: true
   externalId?: true
+  metadata?: true
   enabled?: true
   disabledAt?: true
   createdAt?: true
@@ -170,6 +172,7 @@ export type PermissionPrincipalGroupByOutputType = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata: runtime.JsonValue
   enabled: boolean
   disabledAt: Date | null
   createdAt: Date
@@ -202,6 +205,7 @@ export type PermissionPrincipalWhereInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFilter<"PermissionPrincipal"> | $Enums.PermissionPrincipalType
   guildId?: Prisma.UuidFilter<"PermissionPrincipal"> | string
   externalId?: Prisma.StringFilter<"PermissionPrincipal"> | string
+  metadata?: Prisma.JsonFilter<"PermissionPrincipal">
   enabled?: Prisma.BoolFilter<"PermissionPrincipal"> | boolean
   disabledAt?: Prisma.DateTimeNullableFilter<"PermissionPrincipal"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PermissionPrincipal"> | Date | string
@@ -217,6 +221,7 @@ export type PermissionPrincipalOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   guildId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -236,6 +241,7 @@ export type PermissionPrincipalWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumPermissionPrincipalTypeFilter<"PermissionPrincipal"> | $Enums.PermissionPrincipalType
   guildId?: Prisma.UuidFilter<"PermissionPrincipal"> | string
   externalId?: Prisma.StringFilter<"PermissionPrincipal"> | string
+  metadata?: Prisma.JsonFilter<"PermissionPrincipal">
   enabled?: Prisma.BoolFilter<"PermissionPrincipal"> | boolean
   disabledAt?: Prisma.DateTimeNullableFilter<"PermissionPrincipal"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PermissionPrincipal"> | Date | string
@@ -251,6 +257,7 @@ export type PermissionPrincipalOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   guildId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -268,6 +275,7 @@ export type PermissionPrincipalScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumPermissionPrincipalTypeWithAggregatesFilter<"PermissionPrincipal"> | $Enums.PermissionPrincipalType
   guildId?: Prisma.UuidWithAggregatesFilter<"PermissionPrincipal"> | string
   externalId?: Prisma.StringWithAggregatesFilter<"PermissionPrincipal"> | string
+  metadata?: Prisma.JsonWithAggregatesFilter<"PermissionPrincipal">
   enabled?: Prisma.BoolWithAggregatesFilter<"PermissionPrincipal"> | boolean
   disabledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PermissionPrincipal"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PermissionPrincipal"> | Date | string
@@ -278,6 +286,7 @@ export type PermissionPrincipalCreateInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -293,6 +302,7 @@ export type PermissionPrincipalUncheckedCreateInput = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -306,6 +316,7 @@ export type PermissionPrincipalUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -321,6 +332,7 @@ export type PermissionPrincipalUncheckedUpdateInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -335,6 +347,7 @@ export type PermissionPrincipalCreateManyInput = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -345,6 +358,7 @@ export type PermissionPrincipalUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -356,6 +370,7 @@ export type PermissionPrincipalUncheckedUpdateManyInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,6 +398,7 @@ export type PermissionPrincipalCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   guildId?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   disabledAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -517,6 +533,7 @@ export type PermissionPrincipalCreateWithoutGuildInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -530,6 +547,7 @@ export type PermissionPrincipalUncheckedCreateWithoutGuildInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -573,6 +591,7 @@ export type PermissionPrincipalScalarWhereInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFilter<"PermissionPrincipal"> | $Enums.PermissionPrincipalType
   guildId?: Prisma.UuidFilter<"PermissionPrincipal"> | string
   externalId?: Prisma.StringFilter<"PermissionPrincipal"> | string
+  metadata?: Prisma.JsonFilter<"PermissionPrincipal">
   enabled?: Prisma.BoolFilter<"PermissionPrincipal"> | boolean
   disabledAt?: Prisma.DateTimeNullableFilter<"PermissionPrincipal"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PermissionPrincipal"> | Date | string
@@ -583,6 +602,7 @@ export type PermissionPrincipalCreateWithoutAssignmentsInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -597,6 +617,7 @@ export type PermissionPrincipalUncheckedCreateWithoutAssignmentsInput = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -625,6 +646,7 @@ export type PermissionPrincipalUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -639,6 +661,7 @@ export type PermissionPrincipalUncheckedUpdateWithoutAssignmentsInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -651,6 +674,7 @@ export type PermissionPrincipalCreateWithoutAuditActorEventsInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -665,6 +689,7 @@ export type PermissionPrincipalUncheckedCreateWithoutAuditActorEventsInput = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -682,6 +707,7 @@ export type PermissionPrincipalCreateWithoutAuditTargetEventsInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -696,6 +722,7 @@ export type PermissionPrincipalUncheckedCreateWithoutAuditTargetEventsInput = {
   type: $Enums.PermissionPrincipalType
   guildId: string
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -724,6 +751,7 @@ export type PermissionPrincipalUpdateWithoutAuditActorEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,6 +766,7 @@ export type PermissionPrincipalUncheckedUpdateWithoutAuditActorEventsInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -761,6 +790,7 @@ export type PermissionPrincipalUpdateWithoutAuditTargetEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -775,6 +805,7 @@ export type PermissionPrincipalUncheckedUpdateWithoutAuditTargetEventsInput = {
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -787,6 +818,7 @@ export type PermissionPrincipalCreateManyGuildInput = {
   id?: string
   type: $Enums.PermissionPrincipalType
   externalId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: boolean
   disabledAt?: Date | string | null
   createdAt?: Date | string
@@ -797,6 +829,7 @@ export type PermissionPrincipalUpdateWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -810,6 +843,7 @@ export type PermissionPrincipalUncheckedUpdateWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -823,6 +857,7 @@ export type PermissionPrincipalUncheckedUpdateManyWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType
   externalId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -883,6 +918,7 @@ export type PermissionPrincipalSelect<ExtArgs extends runtime.Types.Extensions.I
   type?: boolean
   guildId?: boolean
   externalId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -899,6 +935,7 @@ export type PermissionPrincipalSelectCreateManyAndReturn<ExtArgs extends runtime
   type?: boolean
   guildId?: boolean
   externalId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -911,6 +948,7 @@ export type PermissionPrincipalSelectUpdateManyAndReturn<ExtArgs extends runtime
   type?: boolean
   guildId?: boolean
   externalId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
@@ -923,13 +961,14 @@ export type PermissionPrincipalSelectScalar = {
   type?: boolean
   guildId?: boolean
   externalId?: boolean
+  metadata?: boolean
   enabled?: boolean
   disabledAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PermissionPrincipalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "guildId" | "externalId" | "enabled" | "disabledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["permissionPrincipal"]>
+export type PermissionPrincipalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "type" | "guildId" | "externalId" | "metadata" | "enabled" | "disabledAt" | "createdAt" | "updatedAt", ExtArgs["result"]["permissionPrincipal"]>
 export type PermissionPrincipalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.PermissionPrincipal$assignmentsArgs<ExtArgs>
@@ -957,6 +996,7 @@ export type $PermissionPrincipalPayload<ExtArgs extends runtime.Types.Extensions
     type: $Enums.PermissionPrincipalType
     guildId: string
     externalId: string
+    metadata: runtime.JsonValue
     enabled: boolean
     disabledAt: Date | null
     createdAt: Date
@@ -1392,6 +1432,7 @@ export interface PermissionPrincipalFieldRefs {
   readonly type: Prisma.FieldRef<"PermissionPrincipal", 'PermissionPrincipalType'>
   readonly guildId: Prisma.FieldRef<"PermissionPrincipal", 'String'>
   readonly externalId: Prisma.FieldRef<"PermissionPrincipal", 'String'>
+  readonly metadata: Prisma.FieldRef<"PermissionPrincipal", 'Json'>
   readonly enabled: Prisma.FieldRef<"PermissionPrincipal", 'Boolean'>
   readonly disabledAt: Prisma.FieldRef<"PermissionPrincipal", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"PermissionPrincipal", 'DateTime'>

@@ -34,3 +34,22 @@ export interface PermissionCache {
   invalidate(scopes: readonly PermissionScope[]): Promise<void>;
   close?(): Promise<void>;
 }
+
+/** Cache-invalidation message emitted after a committed permission mutation. */
+export interface PermissionCacheInvalidationEvent {
+  readonly scopes: readonly PermissionScope[];
+  readonly occurredAt: Date;
+  readonly correlationId?: string;
+}
+
+/** Publisher boundary supporting process-local now and distributed events later. */
+export interface PermissionCacheInvalidationPublisher {
+  publish(event: PermissionCacheInvalidationEvent): Promise<void>;
+}
+
+/** Subscription boundary used by cache adapters without transport coupling. */
+export interface PermissionCacheInvalidationSubscriber {
+  subscribe(
+    listener: (event: PermissionCacheInvalidationEvent) => Promise<void>,
+  ): () => void;
+}

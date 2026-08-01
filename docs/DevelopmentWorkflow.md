@@ -162,6 +162,8 @@ pnpm --filter @qbox/prisma prisma:migrate:deploy
 pnpm test:database
 ```
 
+The bot runtime also requires `DATABASE_URL`. On startup it connects through `@qbox/database`, validates readiness, synchronizes the compiled permission catalog, and only then starts Discord. Connection strings are redacted from diagnostics.
+
 The suite refuses destructive cleanup unless the database name contains `test`. It never runs `migrate reset` or `db push`. The `postgres-test` data directory is a container-local tmpfs and is disposable; the `postgres-dev` service instead uses the named `qbox-postgres-dev` volume and database `qbox_permissions_dev` on loopback port 54329.
 
 Create new migrations against a disposable development database, inspect the SQL before applying it, and commit migration history. CI uses `prisma migrate deploy`; production must do the same only after a backup and migration review. Never edit a migration that has been applied to a shared environment.

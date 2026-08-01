@@ -26,8 +26,11 @@ enum PermissionAssignmentEffect {
 }
 
 enum PermissionAuditAction {
-  SET_ASSIGNMENT    @map("set-assignment")
-  REVOKE_ASSIGNMENT @map("revoke-assignment")
+  SET_ASSIGNMENT     @map("set-assignment")
+  REVOKE_ASSIGNMENT  @map("revoke-assignment")
+  DISABLE_ASSIGNMENT @map("disable-assignment")
+  ENABLE_ASSIGNMENT  @map("enable-assignment")
+  EXPIRE_ASSIGNMENT  @map("expire-assignment")
 }
 
 enum PermissionMutationReasonCode {
@@ -48,6 +51,7 @@ enum PermissionAuditActorType {
 model Guild {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   discordGuildId String    @unique(map: "guild_discord_guild_id_key") @map("discord_guild_id")
+  metadata       Json      @default("{}") @db.JsonB
   enabled        Boolean   @default(true)
   disabledAt     DateTime? @map("disabled_at") @db.Timestamptz(3)
   createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -65,6 +69,7 @@ model PermissionPrincipal {
   type       PermissionPrincipalType
   guildId    String                  @map("guild_id") @db.Uuid
   externalId String                  @map("external_id")
+  metadata   Json                    @default("{}") @db.JsonB
   enabled    Boolean                 @default(true)
   disabledAt DateTime?               @map("disabled_at") @db.Timestamptz(3)
   createdAt  DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)

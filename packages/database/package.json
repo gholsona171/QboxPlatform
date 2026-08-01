@@ -5,10 +5,15 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "dependencies": {
+    "@qbox/permissions": "workspace:*",
+    "@qbox/prisma": "workspace:*"
+  },
   "scripts": {
     "build": "tsc",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.integration.json",
     "test": "vitest run test",
+    "test:integration": "vitest run --dir integration",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   }
 }

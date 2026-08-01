@@ -193,7 +193,7 @@ Responsibilities:
 - Provide process-local in-memory adapters for domain testing.
 - Preserve the deprecated synchronous role-grant `PermissionService` only for legacy package compatibility tests; Discord uses `PermissionAuthorizer`.
 
-It has no external package dependencies and no persistence lifecycle. No database synchronization, Prisma repository, or Redis adapter exists. A process-local factory supplies the async authorizer and environment compatibility overlay to Discord without resetting global singleton state. See `docs/PermissionDomain.md` for the implemented domain contract.
+It has no external package dependencies and no persistence lifecycle. `@qbox/database` implements its repository ports; no Redis adapter exists. The bot supplies the repository-backed authorizer and environment compatibility overlay to Discord without resetting global singleton state. See `docs/PermissionDomain.md` and `docs/PersistentPermissionRepository.md`.
 
 ## Shared package
 
@@ -213,15 +213,15 @@ Environment loading happens as an import-time side effect rather than through an
 
 Package: `@qbox/database`
 
-Current responsibility: owns the authoritative typed PostgreSQL configuration value object, redacted diagnostics, pure lifecycle coordination, health/readiness contracts, transaction/client-factory ports, and the ordinary soft-delete policy for future permission infrastructure.
+Current responsibility: owns the authoritative typed PostgreSQL configuration value object, lifecycle coordination, health/readiness contracts, Prisma-backed permission repositories, transaction boundaries, and in-memory cache invalidation adapter.
 
-`DatabaseService` uses an injected `ClientFactory`; it does not connect to PostgreSQL and has no Prisma dependency in this phase. It reports `LIVE`, `READY`, or `DEGRADED`, rejects database readiness until a client starts, and attempts client cleanup after startup failure. The obsolete console-only singleton has been removed.
+`DatabaseService` uses an injected `ClientFactory`, reports `LIVE`, `READY`, or `DEGRADED`, rejects readiness until its client starts, and attempts cleanup after startup failure. `PrismaPermissionPersistenceClient` owns one injected Prisma client and repository collection for the process lifecycle.
 
-`@qbox/database` is the future application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root schema and migration tooling, committed ESM generated client, disconnected PostgreSQL client factory, and schema integration tests. It contains no repository adapters or real database health query. See `docs/DatabaseDecisionRecord.md` and `docs/DatabaseFoundationArchitectureReview.md`.
+`@qbox/database` is the application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root schema and migration tooling, committed ESM generated client, and disconnected PostgreSQL client factory. Repository adapters and the readiness probe remain in `@qbox/database`. See `docs/DatabaseDecisionRecord.md`, `docs/DatabaseFoundationArchitectureReview.md`, and `docs/PersistentPermissionRepository.md`.
 
 The canonical schema is `prisma/schema.prisma`. It contains the PostgreSQL datasource, `prisma-client` generator, and initial persistent-permission models. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
 
-The package declares no dependencies.
+The package depends on `@qbox/permissions` and `@qbox/prisma` through workspace boundaries.
 
 ## Prisma package
 

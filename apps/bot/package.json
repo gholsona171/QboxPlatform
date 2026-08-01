@@ -20,8 +20,10 @@
   },
   "dependencies": {
     "@qbox/core": "workspace:*",
+    "@qbox/database": "workspace:*",
     "@qbox/discord": "workspace:*",
     "@qbox/logger": "workspace:*",
+    "@qbox/permissions": "workspace:*",
     "@qbox/shared": "workspace:*"
   }
 }
