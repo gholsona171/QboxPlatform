@@ -35,6 +35,8 @@ Discord command implementation filenames end in `.command.ts`. Each file exports
 
 Every Discord command declares an explicit `policy` covering execution context, response behavior, concurrency, and any permission or cooldown requirements. Command implementations respond through the supplied execution-context helpers so public/ephemeral and immediate/deferred behavior remains centralized.
 
+Command definitions use Discord.js builders directly. Execution code reads values through `context.options` and routes subcommands through `context.route`; it should not cast raw option values or expose Discord.js resolver errors to users.
+
 ## File organization
 
 - Executable application startup belongs in `apps/<application>/src/index.ts`.

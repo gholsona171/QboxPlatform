@@ -110,6 +110,62 @@ Existing commands:
 
 `DiscordCommand` defines chat-input metadata, a required execution policy, and execution through a context that supplies the interaction, abort signal, and policy-aware response helpers. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands and policies before `CommandRegistry` atomically registers the complete set. `CommandRegistry` enforces context, authorization, cooldown, and concurrency policies. `DiscordInteractionHandler` records non-secret interaction context, tracks active work, rejects new work during shutdown, and reports failures through an ephemeral reply or follow-up.
 
+### Command authoring example
+
+Discord.js builders remain the command-definition API. Required options precede optional options inside each subcommand. Execution uses the typed option reader and route dispatcher:
+
+```ts
+import { SlashCommandBuilder } from "discord.js";
+import type {
+  CommandExecutionContext,
+  DiscordCommand
+} from "@qbox/discord";
+
+export class ExampleCommand implements DiscordCommand {
+  public readonly type = "chat-input" as const;
+
+  public readonly data = new SlashCommandBuilder()
+    .setName("example")
+    .setDescription("Demonstrates typed command input.")
+    .addSubcommand((subcommand) => subcommand
+      .setName("create")
+      .setDescription("Creates an example.")
+      .addStringOption((option) => option
+        .setName("reason")
+        .setDescription("Why the example is needed.")
+        .setRequired(true))
+      .addIntegerOption((option) => option
+        .setName("duration")
+        .setDescription("Optional duration in minutes.")));
+
+  public readonly policy = {
+    contexts: "guild",
+    response: {
+      acknowledgement: "immediate",
+      visibility: "ephemeral"
+    },
+    concurrency: "user"
+  } as const;
+
+  public async execute(context: CommandExecutionContext): Promise<void> {
+    await context.route.dispatch({
+      create: async () => {
+        const reason = context.options.requiredString("reason");
+        const duration = context.options.optionalInteger("duration");
+
+        await context.reply({
+          content: duration
+            ? `${reason} (${duration} minutes)`
+            : reason
+        });
+      }
+    });
+  }
+}
+```
+
+`CommandOptionReader` supports string, integer, number, boolean, user, role, channel, mentionable, and attachment options with required and optional accessors. Optional accessors return `undefined`. `CommandRoute` uses `root`, `subcommand`, or `group/subcommand` keys. Missing inputs and unsupported routes throw `CommandInputError`; the interaction handler returns its safe message ephemerally without exposing internal details.
+
 ## Logger package
 
 Package: `@qbox/logger`

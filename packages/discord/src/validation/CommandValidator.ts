@@ -1,3 +1,5 @@
+import { ApplicationCommandOptionType } from "discord.js";
+
 import { PERMISSIONS } from "@qbox/permissions";
 import type { Permission } from "@qbox/permissions";
 
@@ -47,7 +49,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function readCommandData(
   value: Record<string, unknown>
-): { name: string; description: string } | undefined {
+): {
+  name: string;
+  description: string;
+  options: unknown;
+} | undefined {
   const data = value.data;
 
   if (!isRecord(data) || typeof data.toJSON !== "function") {
@@ -67,7 +73,8 @@ function readCommandData(
 
     return {
       name: json.name,
-      description: json.description
+      description: json.description,
+      options: json.options
     };
   } catch {
     return undefined;
@@ -174,6 +181,8 @@ export class CommandValidator {
           message: "Command description must contain between 1 and 100 characters."
         });
       }
+
+      failures.push(...this.validateOptions(file, data.options));
     }
 
     if (typeof candidate.execute !== "function") {
@@ -216,6 +225,153 @@ export class CommandValidator {
     }
 
     return failures;
+  }
+
+  private validateOptions(
+    file: string,
+    value: unknown
+  ): CommandDiagnostic[] {
+    if (value === undefined) {
+      return [];
+    }
+
+    if (!Array.isArray(value)) {
+      return [{
+        file,
+        message: "Command options must be an array."
+      }];
+    }
+
+    const failures: CommandDiagnostic[] = [];
+    const optionKinds = value
+      .filter(isRecord)
+      .map((option) => option.type);
+    const hasRoutes = optionKinds.some((type) =>
+      type === ApplicationCommandOptionType.Subcommand ||
+      type === ApplicationCommandOptionType.SubcommandGroup);
+    const hasValues = optionKinds.some((type) =>
+      type !== ApplicationCommandOptionType.Subcommand &&
+      type !== ApplicationCommandOptionType.SubcommandGroup);
+
+    if (hasRoutes && hasValues) {
+      failures.push({
+        file,
+        message: "Top-level value options cannot be mixed with subcommands or subcommand groups."
+      });
+    }
+
+    this.validateOptionList(file, value, "command", "top", failures);
+    return failures;
+  }
+
+  private validateOptionList(
+    file: string,
+    options: readonly unknown[],
+    location: string,
+    level: "top" | "group" | "subcommand",
+    failures: CommandDiagnostic[]
+  ): void {
+    const names = new Set<string>();
+    let optionalValueSeen = false;
+
+    for (const optionValue of options) {
+      if (!isRecord(optionValue)) {
+        failures.push({
+          file,
+          message: `Option in '${location}' must be an object.`
+        });
+        continue;
+      }
+
+      const name = optionValue.name;
+      const type = optionValue.type;
+
+      if (typeof name !== "string" || !commandNamePattern.test(name)) {
+        failures.push({
+          file,
+          message: `Option name '${String(name)}' in '${location}' is invalid.`
+        });
+      } else if (names.has(name)) {
+        failures.push({
+          file,
+          message: `Option name '${name}' is duplicated in '${location}'.`
+        });
+      } else {
+        names.add(name);
+      }
+
+      if (
+        typeof type !== "number" ||
+        type < ApplicationCommandOptionType.Subcommand ||
+        type > ApplicationCommandOptionType.Attachment
+      ) {
+        failures.push({
+          file,
+          message: `Option '${String(name)}' uses unsupported type '${String(type)}'.`
+        });
+        continue;
+      }
+
+      const isSubcommand = type === ApplicationCommandOptionType.Subcommand;
+      const isGroup = type === ApplicationCommandOptionType.SubcommandGroup;
+
+      if (level === "group" && !isSubcommand) {
+        failures.push({
+          file,
+          message: `Subcommand group '${location}' may contain only subcommands.`
+        });
+      }
+
+      if (level === "subcommand" && (isSubcommand || isGroup)) {
+        failures.push({
+          file,
+          message: `Subcommand '${location}' cannot contain nested command routes.`
+        });
+      }
+
+      if (isSubcommand || isGroup) {
+        const children = optionValue.options;
+
+        if (children !== undefined && !Array.isArray(children)) {
+          failures.push({
+            file,
+            message: `Options for command route '${String(name)}' must be an array.`
+          });
+          continue;
+        }
+
+        if (isGroup && (!Array.isArray(children) || children.length === 0)) {
+          failures.push({
+            file,
+            message: `Subcommand group '${String(name)}' must contain at least one subcommand.`
+          });
+          continue;
+        }
+
+        if (Array.isArray(children)) {
+          this.validateOptionList(
+            file,
+            children,
+            typeof name === "string" ? name : location,
+            isGroup ? "group" : "subcommand",
+            failures
+          );
+        }
+
+        continue;
+      }
+
+      const required = optionValue.required === true;
+
+      if (!required) {
+        optionalValueSeen = true;
+      } else if (optionalValueSeen) {
+        failures.push({
+          file,
+          message: `Required option '${String(name)}' must precede optional options in '${location}'.`
+        });
+      }
+    }
   }
 
   private validatePolicy(

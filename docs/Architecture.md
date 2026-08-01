@@ -77,6 +77,8 @@ Normal bot startup does not deploy or replace Discord application commands. Comm
 
 `DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and applies each command's immediate/deferred and public/ephemeral response policy. `CommandRegistry` applies explicit guild/DM scope, all/any permission evaluation, administrator override, cooldown, and concurrency policies before invoking a command.
 
+Command definitions continue to use Discord.js `SlashCommandBuilder`. At execution time, `CommandOptionReader` adds required/optional typed accessors over Discord.js's resolver, while `CommandRoute` exposes the selected root, subcommand, or grouped-subcommand route. Invalid input raises `CommandInputError`, which receives a safe ephemeral response and is logged as an expected rejection rather than an internal failure.
+
 ## Shutdown flow
 
 On `SIGINT` or `SIGTERM`, the bot calls `PlatformKernel.stop()` once:

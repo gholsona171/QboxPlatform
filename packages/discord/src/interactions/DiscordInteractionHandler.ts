@@ -13,6 +13,11 @@ import type {
   CommandReplyOptions,
   DiscordCommand
 } from "../commands/DiscordCommand.js";
+import {
+  CommandInputError,
+  CommandOptionReader,
+  CommandRoute
+} from "../commands/CommandInput.js";
 
 interface InteractionLogger {
   debug(context: object, message: string): void;
@@ -249,20 +254,37 @@ export class DiscordInteractionHandler {
       );
     } catch (error) {
       controller.abort();
-      this.log.error(
-        {
-          ...logContext,
-          err: error,
-          stack: error instanceof Error ? error.stack : undefined,
-          executionDurationMs: performance.now() - startedAt,
-          deferred: interaction.deferred,
-          replied: interaction.replied
-        },
-        "Discord command execution failed."
-      );
+
+      if (error instanceof CommandInputError) {
+        this.log.warn(
+          {
+            ...logContext,
+            inputError: error.message,
+            executionDurationMs: performance.now() - startedAt,
+            deferred: interaction.deferred,
+            replied: interaction.replied
+          },
+          "Discord command input was rejected."
+        );
+      } else {
+        this.log.error(
+          {
+            ...logContext,
+            err: error,
+            stack: error instanceof Error ? error.stack : undefined,
+            executionDurationMs: performance.now() - startedAt,
+            deferred: interaction.deferred,
+            replied: interaction.replied
+          },
+          "Discord command execution failed."
+        );
+      }
+
       await this.sendErrorResponse(
         interaction,
-        "Something went wrong while running that command.",
+        error instanceof CommandInputError
+          ? error.userMessage
+          : "Something went wrong while running that command.",
         logContext
       );
     } finally {
@@ -283,6 +305,8 @@ export class DiscordInteractionHandler {
     return {
       interaction,
       signal,
+      options: new CommandOptionReader(interaction.options),
+      route: new CommandRoute(interaction.options),
       reply: async (options: CommandReplyOptions): Promise<void> => {
         if (interaction.deferred && !interaction.replied) {
           await interaction.editReply(options);

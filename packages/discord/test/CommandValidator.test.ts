@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from "discord.js";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -7,7 +8,13 @@ import {
 import type {
   DiscoveredCommandModule
 } from "../src/validation/CommandValidator.js";
-import { createCommand, defaultPolicy } from "./CommandTestFactory.js";
+import {
+  createCommand,
+  createGroupedSubcommandCommand,
+  createOptionsCommand,
+  createSubcommandCommand,
+  defaultPolicy
+} from "./CommandTestFactory.js";
 
 function moduleFor(file: string, command: unknown): DiscoveredCommandModule {
   return { file, exports: { command } };
@@ -24,6 +31,19 @@ function validateFailure(
   }
 
   throw new Error("Expected command validation to fail.");
+}
+
+function commandWithOptions(options: readonly unknown[]): unknown {
+  return {
+    ...createCommand("structured"),
+    data: {
+      toJSON: () => ({
+        name: "structured",
+        description: "Tests structured command metadata.",
+        options
+      })
+    }
+  };
 }
 
 describe("CommandValidator", () => {
@@ -180,5 +200,106 @@ describe("CommandValidator", () => {
     ]);
 
     expect(result.commands).toEqual([command]);
+  });
+
+  it("accepts ordinary options in required-first order", () => {
+    const result = new CommandValidator().validate([
+      moduleFor("Structured.command.ts", commandWithOptions([
+        {
+          type: ApplicationCommandOptionType.String,
+          name: "reason",
+          description: "Required reason.",
+          required: true
+        },
+        {
+          type: ApplicationCommandOptionType.Integer,
+          name: "duration",
+          description: "Optional duration.",
+          required: false
+        }
+      ]))
+    ]);
+
+    expect(result.failures).toEqual([]);
+  });
+
+  it.each([
+    ["duplicate option names", [
+      { type: ApplicationCommandOptionType.String, name: "value" },
+      { type: ApplicationCommandOptionType.Boolean, name: "value" }
+    ]],
+    ["required options after optional options", [
+      { type: ApplicationCommandOptionType.String, name: "optional" },
+      { type: ApplicationCommandOptionType.String, name: "required", required: true }
+    ]],
+    ["mixed values and subcommands", [
+      { type: ApplicationCommandOptionType.String, name: "value" },
+      { type: ApplicationCommandOptionType.Subcommand, name: "create", options: [] }
+    ]],
+    ["unsupported option types", [
+      { type: 99, name: "unsupported" }
+    ]],
+    ["nested subcommands", [
+      {
+        type: ApplicationCommandOptionType.Subcommand,
+        name: "outer",
+        options: [{
+          type: ApplicationCommandOptionType.Subcommand,
+          name: "inner",
+          options: []
+        }]
+      }
+    ]],
+    ["duplicate subcommands", [{
+      type: ApplicationCommandOptionType.SubcommandGroup,
+      name: "staff",
+      options: [
+        { type: ApplicationCommandOptionType.Subcommand, name: "add" },
+        { type: ApplicationCommandOptionType.Subcommand, name: "add" }
+      ]
+    }]]
+  ])("rejects %s", (_label, options) => {
+    const error = validateFailure([
+      moduleFor("Structured.command.ts", commandWithOptions(options))
+    ]);
+
+    expect(error.failures.length).toBeGreaterThan(0);
+  });
+
+  it("accepts subcommands and one supported subcommand-group level", () => {
+    const result = new CommandValidator().validate([
+      moduleFor("Structured.command.ts", commandWithOptions([
+        {
+          type: ApplicationCommandOptionType.Subcommand,
+          name: "status",
+          options: []
+        },
+        {
+          type: ApplicationCommandOptionType.SubcommandGroup,
+          name: "staff",
+          options: [{
+            type: ApplicationCommandOptionType.Subcommand,
+            name: "add",
+            options: [{
+              type: ApplicationCommandOptionType.User,
+              name: "target",
+              required: true
+            }]
+          }]
+        }
+      ]))
+    ]);
+
+    expect(result.failures).toEqual([]);
+  });
+
+  it("validates reusable option and route fixtures", () => {
+    const result = new CommandValidator().validate([
+      moduleFor("Options.command.ts", createOptionsCommand()),
+      moduleFor("Subcommand.command.ts", createSubcommandCommand()),
+      moduleFor("Grouped.command.ts", createGroupedSubcommandCommand())
+    ]);
+
+    expect(result.commands).toHaveLength(3);
   });
 });

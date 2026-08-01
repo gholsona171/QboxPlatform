@@ -6,6 +6,11 @@ import type { SlashCommandBuilder } from "discord.js";
 
 import type { Permission } from "@qbox/permissions";
 
+import type {
+  CommandOptionReader,
+  CommandRoute
+} from "./CommandInput.js";
+
 export type CommandContextPolicy = "guild" | "dm" | "both";
 export type PermissionEvaluationMode = "all" | "any";
 export type ResponseAcknowledgement = "immediate" | "deferred";
@@ -46,6 +51,8 @@ export type CommandReplyOptions = InteractionEditReplyOptions;
 export interface CommandExecutionContext {
   readonly interaction: ChatInputCommandInteraction;
   readonly signal: AbortSignal;
+  readonly options: CommandOptionReader;
+  readonly route: CommandRoute;
   reply(options: CommandReplyOptions): Promise<void>;
   editReply(options: InteractionEditReplyOptions): Promise<void>;
 }

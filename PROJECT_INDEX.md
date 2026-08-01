@@ -49,7 +49,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 - **Location:** `packages/discord/`
 - **Responsibility:** Discord runtime module, Discord.js client lifecycle, slash-command discovery, registration, dispatch, and permission enforcement.
 - **Declared dependencies:** `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, `discord.js`
-- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `DiscordInteractionHandler`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
+- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `CommandOptionReader`, `CommandRoute`, `CommandInputError`, `DiscordInteractionHandler`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
 
 ## `@qbox/logger`
 
@@ -185,7 +185,7 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 - **Defined in:** `packages/discord/src/validation/CommandValidator.ts`
 - **Instantiated in:** `CommandLoader` by default.
-- **Purpose:** Validates file identity, explicit exports, command type, metadata, description, aliases, permissions, execution handlers, and cross-command name uniqueness before registration.
+- **Purpose:** Validates file identity, explicit exports, command type, metadata, option and subcommand structure, aliases, policies, execution handlers, and cross-command name uniqueness before registration.
 
 ## `PermissionService`
 

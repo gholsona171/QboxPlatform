@@ -13,6 +13,7 @@ import type {
 } from "../src/commands/DiscordCommand.js";
 import { CommandRegistry } from "../src/commands/CommandRegistry.js";
 import { DiscordInteractionHandler } from "../src/interactions/DiscordInteractionHandler.js";
+import { CommandInputError } from "../src/commands/CommandInput.js";
 import { PingCommand } from "../src/commands/Ping.command.js";
 import { createCommand, defaultPolicy } from "./CommandTestFactory.js";
 
@@ -54,6 +55,10 @@ function createChatInputInteraction(
     inGuild: () => guildId !== null,
     user: { id: "user-1" },
     member: { roles: { cache: new Map<string, unknown>() } },
+    options: {
+      getSubcommand: () => null,
+      getSubcommandGroup: () => null
+    },
     isChatInputCommand: () => true,
     get replied() { return state.replied; },
     get deferred() { return state.deferred; },
@@ -144,6 +149,52 @@ describe("DiscordInteractionHandler responses", () => {
       content: "Something went wrong while running that command.",
       ephemeral: true
     });
+  });
+
+  it("returns an expected input error without logging an internal failure", async () => {
+    const command = createCommand("input", {
+      execute: async () => {
+        throw new CommandInputError("Choose a valid target.");
+      }
+    });
+    const { handler, log } = createHandler([command]);
+    const { interaction, reply } = createChatInputInteraction("input");
+
+    await handler.handle(interaction);
+
+    expect(reply).toHaveBeenCalledWith({
+      content: "Choose a valid target.",
+      ephemeral: true
+    });
+    expect(log.warn).toHaveBeenCalledOnce();
+    expect(log.error).not.toHaveBeenCalled();
+  });
+
+  it("returns an expected input error after a deferred response", async () => {
+    const command = createCommand("deferred-input", {
+      policy: {
+        ...defaultPolicy,
+        response: {
+          acknowledgement: "deferred",
+          visibility: "public"
+        }
+      },
+      execute: async () => {
+        throw new CommandInputError("Provide the required value.");
+      }
+    });
+    const { handler, log } = createHandler([command]);
+    const { interaction, deferReply, followUp } =
+      createChatInputInteraction("deferred-input");
+
+    await handler.handle(interaction);
+
+    expect(deferReply).toHaveBeenCalledWith({ ephemeral: false });
+    expect(followUp).toHaveBeenCalledWith({
+      content: "Provide the required value.",
+      ephemeral: true
+    });
+    expect(log.error).not.toHaveBeenCalled();
   });
 
   it("ignores unsupported interaction types", async () => {

@@ -28,3 +28,43 @@ export function createCommand(
     ...overrides
   };
 }
+
+export function createOptionsCommand(): DiscordCommand {
+  return createCommand("options", {
+    data: new SlashCommandBuilder()
+      .setName("options")
+      .setDescription("Tests required and optional command options.")
+      .addStringOption((option) => option
+        .setName("reason")
+        .setDescription("Required reason.")
+        .setRequired(true))
+      .addIntegerOption((option) => option
+        .setName("duration")
+        .setDescription("Optional duration."))
+  });
+}
+
+export function createSubcommandCommand(): DiscordCommand {
+  return createCommand("subcommand", {
+    data: new SlashCommandBuilder()
+      .setName("subcommand")
+      .setDescription("Tests a single subcommand.")
+      .addSubcommand((subcommand) => subcommand
+        .setName("create")
+        .setDescription("Creates a test value."))
+  });
+}
+
+export function createGroupedSubcommandCommand(): DiscordCommand {
+  return createCommand("grouped", {
+    data: new SlashCommandBuilder()
+      .setName("grouped")
+      .setDescription("Tests a grouped subcommand.")
+      .addSubcommandGroup((group) => group
+        .setName("staff")
+        .setDescription("Staff test routes.")
+        .addSubcommand((subcommand) => subcommand
+          .setName("add")
+          .setDescription("Adds a test staff member.")))
+  });
+}
