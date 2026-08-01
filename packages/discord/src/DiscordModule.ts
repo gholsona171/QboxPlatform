@@ -1,4 +1,4 @@
-﻿import type {
+import type {
   PlatformModule,
   PlatformModuleContext
 } from "@qbox/core";
@@ -11,7 +11,10 @@ import {
 } from "@qbox/permissions";
 
 import { DiscordService } from "./DiscordService.js";
-import { CommandLoader } from "./loaders/CommandLoader.js";
+import {
+  CommandLoadError,
+  CommandLoader
+} from "./loaders/CommandLoader.js";
 
 export class DiscordModule implements PlatformModule {
   public readonly name = "discord";
@@ -37,10 +40,62 @@ export class DiscordModule implements PlatformModule {
       });
     }
 
-    const commands = await this.commandLoader.load();
+    let loadResult;
 
-    for (const command of commands) {
-      this.discordService.registerCommand(command);
+    try {
+      loadResult = await this.commandLoader.load();
+    } catch (error) {
+      if (error instanceof CommandLoadError) {
+        logger.error(
+          {
+            discovered: error.diagnostics.discovered,
+            validated: error.diagnostics.validated,
+            registered: 0,
+            loadDurationMs: error.diagnostics.loadDurationMs,
+            commandFiles: error.diagnostics.commandFiles,
+            commandNames: error.diagnostics.commandNames,
+            commandAliases: error.diagnostics.commandAliases,
+            warnings: error.diagnostics.warnings,
+            failures: error.diagnostics.failures
+          },
+          "Discord command loading failed."
+        );
+      }
+
+      throw error;
+    }
+
+    let registered: number;
+
+    try {
+      registered = this.discordService.registerCommands(
+        loadResult.commands
+      );
+    } catch (error) {
+      logger.error(
+        {
+          err: error,
+          discovered: loadResult.diagnostics.discovered,
+          validated: loadResult.diagnostics.validated,
+          registered: 0,
+          loadDurationMs: loadResult.diagnostics.loadDurationMs,
+          commandFiles: loadResult.diagnostics.commandFiles,
+          commandNames: loadResult.diagnostics.commandNames,
+          commandAliases: loadResult.diagnostics.commandAliases,
+          warnings: loadResult.diagnostics.warnings,
+          failures: [
+            {
+              file: "registry",
+              message: error instanceof Error
+                ? error.message
+                : "Registration failed with a non-Error value."
+            }
+          ]
+        },
+        "Discord command registration failed."
+      );
+
+      throw error;
     }
 
     context.services.register(
@@ -53,12 +108,27 @@ export class DiscordModule implements PlatformModule {
       this.discordService
     );
 
+    logger.info(
+      {
+        discovered: loadResult.diagnostics.discovered,
+        validated: loadResult.diagnostics.validated,
+        registered,
+        loadDurationMs: loadResult.diagnostics.loadDurationMs,
+        commandFiles: loadResult.diagnostics.commandFiles,
+        commandNames: loadResult.diagnostics.commandNames,
+        commandAliases: loadResult.diagnostics.commandAliases,
+        warnings: loadResult.diagnostics.warnings,
+        failures: loadResult.diagnostics.failures
+      },
+      "Discord commands loaded."
+    );
+
     await this.discordService.start();
 
     logger.info(
       {
         user: this.discordService.client.user?.tag,
-        commandCount: commands.length,
+        commandCount: registered,
         administratorRoleCount:
           env.ADMIN_ROLE_IDS.length
       },

@@ -1,63 +1,213 @@
-﻿import { readdir } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import type { DiscordCommand } from "../commands/DiscordCommand.js";
+import {
+  commandFileIdentity,
+  CommandValidationError,
+  CommandValidator
+} from "../validation/CommandValidator.js";
+import type {
+  CommandDiagnostic,
+  DiscoveredCommandModule
+} from "../validation/CommandValidator.js";
 
-type CommandConstructor = new () => DiscordCommand;
+export interface CommandLoadDiagnostics {
+  readonly discovered: number;
+  readonly validated: number;
+  readonly loadDurationMs: number;
+  readonly commandFiles: readonly string[];
+  readonly commandNames: readonly string[];
+  readonly commandAliases: readonly string[];
+  readonly warnings: readonly CommandDiagnostic[];
+  readonly failures: readonly CommandDiagnostic[];
+}
 
-function isCommandConstructor(
-  value: unknown
-): value is CommandConstructor {
-  if (typeof value !== "function") {
-    return false;
+export interface CommandLoadResult {
+  readonly commands: readonly DiscordCommand[];
+  readonly diagnostics: CommandLoadDiagnostics;
+}
+
+export class CommandLoadError extends Error {
+  public constructor(
+    message: string,
+    public readonly diagnostics: CommandLoadDiagnostics
+  ) {
+    super(message);
+    this.name = "CommandLoadError";
   }
+}
 
-  const prototype = value.prototype as
-    | { execute?: unknown }
-    | undefined;
+export type CommandModuleImporter = (
+  filePath: string
+) => Promise<Record<string, unknown>>;
 
-  return typeof prototype?.execute === "function";
+export interface CommandLoaderOptions {
+  readonly commandDirectory?: string;
+  readonly readDirectory?: (directory: string) => Promise<string[]>;
+  readonly importModule?: CommandModuleImporter;
+  readonly validator?: CommandValidator;
+}
+
+const commandFilePattern = /\.command\.(?:ts|js)$/;
+
+function defaultCommandDirectory(): string {
+  return fileURLToPath(
+    new URL("../commands/", import.meta.url)
+  );
+}
+
+async function defaultImportModule(
+  filePath: string
+): Promise<Record<string, unknown>> {
+  return await import(pathToFileURL(filePath).href) as
+    Record<string, unknown>;
 }
 
 export class CommandLoader {
-  public async load(): Promise<DiscordCommand[]> {
-    const commandDirectory = fileURLToPath(
-      new URL("../commands/", import.meta.url)
-    );
+  private readonly commandDirectory: string;
+  private readonly readDirectory: (
+    directory: string
+  ) => Promise<string[]>;
+  private readonly importModule: CommandModuleImporter;
+  private readonly validator: CommandValidator;
 
-    const files = await readdir(commandDirectory);
+  public constructor(options: CommandLoaderOptions = {}) {
+    this.commandDirectory =
+      options.commandDirectory ?? defaultCommandDirectory();
+    this.readDirectory = options.readDirectory ?? readdir;
+    this.importModule = options.importModule ?? defaultImportModule;
+    this.validator = options.validator ?? new CommandValidator();
+  }
 
-    const commandFiles = files.filter(
-      (file) =>
-        file.endsWith("Command.ts") ||
-        file.endsWith("Command.js")
-    ).filter(
-      (file) => file !== "DiscordCommand.ts" &&
-                file !== "DiscordCommand.js"
-    );
+  public async load(): Promise<CommandLoadResult> {
+    const startedAt = performance.now();
+    const files = (await this.readDirectory(this.commandDirectory))
+      .filter((file) => commandFilePattern.test(file))
+      .sort((left, right) => left < right ? -1 : left > right ? 1 : 0);
+    const discoveredModules: DiscoveredCommandModule[] = [];
+    const importFailures: CommandDiagnostic[] = [];
+    const discoveryWarnings: CommandDiagnostic[] = files.length === 0
+      ? [{
+          file: this.commandDirectory,
+          message: "No command files were discovered."
+        }]
+      : [];
+    const discoveredIdentities = new Map<string, string>();
+    const duplicateFailures: CommandDiagnostic[] = [];
 
-    const commands: DiscordCommand[] = [];
+    for (const file of files) {
+      const identity = commandFileIdentity(file);
+      const existingFile = discoveredIdentities.get(identity);
 
-    for (const file of commandFiles) {
-      const filePath = join(commandDirectory, file);
-      const importedModule = await import(
-        pathToFileURL(filePath).href
+      if (existingFile) {
+        duplicateFailures.push({
+          file,
+          message: `Duplicate command file identity also used by '${existingFile}'.`
+        });
+      } else {
+        discoveredIdentities.set(identity, file);
+      }
+    }
+
+    if (duplicateFailures.length > 0) {
+      throw new CommandLoadError(
+        "Duplicate command files were discovered.",
+        {
+          discovered: files.length,
+          validated: 0,
+          loadDurationMs: performance.now() - startedAt,
+          commandFiles: files,
+          commandNames: [],
+          commandAliases: [],
+          warnings: discoveryWarnings,
+          failures: duplicateFailures
+        }
       );
+    }
 
-      const CommandClass = Object.values(
-        importedModule
-      ).find(isCommandConstructor);
+    for (const file of files) {
+      const filePath = join(this.commandDirectory, file);
 
-      if (!CommandClass) {
-        throw new Error(
-          `No command class was found in '${file}'.`
+      try {
+        discoveredModules.push({
+          file,
+          exports: await this.importModule(filePath)
+        });
+      } catch (error) {
+        importFailures.push({
+          file,
+          message: error instanceof Error
+            ? `Import failed: ${error.message}`
+            : "Import failed with a non-Error value."
+        });
+      }
+    }
+
+    try {
+      const validation = this.validator.validate(discoveredModules);
+      const failures = [
+        ...importFailures,
+        ...validation.failures
+      ];
+      const diagnostics = {
+        discovered: files.length,
+        validated: validation.commands.length,
+        loadDurationMs: performance.now() - startedAt,
+        commandFiles: files,
+        commandNames: validation.commands.map(
+          (command) => command.data.name
+        ),
+        commandAliases: validation.commands.flatMap(
+          (command) => command.aliases ?? []
+        ),
+        warnings: [
+          ...discoveryWarnings,
+          ...validation.warnings
+        ],
+        failures
+      } satisfies CommandLoadDiagnostics;
+
+      if (failures.length > 0) {
+        throw new CommandLoadError(
+          "Command loading failed validation.",
+          diagnostics
         );
       }
 
-      commands.push(new CommandClass());
-    }
+      return {
+        commands: validation.commands,
+        diagnostics
+      };
+    } catch (error) {
+      if (error instanceof CommandLoadError) {
+        throw error;
+      }
 
-    return commands;
+      if (error instanceof CommandValidationError) {
+        throw new CommandLoadError(
+          error.message,
+          {
+            discovered: files.length,
+            validated: error.validatedCount,
+            loadDurationMs: performance.now() - startedAt,
+            commandFiles: files,
+            commandNames: [],
+            commandAliases: [],
+            warnings: [
+              ...discoveryWarnings,
+              ...error.warnings
+            ],
+            failures: [
+              ...importFailures,
+              ...error.failures
+            ]
+          }
+        );
+      }
+
+      throw error;
+    }
   }
 }

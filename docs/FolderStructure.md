@@ -24,7 +24,7 @@ QboxPlatform/
 
 ### `.github/`
 
-Currently empty. The repository does not currently define GitHub Actions workflows, issue templates, pull request templates, or other GitHub configuration.
+Contains the GitHub Actions quality gate in `.github/workflows/quality.yml`. It validates pull requests targeting `main` and pushes to `main` without using Discord credentials or deploying commands.
 
 ### `apps/`
 
@@ -42,7 +42,7 @@ Some applications have local ignored `dist/` directories containing TypeScript o
 
 Contains project documentation. It was empty before the documentation files in this set were added.
 
-Examples include architecture, folder structure, development workflow, runtime module, and coding convention documentation.
+Examples include architecture, folder structure, development workflow, command authoring, Discord operations, runtime module, and coding convention documentation.
 
 ### `modules/`
 
@@ -143,10 +143,12 @@ packages/discord/src/
 |-- commands/
 |   |-- DiscordCommand.ts
 |   |-- CommandRegistry.ts
-|   |-- PingCommand.ts
-|   `-- AdminPingCommand.ts
+|   |-- Ping.command.ts
+|   `-- AdminPing.command.ts
 |-- loaders/
 |   `-- CommandLoader.ts
+|-- validation/
+|   `-- CommandValidator.ts
 |-- DiscordModule.ts
 |-- DiscordService.ts
 `-- index.ts

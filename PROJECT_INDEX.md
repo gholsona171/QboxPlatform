@@ -3,11 +3,10 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Current API process placeholder. It prints startup text and attempts to print a core version; it does not start an HTTP server.
+- **Purpose:** Current API process placeholder. It prints startup text; it does not start an HTTP server.
 - **Entry point:** `apps/api/src/index.ts`
 - **Declared dependency:** `@qbox/core`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`
-- **Current limitation:** Its `CORE_VERSION` import is not exported by `@qbox/core`.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
 
 ## `@qbox/bot`
 
@@ -15,7 +14,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`
+- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:dev:dry-run`, `deploy:commands:global`, `deploy:commands:global:dry-run`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.
@@ -23,11 +22,10 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/worker`
 
 - **Location:** `apps/worker/`
-- **Purpose:** Current background-worker process placeholder. It prints startup text and attempts to print a core version; it does not start a queue worker.
+- **Purpose:** Current background-worker process placeholder. It prints startup text; it does not start a queue worker.
 - **Entry point:** `apps/worker/src/index.ts`
 - **Declared dependency:** `@qbox/core`
-- **Scripts:** `build`, `dev`, `start`, `typecheck`
-- **Current limitation:** Its `CORE_VERSION` import is not exported by `@qbox/core`.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `clean`
 
 # Packages
 
@@ -51,8 +49,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 - **Location:** `packages/discord/`
 - **Responsibility:** Discord runtime module, Discord.js client lifecycle, slash-command discovery, registration, dispatch, and permission enforcement.
 - **Declared dependencies:** `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, `discord.js`
-- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `PingCommand`, and `CommandLoader`.
-- **Note:** `AdminPingCommand` exists but is not re-exported from the package entry point. It is discovered at runtime by `CommandLoader`.
+- **Public exports:** `DiscordService`, `DiscordModule`, `DiscordCommand`, `CommandRegistry`, `CommandOptionReader`, `CommandRoute`, `CommandInputError`, `DiscordInteractionHandler`, `PingCommand`, `AdminPingCommand`, `CommandLoader`, command loading diagnostics, and command validation types.
 
 ## `@qbox/logger`
 
@@ -164,19 +161,31 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 - **Defined in:** `packages/discord/src/DiscordService.ts`
 - **Instantiated in:** As a private field of each `DiscordModule` instance.
-- **Purpose:** Owns the Discord.js client, dispatches interactions, and registers global application commands.
+- **Purpose:** Owns the Discord.js client, dispatches interactions, and exposes current, desired, and applied command-definition operations to the explicit deployment workflow.
 
 ## `CommandRegistry`
 
 - **Defined in:** `packages/discord/src/commands/CommandRegistry.ts`
 - **Instantiated in:** The `DiscordService` constructor.
-- **Purpose:** Stores command instances, prevents duplicate command names, enforces command permissions, and invokes command handlers.
+- **Purpose:** Atomically stores validated command instances and aliases, produces deployment data, enforces context, permission, administrator-override, cooldown, and concurrency policies, and invokes command handlers.
+
+## `DiscordInteractionHandler`
+
+- **Defined in:** `packages/discord/src/interactions/DiscordInteractionHandler.ts`
+- **Instantiated in:** The `DiscordService` constructor.
+- **Purpose:** Dispatches supported interactions, applies response policies, records non-secret execution diagnostics, enforces acknowledgement and execution timeouts, tracks active executions, drains work during shutdown, and sends state-aware ephemeral error responses.
 
 ## `CommandLoader`
 
 - **Defined in:** `packages/discord/src/loaders/CommandLoader.ts`
 - **Instantiated in:** As a private field of each `DiscordModule` instance.
-- **Purpose:** Scans the Discord command directory and instantiates exported command classes.
+- **Purpose:** Deterministically scans `.command.ts` or `.command.js` files, imports their named `command` exports, and returns validated commands with load diagnostics.
+
+## `CommandValidator`
+
+- **Defined in:** `packages/discord/src/validation/CommandValidator.ts`
+- **Instantiated in:** `CommandLoader` by default.
+- **Purpose:** Validates file identity, explicit exports, command type, metadata, option and subcommand structure, aliases, policies, execution handlers, and cross-command name uniqueness before registration.
 
 ## `PermissionService`
 
@@ -248,7 +257,7 @@ Discord.js events such as `InteractionCreate` and `ClientReady` are handled by `
 
 ## `/ping`
 
-- **Implementation:** `packages/discord/src/commands/PingCommand.ts`
+- **Implementation:** `packages/discord/src/commands/Ping.command.ts`
 - **Class:** `PingCommand`
 - **Description:** Checks whether the bot is responding.
 - **Required platform permissions:** None.
@@ -256,13 +265,13 @@ Discord.js events such as `InteractionCreate` and `ClientReady` are handled by `
 
 ## `/adminping`
 
-- **Implementation:** `packages/discord/src/commands/AdminPingCommand.ts`
+- **Implementation:** `packages/discord/src/commands/AdminPing.command.ts`
 - **Class:** `AdminPingCommand`
 - **Description:** Tests whether the caller has platform administrator permission.
 - **Required platform permission:** `platform.admin`
 - **Response:** Ephemeral administrator confirmation when authorized.
 
-`CommandLoader` discovers both classes by scanning for filenames ending in `Command.ts` or `Command.js`, excluding the `DiscordCommand` interface file. `CommandRegistry` handles lookup, guild checks, role extraction, permission checks, and execution.
+Each command file exports a named `command` instance. `CommandLoader` discovers command files in deterministic filename order, `CommandValidator` validates the full set, and `CommandRegistry` handles primary names, aliases, guild checks, role extraction, permission checks, and execution.
 
 # Configuration
 
@@ -303,13 +312,17 @@ Environment variable names recognized by current source or `.env.example`:
 
 - `NODE_ENV`
 - `DISCORD_TOKEN`
+- `DISCORD_APPLICATION_ID`
+- `DISCORD_GUILD_ID`
+- `DISCORD_COMMAND_TIMEOUT_MS`
+- `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS`
 - `DATABASE_URL`
 - `REDIS_URL`
 - `OPENAI_API_KEY`
 - `ADMIN_ROLE_IDS`
 - `LOG_LEVEL`
 
-`DISCORD_TOKEN` is explicitly required when starting `DiscordService`. The remaining variables receive defaults or are not consumed by an implemented integration. The shared environment loader also expects the root `.env` file to be readable.
+`DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`; `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to `10000`. The shared environment loader expects the root `.env` file to be readable.
 
 # Build Pipeline
 
@@ -328,14 +341,14 @@ The repository uses pnpm workspaces and TypeScript compilation.
 | `pnpm build` | Runs `pnpm -r build` across workspaces defining `build` |
 | `pnpm dev` | Runs application `dev` scripts in parallel |
 | `pnpm typecheck` | Runs workspace `typecheck` scripts where defined |
-| `pnpm test` | Attempts to run workspace `test` scripts; none currently exist |
-| `pnpm clean` | Attempts to run workspace `clean` scripts; none currently exist |
+| `pnpm test` | Runs the permission, Discord, and bot deployment Vitest suites |
+| `pnpm clean` | Removes generated `dist/` directories across TypeScript workspaces |
 
 Workspace build scripts run `tsc`. For workspaces with configured output directories, compilation writes JavaScript, source maps, declaration files, and declaration maps to ignored `dist/` directories.
 
-The current root typecheck does not pass because `@qbox/api` and `@qbox/worker` import a nonexistent `CORE_VERSION` export. Several workspaces also lack a `typecheck` script, so the recursive root typecheck does not cover every project.
+The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover permission behavior, command registration and interaction handling, and deployment target safeguards.
 
-There is no configured CI workflow, deployment pipeline, lint script, formatting script, or working test suite in the repository.
+There is no configured CI workflow, deployment pipeline, lint script, or formatting script in the repository.
 
 # Future Placeholders
 

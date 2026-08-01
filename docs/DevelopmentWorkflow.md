@@ -26,13 +26,17 @@ The repository includes `.env.example`. Local execution expects a repository-roo
 ```dotenv
 NODE_ENV=development
 DISCORD_TOKEN=
+DISCORD_APPLICATION_ID=
+DISCORD_GUILD_ID=
+DISCORD_COMMAND_TIMEOUT_MS=15000
+DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS=10000
 DATABASE_URL=
 REDIS_URL=
 OPENAI_API_KEY=
 ADMIN_ROLE_IDS=
 ```
 
-`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN`; the other URLs and API key are loaded but are not consumed by the current placeholder integrations.
+`ADMIN_ROLE_IDS` is parsed as a comma-separated list. The Discord bot requires `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID`. Development command deployment also requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to 15 seconds, and `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to 10 seconds; both must be positive integers. The other URLs and API key are loaded but are not consumed by the current placeholder integrations.
 
 The local `.env` file is ignored by Git and should not be committed.
 
@@ -75,6 +79,47 @@ pnpm --filter @qbox/bot dev
 
 The API and worker currently print startup messages only. The bot starts the implemented kernel and Discord integration.
 
+Normal bot startup validates and registers local command handlers but does not deploy Discord application commands.
+
+## Discord command deployment
+
+Preview the configured development guild first:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:dev:dry-run
+```
+
+The dry-run connects to the verified application, loads and validates local commands, fetches current guild commands, and reports additions, updates, removals, and unchanged commands without mutating Discord.
+
+Apply the displayed guild plan:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:dev
+```
+
+Guild deployment displays the plan, replaces commands only in `DISCORD_GUILD_ID`, fetches the resulting definitions, verifies them against the desired definitions, and exits nonzero on failure or mismatch.
+
+For global commands, build and preview before applying:
+
+```sh
+pnpm build
+pnpm --filter @qbox/bot deploy:commands:global:dry-run
+```
+
+If the preview contains no removals, apply with:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global
+```
+
+If the preview contains removals, both noninteractive confirmations are required:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global --confirm-global-removals
+```
+
+Global workflows use the compiled `dist/deployCommands.js`. A dry-run never requires confirmation because it cannot mutate Discord. Every real deployment recomputes and logs the plan immediately before replacement and verifies the resulting state afterward. Normal bot startup never deploys commands.
+
 Some library packages also define watch commands. They can be run directly with filters, for example:
 
 ```sh
@@ -108,9 +153,7 @@ Run the repository-defined typecheck command:
 pnpm typecheck
 ```
 
-This invokes `typecheck` only in workspaces that define that script. At the time this documentation was written, the command fails because the API and worker import `CORE_VERSION`, which `@qbox/core` does not export.
-
-The bot, database, Discord, OpenAI, permissions, and scheduler workspaces do not currently define `typecheck` scripts, so the root command does not cover them.
+This invokes `typecheck` in every TypeScript application and package. Each workspace runs `tsc --noEmit`, so validation does not write compiled output.
 
 ## Tests, linting, formatting, and cleaning
 
@@ -121,20 +164,23 @@ pnpm test
 pnpm clean
 ```
 
-However, no workspace currently defines a `test` or `clean` script, and no test files exist. Vitest is installed but not configured.
+The test workflow runs focused Vitest suites in `@qbox/permissions`, `@qbox/discord`, and `@qbox/bot`.
+
+The clean workflow removes generated `dist/` directories from each TypeScript workspace.
 
 ESLint and Prettier are installed as development dependencies, but the repository has no lint or formatting scripts and no corresponding configuration files.
 
 ## Running compiled applications
 
-The API and worker define production-style start commands:
+The API, bot, and worker define production-style start commands:
 
 ```sh
 pnpm --filter @qbox/api start
+pnpm --filter @qbox/bot start
 pnpm --filter @qbox/worker start
 ```
 
-These commands run their compiled `dist/index.js` files and therefore require a successful build first. The bot currently has no `start` script; its available scripts are `build` and `dev`.
+These commands run their compiled `dist/index.js` files and therefore require a successful build first.
 
 ## Git workflow
 

@@ -63,13 +63,21 @@ The bot follows this sequence:
 5. `PlatformKernel.start()` registers the core logger, event bus, and module loader services.
 6. The kernel calls `ModuleLoader.startAll()` in module registration order.
 7. `DiscordModule.start()` clears and configures permission grants from `ADMIN_ROLE_IDS`.
-8. `CommandLoader` scans the Discord package's `commands` directory and instantiates command classes.
-9. The commands, permission service, and Discord service are registered.
-10. `DiscordService` installs its interaction and ready listeners and logs in with `DISCORD_TOKEN`.
-11. When Discord reports that the client is ready, the service replaces the application's global command list with the discovered commands.
-12. After all modules start, the kernel emits `platform.started` and logs the module count.
+8. `CommandLoader` scans for `.command.ts` or `.command.js` files in deterministic filename order and imports each module's named `command` export.
+9. `CommandValidator` validates all discovered commands before registration. Any validation failure aborts registration.
+10. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
+11. The permission and Discord services are registered.
+12. `DiscordService` installs its interaction listener and logs in with `DISCORD_TOKEN`.
+13. Startup verifies that the connected application matches `DISCORD_APPLICATION_ID` and logs the non-secret bot identity and connected guild count.
+14. After all modules start, the kernel emits `platform.started` and logs the module count.
 
 If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`.
+
+Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. The deployment process normalizes and compares current Discord definitions with validated local definitions, then reports additions, updates, removals, and unchanged commands. Dry-run workflows do not mutate Discord. Real deployments apply the full desired set and refetch it for verification. Global replacement requires `--confirm-global`, plus `--confirm-global-removals` when the computed plan removes commands.
+
+`DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and applies each command's immediate/deferred and public/ephemeral response policy. `CommandRegistry` applies explicit guild/DM scope, all/any permission evaluation, administrator override, cooldown, and concurrency policies before invoking a command.
+
+Command definitions continue to use Discord.js `SlashCommandBuilder`. At execution time, `CommandOptionReader` adds required/optional typed accessors over Discord.js's resolver, while `CommandRoute` exposes the selected root, subcommand, or grouped-subcommand route. Invalid input raises `CommandInputError`, which receives a safe ephemeral response and is logged as an expected rejection rather than an internal failure.
 
 ## Shutdown flow
 
@@ -77,7 +85,7 @@ On `SIGINT` or `SIGTERM`, the bot calls `PlatformKernel.stop()` once:
 
 1. The kernel emits `platform.stopping`.
 2. `ModuleLoader.stopAll()` stops registered modules in reverse registration order.
-3. `DiscordModule.stop()` destroys the Discord client.
+3. `DiscordModule.stop()` rejects new command executions, waits up to `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` for active commands, aborts their cooperative cancellation signals if the deadline expires, and destroys the Discord client.
 4. The kernel logs that the platform stopped.
 
 The bot records shutdown failure and sets a nonzero exit code if an exception is thrown.

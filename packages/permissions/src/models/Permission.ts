@@ -1,13 +1,16 @@
-﻿export type Permission =
-  | "platform.owner"
-  | "platform.admin"
-  | "moderation.warn"
-  | "moderation.kick"
-  | "moderation.ban"
-  | "tickets.manage"
-  | "applications.review"
-  | "staff.manage"
-  | "knowledge.manage";
+﻿export const PERMISSIONS = [
+  "platform.owner",
+  "platform.admin",
+  "moderation.warn",
+  "moderation.kick",
+  "moderation.ban",
+  "tickets.manage",
+  "applications.review",
+  "staff.manage",
+  "knowledge.manage"
+] as const;
+
+export type Permission = typeof PERMISSIONS[number];
 
 export interface PermissionSubject {
   readonly userId: string;

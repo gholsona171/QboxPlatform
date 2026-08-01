@@ -44,7 +44,7 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 - Registers each command with `DiscordService`.
 - Publishes permission and Discord services through the service container.
 - Starts and stops the Discord client.
-- Logs lifecycle information.
+- Logs command discovery, connected application identity, interaction dispatch, execution timing, and failures without logging credentials.
 
 ### Dependencies
 
@@ -63,7 +63,8 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 5. Register `permissions` in the shared service container.
 6. Register `discord` in the shared service container.
 7. Start `DiscordService` and log in.
-8. Log the connected user, command count, and administrator-role count.
+8. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
+9. Log the connected user, application ID, guild count, command count, and administrator-role count.
 
 ### Stop lifecycle
 
@@ -95,7 +96,11 @@ Responsibilities:
 - Own the Discord.js client.
 - Discover, register, and execute slash commands.
 - Apply permission checks before protected commands execute.
-- Register global application commands when the client becomes ready.
+- Validate command modules, metadata, aliases, permissions, and handlers before registration.
+- Deploy guild or global application commands only through the dedicated deployment workflow.
+- Fetch and normalize current Discord definitions, preview deployment differences, guard global removals, and verify resulting definitions after replacement.
+- Route interactions through `DiscordInteractionHandler`, with acknowledgement and execution timeouts, active-execution tracking, bounded shutdown draining, and state-aware error responses.
+- Apply required command policies for guild/DM scope, permission evaluation and administrator override, response acknowledgement and visibility, cooldown, and concurrency.
 
 Dependencies: `@qbox/core`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, and `discord.js`.
 
@@ -104,7 +109,67 @@ Existing commands:
 - `PingCommand`: implements `/ping` and replies ephemerally with `Pong.`
 - `AdminPingCommand`: implements `/adminping`, requires `platform.admin`, and returns an ephemeral confirmation.
 
-`DiscordCommand` defines the command shape, `CommandRegistry` stores and executes commands, and `CommandLoader` discovers command files ending in `Command.ts` or `Command.js`.
+`DiscordCommand` defines chat-input metadata, a required execution policy, and execution through a context that supplies the interaction, abort signal, and policy-aware response helpers. `CommandLoader` deterministically discovers files ending in `.command.ts` or `.command.js` and imports only their named `command` export. `CommandValidator` rejects invalid or conflicting commands and policies before `CommandRegistry` atomically registers the complete set. `CommandRegistry` enforces context, authorization, cooldown, and concurrency policies. `DiscordInteractionHandler` records non-secret interaction context, tracks active work, rejects new work during shutdown, and reports failures through an ephemeral reply or follow-up.
+
+### Command authoring
+
+The complete policy, input, routing, testing, and live-verification guidance is in `docs/CommandAuthoring.md`; operating procedures are in `docs/DiscordCommandOperations.md`.
+
+### Command authoring example
+
+Discord.js builders remain the command-definition API. Required options precede optional options inside each subcommand. Execution uses the typed option reader and route dispatcher:
+
+```ts
+import { SlashCommandBuilder } from "discord.js";
+import type {
+  CommandExecutionContext,
+  DiscordCommand
+} from "@qbox/discord";
+
+export class ExampleCommand implements DiscordCommand {
+  public readonly type = "chat-input" as const;
+
+  public readonly data = new SlashCommandBuilder()
+    .setName("example")
+    .setDescription("Demonstrates typed command input.")
+    .addSubcommand((subcommand) => subcommand
+      .setName("create")
+      .setDescription("Creates an example.")
+      .addStringOption((option) => option
+        .setName("reason")
+        .setDescription("Why the example is needed.")
+        .setRequired(true))
+      .addIntegerOption((option) => option
+        .setName("duration")
+        .setDescription("Optional duration in minutes.")));
+
+  public readonly policy = {
+    contexts: "guild",
+    response: {
+      acknowledgement: "immediate",
+      visibility: "ephemeral"
+    },
+    concurrency: "user"
+  } as const;
+
+  public async execute(context: CommandExecutionContext): Promise<void> {
+    await context.route.dispatch({
+      create: async () => {
+        const reason = context.options.requiredString("reason");
+        const duration = context.options.optionalInteger("duration");
+
+        await context.reply({
+          content: duration
+            ? `${reason} (${duration} minutes)`
+            : reason
+        });
+      }
+    });
+  }
+}
+```
+
+`CommandOptionReader` supports string, integer, number, boolean, user, role, channel, mentionable, and attachment options with required and optional accessors. Optional accessors return `undefined`. `CommandRoute` uses `root`, `subcommand`, or `group/subcommand` keys. Missing inputs and unsupported routes throw `CommandInputError`; the interaction handler returns its safe message ephemerally without exposing internal details.
 
 ## Logger package
 
@@ -182,11 +247,11 @@ Both methods currently emit console messages only. The package does not use Bull
 
 Package: `@qbox/api`
 
-Current responsibility: executable placeholder that logs its startup and attempts to log a core version.
+Current responsibility: executable placeholder that logs its startup.
 
 Dependency: `@qbox/core`.
 
-It does not construct a `PlatformKernel`, register modules, or run an HTTP server. Its current `CORE_VERSION` import is not exported by core.
+It does not construct a `PlatformKernel`, register modules, or run an HTTP server.
 
 ## Bot application
 
@@ -208,8 +273,8 @@ This is the only application currently exercising the complete runtime module li
 
 Package: `@qbox/worker`
 
-Current responsibility: executable placeholder that logs its startup and attempts to log a core version.
+Current responsibility: executable placeholder that logs its startup.
 
 Dependency: `@qbox/core`.
 
-It does not construct a kernel, register modules, connect to Redis, or create a queue worker. Its current `CORE_VERSION` import is not exported by core.
+It does not construct a kernel, register modules, connect to Redis, or create a queue worker.

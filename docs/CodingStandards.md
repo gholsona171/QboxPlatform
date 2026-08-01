@@ -31,7 +31,11 @@ Observed conventions include:
 | Source files containing a main class/interface | PascalCase | `ModuleLoader.ts`, `Permission.ts` |
 | Package entry points | `index.ts` | `packages/core/src/index.ts` |
 
-Discord command implementation filenames end in `Command.ts`. The runtime loader depends on this suffix and excludes `DiscordCommand.ts`, which contains the interface.
+Discord command implementation filenames end in `.command.ts`. Each file exports a named `command` instance. The runtime loader uses this exact suffix and export name; it does not infer commands from arbitrary classes or exports.
+
+Every Discord command declares an explicit `policy` covering execution context, response behavior, concurrency, and any permission or cooldown requirements. Command implementations respond through the supplied execution-context helpers so public/ephemeral and immediate/deferred behavior remains centralized.
+
+Command definitions use Discord.js builders directly. Execution code reads values through `context.options` and routes subcommands through `context.route`; it should not cast raw option values or expose Discord.js resolver errors to users.
 
 ## File organization
 
@@ -119,6 +123,7 @@ Observed error-handling patterns include:
 - Catching errors at application or external-event boundaries.
 - Logging structured error context before setting a nonzero process exit code.
 - Returning generic Discord error messages rather than exposing internal error details.
+- Logging Discord application, guild, user, interaction, command, duration, and reply-state identifiers as structured fields while never logging tokens, authorization headers, or environment secret values.
 - Checking whether an interaction was already replied to or deferred before choosing `reply()` or `followUp()`.
 - Guarding shutdown with a boolean so repeated signals do not run shutdown concurrently.
 
@@ -142,4 +147,4 @@ The repository currently has more than one configuration abstraction. Code shoul
 
 ## Testing and automated enforcement
 
-No tests currently exist. Vitest, ESLint, and Prettier are installed at the root, but none has project configuration or a working repository-wide script. These tools therefore do not currently enforce the inferred standards described above.
+Focused Vitest tests cover permission-service authorization and Discord command permission enforcement. The root test workflow runs these workspace suites. ESLint and Prettier are installed at the root, but neither has project configuration or a working repository-wide script, so formatting and lint standards are not currently enforced automatically.
