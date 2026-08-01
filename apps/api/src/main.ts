@@ -10,6 +10,8 @@ export interface ApiProcessEnvironment {
   readonly API_HOST?: string | undefined;
   readonly API_PORT?: string | undefined;
   readonly API_BODY_SIZE_LIMIT_BYTES?: string | undefined;
+  readonly API_HEADER_SIZE_LIMIT_BYTES?: string | undefined;
+  readonly API_USER_AGENT_LIMIT_CHARS?: string | undefined;
   readonly API_REQUEST_TIMEOUT_MS?: string | undefined;
   readonly API_KEEP_ALIVE_TIMEOUT_MS?: string | undefined;
   readonly API_SHUTDOWN_TIMEOUT_MS?: string | undefined;
@@ -28,6 +30,8 @@ export function apiConfigurationFromEnvironment(
     host: environment.API_HOST,
     port: optionalNumber(environment.API_PORT),
     bodySizeLimitBytes: optionalNumber(environment.API_BODY_SIZE_LIMIT_BYTES),
+    headerSizeLimitBytes: optionalNumber(environment.API_HEADER_SIZE_LIMIT_BYTES),
+    userAgentLimitChars: optionalNumber(environment.API_USER_AGENT_LIMIT_CHARS),
     requestTimeoutMs: optionalNumber(environment.API_REQUEST_TIMEOUT_MS),
     keepAliveTimeoutMs: optionalNumber(environment.API_KEEP_ALIVE_TIMEOUT_MS),
     shutdownTimeoutMs: optionalNumber(environment.API_SHUTDOWN_TIMEOUT_MS),

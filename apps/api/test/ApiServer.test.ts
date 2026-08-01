@@ -197,6 +197,7 @@ describe("createApiServer", () => {
     const measurements: ApiRequestMeasurement[] = [];
     const metrics: MetricsRecorder = {
       recordRequest: (measurement) => measurements.push(measurement),
+      recordTransportEvent: () => undefined,
     };
     const server = createApiServer({
       configuration: configuration(),

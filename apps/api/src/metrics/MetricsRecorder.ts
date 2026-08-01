@@ -8,12 +8,21 @@ export interface ApiRequestMeasurement {
   readonly responseBytes?: number;
 }
 
+/** Safe transport-security event prepared for future metrics backends. */
+export interface ApiTransportEvent {
+  readonly code: string;
+  readonly route: string;
+  readonly statusCode: number;
+}
+
 /** Transport metrics boundary; implementations must not retain sensitive data. */
 export interface MetricsRecorder {
   recordRequest(measurement: ApiRequestMeasurement): void;
+  recordTransportEvent(event: ApiTransportEvent): void;
 }
 
 /** Default no-op recorder used until a metrics backend is approved. */
 export const noOpMetricsRecorder: MetricsRecorder = Object.freeze({
   recordRequest: () => undefined,
+  recordTransportEvent: () => undefined,
 });

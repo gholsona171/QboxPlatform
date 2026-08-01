@@ -255,7 +255,7 @@ Current responsibility: testable HTTP transport plus an explicit, persistence-ba
 
 Dependencies: `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
 
-It exports an unbound Fastify server factory, immutable API configuration, request context, lifecycle health aggregation, typed Problem Details errors, safe logging hooks, and a metrics recorder boundary. `createApiApplication()` composes `PlatformKernel`, the database-backed permission infrastructure, catalog synchronization, and `ApiModule`. The executable `run.ts` loads environment input and installs idempotent signal handling. The package does not authenticate users or expose domain routes.
+It exports an unbound Fastify server factory, immutable API configuration, reusable Zod transport schemas, one typed route-input parser, strict host/content/header policy, cooperative request cancellation, lifecycle health aggregation, typed Problem Details errors, safe logging hooks, and metrics/rate-limit boundaries. `createApiApplication()` composes `PlatformKernel`, the database-backed permission infrastructure, catalog synchronization, and `ApiModule`. The executable `run.ts` loads environment input and installs idempotent signal handling. CORS and rate limiting remain disabled; the package does not authenticate users or expose domain routes.
 
 ## Bot application
 

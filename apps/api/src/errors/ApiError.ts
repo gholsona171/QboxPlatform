@@ -7,6 +7,12 @@ export type ApiErrorCode =
   | "AUTHORIZATION_DENIED"
   | "RESOURCE_CONFLICT"
   | "RESOURCE_NOT_FOUND"
+  | "INVALID_REQUEST_HEADERS"
+  | "INVALID_HOST"
+  | "UNSUPPORTED_MEDIA_TYPE"
+  | "PAYLOAD_TOO_LARGE"
+  | "REQUEST_TIMEOUT"
+  | "RATE_LIMITED"
   | "DEPENDENCY_UNAVAILABLE"
   | "INTERNAL_ERROR";
 
@@ -61,6 +67,42 @@ export class DependencyUnavailableApiError extends ApiError {
   }
 }
 
+export class InvalidRequestHeadersApiError extends ApiError {
+  public constructor() {
+    super("INVALID_REQUEST_HEADERS", 400, "Invalid request headers", "The request headers are invalid.", "warn");
+  }
+}
+
+export class InvalidHostApiError extends ApiError {
+  public constructor() {
+    super("INVALID_HOST", 400, "Invalid request host", "The request host is invalid.", "warn");
+  }
+}
+
+export class UnsupportedMediaTypeApiError extends ApiError {
+  public constructor() {
+    super("UNSUPPORTED_MEDIA_TYPE", 415, "Unsupported media type", "The request content type is not supported.", "warn");
+  }
+}
+
+export class PayloadTooLargeApiError extends ApiError {
+  public constructor() {
+    super("PAYLOAD_TOO_LARGE", 413, "Payload too large", "The request payload exceeds the configured limit.", "warn");
+  }
+}
+
+export class RequestTimeoutApiError extends ApiError {
+  public constructor() {
+    super("REQUEST_TIMEOUT", 408, "Request timeout", "The request deadline was exceeded.", "warn");
+  }
+}
+
+export class RateLimitedApiError extends ApiError {
+  public constructor() {
+    super("RATE_LIMITED", 429, "Rate limit exceeded", "Too many requests were received.", "warn");
+  }
+}
+
 /** Authoritative RFC 9457-compatible error response schema. */
 export const ApiProblemDetailsSchema = z.strictObject({
   type: z.url(),
@@ -73,6 +115,12 @@ export const ApiProblemDetailsSchema = z.strictObject({
     "AUTHORIZATION_DENIED",
     "RESOURCE_CONFLICT",
     "RESOURCE_NOT_FOUND",
+    "INVALID_REQUEST_HEADERS",
+    "INVALID_HOST",
+    "UNSUPPORTED_MEDIA_TYPE",
+    "PAYLOAD_TOO_LARGE",
+    "REQUEST_TIMEOUT",
+    "RATE_LIMITED",
     "DEPENDENCY_UNAVAILABLE",
     "INTERNAL_ERROR",
   ]),
@@ -102,8 +150,14 @@ export function mapApiError(
               code: issue.code,
             })),
           )
-        : isFastifyInputError(error)
-          ? new ValidationApiError()
+        : fastifyErrorCode(error) === "FST_ERR_CTP_BODY_TOO_LARGE"
+          ? new PayloadTooLargeApiError()
+          : fastifyErrorCode(error) === "FST_ERR_CTP_INVALID_MEDIA_TYPE"
+            ? new UnsupportedMediaTypeApiError()
+            : fastifyErrorCode(error) === "FST_ERR_HANDLER_TIMEOUT"
+              ? new RequestTimeoutApiError()
+              : isFastifyInputError(error)
+                ? new ValidationApiError()
         : new ApiError("INTERNAL_ERROR", 500, "Internal server error", "An unexpected error occurred.", "error");
   return {
     error: mapped,
@@ -118,6 +172,12 @@ export function mapApiError(
       ...(mapped.details === undefined ? {} : { errors: mapped.details }),
     }),
   };
+}
+
+function fastifyErrorCode(error: unknown): string | undefined {
+  if (typeof error !== "object" || error === null) return undefined;
+  const code = Reflect.get(error, "code");
+  return typeof code === "string" ? code : undefined;
 }
 
 function isFastifyInputError(

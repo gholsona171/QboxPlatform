@@ -1,5 +1,7 @@
 import { isIP } from "node:net";
 import { z } from "zod";
+import type { ApiCorsPolicy, ApiRateLimitPolicy } from "../security/ApiTransportPolicies.js";
+import { HttpOriginSchema } from "../transport/ApiTransportSchemas.js";
 
 /** Runtime environments recognized by API security policy. */
 export type ApiEnvironment = "development" | "test" | "production";
@@ -12,23 +14,20 @@ export type ApiTrustedProxyPolicy =
       readonly addresses: readonly string[];
     };
 
-/** Reserved policy boundary for controls not enabled by this phase. */
-export interface ApiDisabledPolicy {
-  readonly mode: "disabled";
-}
-
 /** Untrusted values accepted by the API configuration parser. */
 export interface ApiConfigurationInput {
   readonly environment?: string | undefined;
   readonly host?: string | undefined;
   readonly port?: number | undefined;
   readonly bodySizeLimitBytes?: number | undefined;
+  readonly headerSizeLimitBytes?: number | undefined;
+  readonly userAgentLimitChars?: number | undefined;
   readonly requestTimeoutMs?: number | undefined;
   readonly keepAliveTimeoutMs?: number | undefined;
   readonly shutdownTimeoutMs?: number | undefined;
   readonly trustProxy?: false | readonly string[] | undefined;
-  readonly corsPolicy?: ApiDisabledPolicy | undefined;
-  readonly rateLimitPolicy?: ApiDisabledPolicy | undefined;
+  readonly corsPolicy?: ApiCorsPolicy | undefined;
+  readonly rateLimitPolicy?: ApiRateLimitPolicy | undefined;
   readonly publicBaseUrl?: string | undefined;
   readonly logLevel?: string | undefined;
   readonly buildVersion?: string | undefined;
@@ -40,12 +39,14 @@ export interface ApiConfigurationDiagnostics {
   readonly host: string;
   readonly port: number;
   readonly bodySizeLimitBytes: number;
+  readonly headerSizeLimitBytes: number;
+  readonly userAgentLimitChars: number;
   readonly requestTimeoutMs: number;
   readonly keepAliveTimeoutMs: number;
   readonly shutdownTimeoutMs: number;
   readonly trustProxy: ApiTrustedProxyPolicy;
-  readonly corsPolicy: ApiDisabledPolicy;
-  readonly rateLimitPolicy: ApiDisabledPolicy;
+  readonly corsPolicy: ApiCorsPolicy;
+  readonly rateLimitPolicy: ApiRateLimitPolicy;
   readonly publicBaseUrl: string;
   readonly logLevel: ApiLogLevel;
   readonly buildVersion: string;
@@ -68,11 +69,20 @@ const inputSchema = z.strictObject({
   host: z.string().trim().min(1).default("127.0.0.1"),
   port: z.number().int().min(0).max(65_535).default(3_000),
   bodySizeLimitBytes: z.number().int().min(1_024).max(10 * 1024 * 1024).default(1024 * 1024),
+  headerSizeLimitBytes: z.number().int().min(4_096).max(65_536).default(16_384),
+  userAgentLimitChars: z.number().int().min(128).max(8_192).default(1_024),
   requestTimeoutMs: z.number().int().min(100).max(300_000).default(15_000),
   keepAliveTimeoutMs: z.number().int().min(100).max(300_000).default(5_000),
   shutdownTimeoutMs: z.number().int().min(100).max(300_000).default(10_000),
   trustProxy: z.union([z.literal(false), z.array(z.string().trim().min(1)).min(1)]).default(false),
-  corsPolicy: z.strictObject({ mode: z.literal("disabled") }).default({ mode: "disabled" }),
+  corsPolicy: z.discriminatedUnion("mode", [
+    z.strictObject({ mode: z.literal("disabled") }),
+    z.strictObject({
+      mode: z.literal("allowlist"),
+      origins: z.array(z.union([z.literal("*"), HttpOriginSchema])).min(1),
+      credentials: z.boolean().default(false),
+    }),
+  ]).default({ mode: "disabled" }),
   rateLimitPolicy: z.strictObject({ mode: z.literal("disabled") }).default({ mode: "disabled" }),
   publicBaseUrl: z.string().trim().min(1).default("http://127.0.0.1:3000"),
   logLevel: z.enum(logLevels).default("info"),
@@ -101,6 +111,14 @@ export class ApiConfiguration {
     }
     if (parsed.data.environment === "production" && parsed.data.port === 0)
       throw new ApiConfigurationError("Production API port cannot be zero.");
+    if (
+      parsed.data.environment === "production" &&
+      parsed.data.corsPolicy.mode === "allowlist" &&
+      parsed.data.corsPolicy.credentials &&
+      parsed.data.corsPolicy.origins.includes("*")
+    ) {
+      throw new ApiConfigurationError("Production CORS cannot combine wildcard origins and credentials.");
+    }
 
     if (parsed.data.host.includes("://") || /[/?#]/u.test(parsed.data.host))
       throw new ApiConfigurationError("Invalid API host.");
@@ -115,8 +133,8 @@ export class ApiConfiguration {
       ...parsed.data,
       publicBaseUrl,
       trustProxy,
-      corsPolicy: { mode: "disabled" },
-      rateLimitPolicy: { mode: "disabled" },
+      corsPolicy: parsed.data.corsPolicy,
+      rateLimitPolicy: parsed.data.rateLimitPolicy,
     });
   }
 
@@ -171,6 +189,8 @@ function deepFreezeDiagnostics(
   if (diagnostics.trustProxy.mode === "allowlist")
     Object.freeze(diagnostics.trustProxy.addresses);
   Object.freeze(diagnostics.trustProxy);
+  if (diagnostics.corsPolicy.mode === "allowlist")
+    Object.freeze(diagnostics.corsPolicy.origins);
   Object.freeze(diagnostics.corsPolicy);
   Object.freeze(diagnostics.rateLimitPolicy);
   return Object.freeze(diagnostics);

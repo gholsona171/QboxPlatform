@@ -3,7 +3,7 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Fastify API process composed with the platform kernel, PostgreSQL lifecycle, persistent permission catalog synchronization, structured logging, typed errors, metrics contracts, and lifecycle-backed health endpoints. No domain or authentication routes exist yet.
+- **Purpose:** Hardened Fastify API process composed with the platform kernel, PostgreSQL lifecycle, persistent permission catalog synchronization, typed Zod validation, strict host/content/header policy, cooperative cancellation, structured logging, normalized errors, metrics contracts, and lifecycle-backed health endpoints. No domain or authentication routes exist yet.
 - **Entry points:** `apps/api/src/index.ts` exports the import-safe API contracts and factories; `apps/api/src/run.ts` is the executable entry point. `createApiServer()` remains unbound for injection tests, while `createApiApplication()` owns process composition.
 - **Declared dependencies:** `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
 - **Scripts:** `build`, `dev`, `start`, `typecheck`, `test`, `clean`

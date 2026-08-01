@@ -1,6 +1,7 @@
 import type { PlatformModule, PlatformModuleContext } from "@qbox/core";
 import type { FastifyInstance } from "fastify";
 import type { ApiConfiguration } from "../config/ApiConfiguration.js";
+import { beginApiTransportShutdown } from "../createApiServer.js";
 import type { ApiLifecycleHealth } from "./ApiLifecycleHealth.js";
 
 /** Safe bound-address diagnostics returned after successful listening. */
@@ -52,6 +53,10 @@ export class ApiModule implements PlatformModule {
     if (this.stopped) return;
     this.stopped = true;
     this.health.beginShutdown();
+    beginApiTransportShutdown(
+      this.server,
+      Math.max(1, Math.floor(this.configuration.diagnostics().shutdownTimeoutMs / 2)),
+    );
     await this.closeWithinTimeout();
     this.health.markHttp("stopped");
   }

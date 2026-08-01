@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { z } from "zod";
 import type { FastifyRequest } from "fastify";
 import type { ApiLogger } from "../logging/ApiLogger.js";
+import { ApiCorrelationIdSchema } from "../transport/ApiTransportSchemas.js";
 
 /** Placeholder actor until an approved authentication system is implemented. */
 export interface UnauthenticatedApiActor {
@@ -26,11 +26,9 @@ declare module "fastify" {
   }
 }
 
-const correlationIdSchema = z.uuid();
-
 /** Accepts one canonical UUID correlation identifier. */
 export function isValidCorrelationId(value: unknown): value is string {
-  return typeof value === "string" && correlationIdSchema.safeParse(value).success;
+  return typeof value === "string" && ApiCorrelationIdSchema.safeParse(value).success;
 }
 
 /** Creates a frozen context exclusively from server and validated transport data. */

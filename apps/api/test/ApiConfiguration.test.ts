@@ -13,6 +13,8 @@ describe("ApiConfiguration", () => {
       host: "127.0.0.1",
       port: 3000,
       bodySizeLimitBytes: 1_048_576,
+      headerSizeLimitBytes: 16_384,
+      userAgentLimitChars: 1_024,
       requestTimeoutMs: 15_000,
       keepAliveTimeoutMs: 5_000,
       shutdownTimeoutMs: 10_000,
@@ -58,6 +60,8 @@ describe("ApiConfiguration", () => {
     { port: -1 },
     { port: 65_536 },
     { bodySizeLimitBytes: 0 },
+    { headerSizeLimitBytes: 1_000 },
+    { userAgentLimitChars: 20 },
     { requestTimeoutMs: 0 },
     { keepAliveTimeoutMs: Number.NaN },
     { shutdownTimeoutMs: 300_001 },
@@ -96,6 +100,26 @@ describe("ApiConfiguration", () => {
         publicBaseUrl: "https://api.example.com",
       }),
     ).toThrow("port cannot be zero");
+  });
+
+  it("validates the future CORS allowlist without enabling enforcement", () => {
+    const configuration = ApiConfiguration.from({
+      corsPolicy: {
+        mode: "allowlist",
+        origins: ["https://panel.example.com"],
+        credentials: true,
+      },
+    });
+    expect(configuration.diagnostics().corsPolicy).toEqual({
+      mode: "allowlist",
+      origins: ["https://panel.example.com"],
+      credentials: true,
+    });
+    expect(() => ApiConfiguration.from({
+      environment: "production",
+      publicBaseUrl: "https://api.example.com",
+      corsPolicy: { mode: "allowlist", origins: ["*"], credentials: true },
+    })).toThrow("wildcard origins");
   });
 
   it("serializes only validated diagnostics", () => {

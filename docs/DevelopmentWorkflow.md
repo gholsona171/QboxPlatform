@@ -77,7 +77,9 @@ To work only on the bot:
 pnpm --filter @qbox/bot dev
 ```
 
-The API executable validates API and database configuration, starts PostgreSQL, synchronizes the permission catalog, and then binds Fastify. Run it with `pnpm --filter @qbox/api dev`; production-style execution uses `pnpm --filter @qbox/api build` followed by `pnpm --filter @qbox/api start`. `DATABASE_URL` is required. Optional API settings are `API_HOST`, `API_PORT`, `API_BODY_SIZE_LIMIT_BYTES`, `API_REQUEST_TIMEOUT_MS`, `API_KEEP_ALIVE_TIMEOUT_MS`, `API_SHUTDOWN_TIMEOUT_MS`, `API_TRUST_PROXY`, `API_PUBLIC_BASE_URL`, and `QBOX_BUILD_VERSION`. Health probes are `/health/live`, `/health/ready`, and `/health/degraded`.
+The API executable validates API and database configuration, starts PostgreSQL, synchronizes the permission catalog, and then binds Fastify. Run it with `pnpm --filter @qbox/api dev`; production-style execution uses `pnpm --filter @qbox/api build` followed by `pnpm --filter @qbox/api start`. `DATABASE_URL` is required. Optional API settings are `API_HOST`, `API_PORT`, `API_BODY_SIZE_LIMIT_BYTES`, `API_HEADER_SIZE_LIMIT_BYTES`, `API_USER_AGENT_LIMIT_CHARS`, `API_REQUEST_TIMEOUT_MS`, `API_KEEP_ALIVE_TIMEOUT_MS`, `API_SHUTDOWN_TIMEOUT_MS`, `API_TRUST_PROXY`, `API_PUBLIC_BASE_URL`, and `QBOX_BUILD_VERSION`. Health probes are `/health/live`, `/health/ready`, and `/health/degraded`.
+
+Keep development binding on loopback. When operating behind a reverse proxy, set `API_PUBLIC_BASE_URL` to the externally accepted origin and `API_TRUST_PROXY` only to the proxy's IP/CIDR. The proxy must overwrite forwarding headers and use a request timeout compatible with the API deadline. Health requests are bodyless; versioned write routes accept bounded `application/json` only. CORS and rate limiting are not enabled.
 
 Normal bot startup validates and registers local command handlers but does not deploy Discord application commands.
 
