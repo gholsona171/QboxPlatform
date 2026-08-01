@@ -66,7 +66,7 @@ export type ApiLogLevel = (typeof logLevels)[number];
 const inputSchema = z.strictObject({
   environment: z.enum(environments).default("development"),
   host: z.string().trim().min(1).default("127.0.0.1"),
-  port: z.number().int().min(1).max(65_535).default(3_000),
+  port: z.number().int().min(0).max(65_535).default(3_000),
   bodySizeLimitBytes: z.number().int().min(1_024).max(10 * 1024 * 1024).default(1024 * 1024),
   requestTimeoutMs: z.number().int().min(100).max(300_000).default(15_000),
   keepAliveTimeoutMs: z.number().int().min(100).max(300_000).default(5_000),
@@ -99,6 +99,8 @@ export class ApiConfiguration {
       const field = parsed.error.issues[0]?.path.join(".") || "configuration";
       throw new ApiConfigurationError(`Invalid API ${field}.`);
     }
+    if (parsed.data.environment === "production" && parsed.data.port === 0)
+      throw new ApiConfigurationError("Production API port cannot be zero.");
 
     if (parsed.data.host.includes("://") || /[/?#]/u.test(parsed.data.host))
       throw new ApiConfigurationError("Invalid API host.");

@@ -1,6 +1,6 @@
 # API Foundation Architecture Review
 
-> Review status: this document records the pre-implementation inspection and approved design. Phase 1—the unbound server factory and transport contracts—was subsequently implemented; lifecycle composition described in later phases remains future work.
+> Review status: this document records the pre-implementation inspection and approved design. Phase 1 implemented the unbound server factory and transport contracts. Phase 2 subsequently implemented process composition, persistence-first startup, lifecycle-backed readiness, socket ownership, bounded shutdown, and signal handling. Authentication and domain routes remain future work.
 
 ## 1. Current API-related code
 

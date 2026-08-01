@@ -54,9 +54,18 @@ importers:
       '@qbox/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@qbox/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@qbox/permissions':
+        specifier: workspace:*
+        version: link:../../packages/permissions
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       fastify:
         specifier: ^5.11.0
         version: 5.11.0

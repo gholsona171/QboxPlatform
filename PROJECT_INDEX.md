@@ -3,9 +3,9 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Unbound Fastify transport foundation with validated configuration, request context, structured logging, typed errors, metrics contracts, and health endpoints. It does not yet start a process lifecycle or listen on a socket.
-- **Entry point:** `apps/api/src/index.ts` exports the transport foundation; `createApiServer()` constructs a testable unbound server.
-- **Declared dependencies:** `@qbox/core`, `@qbox/logger`, Fastify, and Zod.
+- **Purpose:** Fastify API process composed with the platform kernel, PostgreSQL lifecycle, persistent permission catalog synchronization, structured logging, typed errors, metrics contracts, and lifecycle-backed health endpoints. No domain or authentication routes exist yet.
+- **Entry points:** `apps/api/src/index.ts` exports the import-safe API contracts and factories; `apps/api/src/run.ts` is the executable entry point. `createApiServer()` remains unbound for injection tests, while `createApiApplication()` owns process composition.
+- **Declared dependencies:** `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
 - **Scripts:** `build`, `dev`, `start`, `typecheck`, `test`, `clean`
 
 ## `@qbox/bot`
@@ -356,7 +356,7 @@ There is no configured CI workflow, deployment pipeline, lint script, or formatt
 
 The following systems have repository locations or placeholder classes but no functional implementation:
 
-- API server: `apps/api/` does not create or listen with Fastify.
+- API domain routes and authentication: the API listens and exposes operational health routes, but `/api/v1` contains no business endpoints.
 - Background worker: `apps/worker/` does not create BullMQ or Redis workers.
 - OpenAI integration: `packages/openai/` does not construct or call an OpenAI client.
 - Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ.

@@ -10,7 +10,7 @@ The implemented runtime architecture is centered on `@qbox/core`. Its `PlatformK
 - `EventBus`, an in-process publish/subscribe mechanism.
 - `ModuleLoader`, which registers modules and controls their lifecycle.
 
-The Discord bot is currently the only application that uses the complete kernel/module lifecycle. It also composes the PostgreSQL permission repository lifecycle before starting Discord. The API has an unbound Fastify transport foundation but no process lifecycle or socket binding. The worker remains a startup placeholder; OpenAI and scheduler remain unintegrated.
+The Discord bot and API both use the kernel/module lifecycle. Each composes PostgreSQL permission persistence before its transport starts. The API binds Fastify only after the database starts and the compiled permission catalog synchronizes. The worker remains a startup placeholder; OpenAI and scheduler remain unintegrated.
 
 ## Applications, packages, and modules
 
@@ -19,7 +19,7 @@ The Discord bot is currently the only application that uses the complete kernel/
 Applications are executable workspace projects:
 
 - `@qbox/bot` constructs a `PlatformKernel`, registers `DiscordModule`, and starts the platform.
-- `@qbox/api` exports a validated, unbound Fastify server with request context, logging, errors, metrics contracts, and health routes. It does not start the kernel, connect to PostgreSQL, or listen on a socket.
+- `@qbox/api` exports a validated, unbound Fastify server for tests and an explicit process composition root for operation. Its persistence module starts the database and synchronizes permissions before its HTTP module binds; reverse module shutdown closes HTTP before persistence.
 - `@qbox/worker` currently prints startup information. It does not start a BullMQ worker.
 
 ### Packages

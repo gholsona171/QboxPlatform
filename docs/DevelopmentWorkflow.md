@@ -77,7 +77,7 @@ To work only on the bot:
 pnpm --filter @qbox/bot dev
 ```
 
-The API exports an unbound Fastify server factory for injection tests; its process lifecycle and socket binding are intentionally not implemented yet. The worker prints a startup message only. The bot starts the implemented kernel and Discord integration.
+The API executable validates API and database configuration, starts PostgreSQL, synchronizes the permission catalog, and then binds Fastify. Run it with `pnpm --filter @qbox/api dev`; production-style execution uses `pnpm --filter @qbox/api build` followed by `pnpm --filter @qbox/api start`. `DATABASE_URL` is required. Optional API settings are `API_HOST`, `API_PORT`, `API_BODY_SIZE_LIMIT_BYTES`, `API_REQUEST_TIMEOUT_MS`, `API_KEEP_ALIVE_TIMEOUT_MS`, `API_SHUTDOWN_TIMEOUT_MS`, `API_TRUST_PROXY`, `API_PUBLIC_BASE_URL`, and `QBOX_BUILD_VERSION`. Health probes are `/health/live`, `/health/ready`, and `/health/degraded`.
 
 Normal bot startup validates and registers local command handlers but does not deploy Discord application commands.
 

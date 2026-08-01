@@ -161,6 +161,7 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 ## Milestone 4.1 — Establish the API runtime
 
 - **Goal:** Complete the existing Fastify transport foundation by composing it with the core/database lifecycle, adding graceful startup and shutdown, and binding it safely for operation.
+- **Existing functionality:** Implemented on the API foundation branch: persistence-first kernel composition, catalog synchronization, loopback-testable HTTP lifecycle, live readiness composition, startup cleanup, and idempotent SIGINT/SIGTERM shutdown.
 - **Why it matters:** The current API does not listen for requests. A stable runtime boundary is required before business routes are added.
 - **Dependencies:** Phase 1 baseline, configuration, logging, and lifecycle hardening; package-local Fastify dependency approval.
 - **Estimated complexity:** Medium.

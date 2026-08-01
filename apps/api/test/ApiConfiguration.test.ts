@@ -55,7 +55,7 @@ describe("ApiConfiguration", () => {
   it.each([
     { host: "" },
     { host: "http://localhost" },
-    { port: 0 },
+    { port: -1 },
     { port: 65_536 },
     { bodySizeLimitBytes: 0 },
     { requestTimeoutMs: 0 },
@@ -85,6 +85,17 @@ describe("ApiConfiguration", () => {
         publicBaseUrl: "https://api.example.com",
       }).diagnostics().publicBaseUrl,
     ).toBe("https://api.example.com");
+  });
+
+  it("allows ephemeral port zero only outside production", () => {
+    expect(ApiConfiguration.from({ environment: "test", port: 0 }).diagnostics().port).toBe(0);
+    expect(() =>
+      ApiConfiguration.from({
+        environment: "production",
+        port: 0,
+        publicBaseUrl: "https://api.example.com",
+      }),
+    ).toThrow("port cannot be zero");
   });
 
   it("serializes only validated diagnostics", () => {
