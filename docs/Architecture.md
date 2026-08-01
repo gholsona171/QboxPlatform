@@ -73,7 +73,7 @@ The bot follows this sequence:
 
 If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`.
 
-Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. Guild-scoped development deployment uses `pnpm --filter @qbox/bot deploy:commands:dev` with `DISCORD_APPLICATION_ID` and `DISCORD_GUILD_ID`; global deployment uses a compiled bot build and `pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global`.
+Normal bot startup does not deploy or replace Discord application commands. Command deployment is an explicit workflow. The deployment process normalizes and compares current Discord definitions with validated local definitions, then reports additions, updates, removals, and unchanged commands. Dry-run workflows do not mutate Discord. Real deployments apply the full desired set and refetch it for verification. Global replacement requires `--confirm-global`, plus `--confirm-global-removals` when the computed plan removes commands.
 
 `DiscordInteractionHandler` receives Discord interactions, ignores unsupported types, resolves chat-input commands through `CommandRegistry`, enforces acknowledgement and execution timeouts, and applies each command's immediate/deferred and public/ephemeral response policy. `CommandRegistry` applies explicit guild/DM scope, all/any permission evaluation, administrator override, cooldown, and concurrency policies before invoking a command.
 

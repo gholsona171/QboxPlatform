@@ -14,7 +14,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:global`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
+- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:dev:dry-run`, `deploy:commands:global`, `deploy:commands:global:dry-run`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.
@@ -161,7 +161,7 @@ Because they have no `package.json`, these directories are not currently pnpm wo
 
 - **Defined in:** `packages/discord/src/DiscordService.ts`
 - **Instantiated in:** As a private field of each `DiscordModule` instance.
-- **Purpose:** Owns the Discord.js client, dispatches interactions, and performs explicitly requested guild or global application-command deployments.
+- **Purpose:** Owns the Discord.js client, dispatches interactions, and exposes current, desired, and applied command-definition operations to the explicit deployment workflow.
 
 ## `CommandRegistry`
 

@@ -1,29 +1,54 @@
 import type {
+  CommandDeploymentDefinition,
   CommandDeploymentResult
 } from "@qbox/discord";
 
-export type DeploymentScope = "global" | "guild";
+import {
+  commandDeploymentPlanSummary,
+  createCommandDeploymentPlan
+} from "./commandDeploymentPlan.js";
+import type {
+  CommandDeploymentPlan,
+  CommandDeploymentTargetIdentity,
+  DeploymentScope
+} from "./commandDeploymentPlan.js";
 
-export interface CommandDeploymentTarget {
-  readonly scope: DeploymentScope;
-  readonly applicationId: string;
-  readonly guildId?: string;
+export type { DeploymentScope } from "./commandDeploymentPlan.js";
+
+export interface CommandDeploymentTarget
+  extends CommandDeploymentTargetIdentity {
+  readonly dryRun: boolean;
+  readonly confirmGlobal: boolean;
+  readonly confirmGlobalRemovals: boolean;
 }
 
 export interface CommandDeploymentConfiguration {
   readonly applicationId: string;
   readonly guildId: string;
+  readonly dryRun: boolean;
   readonly confirmGlobal: boolean;
+  readonly confirmGlobalRemovals: boolean;
 }
 
 export interface CommandDeploymentClient {
   applicationId(): string;
-  deployCommands(guildId?: string): Promise<CommandDeploymentResult>;
+  desiredCommandDefinitions(): readonly CommandDeploymentDefinition[];
+  fetchCommandDefinitions(
+    guildId?: string
+  ): Promise<readonly CommandDeploymentDefinition[]>;
+  applyCommandDefinitions(guildId?: string): Promise<CommandDeploymentResult>;
 }
 
 interface DeploymentLogger {
   info(context: object, message: string): void;
   error(context: object, message: string): void;
+}
+
+export interface CommandDeploymentExecutionResult {
+  readonly plan: CommandDeploymentPlan;
+  readonly applied: boolean;
+  readonly verified: boolean;
+  readonly commandNames: readonly string[];
 }
 
 export function resolveCommandDeploymentTarget(
@@ -46,27 +71,36 @@ export function resolveCommandDeploymentTarget(
     return {
       scope,
       applicationId: configuration.applicationId,
-      guildId: configuration.guildId
+      guildId: configuration.guildId,
+      dryRun: configuration.dryRun,
+      confirmGlobal: configuration.confirmGlobal,
+      confirmGlobalRemovals: configuration.confirmGlobalRemovals
     };
-  }
-
-  if (!configuration.confirmGlobal) {
-    throw new Error(
-      "Global command replacement requires --confirm-global."
-    );
   }
 
   return {
     scope,
-    applicationId: configuration.applicationId
+    applicationId: configuration.applicationId,
+    dryRun: configuration.dryRun,
+    confirmGlobal: configuration.confirmGlobal,
+    confirmGlobalRemovals: configuration.confirmGlobalRemovals
   };
+}
+
+function hasVerificationMismatch(plan: CommandDeploymentPlan): boolean {
+  return (
+    plan.additions.length > 0 ||
+    plan.updates.length > 0 ||
+    plan.removals.length > 0 ||
+    plan.currentCommandCount !== plan.desiredCommandCount
+  );
 }
 
 export async function executeCommandDeployment(
   target: CommandDeploymentTarget,
   client: CommandDeploymentClient,
   log: DeploymentLogger
-): Promise<CommandDeploymentResult> {
+): Promise<CommandDeploymentExecutionResult> {
   const connectedApplicationId = client.applicationId();
 
   if (connectedApplicationId !== target.applicationId) {
@@ -75,36 +109,90 @@ export async function executeCommandDeployment(
     );
   }
 
-  log.info(
-    {
-      applicationId: connectedApplicationId,
-      deploymentScope: target.scope,
-      targetGuildId: target.guildId
-    },
-    "Discord command deployment started."
-  );
-
   try {
-    const result = await client.deployCommands(target.guildId);
+    const desired = client.desiredCommandDefinitions();
+    const current = await client.fetchCommandDefinitions(target.guildId);
+    const plan = createCommandDeploymentPlan(target, current, desired);
+    const summary = commandDeploymentPlanSummary(plan);
 
     log.info(
       {
-        applicationId: connectedApplicationId,
-        deploymentScope: target.scope,
-        targetGuildId: target.guildId,
-        commandCount: result.commandCount,
-        commandNames: result.commandNames
+        ...summary,
+        dryRun: target.dryRun
       },
-      "Discord command deployment completed."
+      "Discord command deployment plan created."
     );
 
-    return result;
+    if (target.dryRun) {
+      log.info(
+        summary,
+        "Discord command deployment dry-run completed without changes."
+      );
+
+      return {
+        plan,
+        applied: false,
+        verified: false,
+        commandNames: desired
+          .map((definition) => definition.name)
+          .filter((name): name is string => typeof name === "string")
+          .sort()
+      };
+    }
+
+    if (target.scope === "global" && !target.confirmGlobal) {
+      throw new Error(
+        "Global command replacement requires --confirm-global."
+      );
+    }
+
+    if (
+      target.scope === "global" &&
+      plan.removals.length > 0 &&
+      !target.confirmGlobalRemovals
+    ) {
+      throw new Error(
+        "Global command removals require --confirm-global-removals."
+      );
+    }
+
+    const applied = await client.applyCommandDefinitions(target.guildId);
+    const resulting = await client.fetchCommandDefinitions(target.guildId);
+    const verification = createCommandDeploymentPlan(
+      target,
+      resulting,
+      desired
+    );
+
+    if (hasVerificationMismatch(verification)) {
+      throw new Error(
+        "Discord command deployment verification failed: resulting definitions do not match the desired state."
+      );
+    }
+
+    log.info(
+      {
+        ...summary,
+        commandCount: applied.commandCount,
+        commandNames: applied.commandNames,
+        verifiedCommandCount: resulting.length
+      },
+      "Discord command deployment applied and verified."
+    );
+
+    return {
+      plan,
+      applied: true,
+      verified: true,
+      commandNames: applied.commandNames
+    };
   } catch (error) {
     log.error(
       {
         applicationId: connectedApplicationId,
         deploymentScope: target.scope,
         targetGuildId: target.guildId,
+        dryRun: target.dryRun,
         err: error,
         stack: error instanceof Error ? error.stack : undefined
       },

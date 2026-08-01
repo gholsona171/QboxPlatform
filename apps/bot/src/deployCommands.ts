@@ -32,7 +32,11 @@ async function main(): Promise<void> {
     {
       applicationId: env.DISCORD_APPLICATION_ID,
       guildId: env.DISCORD_GUILD_ID,
-      confirmGlobal: process.argv.includes("--confirm-global")
+      dryRun: process.argv.includes("--dry-run"),
+      confirmGlobal: process.argv.includes("--confirm-global"),
+      confirmGlobalRemovals: process.argv.includes(
+        "--confirm-global-removals"
+      )
     }
   );
   const kernel = new PlatformKernel();

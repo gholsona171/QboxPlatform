@@ -83,22 +83,42 @@ Normal bot startup validates and registers local command handlers but does not d
 
 ## Discord command deployment
 
-Deploy commands to the configured development guild:
+Preview the configured development guild first:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:dev:dry-run
+```
+
+The dry-run connects to the verified application, loads and validates local commands, fetches current guild commands, and reports additions, updates, removals, and unchanged commands without mutating Discord.
+
+Apply the displayed guild plan:
 
 ```sh
 pnpm --filter @qbox/bot deploy:commands:dev
 ```
 
-This typechecks the bot workspace, validates and loads the command set, verifies that the logged-in Discord application matches `DISCORD_APPLICATION_ID`, replaces commands only in `DISCORD_GUILD_ID`, reports the deployed command names, and exits cleanly.
+Guild deployment displays the plan, replaces commands only in `DISCORD_GUILD_ID`, fetches the resulting definitions, verifies them against the desired definitions, and exits nonzero on failure or mismatch.
 
-Deploy commands globally after building the repository:
+For global commands, build and preview before applying:
 
 ```sh
 pnpm build
+pnpm --filter @qbox/bot deploy:commands:global:dry-run
+```
+
+If the preview contains no removals, apply with:
+
+```sh
 pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global
 ```
 
-Global deployment uses `dist/deployCommands.js` and requires the explicit `--confirm-global` guard. Both workflows load and validate the complete command set before replacing commands in their selected scope. Normal bot startup never deploys commands.
+If the preview contains removals, both noninteractive confirmations are required:
+
+```sh
+pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global --confirm-global-removals
+```
+
+Global workflows use the compiled `dist/deployCommands.js`. A dry-run never requires confirmation because it cannot mutate Discord. Every real deployment recomputes and logs the plan immediately before replacement and verifies the resulting state afterward. Normal bot startup never deploys commands.
 
 Some library packages also define watch commands. They can be run directly with filters, for example:
 

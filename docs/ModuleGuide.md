@@ -98,6 +98,7 @@ Responsibilities:
 - Apply permission checks before protected commands execute.
 - Validate command modules, metadata, aliases, permissions, and handlers before registration.
 - Deploy guild or global application commands only through the dedicated deployment workflow.
+- Fetch and normalize current Discord definitions, preview deployment differences, guard global removals, and verify resulting definitions after replacement.
 - Route interactions through `DiscordInteractionHandler`, with acknowledgement and execution timeouts, active-execution tracking, bounded shutdown draining, and state-aware error responses.
 - Apply required command policies for guild/DM scope, permission evaluation and administrator override, response acknowledgement and visibility, cooldown, and concurrency.
 

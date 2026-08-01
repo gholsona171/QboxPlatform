@@ -21,6 +21,8 @@ export interface CommandDeploymentResult {
   readonly commandNames: readonly string[];
 }
 
+export type CommandDeploymentDefinition = Readonly<Record<string, unknown>>;
+
 function readExecutionTimeout(): number {
   const timeout = Number(env.DISCORD_COMMAND_TIMEOUT_MS);
 
@@ -147,7 +149,45 @@ export class DiscordService {
     return applicationId;
   }
 
-  public async deployCommands(
+  public desiredCommandDefinitions(): readonly CommandDeploymentDefinition[] {
+    return this.commands.deploymentData().map((definition) => ({
+      ...definition
+    }));
+  }
+
+  public async fetchCommandDefinitions(
+    guildId?: string
+  ): Promise<readonly CommandDeploymentDefinition[]> {
+    if (!this.client.application) {
+      throw new Error(
+        "Discord application identity is unavailable for command deployment."
+      );
+    }
+
+    const commands = await this.client.application.commands.fetch(
+      guildId
+        ? { guildId, withLocalizations: true }
+        : { withLocalizations: true }
+    );
+
+    return [...commands.values()].map((command) => ({
+      type: command.type,
+      name: command.name,
+      nameLocalizations: command.nameLocalizations,
+      description: command.description,
+      descriptionLocalizations: command.descriptionLocalizations,
+      options: command.options.map((option) => ({ ...option })),
+      defaultMemberPermissions:
+        command.defaultMemberPermissions?.bitfield.toString() ?? null,
+      dmPermission: command.dmPermission,
+      nsfw: command.nsfw,
+      contexts: command.contexts,
+      integrationTypes: command.integrationTypes,
+      handler: command.handler
+    }));
+  }
+
+  public async applyCommandDefinitions(
     guildId?: string
   ): Promise<CommandDeploymentResult> {
     if (!this.client.application) {
