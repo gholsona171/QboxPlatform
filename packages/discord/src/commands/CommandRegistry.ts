@@ -1,23 +1,21 @@
-import type {
-  APIInteractionGuildMember,
-  GuildMember
-} from "discord.js";
-
-import type { PermissionService } from "@qbox/permissions";
+import type { PermissionAuthorizer } from "@qbox/permissions";
 
 import type {
   CommandExecutionContext,
   ConcurrencyScope,
-  DiscordCommand
+  DiscordCommand,
 } from "./DiscordCommand.js";
+import { discordPermissionIdentity } from "../permissions/DiscordPermissionIdentity.js";
 
-function roleIds(
-  member: GuildMember | APIInteractionGuildMember
-): readonly string[] {
-  return Array.isArray(member.roles)
-    ? member.roles
-    : [...member.roles.cache.keys()];
+interface AuthorizationLogger {
+  warn(context: object, message: string): void;
+  error(context: object, message: string): void;
 }
+
+const silentAuthorizationLogger: AuthorizationLogger = {
+  warn: () => undefined,
+  error: () => undefined,
+};
 
 export class CommandRegistry {
   private readonly commandsByName = new Map<string, DiscordCommand>();
@@ -26,7 +24,8 @@ export class CommandRegistry {
   private readonly activeConcurrencyKeys = new Set<string>();
 
   public constructor(
-    private readonly permissionService: PermissionService
+    private readonly permissionAuthorizer: PermissionAuthorizer,
+    private readonly authorizationLog: AuthorizationLogger = silentAuthorizationLogger,
   ) {}
 
   public register(command: DiscordCommand): void {
@@ -42,7 +41,7 @@ export class CommandRegistry {
       for (const name of names) {
         if (pendingNames.has(name)) {
           throw new Error(
-            `Command name or alias '${name}' is already registered.`
+            `Command name or alias '${name}' is already registered.`,
           );
         }
 
@@ -78,8 +77,8 @@ export class CommandRegistry {
         data,
         ...(command.aliases ?? []).map((alias) => ({
           ...data,
-          name: alias
-        }))
+          name: alias,
+        })),
       ];
     });
   }
@@ -93,7 +92,7 @@ export class CommandRegistry {
       return;
     }
 
-    if (!await this.authorize(command, context)) {
+    if (!(await this.authorize(command, context))) {
       return;
     }
 
@@ -107,7 +106,7 @@ export class CommandRegistry {
       if (expiresAt > now) {
         const seconds = Math.max(1, Math.ceil((expiresAt - now) / 1_000));
         await context.reply({
-          content: `Please wait ${seconds} second(s) before using this command again.`
+          content: `Please wait ${seconds} second(s) before using this command again.`,
         });
         return;
       }
@@ -117,16 +116,13 @@ export class CommandRegistry {
 
     if (concurrencyKey && this.activeConcurrencyKeys.has(concurrencyKey)) {
       await context.reply({
-        content: "This command is already running for the selected scope."
+        content: "This command is already running for the selected scope.",
       });
       return;
     }
 
     if (cooldownKey && command.policy.cooldown) {
-      this.cooldowns.set(
-        cooldownKey,
-        now + command.policy.cooldown.durationMs
-      );
+      this.cooldowns.set(cooldownKey, now + command.policy.cooldown.durationMs);
     }
 
     if (concurrencyKey) {
@@ -144,21 +140,21 @@ export class CommandRegistry {
 
   private async authorize(
     command: DiscordCommand,
-    context: CommandExecutionContext
+    context: CommandExecutionContext,
   ): Promise<boolean> {
     const { interaction } = context;
     const inGuild = interaction.inGuild();
 
     if (command.policy.contexts === "guild" && !inGuild) {
       await context.reply({
-        content: "This command can only be used in a server."
+        content: "This command can only be used in a server.",
       });
       return false;
     }
 
     if (command.policy.contexts === "dm" && inGuild) {
       await context.reply({
-        content: "This command can only be used in a direct message."
+        content: "This command can only be used in a direct message.",
       });
       return false;
     }
@@ -171,31 +167,77 @@ export class CommandRegistry {
 
     if (!inGuild) {
       await context.reply({
-        content: "This command requires server permissions."
+        content: "This command requires server permissions.",
       });
       return false;
     }
 
-    const subject = {
-      userId: interaction.user.id,
-      roleIds: roleIds(interaction.member)
-    };
-    const administratorAllowed =
-      permissionPolicy.administratorOverride &&
-      this.permissionService.hasPermission(subject, "platform.admin");
-    const permissionAllowed = permissionPolicy.mode === "all"
-      ? this.permissionService.hasEveryPermission(
-          subject,
-          permissionPolicy.required
-        )
-      : this.permissionService.hasAnyPermission(
-          subject,
-          permissionPolicy.required
-        );
-
-    if (!administratorAllowed && !permissionAllowed) {
+    let identity;
+    try {
+      identity = discordPermissionIdentity(interaction);
+    } catch (error) {
+      this.authorizationLog.error(
+        {
+          err: error,
+          commandName: command.data.name,
+          guildId: interaction.guildId,
+          userId: interaction.user.id,
+        },
+        "Discord authorization identity translation failed.",
+      );
       await context.reply({
-        content: "You do not have permission to use this command."
+        content: "Authorization could not be verified. Please try again later.",
+      });
+      return false;
+    }
+    if (identity.type !== "guild") {
+      await context.reply({
+        content: "This command requires server permissions.",
+      });
+      return false;
+    }
+    let decision;
+    try {
+      decision = await this.permissionAuthorizer.authorize({
+        principals: identity.principals,
+        scope: identity.scope,
+        required: permissionPolicy.required,
+        mode: permissionPolicy.mode,
+        administratorOverride: permissionPolicy.administratorOverride,
+      });
+    } catch (error) {
+      this.authorizationLog.error(
+        {
+          err: error,
+          commandName: command.data.name,
+          guildId: identity.guildId,
+          userId: interaction.user.id,
+        },
+        "Discord permission authorizer failed.",
+      );
+      await context.reply({
+        content: "Authorization could not be verified. Please try again later.",
+      });
+      return false;
+    }
+
+    if (!decision.allowed) {
+      this.authorizationLog.warn(
+        {
+          commandName: command.data.name,
+          guildId: identity.guildId,
+          userId: interaction.user.id,
+          decisionReason: decision.reason,
+          degraded: decision.degraded,
+          usedCache: decision.usedCache,
+        },
+        "Discord command authorization denied.",
+      );
+      await context.reply({
+        content:
+          decision.reason === "repository-unavailable"
+            ? "Authorization could not be verified. Please try again later."
+            : "You do not have permission to use this command.",
       });
       return false;
     }
@@ -205,7 +247,7 @@ export class CommandRegistry {
 
   private cooldownKey(
     command: DiscordCommand,
-    context: CommandExecutionContext
+    context: CommandExecutionContext,
   ): string | undefined {
     const cooldown = command.policy.cooldown;
 
@@ -213,9 +255,10 @@ export class CommandRegistry {
       return undefined;
     }
 
-    const subject = cooldown.scope === "user"
-      ? context.interaction.user.id
-      : context.interaction.guildId;
+    const subject =
+      cooldown.scope === "user"
+        ? context.interaction.user.id
+        : context.interaction.guildId;
 
     return subject
       ? `${command.data.name}:cooldown:${cooldown.scope}:${subject}`
@@ -232,7 +275,7 @@ export class CommandRegistry {
 
   private concurrencyKey(
     command: DiscordCommand,
-    context: CommandExecutionContext
+    context: CommandExecutionContext,
   ): string | undefined {
     const scope: ConcurrencyScope = command.policy.concurrency;
 
@@ -244,9 +287,10 @@ export class CommandRegistry {
       return `${command.data.name}:concurrency:single`;
     }
 
-    const subject = scope === "user"
-      ? context.interaction.user.id
-      : context.interaction.guildId;
+    const subject =
+      scope === "user"
+        ? context.interaction.user.id
+        : context.interaction.guildId;
 
     return subject
       ? `${command.data.name}:concurrency:${scope}:${subject}`

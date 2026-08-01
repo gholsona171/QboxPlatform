@@ -39,7 +39,7 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 
 `DiscordModule`:
 
-- Initializes administrator permission grants from `ADMIN_ROLE_IDS`.
+- Receives the asynchronous permission authorizer through constructor injection.
 - Discovers Discord command classes.
 - Registers each command with `DiscordService`.
 - Publishes permission and Discord services through the service container.
@@ -56,15 +56,13 @@ The context exposes the shared `ServiceContainer` and `EventBus`.
 
 ### Start lifecycle
 
-1. Clear existing grants from the shared permission service.
-2. Grant `platform.admin` to each configured administrator role ID.
-3. Load command implementations from the command directory.
-4. Register the commands in `DiscordService`.
-5. Register `permissions` in the shared service container.
-6. Register `discord` in the shared service container.
-7. Start `DiscordService` and log in.
-8. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
-9. Log the connected user, application ID, guild count, command count, and administrator-role count.
+1. Process composition creates the in-memory permission runtime and guild-bound compatibility assignments.
+2. Load command implementations from the command directory.
+3. Register the commands in `DiscordService`.
+4. Start `DiscordService` and log in.
+5. Verify the connected application ID against `DISCORD_APPLICATION_ID`.
+6. Register the authoritative `permissions` authorizer and `discord` service only after startup succeeds.
+7. Log the connected identity, command count, and non-secret compatibility diagnostics.
 
 ### Stop lifecycle
 
@@ -121,10 +119,7 @@ Discord.js builders remain the command-definition API. Required options precede 
 
 ```ts
 import { SlashCommandBuilder } from "discord.js";
-import type {
-  CommandExecutionContext,
-  DiscordCommand
-} from "@qbox/discord";
+import type { CommandExecutionContext, DiscordCommand } from "@qbox/discord";
 
 export class ExampleCommand implements DiscordCommand {
   public readonly type = "chat-input" as const;
@@ -132,24 +127,30 @@ export class ExampleCommand implements DiscordCommand {
   public readonly data = new SlashCommandBuilder()
     .setName("example")
     .setDescription("Demonstrates typed command input.")
-    .addSubcommand((subcommand) => subcommand
-      .setName("create")
-      .setDescription("Creates an example.")
-      .addStringOption((option) => option
-        .setName("reason")
-        .setDescription("Why the example is needed.")
-        .setRequired(true))
-      .addIntegerOption((option) => option
-        .setName("duration")
-        .setDescription("Optional duration in minutes.")));
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("create")
+        .setDescription("Creates an example.")
+        .addStringOption((option) =>
+          option
+            .setName("reason")
+            .setDescription("Why the example is needed.")
+            .setRequired(true),
+        )
+        .addIntegerOption((option) =>
+          option
+            .setName("duration")
+            .setDescription("Optional duration in minutes."),
+        ),
+    );
 
   public readonly policy = {
     contexts: "guild",
     response: {
       acknowledgement: "immediate",
-      visibility: "ephemeral"
+      visibility: "ephemeral",
     },
-    concurrency: "user"
+    concurrency: "user",
   } as const;
 
   public async execute(context: CommandExecutionContext): Promise<void> {
@@ -159,11 +160,9 @@ export class ExampleCommand implements DiscordCommand {
         const duration = context.options.optionalInteger("duration");
 
         await context.reply({
-          content: duration
-            ? `${reason} (${duration} minutes)`
-            : reason
+          content: duration ? `${reason} (${duration} minutes)` : reason,
         });
-      }
+      },
     });
   }
 }
@@ -187,13 +186,14 @@ Package: `@qbox/permissions`
 
 Responsibilities:
 
-- Define the current permission string union.
-- Represent permission subjects and role grants.
-- Store role-to-permission grants in memory.
-- Check one, every, or any requested permission.
-- Export a shared `PermissionService` singleton.
+- Define and version the authoritative compiled permission catalog.
+- Validate lowercase dot-separated identifiers and reject unknown persisted catalog keys.
+- Model Discord user/role principals, platform/guild scopes, exact grants, denies, expiration, mutations, and structured audit reasons without integration dependencies.
+- Define asynchronous repository and cache ports plus deterministic owner/admin/deny/all/any authorization semantics.
+- Provide process-local in-memory adapters for domain testing.
+- Preserve the deprecated synchronous role-grant `PermissionService` only for legacy package compatibility tests; Discord uses `PermissionAuthorizer`.
 
-It has no external package dependencies and no persistence lifecycle. `DiscordModule.start()` clears and rebuilds its grants.
+It has no external package dependencies and no persistence lifecycle. `@qbox/database` implements its repository ports; no Redis adapter exists. The bot supplies the repository-backed authorizer and environment compatibility overlay to Discord without resetting global singleton state. See `docs/PermissionDomain.md` and `docs/PersistentPermissionRepository.md`.
 
 ## Shared package
 
@@ -213,17 +213,21 @@ Environment loading happens as an import-time side effect rather than through an
 
 Package: `@qbox/database`
 
-Current responsibility: exports a `Database` class and singleton with `connect()` and `disconnect()` methods.
+Current responsibility: owns the authoritative typed PostgreSQL configuration value object, lifecycle coordination, health/readiness contracts, Prisma-backed permission repositories, advisory-locked owner protection, dry-run-first bootstrap/migration workflows, transaction boundaries, and in-memory cache invalidation adapter.
 
-Lifecycle behavior is currently limited to console messages. It does not connect to a database, consume `DATABASE_URL`, or depend on Prisma.
+`DatabaseService` uses an injected `ClientFactory`, reports `LIVE`, `READY`, or `DEGRADED`, rejects readiness until its client starts, and attempts cleanup after startup failure. `PrismaPermissionPersistenceClient` owns one injected Prisma client and repository collection for the process lifecycle.
 
-The package declares no dependencies.
+`@qbox/database` is the application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root schema and migration tooling, committed ESM generated client, and disconnected PostgreSQL client factory. Repository adapters and the readiness probe remain in `@qbox/database`. See `docs/DatabaseDecisionRecord.md`, `docs/DatabaseFoundationArchitectureReview.md`, `docs/PersistentPermissionRepository.md`, and `docs/PermissionAdministration.md`.
+
+The canonical schema is `prisma/schema.prisma`. It contains the PostgreSQL datasource, `prisma-client` generator, and initial persistent-permission models. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
+
+The package depends on `@qbox/permissions` and `@qbox/prisma` through workspace boundaries.
 
 ## Prisma package
 
 Package: `@qbox/prisma`
 
-The entry point currently exports nothing. There is no Prisma client wrapper, schema, generated client, migration, or lifecycle behavior.
+The entry point exports the generated Prisma client and disconnected `PrismaClientFactory`. Migration history remains under root `prisma/migrations`; lifecycle behavior remains outside this package.
 
 The package declares no dependencies of its own.
 

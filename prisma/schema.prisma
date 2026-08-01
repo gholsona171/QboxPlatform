@@ -1,0 +1,187 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "../packages/prisma/src/generated/client"
+  moduleFormat           = "esm"
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PermissionPrincipalType {
+  DISCORD_USER @map("discord-user")
+  DISCORD_ROLE @map("discord-role")
+}
+
+enum PermissionScopeType {
+  PLATFORM      @map("platform")
+  DISCORD_GUILD @map("discord-guild")
+}
+
+enum PermissionAssignmentEffect {
+  ALLOW @map("allow")
+  DENY  @map("deny")
+}
+
+enum PermissionAuditAction {
+  SET_ASSIGNMENT             @map("set-assignment")
+  REVOKE_ASSIGNMENT          @map("revoke-assignment")
+  DISABLE_ASSIGNMENT         @map("disable-assignment")
+  ENABLE_ASSIGNMENT          @map("enable-assignment")
+  EXPIRE_ASSIGNMENT          @map("expire-assignment")
+  DISABLE_PRINCIPAL          @map("disable-principal")
+  ENABLE_PRINCIPAL           @map("enable-principal")
+  DISABLE_GUILD              @map("disable-guild")
+  ENABLE_GUILD               @map("enable-guild")
+  DISABLE_DEFINITION         @map("disable-definition")
+  ENABLE_DEFINITION          @map("enable-definition")
+  OWNER_PROTECTION_REJECTION @map("owner-protection-rejection")
+}
+
+enum PermissionMutationReasonCode {
+  BOOTSTRAP            @map("bootstrap")
+  ADMINISTRATOR_ACTION @map("administrator-action")
+  SECURITY_RESPONSE    @map("security-response")
+  ROLE_SYNCHRONIZATION @map("role-synchronization")
+  MIGRATION            @map("migration")
+  EXPIRATION           @map("expiration")
+  SYSTEM_MAINTENANCE   @map("system-maintenance")
+}
+
+enum PermissionAuditActorType {
+  PRINCIPAL @map("principal")
+  SYSTEM    @map("system")
+}
+
+model Guild {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  discordGuildId String    @unique(map: "guild_discord_guild_id_key") @map("discord_guild_id")
+  metadata       Json      @default("{}") @db.JsonB
+  enabled        Boolean   @default(true)
+  disabledAt     DateTime? @map("disabled_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  principals       PermissionPrincipal[]
+  assignments      PermissionAssignment[]
+  auditScopeEvents PermissionAuditEvent[] @relation("AuditScopeGuild")
+
+  @@map("guilds")
+}
+
+model PermissionPrincipal {
+  id         String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type       PermissionPrincipalType
+  guildId    String                  @map("guild_id") @db.Uuid
+  externalId String                  @map("external_id")
+  metadata   Json                    @default("{}") @db.JsonB
+  enabled    Boolean                 @default(true)
+  disabledAt DateTime?               @map("disabled_at") @db.Timestamptz(3)
+  createdAt  DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild             Guild                  @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  assignments       PermissionAssignment[]
+  auditActorEvents  PermissionAuditEvent[] @relation("AuditActorPrincipal")
+  auditTargetEvents PermissionAuditEvent[] @relation("AuditTargetPrincipal")
+
+  @@unique([type, guildId, externalId], map: "permission_principals_identity_key")
+  @@index([guildId, enabled], map: "permission_principals_guild_enabled_idx")
+  @@map("permission_principals")
+}
+
+model PermissionDefinition {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  key         String    @unique(map: "permission_definitions_key_key")
+  description String?
+  category    String?
+  enabled     Boolean   @default(true)
+  disabledAt  DateTime? @map("disabled_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  assignments PermissionAssignment[]
+  auditEvents PermissionAuditEvent[]
+
+  @@index([enabled], map: "permission_definitions_enabled_idx")
+  @@map("permission_definitions")
+}
+
+model PermissionAssignment {
+  id                     String                     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  principalId            String                     @map("principal_id") @db.Uuid
+  permissionDefinitionId String                     @map("permission_definition_id") @db.Uuid
+  scope                  PermissionScopeType
+  guildId                String?                    @map("guild_id") @db.Uuid
+  effect                 PermissionAssignmentEffect
+  enabled                Boolean                    @default(true)
+  expiresAt              DateTime?                  @map("expires_at") @db.Timestamptz(3)
+  revokedAt              DateTime?                  @map("revoked_at") @db.Timestamptz(3)
+  createdAt              DateTime                   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  principal            PermissionPrincipal    @relation(fields: [principalId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  permissionDefinition PermissionDefinition   @relation(fields: [permissionDefinitionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  guild                Guild?                 @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  auditEvents          PermissionAuditEvent[]
+
+  @@index([principalId, scope, guildId, enabled], map: "permission_assignments_lookup_idx")
+  @@index([permissionDefinitionId], map: "permission_assignments_permission_idx")
+  @@index([guildId], map: "permission_assignments_guild_idx")
+  @@map("permission_assignments")
+}
+
+model PermissionAuditEvent {
+  id                     String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  action                 PermissionAuditAction
+  actorType              PermissionAuditActorType     @map("actor_type")
+  actorPrincipalId       String?                      @map("actor_principal_id") @db.Uuid
+  actorPrincipalType     PermissionPrincipalType?     @map("actor_principal_type")
+  actorExternalId        String?                      @map("actor_external_id")
+  actorGuildDiscordId    String?                      @map("actor_guild_discord_id")
+  actorService           String?                      @map("actor_service")
+  targetPrincipalId      String?                      @map("target_principal_id") @db.Uuid
+  targetPrincipalType    PermissionPrincipalType?     @map("target_principal_type")
+  targetExternalId       String?                      @map("target_external_id")
+  targetGuildDiscordId   String?                      @map("target_guild_discord_id")
+  scope                  PermissionScopeType?
+  scopeGuildId           String?                      @map("scope_guild_id") @db.Uuid
+  scopeGuildDiscordId    String?                      @map("scope_guild_discord_id")
+  permissionDefinitionId String?                      @map("permission_definition_id") @db.Uuid
+  permissionKey          String?                      @map("permission_key")
+  assignmentId           String?                      @map("assignment_id") @db.Uuid
+  reasonCode             PermissionMutationReasonCode @map("reason_code")
+  reason                 String?
+  correlationId          String                       @map("correlation_id") @db.Uuid
+  beforeSnapshot         Json?                        @map("before_snapshot") @db.JsonB
+  afterSnapshot          Json?                        @map("after_snapshot") @db.JsonB
+  occurredAt             DateTime                     @map("occurred_at") @db.Timestamptz(3)
+  createdAt              DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  actorPrincipal       PermissionPrincipal?  @relation("AuditActorPrincipal", fields: [actorPrincipalId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetPrincipal      PermissionPrincipal?  @relation("AuditTargetPrincipal", fields: [targetPrincipalId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  scopeGuild           Guild?                @relation("AuditScopeGuild", fields: [scopeGuildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  permissionDefinition PermissionDefinition? @relation(fields: [permissionDefinitionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  assignment           PermissionAssignment? @relation(fields: [assignmentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([correlationId], map: "permission_audit_events_correlation_idx")
+  @@index([assignmentId], map: "permission_audit_events_assignment_idx")
+  @@index([scope, scopeGuildId, occurredAt], map: "permission_audit_events_scope_time_idx")
+  @@index([actorPrincipalId], map: "permission_audit_events_actor_idx")
+  @@index([targetPrincipalId], map: "permission_audit_events_target_idx")
+  @@index([permissionDefinitionId], map: "permission_audit_events_permission_idx")
+  @@map("permission_audit_events")
+}
+
+model PermissionCatalogState {
+  id        String   @id
+  version   String
+  checksum  String
+  syncedAt  DateTime @map("synced_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("permission_catalog_state")
+}

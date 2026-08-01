@@ -10,7 +10,7 @@ The implemented runtime architecture is centered on `@qbox/core`. Its `PlatformK
 - `EventBus`, an in-process publish/subscribe mechanism.
 - `ModuleLoader`, which registers modules and controls their lifecycle.
 
-The Discord bot is currently the only application that uses the complete kernel/module lifecycle. The API and worker are startup placeholders. The database, Prisma, OpenAI, and scheduler packages are also placeholders rather than integrated runtime components.
+The Discord bot is currently the only application that uses the complete kernel/module lifecycle. It also composes the PostgreSQL permission repository lifecycle before starting Discord. The API and worker are startup placeholders; OpenAI and scheduler remain unintegrated.
 
 ## Applications, packages, and modules
 
@@ -31,6 +31,9 @@ The currently implemented dependency direction is:
 ```text
 @qbox/bot
   -> @qbox/core
+  -> @qbox/database
+       -> @qbox/permissions
+       -> @qbox/prisma
   -> @qbox/discord
        -> @qbox/core
        -> @qbox/logger
@@ -58,18 +61,20 @@ The bot follows this sequence:
 
 1. Imports of `@qbox/shared` load the repository-root `.env` file through `dotenv` and expose environment values.
 2. The bot creates a `PlatformKernel`.
-3. The bot creates and registers a `DiscordModule`.
-4. The bot attaches one-time handlers for `SIGINT` and `SIGTERM`.
-5. `PlatformKernel.start()` registers the core logger, event bus, and module loader services.
-6. The kernel calls `ModuleLoader.startAll()` in module registration order.
-7. `DiscordModule.start()` clears and configures permission grants from `ADMIN_ROLE_IDS`.
-8. `CommandLoader` scans for `.command.ts` or `.command.js` files in deterministic filename order and imports each module's named `command` export.
-9. `CommandValidator` validates all discovered commands before registration. Any validation failure aborts registration.
-10. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
-11. The permission and Discord services are registered.
-12. `DiscordService` installs its interaction listener and logs in with `DISCORD_TOKEN`.
-13. Startup verifies that the connected application matches `DISCORD_APPLICATION_ID` and logs the non-secret bot identity and connected guild count.
-14. After all modules start, the kernel emits `platform.started` and logs the module count.
+3. The bot creates the database configuration, repository composition, and repository-backed permission authorizer.
+4. The bot registers the permission persistence module before `DiscordModule`.
+5. The bot attaches one-time handlers for `SIGINT` and `SIGTERM`.
+6. `PlatformKernel.start()` registers the core logger, event bus, and module loader services.
+7. The kernel calls `ModuleLoader.startAll()` in module registration order.
+8. Permission persistence connects, checks readiness, synchronizes the compiled catalog, and registers the repository services.
+9. The bot overlays guild-bound `ADMIN_ROLE_IDS` compatibility assignments without persisting them.
+10. `CommandLoader` scans for `.command.ts` or `.command.js` files in deterministic filename order and imports each module's named `command` export.
+11. `CommandValidator` validates all discovered commands before registration. Any validation failure aborts registration.
+12. `CommandRegistry.registerAll()` registers the validated command set atomically, including aliases.
+13. The permission and Discord services are registered.
+14. `DiscordService` installs its interaction listener and logs in with `DISCORD_TOKEN`.
+15. Startup verifies that the connected application matches `DISCORD_APPLICATION_ID` and logs the non-secret bot identity and connected guild count.
+16. After all modules start, the kernel emits `platform.started` and logs the module count.
 
 If startup throws, the bot logs a fatal error and sets `process.exitCode` to `1`.
 
@@ -86,7 +91,8 @@ On `SIGINT` or `SIGTERM`, the bot calls `PlatformKernel.stop()` once:
 1. The kernel emits `platform.stopping`.
 2. `ModuleLoader.stopAll()` stops registered modules in reverse registration order.
 3. `DiscordModule.stop()` rejects new command executions, waits up to `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` for active commands, aborts their cooperative cancellation signals if the deadline expires, and destroys the Discord client.
-4. The kernel logs that the platform stopped.
+4. The permission persistence module clears the process cache and disconnects PostgreSQL.
+5. The kernel logs that the platform stopped.
 
 The bot records shutdown failure and sets a nonzero exit code if an exception is thrown.
 
@@ -94,7 +100,7 @@ The bot records shutdown failure and sets a nonzero exit code if an exception is
 
 Dependency injection is implemented through explicit constructors and the `ServiceContainer`.
 
-Constructor injection is used inside the Discord integration: `DiscordModule` passes the singleton `PermissionService` to `DiscordService`, which passes it to `CommandRegistry`. This makes permission checks available during command execution.
+Constructor injection is used inside the Discord integration: `DiscordModule` receives a `PermissionAuthorizer`, passes it to `DiscordService`, and then to `CommandRegistry`. The authorizer is registered in the service container only after Discord startup succeeds.
 
 The module context provides shared runtime dependencies:
 
@@ -111,18 +117,18 @@ The service container stores values by string name. `register<T>(name, service)`
 
 The kernel registers these services before starting modules:
 
-| Service name | Registered value |
-| --- | --- |
-| `logger` | Shared Pino logger |
-| `events` | Kernel `EventBus` instance |
-| `modules` | Kernel `ModuleLoader` instance |
+| Service name | Registered value               |
+| ------------ | ------------------------------ |
+| `logger`     | Shared Pino logger             |
+| `events`     | Kernel `EventBus` instance     |
+| `modules`    | Kernel `ModuleLoader` instance |
 
 `DiscordModule` then registers:
 
-| Service name | Registered value |
-| --- | --- |
-| `permissions` | Shared `PermissionService` singleton |
-| `discord` | Module-owned `DiscordService` instance |
+| Service name  | Registered value                             |
+| ------------- | -------------------------------------------- |
+| `permissions` | Injected asynchronous `PermissionAuthorizer` |
+| `discord`     | Module-owned `DiscordService` instance       |
 
 Services are registered imperatively during startup. There is no automatic dependency discovery, scope management, or disposal in the container.
 

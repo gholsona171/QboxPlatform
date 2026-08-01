@@ -12,6 +12,8 @@ Run commands from the repository root. Keep credentials only in the ignored root
 
 Startup logs should identify the Discord application ID, bot username and user ID, connected guild count, discovered and registered command counts, command names/aliases, and load duration. They must not contain the token.
 
+When `ADMIN_ROLE_IDS` compatibility is active, the module startup log also reports `permissionCompatibilityEnabled: true`, `permissionCompatibilityRoleCount`, and `permissionCompatibilityGuildId`. Roles are bound only to that guild. Startup must fail if roles are configured without `DISCORD_GUILD_ID`.
+
 ## Live smoke tests
 
 - Run `/ping`; expect the immediate ephemeral `Pong.` response and logs for lookup, execution start, duration, and reply state.

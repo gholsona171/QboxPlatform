@@ -5,9 +5,6 @@ import type {
 } from "discord.js";
 import { vi } from "vitest";
 
-import type { Permission } from "@qbox/permissions";
-import type { PermissionService } from "@qbox/permissions";
-
 import {
   CommandOptionReader,
   CommandRoute,
@@ -148,14 +145,6 @@ export function createExecutionGate() {
     release = resolve;
   });
   return { wait, release };
-}
-
-export function grantPermissions(
-  service: PermissionService,
-  roleId: string,
-  permissions: readonly Permission[],
-): void {
-  service.registerGrant({ roleId, permissions });
 }
 
 export function createCooldownClock(initialMs = 0) {

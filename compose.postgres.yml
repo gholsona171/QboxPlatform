@@ -1,0 +1,38 @@
+name: qbox-platform-postgres
+
+services:
+  postgres-dev:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: qbox_permissions_dev
+      POSTGRES_USER: qbox_local
+      POSTGRES_PASSWORD: ${QBOX_POSTGRES_PASSWORD:?Set QBOX_POSTGRES_PASSWORD locally}
+    ports:
+      - "127.0.0.1:54329:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U qbox_local -d qbox_permissions_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    volumes:
+      - qbox-postgres-dev:/var/lib/postgresql/data
+
+  postgres-test:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_DB: qbox_permissions_local_test
+      POSTGRES_USER: qbox_local
+      POSTGRES_PASSWORD: ${QBOX_POSTGRES_PASSWORD:?Set QBOX_POSTGRES_PASSWORD locally}
+    ports:
+      - "127.0.0.1:54330:5432"
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U qbox_local -d qbox_permissions_local_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    tmpfs:
+      - /var/lib/postgresql/data
+
+volumes:
+  qbox-postgres-dev:

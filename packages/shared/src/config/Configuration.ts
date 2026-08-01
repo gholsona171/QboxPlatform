@@ -6,9 +6,6 @@
     public readonly discordToken =
         process.env.DISCORD_TOKEN ?? "";
 
-    public readonly databaseUrl =
-        process.env.DATABASE_URL ?? "";
-
     public readonly redisUrl =
         process.env.REDIS_URL ?? "";
 

@@ -12,6 +12,22 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_DB: qbox_permissions_ci_test
+          POSTGRES_USER: qbox_ci
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U qbox_ci -d qbox_permissions_ci_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      DATABASE_URL: postgresql://qbox_ci:ci-only-password@127.0.0.1:5432/qbox_permissions_ci_test
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -25,10 +41,24 @@ jobs:
         run: cp .env.example .env
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Format Prisma schema
+        run: pnpm --filter @qbox/prisma prisma:format
+      - name: Validate Prisma schema
+        run: pnpm --filter @qbox/prisma prisma:validate
+      - name: Generate Prisma client
+        run: pnpm --filter @qbox/prisma prisma:generate
+      - name: Verify generated Prisma artifacts
+        run: git diff --exit-code -- prisma/schema.prisma prisma/migrations packages/prisma/src/generated
       - name: Build
         run: pnpm build
       - name: Typecheck
         run: pnpm typecheck
+      - name: Apply committed migrations
+        run: pnpm --filter @qbox/prisma prisma:migrate:deploy
+      - name: Check database schema drift
+        run: pnpm --filter @qbox/prisma prisma:drift:check
+      - name: Test PostgreSQL constraints and transactions
+        run: pnpm test:database
       - name: Test
         run: pnpm test
       - name: Check patch whitespace
