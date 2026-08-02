@@ -1,9 +1,11 @@
 import { navItems } from "./data.js";
 import { adminCheck, loginUrl, logout } from "./api.js";
-import { notify } from "./ui.js";
+import { initializeModal, notify } from "./ui.js";
 import { refreshLiveState, renderAccountChrome, renderPage } from "./views.js";
 
 const pages = new Set(navItems.map(([page]) => page));
+
+initializeModal();
 
 document.getElementById("navigation").innerHTML = navItems
   .map(([page, icon, label]) => `<a class="nav-link" href="/${page === "overview" ? "" : page}" data-route="${page}" data-page="${page}"><span class="nav-icon">${icon}</span><span>${label}</span></a>`)

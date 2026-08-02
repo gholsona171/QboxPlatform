@@ -466,6 +466,10 @@ label { display: grid; gap: 6px; color: var(--muted); font-weight: 800; font-siz
   padding: 20px;
 }
 
+.modal-backdrop[hidden] {
+  display: none !important;
+}
+
 .modal {
   width: min(460px, 100%);
   border: 1px solid var(--border);

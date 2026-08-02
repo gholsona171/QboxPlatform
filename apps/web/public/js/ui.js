@@ -34,12 +34,25 @@ export function notify(message, kind = "success") {
   window.setTimeout(() => notice.remove(), 4200);
 }
 
-export function confirmAction({ title, body, confirmText = "Confirm" }) {
+let activeConfirmation;
+
+export function initializeModal() {
   const backdrop = document.getElementById("modalBackdrop");
+  if (!backdrop) return;
+  backdrop.hidden = true;
+}
+
+export function confirmAction({ title, body, confirmText = "Confirm" }) {
+  if (activeConfirmation) activeConfirmation.close(false);
+
+  const backdrop = document.getElementById("modalBackdrop");
+  const modal = backdrop.querySelector(".modal");
   const titleElement = document.getElementById("modalTitle");
   const bodyElement = document.getElementById("modalBody");
   const cancel = document.getElementById("modalCancel");
   const confirm = document.getElementById("modalConfirm");
+  const opener = document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
+
   titleElement.textContent = title;
   bodyElement.textContent = body;
   confirm.textContent = confirmText;
@@ -47,20 +60,31 @@ export function confirmAction({ title, body, confirmText = "Confirm" }) {
   confirm.focus();
 
   return new Promise((resolve) => {
+    let settled = false;
     const close = (value) => {
+      if (settled) return;
+      settled = true;
       backdrop.hidden = true;
       cancel.removeEventListener("click", onCancel);
       confirm.removeEventListener("click", onConfirm);
+      backdrop.removeEventListener("click", onBackdropClick);
       document.removeEventListener("keydown", onKeydown);
+      if (activeConfirmation?.close === close) activeConfirmation = undefined;
+      opener?.focus?.();
       resolve(value);
     };
     const onCancel = () => close(false);
     const onConfirm = () => close(true);
+    const onBackdropClick = (event) => {
+      if (!modal.contains(event.target)) close(false);
+    };
     const onKeydown = (event) => {
       if (event.key === "Escape") close(false);
     };
+    activeConfirmation = { close };
     cancel.addEventListener("click", onCancel);
     confirm.addEventListener("click", onConfirm);
+    backdrop.addEventListener("click", onBackdropClick);
     document.addEventListener("keydown", onKeydown);
   });
 }
