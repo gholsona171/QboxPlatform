@@ -12,6 +12,10 @@
     {
       "source": "/health/(.*)",
       "destination": "/api/__proxy/health/$1"
+    },
+    {
+      "source": "/((?!api/|auth/|health/).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [

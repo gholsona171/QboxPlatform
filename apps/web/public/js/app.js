@@ -1,0 +1,76 @@
+import { navItems } from "./data.js";
+import { adminCheck, loginUrl, logout } from "./api.js";
+import { notify } from "./ui.js";
+import { refreshLiveState, renderAccountChrome, renderPage } from "./views.js";
+
+const pages = new Set(navItems.map(([page]) => page));
+
+document.getElementById("navigation").innerHTML = navItems
+  .map(([page, icon, label]) => `<a class="nav-link" href="/${page === "overview" ? "" : page}" data-route="${page}" data-page="${page}"><span class="nav-icon">${icon}</span><span>${label}</span></a>`)
+  .join("");
+
+document.addEventListener("click", async (event) => {
+  const route = event.target.closest("[data-route]");
+  if (route) {
+    event.preventDefault();
+    navigate(route.dataset.route);
+    closeMobileNav();
+    return;
+  }
+});
+
+document.getElementById("menuToggle").addEventListener("click", () => {
+  const sidebar = document.getElementById("sidebar");
+  const open = !sidebar.classList.contains("open");
+  sidebar.classList.toggle("open", open);
+  document.getElementById("menuToggle").setAttribute("aria-expanded", String(open));
+});
+
+document.getElementById("profileButton").addEventListener("click", () => {
+  const popover = document.getElementById("profilePopover");
+  const open = popover.hidden;
+  popover.hidden = !open;
+  document.getElementById("profileButton").setAttribute("aria-expanded", String(open));
+});
+
+document.getElementById("notificationButton").addEventListener("click", async () => {
+  try {
+    const result = await adminCheck();
+    notify(result.allowed ? "Live administrator check allowed." : "Live administrator check denied.", result.allowed ? "success" : "warning");
+  } catch (error) {
+    notify(error.message || "Live admin check is unavailable. Demo Mode remains usable.", "warning");
+  }
+});
+
+document.getElementById("loginButton").setAttribute("href", loginUrl());
+document.getElementById("logoutButton").addEventListener("click", async () => {
+  try {
+    await logout();
+    notify("Logged out.");
+    await refreshLiveState({ quiet: true });
+  } catch (error) {
+    notify(error.message || "Logout unavailable. Demo Mode remains usable.", "warning");
+  }
+});
+
+window.addEventListener("popstate", () => renderCurrentRoute());
+
+await refreshLiveState({ quiet: true });
+renderCurrentRoute();
+renderAccountChrome();
+
+function navigate(page) {
+  const path = page === "overview" ? "/" : `/${page}`;
+  history.pushState({}, "", path);
+  renderPage(page);
+}
+
+function renderCurrentRoute() {
+  const page = location.pathname.split("/").filter(Boolean)[0] || "overview";
+  renderPage(pages.has(page) ? page : "overview");
+}
+
+function closeMobileNav() {
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded", "false");
+}

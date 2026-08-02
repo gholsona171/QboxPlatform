@@ -9,8 +9,8 @@ Vercel project settings:
 - Root Directory: `apps/web`
 - Production Branch: `main`
 - Build Command: `pnpm build`
-- Output Directory: leave empty/default
-- Install Command: Vercel default
+- Output Directory: `public`
+- Install Command: empty
 
 Required Vercel environment variable:
 
@@ -29,6 +29,9 @@ The browser application uses only same-origin paths:
 The Vercel function proxy forwards `/api/*`, `/auth/*`, and `/health/*` to
 `QBOX_API_ORIGIN`. The browser never receives or calls the VPS API origin
 directly.
+
+Static files are served from `apps/web/public`. Feature-page URLs are handled by
+client-side routing and direct refreshes return the same application shell.
 
 After Vercel assigns the final production domain, register this Discord OAuth
 callback URL in the Discord Developer Portal:

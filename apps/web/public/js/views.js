@@ -1,0 +1,476 @@
+import { appVersion } from "./data.js";
+import { adminCheck, loadHealth, loadMe, loginUrl, logout } from "./api.js";
+import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
+import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
+
+const statuses = {
+  applications: ["Submitted", "Under Review", "Interview", "Approved", "Denied"],
+  tickets: ["Open", "Claimed", "Waiting", "Closed"],
+  moderation: ["Active", "Revoked"],
+  verification: ["Pending", "Approved", "Rejected", "More Info Requested"],
+  articles: ["Draft", "Published", "Archived"],
+};
+
+let live = { available: false };
+let account;
+
+export async function refreshLiveState({ quiet = false, refreshAccount = false } = {}) {
+  live = await loadHealth();
+  try {
+    account = await loadMe(refreshAccount);
+  } catch (error) {
+    account = undefined;
+    if (!quiet && new URLSearchParams(location.search).has("auth")) notify(error.message, "error");
+  }
+  renderAccountChrome();
+  return { live, account };
+}
+
+export function renderPage(page) {
+  const state = loadDemoState();
+  const content = document.getElementById("content");
+  const title = pageTitle(page);
+  document.getElementById("pageTitle").textContent = title;
+  document.getElementById("breadcrumbs").textContent = `Dashboard / ${title}`;
+  document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.page === page));
+  content.innerHTML = route(page, state);
+  content.focus({ preventScroll: true });
+  bindPageEvents(page);
+}
+
+export function renderAccountChrome() {
+  const status = document.getElementById("connectionStatus");
+  const name = document.getElementById("profileName");
+  const avatar = document.getElementById("profileAvatar");
+  const summary = document.getElementById("profileSummary");
+  status.textContent = live.available ? "Live API reachable" : "Live services are not connected yet";
+  status.className = `connection-pill ${live.available ? "success" : ""}`.trim();
+  if (account?.discord?.username || account?.discord?.globalName) {
+    name.textContent = account.discord.globalName || account.discord.username;
+    avatar.innerHTML = account.discord.avatarUrl ? `<img alt="" src="${escapeHtml(account.discord.avatarUrl)}">` : escapeHtml((account.discord.username || "QB").slice(0, 2).toUpperCase());
+    summary.innerHTML = `<strong>${escapeHtml(name.textContent)}</strong><p class="microcopy">Authenticated as platform user ${escapeHtml(account.platformUser.id)}.</p>`;
+  } else {
+    name.textContent = "Demo Explorer";
+    avatar.textContent = "QB";
+    summary.innerHTML = `<strong>Demo Mode</strong><p class="microcopy">Explore every page without authentication. Login remains available when live services are configured.</p>`;
+  }
+}
+
+function route(page, state) {
+  switch (page) {
+    case "applications": return applicationsPage(state);
+    case "tickets": return ticketsPage(state);
+    case "staff": return staffPage(state);
+    case "moderation": return moderationPage(state);
+    case "verification": return verificationPage(state);
+    case "polls": return pollsPage(state);
+    case "birthdays": return birthdaysPage(state);
+    case "knowledge": return knowledgePage(state);
+    case "fivem": return fivemPage(state);
+    case "settings": return settingsPage(state);
+    default: return overviewPage(state);
+  }
+}
+
+function shellIntro(title, description) {
+  return `<section class="feature-hero"><div class="page-header"><div><h2>${escapeHtml(title)}</h2><p>${escapeHtml(description)}</p></div>${demoChip()}</div></section>`;
+}
+
+function overviewPage(state) {
+  const openTickets = state.tickets.filter((ticket) => ticket.status !== "Closed").length;
+  const pendingApplications = state.applications.filter((app) => !["Approved", "Denied"].includes(app.status)).length;
+  const pendingVerifications = state.verification.filter((item) => item.status === "Pending").length;
+  const activePolls = state.polls.filter((poll) => poll.open).length;
+  return `
+    ${shellIntro("Community control panel", "Explore the planned QboxPlatform management experience. Sample values are deterministic demo data and do not represent live Discord, FiveM, or PostgreSQL state.")}
+    <section class="grid cols-4">
+      ${metric("Server status", state.fivem.online ? "Online" : "Offline", "Demo indicator, no FiveM command executed.")}
+      ${metric("Discord community", "2,418", "Demo members • 143 online")}
+      ${metric("FiveM server", `${state.fivem.players.length}/${state.fivem.capacity}`, "Demo player list")}
+      ${metric("Staff available", state.staff.filter((s) => s.availability === "Available").length, "Demo availability")}
+    </section>
+    <section class="grid cols-4">
+      ${metric("Pending applications", pendingApplications, "Review queue")}
+      ${metric("Open tickets", openTickets, "Support workload")}
+      ${metric("Pending verifications", pendingVerifications, "Identity queue")}
+      ${metric("Active polls", activePolls, "Community feedback")}
+    </section>
+    <section class="grid main-detail">
+      <div class="card">
+        <div class="split-line"><h2>Recent activity</h2>${demoChip()}</div>
+        ${timeline(state.activity)}
+      </div>
+      <div class="card">
+        <h2>Quick actions</h2>
+        <p class="microcopy">These shortcuts open demo workflows only.</p>
+        <div class="grid">
+          ${quick("applications", "Review applications")}
+          ${quick("tickets", "Create support ticket")}
+          ${quick("verification", "Open verification queue")}
+          ${quick("fivem", "Inspect FiveM concept")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function applicationsPage(state) {
+  const rows = state.applications.map((item) => row([
+    ["ID", `<strong>${escapeHtml(item.id)}</strong>`],
+    ["Applicant", escapeHtml(item.applicant)],
+    ["Type", escapeHtml(item.type)],
+    ["Status", badge(item.status)],
+    ["Reviewer", escapeHtml(item.reviewer)],
+  ], `class="clickable" data-select="${item.id}"`));
+  return `
+    ${shellIntro("Applications", "Review candidate submissions, templates, reviewers, notes, and status history in browser-only demo mode.")}
+    <section class="grid main-detail">
+      <div class="card">
+        ${toolbar("Search applications", "appSearch", statuses.applications)}
+        ${table(["ID", "Applicant", "Type", "Status", "Reviewer"], rows)}
+      </div>
+      <div class="card" id="detailPanel">${applicationDetail(state.applications[0])}</div>
+    </section>
+    <section class="card">
+      <h2>Create sample application</h2>
+      <form class="form-grid" data-action="create-application">
+        ${input("applicant", "Applicant name", "Avery Demo")}
+        ${input("type", "Application template", "Civilian")}
+        ${select("reviewer", "Reviewer", state.staff.map((s) => s.name))}
+        ${textarea("notes", "Internal review notes", "Created from the product showcase.")}
+        <button class="button primary full">Submit sample application</button>
+      </form>
+    </section>
+  `;
+}
+
+function applicationDetail(item) {
+  if (!item) return `<div class="empty-state">Select an application.</div>`;
+  return `
+    <div class="detail-stack" data-detail-id="${item.id}">
+      <div class="split-line"><h2>${escapeHtml(item.applicant)}</h2>${badge(item.status)}</div>
+      ${detail("Application ID", item.id)}
+      ${detail("Template", item.type)}
+      ${detail("Reviewer", item.reviewer)}
+      <label>Status<select data-action="application-status">${statuses.applications.map((status) => option(status, item.status)).join("")}</select></label>
+      <label>Internal notes<textarea data-action="application-notes">${escapeHtml(item.notes)}</textarea></label>
+      <button class="button" data-action="save-application">Save demo changes</button>
+      <button class="button danger" data-action="delete-application">Delete with confirmation</button>
+      <h3>Status history</h3>${timeline(item.history)}
+    </div>
+  `;
+}
+
+function ticketsPage(state) {
+  const rows = state.tickets.map((item) => row([
+    ["Ticket", `<strong>${escapeHtml(item.id)}</strong>`],
+    ["Subject", escapeHtml(item.subject)],
+    ["Category", escapeHtml(item.category)],
+    ["Priority", badge(item.priority)],
+    ["Status", badge(item.status)],
+    ["Assignee", escapeHtml(item.assignee)],
+  ], `class="clickable" data-select="${item.id}"`));
+  return `
+    ${shellIntro("Tickets", "Create, claim, message, and reopen support tickets using local demo state only.")}
+    <section class="grid main-detail"><div class="card">${toolbar("Search tickets", "ticketSearch", statuses.tickets)}${table(["Ticket", "Subject", "Category", "Priority", "Status", "Assignee"], rows)}</div><div class="card" id="detailPanel">${ticketDetail(state.tickets[0])}</div></section>
+    <section class="card"><h2>Create ticket</h2><form class="form-grid" data-action="create-ticket">${input("subject", "Subject", "Demo support request")}${select("category", "Category", ["Support", "Discord", "FiveM", "Billing"])}${select("priority", "Priority", ["Low", "Medium", "High"])}${select("assignee", "Assign staff", ["Unassigned", ...state.staff.map((s) => s.name)])}<button class="button primary full">Create demo ticket</button></form></section>
+  `;
+}
+
+function ticketDetail(item) {
+  if (!item) return `<div class="empty-state">Select a ticket.</div>`;
+  return `<div class="detail-stack" data-detail-id="${item.id}"><div class="split-line"><h2>${escapeHtml(item.subject)}</h2>${badge(item.status)}</div>${detail("Category", item.category)}${detail("Priority", item.priority)}${detail("Assignee", item.assignee)}<label>Status<select data-action="ticket-status">${statuses.tickets.map((status) => option(status, item.status)).join("")}</select></label><label>Add message<textarea data-action="ticket-message" placeholder="Demo conversation message"></textarea></label><button class="button" data-action="save-ticket">Save ticket update</button><button class="button" data-action="reopen-ticket">Reopen ticket</button><h3>Conversation</h3><ul class="list">${item.messages.map((m) => `<li><strong>${escapeHtml(m.author)}</strong><small>${escapeHtml(m.body)}</small></li>`).join("")}</ul><h3>Activity history</h3>${timeline(item.history)}</div>`;
+}
+
+function staffPage(state) {
+  const rows = state.staff.map((item) => row([
+    ["Name", `<strong>${escapeHtml(item.name)}</strong>`],
+    ["Role", escapeHtml(item.role)],
+    ["Department", escapeHtml(item.department)],
+    ["Availability", badge(item.availability)],
+    ["Activity", `${item.score}%`],
+  ], `class="clickable" data-select="${item.id}"`));
+  return `${shellIntro("Staff", "Inspect staff profiles, availability, permissions, notes, and demo promote/demote actions.")}<section class="grid main-detail"><div class="card">${toolbar("Search staff", "staffSearch", ["Available", "Busy", "Away"])}${table(["Name", "Role", "Department", "Availability", "Activity"], rows)}</div><div class="card" id="detailPanel">${staffDetail(state.staff[0])}</div></section>`;
+}
+
+function staffDetail(item) {
+  if (!item) return `<div class="empty-state">Select staff.</div>`;
+  return `<div class="detail-stack" data-detail-id="${item.id}"><div class="split-line"><h2>${escapeHtml(item.name)}</h2>${badge(item.availability)}</div>${detail("Discord role", item.role)}${detail("Department", item.department)}${detail("Joined", item.joined)}${detail("Performance summary", `${item.score}% demo activity score`)}${detail("Warnings", item.warnings)}<label>Internal notes<textarea data-action="staff-notes">${escapeHtml(item.notes)}</textarea></label><div><strong>Permission summary</strong><p>${item.permissions.map((p) => `<span class="tag">${escapeHtml(p)}</span>`).join(" ")}</p></div><button class="button" data-action="promote-staff">Demo promote</button><button class="button" data-action="demote-staff">Demo demote</button><button class="button" data-action="save-staff">Save notes</button></div>`;
+}
+
+function moderationPage(state) {
+  const rows = state.moderation.map((item) => row([
+    ["Case", `<strong>${escapeHtml(item.id)}</strong>`],
+    ["User", escapeHtml(item.subject)],
+    ["Action", badge(item.action)],
+    ["Reason", escapeHtml(item.reason)],
+    ["Status", badge(item.status)],
+  ], `class="clickable" data-select="${item.id}"`));
+  return `${shellIntro("Moderation", "Create and revoke demo moderation cases. No Discord or FiveM moderation action is sent.")}<section class="grid main-detail"><div class="card">${table(["Case", "User", "Action", "Reason", "Status"], rows)}</div><div class="card" id="detailPanel">${moderationDetail(state.moderation[0])}</div></section><section class="card"><h2>Create moderation case</h2><form class="form-grid" data-action="create-case">${input("subject", "User identifier", "discord:demo-user")}${select("action", "Action", ["Note", "Warning", "Mute", "Kick", "Ban"])}${input("moderator", "Moderator", "Aria Stone")}${input("expiration", "Expiration", "")}${textarea("reason", "Reason", "Demo moderation reason")}${input("evidence", "Evidence link", "https://example.com/evidence")}<button class="button primary full">Create demo case</button></form></section>`;
+}
+
+function moderationDetail(item) {
+  if (!item) return `<div class="empty-state">Select a case.</div>`;
+  return `<div class="detail-stack" data-detail-id="${item.id}"><div class="split-line"><h2>${escapeHtml(item.id)}</h2>${badge(item.status)}</div>${detail("User identifier", item.subject)}${detail("Action", item.action)}${detail("Reason", item.reason)}${detail("Moderator", item.moderator)}${detail("Expiration", item.expiration || "None")}<button class="button danger" data-action="revoke-case">Revoke action in demo mode</button><h3>Case history</h3>${timeline(item.history)}</div>`;
+}
+
+function verificationPage(state) {
+  const rows = state.verification.map((item) => row([
+    ["ID", `<strong>${escapeHtml(item.id)}</strong>`],
+    ["Member", escapeHtml(item.member)],
+    ["Risk", badge(item.risk)],
+    ["Status", badge(item.status)],
+    ["Roles", item.roles.map((role) => `<span class="tag">${escapeHtml(role)}</span>`).join(" ")],
+  ], `class="clickable" data-select="${item.id}"`));
+  return `${shellIntro("Verification", "Review submitted answers, risk indicators, intended Discord roles, and audit history in demo mode.")}<section class="grid main-detail"><div class="card">${table(["ID", "Member", "Risk", "Status", "Roles"], rows)}</div><div class="card" id="detailPanel">${verificationDetail(state.verification[0])}</div></section>`;
+}
+
+function verificationDetail(item) {
+  if (!item) return `<div class="empty-state">Select a verification.</div>`;
+  return `<div class="detail-stack" data-detail-id="${item.id}"><div class="split-line"><h2>${escapeHtml(item.member)}</h2>${badge(item.status)}</div>${detail("Risk", item.risk)}<div><strong>Submitted answers</strong><ul class="list">${item.answers.map((answer) => `<li>${escapeHtml(answer)}</li>`).join("")}</ul></div><div><strong>Intended Discord roles preview</strong><p>${item.roles.map((role) => `<span class="tag">${escapeHtml(role)}</span>`).join(" ")}</p></div><button class="button" data-action="approve-verification">Approve</button><button class="button danger" data-action="reject-verification">Reject</button><button class="button" data-action="more-info-verification">Request more information</button><h3>Verification audit history</h3>${timeline(item.history)}</div>`;
+}
+
+function pollsPage(state) {
+  const votes = loadVotes();
+  return `${shellIntro("Polls", "Create polls, vote once per browser, and inspect result bars with local demo state.")}<section class="grid cols-2">${state.polls.map((poll) => pollCard(poll, votes[poll.id])).join("")}</section><section class="card"><h2>Create poll</h2><form class="form-grid" data-action="create-poll">${input("question", "Question", "What should QboxPlatform show next?")}${input("options", "Options, comma separated", "Events, Tickets, Staff tools")}${input("endsAt", "Optional end time", "2026-08-15T20:00")}${select("anonymous", "Anonymous", ["Yes", "No"])}<button class="button primary full">Create demo poll</button></form></section>`;
+}
+
+function pollCard(poll, votedOption) {
+  const total = poll.options.reduce((sum, option) => sum + option.votes, 0) || 1;
+  return `<article class="card" data-detail-id="${poll.id}"><div class="split-line"><h2>${escapeHtml(poll.question)}</h2>${badge(poll.open ? "Open" : "Closed")}</div><p class="microcopy">${poll.anonymous ? "Anonymous" : "Public"} demo poll • Ends ${escapeHtml(poll.endsAt || "manually")}</p>${poll.options.map((option) => `<div><div class="split-line"><span>${escapeHtml(option.label)}</span><strong>${option.votes}</strong></div><div class="progress"><span style="width:${Math.round((option.votes / total) * 100)}%"></span></div><button class="button compact" data-action="vote-poll" data-option="${escapeHtml(option.id)}" ${!poll.open || votedOption ? "disabled" : ""}>${votedOption === option.id ? "Voted" : "Vote"}</button></div>`).join("")}<div class="toolbar"><button class="button" data-action="toggle-poll">${poll.open ? "Close" : "Reopen"}</button></div></article>`;
+}
+
+function birthdaysPage(state) {
+  return `${shellIntro("Birthdays", "Manage birthday reminders, privacy, and announcement previews in local demo mode.")}<section class="grid main-detail"><div class="card"><h2>Upcoming birthdays</h2>${table(["Name", "Date", "Year privacy", "Preview", "Action"], state.birthdays.map((item) => row([["Name", escapeHtml(item.name)], ["Date", escapeHtml(item.date)], ["Year privacy", item.showYear ? "Year visible" : "Year hidden"], ["Preview", escapeHtml(item.announcement)], ["Action", `<button class="button compact danger" data-action="remove-birthday" data-id="${item.id}">Remove</button>`]])))}</div><div class="card"><h2>Add birthday</h2><form class="form-grid" data-action="add-birthday">${input("name", "Name", "Avery")}${input("date", "MM-DD", "08-25")}${select("showYear", "Show birth year", ["No", "Yes"])}<button class="button primary full">Add birthday</button></form></div></section>${calendar(state.birthdays)}`;
+}
+
+function knowledgePage(state) {
+  return `${shellIntro("Knowledge Base", "Search, draft, edit, publish, and archive articles. Changes remain in browser storage.")}<section class="grid main-detail"><div class="card">${toolbar("Search articles", "articleSearch", statuses.articles)}${table(["ID", "Title", "Category", "Status", "Tags"], state.articles.map((item) => row([["ID", `<strong>${escapeHtml(item.id)}</strong>`], ["Title", escapeHtml(item.title)], ["Category", escapeHtml(item.category)], ["Status", badge(item.status)], ["Tags", item.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join(" ")]], `class="clickable" data-select="${item.id}"`)))}</div><div class="card" id="detailPanel">${articleDetail(state.articles[0])}</div></section><section class="card"><h2>Create article</h2><form class="form-grid" data-action="create-article">${input("title", "Title", "New demo guide")}${input("category", "Category", "Public")}${input("tags", "Tags", "demo, guide")}${select("status", "Status", statuses.articles)}${textarea("body", "Article body", "Draft article content.")}<button class="button primary full">Create article</button></form></section>`;
+}
+
+function articleDetail(item) {
+  if (!item) return `<div class="empty-state">Select an article.</div>`;
+  return `<div class="detail-stack" data-detail-id="${item.id}"><div class="split-line"><h2>${escapeHtml(item.title)}</h2>${badge(item.status)}</div>${detail("Category", item.category)}${detail("Recent edit", item.edited)}<label>Status<select data-action="article-status">${statuses.articles.map((status) => option(status, item.status)).join("")}</select></label><label>Article preview<textarea data-action="article-body">${escapeHtml(item.body)}</textarea></label><button class="button" data-action="save-article">Save article</button></div>`;
+}
+
+function fivemPage(state) {
+  const server = state.fivem;
+  return `${shellIntro("FiveM Server", "Concept controls are visibly demo-only. No live FiveM commands are executed from this interface.")}<section class="grid cols-3">${metric("Server indicator", server.online ? "Online" : "Offline", "Demo status only")}${metric("Players", `${server.players.length}/${server.capacity}`, "Sample player list")}${metric("Resources", server.resources.length, "Demo resources")}</section><section class="grid main-detail"><div class="card"><h2>Players</h2>${table(["ID", "Name", "Ping", "Job"], server.players.map((p) => row([["ID", escapeHtml(p.id)], ["Name", escapeHtml(p.name)], ["Ping", `${p.ping}ms`], ["Job", escapeHtml(p.job)]])))}<h2>Recent joins</h2><ul class="list">${server.recentJoins.map((join) => `<li>${escapeHtml(join)}</li>`).join("")}</ul></div><div class="card"><h2>Demo controls</h2><p class="microcopy">These buttons update demo activity only.</p><label>Announcement composer<textarea data-action="fivem-announcement">Server restart reminder in 15 minutes.</textarea></label><button class="button" data-action="send-announcement">Preview announcement</button><button class="button danger" data-action="restart-server">Restart server (Demo only)</button><h3>Resources</h3>${server.resources.map((r) => `<div class="detail-row"><span>${escapeHtml(r.name)}</span>${badge(r.status)} <button class="button compact" data-action="toggle-resource" data-resource="${escapeHtml(r.name)}">Toggle demo</button></div>`).join("")}<h3>Whitelist lookup</h3>${table(["Subject", "Status"], server.whitelist.map((w) => row([["Subject", escapeHtml(w.subject)], ["Status", badge(w.status)]])))}</div></section>`;
+}
+
+function settingsPage(state) {
+  const storageKeys = safeLocalStorageSnapshot();
+  return `${shellIntro("Settings", "Configure demo preferences, inspect live-service status, and reset browser-only data.")}<section class="grid cols-2"><div class="card"><h2>Demo Mode</h2>${detail("Status", "Active for product module pages")}${detail("Stored keys", storageKeys.join(", ") || "None")}${detail("Public version", appVersion)}<button class="button danger" data-action="reset-demo">Reset Demo Data</button></div><div class="card"><h2>Live services</h2>${detail("API connection", live.available ? "Reachable" : "Live services are not connected yet")}${detail("Discord authentication", account ? "Authenticated" : "Not authenticated")}${detail("Health", "/health/live and /health/ready remain available through the proxy")}<a class="button" href="/health/live" target="_blank" rel="noreferrer">Open liveness</a><a class="button" href="/health/ready" target="_blank" rel="noreferrer">Open readiness</a></div><div class="card"><h2>Preferences</h2><form class="form-grid" data-action="save-settings">${select("theme", "Theme", ["Dark"], state.settings.theme === "dark" ? "Dark" : "Dark")}${select("notifications", "Notifications", ["On", "Off"], state.settings.notifications ? "On" : "Off")}<button class="button primary full">Save preferences</button></form></div><div class="card"><h2>Account</h2><p class="microcopy">Discord login remains available but is not required to explore Demo Mode.</p><a class="button primary" href="${loginUrl()}">Login with Discord</a><button class="button danger" data-action="logout">Logout</button></div></section>`;
+}
+
+function bindPageEvents(page) {
+  document.querySelectorAll("[data-select]").forEach((row) => row.addEventListener("click", () => selectDetail(page, row.dataset.select)));
+  document.querySelectorAll(".toolbar").forEach((toolbarElement) => bindToolbar(toolbarElement));
+  document.querySelectorAll("form[data-action]").forEach((form) => form.addEventListener("submit", (event) => handleForm(event, form.dataset.action)));
+  document.querySelectorAll("[data-action]").forEach((button) => {
+    if (button.tagName !== "FORM") button.addEventListener("click", () => handleAction(button.dataset.action, button));
+  });
+}
+
+function bindToolbar(toolbarElement) {
+  const input = toolbarElement.querySelector("input");
+  const selectElement = toolbarElement.querySelector("select");
+  const tableElement = toolbarElement.parentElement.querySelector("table");
+  if (!tableElement) return;
+  const apply = () => {
+    const query = input?.value.trim().toLowerCase() ?? "";
+    const filter = selectElement?.value ?? "All";
+    tableElement.querySelectorAll("tbody tr").forEach((tr) => {
+      const text = tr.textContent.toLowerCase();
+      const matchesQuery = !query || text.includes(query);
+      const matchesFilter = filter === "All" || text.includes(filter.toLowerCase());
+      tr.hidden = !(matchesQuery && matchesFilter);
+    });
+  };
+  input?.addEventListener("input", apply);
+  selectElement?.addEventListener("change", apply);
+}
+
+function selectDetail(page, id) {
+  const state = loadDemoState();
+  const panel = document.getElementById("detailPanel");
+  if (!panel) return;
+  const maps = {
+    applications: () => applicationDetail(state.applications.find((i) => i.id === id)),
+    tickets: () => ticketDetail(state.tickets.find((i) => i.id === id)),
+    staff: () => staffDetail(state.staff.find((i) => i.id === id)),
+    moderation: () => moderationDetail(state.moderation.find((i) => i.id === id)),
+    verification: () => verificationDetail(state.verification.find((i) => i.id === id)),
+    knowledge: () => articleDetail(state.articles.find((i) => i.id === id)),
+  };
+  panel.innerHTML = maps[page]?.() || "";
+  bindPageEvents(page);
+}
+
+async function handleForm(event, action) {
+  event.preventDefault();
+  const data = formData(event.currentTarget);
+  const state = mutateDemoState((draft) => {
+    if (action === "create-application") {
+      draft.applications.unshift({ id: `APP-${1000 + draft.applications.length + 1}`, applicant: data.applicant, type: data.type, status: "Submitted", reviewer: data.reviewer, notes: data.notes, submitted: "Today", history: [{ at: "Just now", action: "Submitted in Demo Mode" }] });
+      recordActivity(draft, `Application created for ${data.applicant}`, "Applications");
+    }
+    if (action === "create-ticket") {
+      draft.tickets.unshift({ id: `TCK-${104 + draft.tickets.length}`, subject: data.subject, category: data.category, priority: data.priority, status: "Open", assignee: data.assignee, messages: [{ author: "Requester", body: "Created in Demo Mode." }], history: [{ at: "Just now", action: "Ticket opened" }] });
+      recordActivity(draft, `Ticket created: ${data.subject}`, "Tickets");
+    }
+    if (action === "create-case") {
+      draft.moderation.unshift({ id: `MOD-${220 + draft.moderation.length}`, subject: data.subject, action: data.action, reason: data.reason, moderator: data.moderator, expiration: data.expiration, evidence: data.evidence ? [data.evidence] : [], status: "Active", history: [{ at: "Just now", action: `${data.action} recorded in Demo Mode` }] });
+      recordActivity(draft, `Moderation case created for ${data.subject}`, "Moderation");
+    }
+    if (action === "create-poll") {
+      draft.polls.unshift({ id: `POL-${410 + draft.polls.length}`, question: data.question, options: String(data.options).split(",").map((label, index) => ({ id: `new-${Date.now()}-${index}`, label: label.trim(), votes: 0 })).filter((o) => o.label), anonymous: data.anonymous === "Yes", endsAt: data.endsAt, open: true });
+      recordActivity(draft, `Poll created: ${data.question}`, "Polls");
+    }
+    if (action === "add-birthday") {
+      draft.birthdays.push({ id: `BD-${501 + draft.birthdays.length}`, name: data.name, date: data.date, showYear: data.showYear === "Yes", announcement: `Happy birthday, ${data.name}!` });
+      recordActivity(draft, `Birthday added for ${data.name}`, "Birthdays");
+    }
+    if (action === "create-article") {
+      draft.articles.unshift({ id: `KB-${700 + draft.articles.length}`, title: data.title, category: data.category, summary: String(data.body).slice(0, 90), status: data.status, tags: String(data.tags).split(",").map((tag) => tag.trim()).filter(Boolean), body: data.body, edited: "Just now" });
+      recordActivity(draft, `Article created: ${data.title}`, "Knowledge Base");
+    }
+    if (action === "save-settings") {
+      draft.settings.theme = "dark";
+      draft.settings.notifications = data.notifications === "On";
+    }
+  });
+  notify("Demo changes saved in this browser.");
+  renderPage(currentPage());
+  return state;
+}
+
+async function handleAction(action, element) {
+  const id = element.closest("[data-detail-id]")?.dataset.detailId || element.dataset.id;
+  if (action === "logout") return logout().then(() => notify("Logged out."), (error) => notify(error.message, "warning"));
+  if (action === "reset-demo") {
+    if (await confirmAction({ title: "Reset Demo Data", body: "This clears only Qbox demo localStorage data in this browser.", confirmText: "Reset" })) {
+      resetDemoState();
+      notify("Demo data reset.");
+      renderPage("settings");
+    }
+    return;
+  }
+  if (action === "vote-poll") return votePoll(id, element.dataset.option);
+  if (action === "toggle-poll") return mutateAndRender((s) => { const poll = s.polls.find((p) => p.id === id); poll.open = !poll.open; recordActivity(s, `${poll.question} ${poll.open ? "reopened" : "closed"}`, "Polls"); });
+  if (action === "remove-birthday") return confirmThen("Remove Birthday", "This removes a demo birthday from this browser only.", () => mutateAndRender((s) => { s.birthdays = s.birthdays.filter((b) => b.id !== id); recordActivity(s, "Birthday removed", "Birthdays"); }));
+  if (action === "restart-server") return confirmThen("Demo Restart", "This records a demo activity item only. No FiveM server command is sent.", () => mutateAndRender((s) => recordActivity(s, "FiveM restart demo action previewed", "FiveM")));
+  if (action === "send-announcement") return mutateAndRender((s) => { s.fivem.announcements.unshift(value("[data-action='fivem-announcement']")); recordActivity(s, "FiveM announcement preview saved", "FiveM"); });
+  if (action === "toggle-resource") return mutateAndRender((s) => { const r = s.fivem.resources.find((resource) => resource.name === element.dataset.resource); r.status = r.status === "Running" ? "Stopped" : "Running"; recordActivity(s, `${r.name} toggled in Demo Mode`, "FiveM"); });
+  if (["approve-verification", "reject-verification", "more-info-verification"].includes(action)) return updateVerification(action, id);
+  if (["promote-staff", "demote-staff", "save-staff"].includes(action)) return updateStaff(action, id);
+  if (["revoke-case"].includes(action)) return confirmThen("Revoke demo case", "This changes demo case status only.", () => mutateAndRender((s) => { const item = s.moderation.find((i) => i.id === id); item.status = "Revoked"; item.history.unshift({ at: "Just now", action: "Revoked in Demo Mode" }); }));
+  if (["save-application", "delete-application"].includes(action)) return updateApplication(action, id);
+  if (["save-ticket", "reopen-ticket"].includes(action)) return updateTicket(action, id);
+  if (action === "save-article") return mutateAndRender((s) => { const item = s.articles.find((i) => i.id === id); item.status = value("[data-action='article-status']"); item.body = value("[data-action='article-body']"); item.edited = "Just now"; recordActivity(s, `Article updated: ${item.title}`, "Knowledge Base"); });
+}
+
+function updateApplication(action, id) {
+  if (action === "delete-application") return confirmThen("Delete application", "This removes the demo application from this browser only.", () => mutateAndRender((s) => { s.applications = s.applications.filter((i) => i.id !== id); recordActivity(s, "Application deleted in Demo Mode", "Applications"); }));
+  mutateAndRender((s) => { const item = s.applications.find((i) => i.id === id); item.status = value("[data-action='application-status']"); item.notes = value("[data-action='application-notes']"); item.history.unshift({ at: "Just now", action: `Status changed to ${item.status}` }); recordActivity(s, `Application ${item.id} changed to ${item.status}`, "Applications"); });
+}
+
+function updateTicket(action, id) {
+  mutateAndRender((s) => {
+    const item = s.tickets.find((i) => i.id === id);
+    if (action === "reopen-ticket") item.status = "Open";
+    else item.status = value("[data-action='ticket-status']");
+    const message = value("[data-action='ticket-message']");
+    if (message) item.messages.push({ author: "Demo Staff", body: message });
+    item.history.unshift({ at: "Just now", action: `Ticket changed to ${item.status}` });
+    recordActivity(s, `Ticket ${item.id} changed to ${item.status}`, "Tickets");
+  });
+}
+
+function updateStaff(action, id) {
+  mutateAndRender((s) => {
+    const item = s.staff.find((i) => i.id === id);
+    if (action === "promote-staff") item.role = item.role === "Senior Admin" ? "Senior Admin" : "Moderator";
+    if (action === "demote-staff") item.role = "Trial Staff";
+    item.notes = value("[data-action='staff-notes']");
+    recordActivity(s, `Staff profile updated for ${item.name}`, "Staff");
+  });
+}
+
+function updateVerification(action, id) {
+  const next = action === "approve-verification" ? "Approved" : action === "reject-verification" ? "Rejected" : "More Info Requested";
+  mutateAndRender((s) => { const item = s.verification.find((i) => i.id === id); item.status = next; item.history.unshift({ at: "Just now", action: `Verification ${next}` }); recordActivity(s, `Verification ${item.id} ${next}`, "Verification"); });
+}
+
+function votePoll(id, optionId) {
+  const votes = loadVotes();
+  if (votes[id]) return notify("You already voted in this browser.", "warning");
+  mutateDemoState((s) => { const poll = s.polls.find((p) => p.id === id); const option = poll.options.find((o) => o.id === optionId); option.votes += 1; recordActivity(s, `Vote recorded for ${poll.question}`, "Polls"); });
+  votes[id] = optionId;
+  saveVotes(votes);
+  notify("Demo vote recorded in this browser.");
+  renderPage("polls");
+}
+
+function mutateAndRender(mutator) {
+  mutateDemoState(mutator);
+  notify("Demo changes saved in this browser.");
+  renderPage(currentPage());
+}
+
+async function confirmThen(title, body, callback) {
+  if (await confirmAction({ title, body, confirmText: "Confirm" })) callback();
+}
+
+function metric(label, value, detailText) {
+  return `<article class="card metric"><div><div class="metric-label">${escapeHtml(label)}</div><div class="metric-value">${escapeHtml(value)}</div></div><div class="metric-detail">${escapeHtml(detailText)}</div></article>`;
+}
+
+function quick(page, label) {
+  return `<a class="button" href="/${page}" data-route="${page}">${escapeHtml(label)}</a>`;
+}
+
+function toolbar(placeholder, id, filters) {
+  return `<div class="toolbar"><input id="${id}" placeholder="${escapeHtml(placeholder)}" aria-label="${escapeHtml(placeholder)}"><select aria-label="Filter"><option>All</option>${filters.map((filter) => `<option>${escapeHtml(filter)}</option>`).join("")}</select></div>`;
+}
+
+function input(name, labelText, valueText) {
+  return `<label>${escapeHtml(labelText)}<input name="${escapeHtml(name)}" value="${escapeHtml(valueText)}"></label>`;
+}
+
+function textarea(name, labelText, valueText) {
+  return `<label class="full">${escapeHtml(labelText)}<textarea name="${escapeHtml(name)}">${escapeHtml(valueText)}</textarea></label>`;
+}
+
+function select(name, labelText, values, selected = values[0]) {
+  return `<label>${escapeHtml(labelText)}<select name="${escapeHtml(name)}">${values.map((v) => option(v, selected)).join("")}</select></label>`;
+}
+
+function option(valueText, selected) {
+  return `<option ${valueText === selected ? "selected" : ""}>${escapeHtml(valueText)}</option>`;
+}
+
+function detail(label, valueText) {
+  return `<div class="detail-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(valueText)}</strong></div>`;
+}
+
+function value(selector) {
+  return document.querySelector(selector)?.value ?? "";
+}
+
+function currentPage() {
+  return location.pathname.split("/").filter(Boolean)[0] || "overview";
+}
+
+function pageTitle(page) {
+  return {
+    fivem: "FiveM Server",
+    knowledge: "Knowledge Base",
+    overview: "Overview",
+  }[page] || page.charAt(0).toUpperCase() + page.slice(1);
+}
+
+function calendar(items) {
+  const days = Array.from({ length: 31 }, (_, index) => index + 1);
+  return `<section class="card"><h2>August demo calendar</h2><div class="calendar-grid">${days.map((day) => { const date = String(day).padStart(2, "0"); const matches = items.filter((item) => item.date === `08-${date}`); return `<div class="calendar-day"><strong>${day}</strong>${matches.map((item) => `<span class="tag">${escapeHtml(item.name)}</span>`).join("")}</div>`; }).join("")}</div></section>`;
+}

@@ -3,54 +3,76 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>QboxPlatform</title>
+  <meta name="description" content="QboxPlatform dashboard proof of concept">
+  <title>QboxPlatform Dashboard</title>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <main class="shell">
-    <section class="card">
-      <div class="hero">
+  <a class="skip-link" href="#content">Skip to content</a>
+  <div class="app-shell" data-theme="dark">
+    <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+      <div class="brand">
+        <div class="brand-mark">QB</div>
         <div>
-          <p class="eyebrow">QboxPlatform proof of concept</p>
-          <h1>Discord-authenticated dashboard</h1>
-          <p class="lede">Login through Discord, verify configured-guild membership, inspect your platform session, and test owner/admin authorization.</p>
-        </div>
-        <div class="actions">
-          <a class="button primary" id="login" href="/auth/discord/start">Login with Discord</a>
-          <button id="refresh" class="button">Refresh account information</button>
-          <button id="admin" class="button">Test Admin Access</button>
-          <button id="logout" class="button danger">Logout</button>
+          <strong>QboxPlatform</strong>
+          <span>Community OS</span>
         </div>
       </div>
-      <div id="notice" class="notice" hidden></div>
-      <div class="grid">
-        <section class="panel identity-panel">
-          <div class="label">Discord identity</div>
-          <div id="identity" class="value">Checking session...</div>
-        </section>
-        <section class="panel">
-          <div class="label">Guild membership</div>
-          <div id="membership" class="value muted">—</div>
-        </section>
-        <section class="panel">
-          <div class="label">Platform session</div>
-          <div id="session" class="value muted">—</div>
-        </section>
-        <section class="panel">
-          <div class="label">Permissions</div>
-          <div id="permissions" class="value muted">—</div>
-        </section>
-        <section class="panel">
-          <div class="label">API health</div>
-          <div id="health" class="value muted">—</div>
-        </section>
-        <section class="panel">
-          <div class="label">Safe response summary</div>
-          <pre id="raw" class="value muted">—</pre>
-        </section>
+      <nav class="nav" id="navigation"></nav>
+      <div class="sidebar-card">
+        <span class="status-dot demo"></span>
+        <div>
+          <strong>Demo Mode</strong>
+          <p>Product actions are browser-only until live modules are connected.</p>
+        </div>
       </div>
-    </section>
-  </main>
-  <script src="/app.js" defer></script>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <button class="icon-button mobile-only" id="menuToggle" aria-expanded="false" aria-controls="sidebar" aria-label="Open navigation">☰</button>
+        <div>
+          <p class="breadcrumbs" id="breadcrumbs">Dashboard / Overview</p>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="connection-pill" id="connectionStatus">Checking services...</div>
+          <button class="icon-button" id="notificationButton" aria-label="Notifications">🔔</button>
+          <div class="account-menu">
+            <button class="profile-button" id="profileButton" aria-haspopup="true" aria-expanded="false">
+              <span class="avatar" id="profileAvatar">QB</span>
+              <span id="profileName">Demo Explorer</span>
+            </button>
+            <div class="profile-popover" id="profilePopover" hidden>
+              <div id="profileSummary">Demo Mode is active.</div>
+              <a class="button compact" href="/auth/discord/start" id="loginButton">Login with Discord</a>
+              <button class="button compact danger" id="logoutButton">Logout</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="demo-banner" role="status">
+        Demo Mode: Changes are stored only in this browser and do not affect Discord or FiveM.
+      </section>
+
+      <section class="notification-area" id="notificationArea" aria-live="polite"></section>
+
+      <main id="content" class="content" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h2 id="modalTitle">Confirm action</h2>
+      <p id="modalBody">This action affects demo data only.</p>
+      <div class="modal-actions">
+        <button class="button" id="modalCancel">Cancel</button>
+        <button class="button danger" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/js/app.js"></script>
 </body>
 </html>
