@@ -1,3 +1,4 @@
+import { Buffer } from "node:buffer";
 import { EventBus, ServiceContainer } from "@qbox/core";
 import type {
   DatabaseHealthSnapshot,
@@ -17,6 +18,7 @@ import { ApiModule } from "../src/lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../src/lifecycle/ApiPermissionPersistenceModule.js";
 import { ApiApplication, createApiApplication } from "../src/composition/ApiApplication.js";
 import { PlatformKernel } from "@qbox/core";
+import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationConfiguration.js";
 
 class FakeDatabase implements DatabaseServiceContract {
   public state: DatabaseHealthSnapshot = {
@@ -194,6 +196,7 @@ describe("API lifecycle composition", () => {
     const signalCount = process.listenerCount("SIGTERM");
     const application = createApiApplication({
       api: { environment: "test", port: 0 },
+      authentication: authInput(),
       databaseUrl: "postgresql://validation:validation@127.0.0.1:5432/qbox_validation_test",
     });
     expect(application.kernel.modules.list().map((module) => module.name)).toEqual([
@@ -224,6 +227,7 @@ describe("API lifecycle composition", () => {
     const application = new ApiApplication(
       new HangingKernel(),
       configuration,
+      authConfiguration(),
       health,
       new ApiModule(server, configuration, health),
     );
@@ -250,3 +254,26 @@ describe("API lifecycle composition", () => {
     await server.close();
   });
 });
+
+function authInput() {
+  const key = Buffer.alloc(32, 3).toString("base64url");
+  return {
+    discordClientId: "1432071570645455029",
+    discordClientSecret: "test-client-secret",
+    discordRedirectUri: "http://127.0.0.1:3000/auth/discord/callback",
+    discordGuildId: "1257928923048837201",
+    sessionHmacKey: key,
+    csrfHmacKey: key,
+    metadataHmacKey: key,
+    oauthEncryptionKey: key,
+    keyVersion: "1",
+  };
+}
+
+function authConfiguration() {
+  return ApiAuthenticationConfiguration.from({
+    environment: "test",
+    publicBaseUrl: "http://127.0.0.1:3000",
+    ...authInput(),
+  });
+}

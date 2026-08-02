@@ -31,8 +31,9 @@ The currently implemented dependency direction is:
 ```text
 @qbox/bot
   -> @qbox/core
-  -> @qbox/database
-       -> @qbox/permissions
+   -> @qbox/database
+         -> @qbox/authentication
+         -> @qbox/permissions
        -> @qbox/prisma
   -> @qbox/discord
        -> @qbox/core
@@ -43,6 +44,7 @@ The currently implemented dependency direction is:
   -> @qbox/shared
 
 @qbox/api
+  -> @qbox/authentication
   -> @qbox/core
   -> @qbox/database
   -> @qbox/logger
@@ -50,7 +52,12 @@ The currently implemented dependency direction is:
   -> @qbox/shared
 @qbox/worker -> @qbox/core
 @qbox/core   -> @qbox/logger
+
+@qbox/authentication
+  -> no workspace or external runtime dependencies
 ```
+
+`@qbox/authentication` remains transport-independent. It defines pure account, identity, session, OAuth, membership, actor, audit, repository, crypto, and provider contracts plus transport-independent session/OAuth/credential/membership services without importing Prisma, Fastify, Discord.js, or the permission evaluator. `@qbox/database` implements persistence and crypto ports over the lifecycle-owned Prisma client. `@qbox/api` owns a native-fetch Discord OAuth provider adapter and strict redacted provider configuration, but the running API still does not construct a usable login flow, register OAuth routes, issue cookies, or bind an authenticated request actor.
 
 Other packages exist in the workspace but are not connected to an application lifecycle.
 

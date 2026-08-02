@@ -1,8 +1,18 @@
 import { PlatformKernel } from "@qbox/core";
 import {
+  BrowserSessionService,
+  DiscordGuildMembershipService,
+  DiscordLoginService,
+  MetadataHashingService,
+  OAuthCredentialService,
+  OAuthTransactionService,
+} from "@qbox/authentication";
+import {
+  AuthenticationKeyRing,
   DatabaseConfiguration,
   DatabaseService,
   InMemoryPermissionInvalidationBus,
+  NodeAuthenticationIdGenerator,
   PrismaPermissionPersistenceClient,
 } from "@qbox/database";
 import { logger } from "@qbox/logger";
@@ -15,6 +25,9 @@ import {
   type ApiConfigurationInput,
 } from "../config/ApiConfiguration.js";
 import { createApiServer } from "../createApiServer.js";
+import { ApiAuthenticationConfiguration, type ApiAuthenticationConfigurationInput } from "../auth/ApiAuthenticationConfiguration.js";
+import { NativeDiscordOAuthProvider } from "../auth/DiscordOAuthProvider.js";
+import { registerBrowserAuthenticationRoutes } from "../auth/BrowserAuthenticationRoutes.js";
 import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersistenceModule.js";
@@ -22,6 +35,7 @@ import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersis
 /** Validated composition input supplied by the executable environment layer. */
 export interface ApiApplicationInput {
   readonly api: ApiConfigurationInput;
+  readonly authentication: ApiAuthenticationConfigurationInput;
   readonly databaseUrl: string | undefined;
 }
 
@@ -33,6 +47,7 @@ export class ApiApplication {
   public constructor(
     public readonly kernel: PlatformKernel,
     public readonly configuration: ApiConfiguration,
+    public readonly authenticationConfiguration: ApiAuthenticationConfiguration,
     public readonly health: ApiLifecycleHealth,
     public readonly apiModule: ApiModule,
   ) {}
@@ -72,6 +87,11 @@ export class ApiApplication {
 /** Composes one API process without starting it or reading process environment. */
 export function createApiApplication(input: ApiApplicationInput): ApiApplication {
   const apiConfiguration = ApiConfiguration.from(input.api);
+  const authenticationConfiguration = ApiAuthenticationConfiguration.from({
+    ...input.authentication,
+    environment: apiConfiguration.diagnostics().environment,
+    publicBaseUrl: apiConfiguration.diagnostics().publicBaseUrl,
+  });
   const databaseConfiguration = DatabaseConfiguration.from({
     databaseUrl: input.databaseUrl,
     environment: apiConfiguration.diagnostics().environment,
@@ -93,10 +113,70 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     persistence.repositories.permissions,
     cache,
   );
+  const keyRing = new AuthenticationKeyRing(
+    authenticationConfiguration.keyRegistrations(),
+  );
+  const crypto = keyRing.createCrypto();
+  const ids = new NodeAuthenticationIdGenerator();
+  const clock = { now: () => new Date() };
+  const metadata = new MetadataHashingService(crypto, keyRing);
+  const provider = new NativeDiscordOAuthProvider(
+    authenticationConfiguration.discord(),
+  );
+  const oauthTransactions = new OAuthTransactionService({
+    unitOfWork: persistence.authentication.unitOfWork,
+    clock,
+    crypto,
+    keys: keyRing,
+    ids,
+  });
+  const login = new DiscordLoginService({
+    unitOfWork: persistence.authentication.unitOfWork,
+    clock,
+    ids,
+  });
+  const credentials = new OAuthCredentialService({
+    unitOfWork: persistence.authentication.unitOfWork,
+    clock,
+    crypto,
+    keys: keyRing,
+    ids,
+    provider,
+    refreshSkewMs: authenticationConfiguration.discord().tokenRefreshSkewMs,
+  });
+  const sessions = new BrowserSessionService({
+    unitOfWork: persistence.authentication.unitOfWork,
+    clock,
+    crypto,
+    keys: keyRing,
+    ids,
+    metadata,
+  });
+  const memberships = new DiscordGuildMembershipService({
+    unitOfWork: persistence.authentication.unitOfWork,
+    clock,
+    ids,
+    credentials,
+    verifier: provider,
+  });
   const server = createApiServer({
     configuration: apiConfiguration,
     health,
     logger,
+    registerRoutes: (instance) =>
+      registerBrowserAuthenticationRoutes(instance, {
+        configuration: authenticationConfiguration,
+        provider,
+        oauthTransactions,
+        login,
+        credentials,
+        sessions,
+        memberships,
+        guilds: persistence.repositories.guilds,
+        authorizer,
+        unitOfWork: persistence.authentication.unitOfWork,
+        logger,
+      }),
   });
   const kernel = new PlatformKernel();
   kernel.registerModule(
@@ -110,7 +190,13 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
   );
   const apiModule = new ApiModule(server, apiConfiguration, health);
   kernel.registerModule(apiModule);
-  return new ApiApplication(kernel, apiConfiguration, health, apiModule);
+  return new ApiApplication(
+    kernel,
+    apiConfiguration,
+    authenticationConfiguration,
+    health,
+    apiModule,
+  );
 }
 
 async function withTimeout(

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QboxPlatform</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="card">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">QboxPlatform proof of concept</p>
+          <h1>Discord-authenticated dashboard</h1>
+          <p class="lede">Login through Discord, verify configured-guild membership, inspect your platform session, and test owner/admin authorization.</p>
+        </div>
+        <div class="actions">
+          <a class="button primary" id="login" href="/auth/discord/start">Login with Discord</a>
+          <button id="refresh" class="button">Refresh account information</button>
+          <button id="admin" class="button">Test Admin Access</button>
+          <button id="logout" class="button danger">Logout</button>
+        </div>
+      </div>
+      <div id="notice" class="notice" hidden></div>
+      <div class="grid">
+        <section class="panel identity-panel">
+          <div class="label">Discord identity</div>
+          <div id="identity" class="value">Checking session...</div>
+        </section>
+        <section class="panel">
+          <div class="label">Guild membership</div>
+          <div id="membership" class="value muted">—</div>
+        </section>
+        <section class="panel">
+          <div class="label">Platform session</div>
+          <div id="session" class="value muted">—</div>
+        </section>
+        <section class="panel">
+          <div class="label">Permissions</div>
+          <div id="permissions" class="value muted">—</div>
+        </section>
+        <section class="panel">
+          <div class="label">API health</div>
+          <div id="health" class="value muted">—</div>
+        </section>
+        <section class="panel">
+          <div class="label">Safe response summary</div>
+          <pre id="raw" class="value muted">—</pre>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>

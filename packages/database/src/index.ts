@@ -5,3 +5,7 @@ export * from "./policies/PersistencePolicies.js";
 export * from "./permissions/PrismaPermissionRepositories.js";
 export * from "./permissions/PermissionBootstrapService.js";
 export * from "./PrismaPermissionPersistenceClient.js";
+export * from "./authentication/NodeAuthenticationCryptography.js";
+export * from "./authentication/PrismaAuthenticationPersistence.js";
+export * from "./authentication/PrismaAuthenticationRepositories.js";
+export * from "./authentication/PrismaOwnerAccessProtectionService.js";

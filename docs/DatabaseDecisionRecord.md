@@ -100,10 +100,27 @@ PostgreSQL-specific checks, partial unique indexes, and triggers supplement Pris
 
 The database cannot independently prevent revocation of the last active `platform.owner` because that invariant depends on current time, enabled/expiry state, and a concurrent mutation decision. A future repository must enforce it in the mutation transaction by locking the applicable active-owner assignment rows before counting and revoking them.
 
+## Authentication schema foundation
+
+The additive authentication migration introduces `PlatformUser`, `ExternalIdentity`, `BrowserSession`, `OAuthTransaction`, `OAuthCredential`, `DiscordGuildMembership`, `DiscordGuildMembershipRole`, and `AuthenticationAuditEvent`. It creates no rows and does not alter permission principals, owner assignments, or Discord behavior. Platform accounts remain distinct from external Discord identities and permission principals.
+
+Authentication internal identifiers use PostgreSQL-generated UUIDs through `gen_random_uuid()`, matching the permission foundation and requiring no third-party ID library. UUID v7 is not introduced because PostgreSQL 17 and the selected Prisma mapping do not provide a cleaner native default than the existing deterministic database-owned strategy; no authentication contract relies on UUID ordering.
+
+PostgreSQL enforces provider-subject/account uniqueness, Discord snowflake syntax, session digest and rotation constraints, encrypted-token metadata, OAuth claim/terminal transitions, normalized membership roles, restrictive foreign keys, immutable record identity, and append-only authentication audit history. Sensitive IP, user-agent, and device correlation fields store only versioned keyed-HMAC digests; no plaintext session or provider-token column exists.
+
+The pure `@qbox/authentication` package owns repository, transaction, cryptography, and service contracts plus transport-independent session and OAuth-transaction application services. Prisma adapters, a shared-client unit of work, Node 22 cryptography, the injected versioned key ring, and owner-access locking belong to `@qbox/database`; the domain package, API handlers, and Discord code remain Prisma-independent. Authentication is not HTTP-operational until later phases add validated production key configuration, a Discord OAuth provider, cookies, CSRF, and transport composition.
+
+Prisma 7.9's JavaScript PostgreSQL adapter serializes UTC date components without a timezone suffix. `PrismaClientFactory` therefore sets every pooled PostgreSQL session to UTC. This preserves absolute `timestamptz` values for session expiry and OAuth claim leases regardless of the host or database server timezone; it is a client-factory invariant, not an application-service workaround.
+
+Authentication mutations use `PrismaAuthenticationUnitOfWork`, which supplies all seven repositories over one exact Prisma transaction. Browser-session rotation, membership role replacement, OAuth claims/transitions, optimistic credential refresh, and mandatory authentication audit writes are atomic. Owner-account and owner-identity mutations acquire the same `qbox:platform-owner-mutation` PostgreSQL advisory transaction lock as permission owner mutations before re-reading active assignments and usable linked accounts.
+
+During concurrent disposable-database integration tests, `pg@9` may emit a deprecation warning when the Prisma PostgreSQL adapter overlaps client queries. The repository code awaits each operation and does not call `client.query` directly; the warning is retained rather than suppressed and is treated as an upstream adapter/driver upgrade boundary for future review.
+
 ## Deferred decisions
 
 The following remain for approved later subphases:
 
 - Pool sizing and deployed SSL certificate details.
-- Repository implementations.
+- Production authentication key provisioning and rotation operations.
+- Authentication transport/provider composition.
 - Backup and production rollout implementation.

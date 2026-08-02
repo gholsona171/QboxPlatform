@@ -19,6 +19,15 @@ export interface ApiProcessEnvironment {
   readonly API_PUBLIC_BASE_URL?: string | undefined;
   readonly LOG_LEVEL?: string | undefined;
   readonly QBOX_BUILD_VERSION?: string | undefined;
+  readonly DISCORD_OAUTH_CLIENT_ID?: string | undefined;
+  readonly DISCORD_OAUTH_CLIENT_SECRET?: string | undefined;
+  readonly DISCORD_OAUTH_REDIRECT_URI?: string | undefined;
+  readonly DISCORD_GUILD_ID?: string | undefined;
+  readonly AUTH_SESSION_HMAC_KEY?: string | undefined;
+  readonly AUTH_CSRF_HMAC_KEY?: string | undefined;
+  readonly AUTH_METADATA_HMAC_KEY?: string | undefined;
+  readonly AUTH_OAUTH_ENCRYPTION_KEY?: string | undefined;
+  readonly AUTH_KEY_VERSION?: string | undefined;
 }
 
 /** Parses raw process values without applying empty-string fallbacks. */
@@ -46,6 +55,17 @@ export function apiConfigurationFromEnvironment(
 export async function main(environment: ApiProcessEnvironment): Promise<() => void> {
   const application = createApiApplication({
     api: apiConfigurationFromEnvironment(environment),
+    authentication: {
+      discordClientId: environment.DISCORD_OAUTH_CLIENT_ID,
+      discordClientSecret: environment.DISCORD_OAUTH_CLIENT_SECRET,
+      discordRedirectUri: environment.DISCORD_OAUTH_REDIRECT_URI,
+      discordGuildId: environment.DISCORD_GUILD_ID,
+      sessionHmacKey: environment.AUTH_SESSION_HMAC_KEY,
+      csrfHmacKey: environment.AUTH_CSRF_HMAC_KEY,
+      metadataHmacKey: environment.AUTH_METADATA_HMAC_KEY,
+      oauthEncryptionKey: environment.AUTH_OAUTH_ENCRYPTION_KEY,
+      keyVersion: environment.AUTH_KEY_VERSION,
+    },
     databaseUrl: environment.DATABASE_URL,
   });
   const removeSignals = installApiSignalHandlers(application, logger);

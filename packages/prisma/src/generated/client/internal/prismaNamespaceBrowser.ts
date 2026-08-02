@@ -56,7 +56,15 @@ export const ModelName = {
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
   PermissionAuditEvent: 'PermissionAuditEvent',
-  PermissionCatalogState: 'PermissionCatalogState'
+  PermissionCatalogState: 'PermissionCatalogState',
+  PlatformUser: 'PlatformUser',
+  ExternalIdentity: 'ExternalIdentity',
+  BrowserSession: 'BrowserSession',
+  OAuthTransaction: 'OAuthTransaction',
+  OAuthCredential: 'OAuthCredential',
+  DiscordGuildMembership: 'DiscordGuildMembership',
+  DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
+  AuthenticationAuditEvent: 'AuthenticationAuditEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -175,6 +183,180 @@ export const PermissionCatalogStateScalarFieldEnum = {
 } as const
 
 export type PermissionCatalogStateScalarFieldEnum = (typeof PermissionCatalogStateScalarFieldEnum)[keyof typeof PermissionCatalogStateScalarFieldEnum]
+
+
+export const PlatformUserScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  authenticationRevision: 'authenticationRevision',
+  statusReasonCode: 'statusReasonCode',
+  suspendedAt: 'suspendedAt',
+  disabledAt: 'disabledAt',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformUserScalarFieldEnum = (typeof PlatformUserScalarFieldEnum)[keyof typeof PlatformUserScalarFieldEnum]
+
+
+export const ExternalIdentityScalarFieldEnum = {
+  id: 'id',
+  platformUserId: 'platformUserId',
+  provider: 'provider',
+  providerSubjectId: 'providerSubjectId',
+  username: 'username',
+  globalName: 'globalName',
+  avatar: 'avatar',
+  enabled: 'enabled',
+  linkedAt: 'linkedAt',
+  verifiedAt: 'verifiedAt',
+  lastProviderRefreshAt: 'lastProviderRefreshAt',
+  unlinkedAt: 'unlinkedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalIdentityScalarFieldEnum = (typeof ExternalIdentityScalarFieldEnum)[keyof typeof ExternalIdentityScalarFieldEnum]
+
+
+export const BrowserSessionScalarFieldEnum = {
+  id: 'id',
+  platformUserId: 'platformUserId',
+  loginIdentityId: 'loginIdentityId',
+  tokenDigest: 'tokenDigest',
+  tokenKeyVersion: 'tokenKeyVersion',
+  csrfDigest: 'csrfDigest',
+  csrfKeyVersion: 'csrfKeyVersion',
+  authenticationRevisionAtIssue: 'authenticationRevisionAtIssue',
+  authenticatedAt: 'authenticatedAt',
+  lastSeenAt: 'lastSeenAt',
+  idleExpiresAt: 'idleExpiresAt',
+  absoluteExpiresAt: 'absoluteExpiresAt',
+  status: 'status',
+  revokedAt: 'revokedAt',
+  revocationReason: 'revocationReason',
+  rotatedFromSessionId: 'rotatedFromSessionId',
+  ipHmac: 'ipHmac',
+  userAgentHmac: 'userAgentHmac',
+  deviceHmac: 'deviceHmac',
+  metadataKeyVersion: 'metadataKeyVersion',
+  deviceLabel: 'deviceLabel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserSessionScalarFieldEnum = (typeof BrowserSessionScalarFieldEnum)[keyof typeof BrowserSessionScalarFieldEnum]
+
+
+export const OAuthTransactionScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  purpose: 'purpose',
+  state: 'state',
+  stateDigest: 'stateDigest',
+  browserBindingDigest: 'browserBindingDigest',
+  platformUserId: 'platformUserId',
+  initiatingSessionId: 'initiatingSessionId',
+  redirectKey: 'redirectKey',
+  returnTargetKey: 'returnTargetKey',
+  pkceMode: 'pkceMode',
+  pkceCiphertext: 'pkceCiphertext',
+  pkceNonce: 'pkceNonce',
+  pkceAuthenticationTag: 'pkceAuthenticationTag',
+  pkceKeyVersion: 'pkceKeyVersion',
+  expiresAt: 'expiresAt',
+  claimedAt: 'claimedAt',
+  claimExpiresAt: 'claimExpiresAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  expiredAt: 'expiredAt',
+  failureReason: 'failureReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OAuthTransactionScalarFieldEnum = (typeof OAuthTransactionScalarFieldEnum)[keyof typeof OAuthTransactionScalarFieldEnum]
+
+
+export const OAuthCredentialScalarFieldEnum = {
+  id: 'id',
+  externalIdentityId: 'externalIdentityId',
+  provider: 'provider',
+  accessTokenCiphertext: 'accessTokenCiphertext',
+  accessTokenNonce: 'accessTokenNonce',
+  accessTokenAuthenticationTag: 'accessTokenAuthenticationTag',
+  accessTokenKeyVersion: 'accessTokenKeyVersion',
+  refreshTokenCiphertext: 'refreshTokenCiphertext',
+  refreshTokenNonce: 'refreshTokenNonce',
+  refreshTokenAuthenticationTag: 'refreshTokenAuthenticationTag',
+  refreshTokenKeyVersion: 'refreshTokenKeyVersion',
+  scopes: 'scopes',
+  providerExpiresAt: 'providerExpiresAt',
+  refreshVersion: 'refreshVersion',
+  revokedAt: 'revokedAt',
+  revocationReason: 'revocationReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OAuthCredentialScalarFieldEnum = (typeof OAuthCredentialScalarFieldEnum)[keyof typeof OAuthCredentialScalarFieldEnum]
+
+
+export const DiscordGuildMembershipScalarFieldEnum = {
+  id: 'id',
+  externalIdentityId: 'externalIdentityId',
+  guildId: 'guildId',
+  status: 'status',
+  source: 'source',
+  verifiedAt: 'verifiedAt',
+  validUntil: 'validUntil',
+  departedAt: 'departedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscordGuildMembershipScalarFieldEnum = (typeof DiscordGuildMembershipScalarFieldEnum)[keyof typeof DiscordGuildMembershipScalarFieldEnum]
+
+
+export const DiscordGuildMembershipRoleScalarFieldEnum = {
+  membershipId: 'membershipId',
+  roleId: 'roleId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordGuildMembershipRoleScalarFieldEnum = (typeof DiscordGuildMembershipRoleScalarFieldEnum)[keyof typeof DiscordGuildMembershipRoleScalarFieldEnum]
+
+
+export const AuthenticationAuditEventScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  outcome: 'outcome',
+  reasonCode: 'reasonCode',
+  requestId: 'requestId',
+  correlationId: 'correlationId',
+  actorType: 'actorType',
+  actorPlatformUserId: 'actorPlatformUserId',
+  actorServiceIdentityId: 'actorServiceIdentityId',
+  targetPlatformUserId: 'targetPlatformUserId',
+  targetExternalIdentityId: 'targetExternalIdentityId',
+  targetBrowserSessionId: 'targetBrowserSessionId',
+  targetOAuthTransactionId: 'targetOAuthTransactionId',
+  targetOAuthCredentialId: 'targetOAuthCredentialId',
+  targetGuildMembershipId: 'targetGuildMembershipId',
+  provider: 'provider',
+  purpose: 'purpose',
+  metadata: 'metadata',
+  ipHmac: 'ipHmac',
+  userAgentHmac: 'userAgentHmac',
+  deviceHmac: 'deviceHmac',
+  metadataKeyVersion: 'metadataKeyVersion',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
 export const SortOrder = {

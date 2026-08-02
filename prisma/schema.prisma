@@ -55,6 +55,152 @@ enum PermissionAuditActorType {
   SYSTEM    @map("system")
 }
 
+enum PlatformUserStatus {
+  ACTIVE    @map("active")
+  SUSPENDED @map("suspended")
+  DISABLED  @map("disabled")
+  DELETED   @map("deleted")
+}
+
+enum PlatformUserStatusReasonCode {
+  ACCOUNT_CREATED      @map("account-created")
+  USER_REQUEST         @map("user-request")
+  ADMINISTRATOR_ACTION @map("administrator-action")
+  SECURITY_RESPONSE    @map("security-response")
+  RECOVERY             @map("recovery")
+  IDENTITY_UNLINKED    @map("identity-unlinked")
+  ACCOUNT_MERGED       @map("account-merged")
+}
+
+enum AuthenticationProvider {
+  DISCORD @map("discord")
+}
+
+enum BrowserSessionStatus {
+  ACTIVE  @map("active")
+  REVOKED @map("revoked")
+  EXPIRED @map("expired")
+  ROTATED @map("rotated")
+}
+
+enum BrowserSessionRevocationReason {
+  LOGOUT                          @map("logout")
+  GLOBAL_LOGOUT                   @map("global-logout")
+  ACCOUNT_STATUS_CHANGED          @map("account-status-changed")
+  AUTHENTICATION_REVISION_CHANGED @map("authentication-revision-changed")
+  IDENTITY_UNLINKED               @map("identity-unlinked")
+  GUILD_DEPARTURE                 @map("guild-departure")
+  SECURITY_RESPONSE               @map("security-response")
+  SESSION_LIMIT                   @map("session-limit")
+  ROTATED                         @map("rotated")
+  EXPIRED                         @map("expired")
+}
+
+enum OAuthTransactionState {
+  PENDING   @map("pending")
+  CLAIMED   @map("claimed")
+  COMPLETED @map("completed")
+  FAILED    @map("failed")
+  CANCELLED @map("cancelled")
+  EXPIRED   @map("expired")
+}
+
+enum OAuthTransactionPurpose {
+  LOGIN          @map("login")
+  LINK           @map("link")
+  REAUTHENTICATE @map("reauthenticate")
+}
+
+enum OAuthTransactionFailureReason {
+  PROVIDER_REJECTED        @map("provider-rejected")
+  INVALID_CALLBACK         @map("invalid-callback")
+  STATE_MISMATCH           @map("state-mismatch")
+  BROWSER_BINDING_MISMATCH @map("browser-binding-mismatch")
+  PKCE_MISMATCH            @map("pkce-mismatch")
+  IDENTITY_CONFLICT        @map("identity-conflict")
+  DEPENDENCY_UNAVAILABLE   @map("dependency-unavailable")
+  CANCELLED_BY_USER        @map("cancelled-by-user")
+  EXPIRED                  @map("expired")
+}
+
+enum OAuthPkceMode {
+  DISABLED_UNVERIFIED @map("disabled-unverified")
+  S256_VERIFIED       @map("s256-verified")
+}
+
+enum OAuthCredentialRevocationReason {
+  IDENTITY_UNLINKED @map("identity-unlinked")
+  ACCOUNT_DISABLED  @map("account-disabled")
+  PROVIDER_REVOKED  @map("provider-revoked")
+  SECURITY_RESPONSE @map("security-response")
+  REFRESH_FAILED    @map("refresh-failed")
+}
+
+enum DiscordGuildMembershipStatus {
+  PRESENT @map("present")
+  ABSENT  @map("absent")
+  UNKNOWN @map("unknown")
+}
+
+enum DiscordGuildMembershipSource {
+  DISCORD_BOT   @map("discord-bot")
+  DISCORD_OAUTH @map("discord-oauth")
+  COMBINED      @map("combined")
+}
+
+enum AuthenticationAuditAction {
+  LOGIN_START           @map("login-start")
+  LOGIN_SUCCESS         @map("login-success")
+  LOGIN_FAILURE         @map("login-failure")
+  OAUTH_CLAIM           @map("oauth-claim")
+  OAUTH_COMPLETION      @map("oauth-completion")
+  OAUTH_REJECTION       @map("oauth-rejection")
+  OAUTH_REPLAY          @map("oauth-replay")
+  SESSION_CREATION      @map("session-creation")
+  SESSION_ROTATION      @map("session-rotation")
+  SESSION_EXPIRY        @map("session-expiry")
+  SESSION_REVOCATION    @map("session-revocation")
+  LOGOUT                @map("logout")
+  GLOBAL_LOGOUT         @map("global-logout")
+  IDENTITY_LINK         @map("identity-link")
+  IDENTITY_UNLINK       @map("identity-unlink")
+  ACCOUNT_STATUS_CHANGE @map("account-status-change")
+  GUILD_DEPARTURE       @map("guild-departure")
+  GUILD_REJOIN          @map("guild-rejoin")
+  RECOVERY              @map("recovery")
+}
+
+enum AuthenticationAuditOutcome {
+  SUCCESS  @map("success")
+  FAILURE  @map("failure")
+  REJECTED @map("rejected")
+}
+
+enum AuthenticationAuditReasonCode {
+  REQUESTED                @map("requested")
+  COMPLETED                @map("completed")
+  INVALID_CREDENTIAL       @map("invalid-credential")
+  INVALID_STATE            @map("invalid-state")
+  EXPIRED                  @map("expired")
+  REVOKED                  @map("revoked")
+  REPLAY_DETECTED          @map("replay-detected")
+  PROVIDER_REJECTED        @map("provider-rejected")
+  DEPENDENCY_UNAVAILABLE   @map("dependency-unavailable")
+  ACCOUNT_UNAVAILABLE      @map("account-unavailable")
+  IDENTITY_CONFLICT        @map("identity-conflict")
+  GUILD_MEMBERSHIP_CHANGED @map("guild-membership-changed")
+  ADMINISTRATOR_ACTION     @map("administrator-action")
+  SECURITY_RESPONSE        @map("security-response")
+  USER_ACTION              @map("user-action")
+  RECOVERY                 @map("recovery")
+  SYSTEM_MAINTENANCE       @map("system-maintenance")
+}
+
+enum AuthenticationAuditActorType {
+  PLATFORM_USER @map("platform-user")
+  SERVICE       @map("service")
+}
+
 model Guild {
   id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   discordGuildId String    @unique(map: "guild_discord_guild_id_key") @map("discord_guild_id")
@@ -66,7 +212,8 @@ model Guild {
 
   principals       PermissionPrincipal[]
   assignments      PermissionAssignment[]
-  auditScopeEvents PermissionAuditEvent[] @relation("AuditScopeGuild")
+  auditScopeEvents PermissionAuditEvent[]   @relation("AuditScopeGuild")
+  authMemberships  DiscordGuildMembership[]
 
   @@map("guilds")
 }
@@ -184,4 +331,230 @@ model PermissionCatalogState {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@map("permission_catalog_state")
+}
+
+model PlatformUser {
+  id                     String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  status                 PlatformUserStatus           @default(ACTIVE)
+  authenticationRevision Int                          @default(1) @map("authentication_revision")
+  statusReasonCode       PlatformUserStatusReasonCode @default(ACCOUNT_CREATED) @map("status_reason_code")
+  suspendedAt            DateTime?                    @map("suspended_at") @db.Timestamptz(3)
+  disabledAt             DateTime?                    @map("disabled_at") @db.Timestamptz(3)
+  deletedAt              DateTime?                    @map("deleted_at") @db.Timestamptz(3)
+  createdAt              DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  externalIdentities ExternalIdentity[]
+  browserSessions    BrowserSession[]
+  oauthTransactions  OAuthTransaction[]
+  auditActorEvents   AuthenticationAuditEvent[] @relation("AuthenticationAuditActorPlatformUser")
+  auditTargetEvents  AuthenticationAuditEvent[] @relation("AuthenticationAuditTargetPlatformUser")
+
+  @@index([status], map: "platform_users_status_idx")
+  @@map("platform_users")
+}
+
+model ExternalIdentity {
+  id                    String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  platformUserId        String                 @map("platform_user_id") @db.Uuid
+  provider              AuthenticationProvider
+  providerSubjectId     String                 @map("provider_subject_id")
+  username              String?
+  globalName            String?                @map("global_name")
+  avatar                String?
+  enabled               Boolean                @default(true)
+  linkedAt              DateTime               @map("linked_at") @db.Timestamptz(3)
+  verifiedAt            DateTime               @map("verified_at") @db.Timestamptz(3)
+  lastProviderRefreshAt DateTime?              @map("last_provider_refresh_at") @db.Timestamptz(3)
+  unlinkedAt            DateTime?              @map("unlinked_at") @db.Timestamptz(3)
+  createdAt             DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  platformUser      PlatformUser               @relation(fields: [platformUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  browserSessions   BrowserSession[]
+  oauthCredential   OAuthCredential?
+  guildMemberships  DiscordGuildMembership[]
+  auditTargetEvents AuthenticationAuditEvent[] @relation("AuthenticationAuditTargetIdentity")
+
+  @@unique([provider, providerSubjectId], map: "external_identities_provider_subject_key")
+  @@unique([platformUserId, provider], map: "external_identities_user_provider_key")
+  @@index([platformUserId, enabled], map: "external_identities_user_enabled_idx")
+  @@map("external_identities")
+}
+
+model BrowserSession {
+  id                            String                          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  platformUserId                String                          @map("platform_user_id") @db.Uuid
+  loginIdentityId               String                          @map("login_identity_id") @db.Uuid
+  tokenDigest                   String                          @unique(map: "browser_sessions_token_digest_key") @map("token_digest") @db.Char(64)
+  tokenKeyVersion               Int                             @map("token_key_version")
+  csrfDigest                    String                          @unique(map: "browser_sessions_csrf_digest_key") @map("csrf_digest") @db.Char(64)
+  csrfKeyVersion                Int                             @map("csrf_key_version")
+  authenticationRevisionAtIssue Int                             @map("authentication_revision_at_issue")
+  authenticatedAt               DateTime                        @map("authenticated_at") @db.Timestamptz(3)
+  lastSeenAt                    DateTime                        @map("last_seen_at") @db.Timestamptz(3)
+  idleExpiresAt                 DateTime                        @map("idle_expires_at") @db.Timestamptz(3)
+  absoluteExpiresAt             DateTime                        @map("absolute_expires_at") @db.Timestamptz(3)
+  status                        BrowserSessionStatus            @default(ACTIVE)
+  revokedAt                     DateTime?                       @map("revoked_at") @db.Timestamptz(3)
+  revocationReason              BrowserSessionRevocationReason? @map("revocation_reason")
+  rotatedFromSessionId          String?                         @unique(map: "browser_sessions_rotated_from_key") @map("rotated_from_session_id") @db.Uuid
+  ipHmac                        String?                         @map("ip_hmac") @db.Char(64)
+  userAgentHmac                 String?                         @map("user_agent_hmac") @db.Char(64)
+  deviceHmac                    String?                         @map("device_hmac") @db.Char(64)
+  metadataKeyVersion            Int?                            @map("metadata_key_version")
+  deviceLabel                   String?                         @map("device_label")
+  createdAt                     DateTime                        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                     DateTime                        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  platformUser      PlatformUser               @relation(fields: [platformUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  loginIdentity     ExternalIdentity           @relation(fields: [loginIdentityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  rotatedFrom       BrowserSession?            @relation("BrowserSessionRotation", fields: [rotatedFromSessionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  rotatedTo         BrowserSession?            @relation("BrowserSessionRotation")
+  initiatedOAuth    OAuthTransaction[]
+  auditTargetEvents AuthenticationAuditEvent[] @relation("AuthenticationAuditTargetSession")
+
+  @@index([platformUserId, status], map: "browser_sessions_user_status_idx")
+  @@index([idleExpiresAt], map: "browser_sessions_idle_expiry_idx")
+  @@index([absoluteExpiresAt], map: "browser_sessions_absolute_expiry_idx")
+  @@index([authenticationRevisionAtIssue], map: "browser_sessions_auth_revision_idx")
+  @@map("browser_sessions")
+}
+
+model OAuthTransaction {
+  id                    String                         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  provider              AuthenticationProvider
+  purpose               OAuthTransactionPurpose
+  state                 OAuthTransactionState          @default(PENDING)
+  stateDigest           String                         @unique(map: "oauth_transactions_state_digest_key") @map("state_digest") @db.Char(64)
+  browserBindingDigest  String                         @unique(map: "oauth_transactions_browser_binding_digest_key") @map("browser_binding_digest") @db.Char(64)
+  platformUserId        String?                        @map("platform_user_id") @db.Uuid
+  initiatingSessionId   String?                        @map("initiating_session_id") @db.Uuid
+  redirectKey           String                         @map("redirect_key")
+  returnTargetKey       String                         @map("return_target_key")
+  pkceMode              OAuthPkceMode                  @default(DISABLED_UNVERIFIED) @map("pkce_mode")
+  pkceCiphertext        Bytes?                         @map("pkce_ciphertext") @db.ByteA
+  pkceNonce             Bytes?                         @map("pkce_nonce") @db.ByteA
+  pkceAuthenticationTag Bytes?                         @map("pkce_authentication_tag") @db.ByteA
+  pkceKeyVersion        Int?                           @map("pkce_key_version")
+  expiresAt             DateTime                       @map("expires_at") @db.Timestamptz(3)
+  claimedAt             DateTime?                      @map("claimed_at") @db.Timestamptz(3)
+  claimExpiresAt        DateTime?                      @map("claim_expires_at") @db.Timestamptz(3)
+  completedAt           DateTime?                      @map("completed_at") @db.Timestamptz(3)
+  failedAt              DateTime?                      @map("failed_at") @db.Timestamptz(3)
+  cancelledAt           DateTime?                      @map("cancelled_at") @db.Timestamptz(3)
+  expiredAt             DateTime?                      @map("expired_at") @db.Timestamptz(3)
+  failureReason         OAuthTransactionFailureReason? @map("failure_reason")
+  createdAt             DateTime                       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime                       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  platformUser      PlatformUser?              @relation(fields: [platformUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  initiatingSession BrowserSession?            @relation(fields: [initiatingSessionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  auditTargetEvents AuthenticationAuditEvent[] @relation("AuthenticationAuditTargetTransaction")
+
+  @@index([state, expiresAt], map: "oauth_transactions_state_expiry_idx")
+  @@index([platformUserId, purpose], map: "oauth_transactions_user_purpose_idx")
+  @@map("oauth_transactions")
+}
+
+model OAuthCredential {
+  id                            String                           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  externalIdentityId            String                           @unique(map: "oauth_credentials_external_identity_key") @map("external_identity_id") @db.Uuid
+  provider                      AuthenticationProvider
+  accessTokenCiphertext         Bytes                            @map("access_token_ciphertext") @db.ByteA
+  accessTokenNonce              Bytes                            @map("access_token_nonce") @db.ByteA
+  accessTokenAuthenticationTag  Bytes                            @map("access_token_authentication_tag") @db.ByteA
+  accessTokenKeyVersion         Int                              @map("access_token_key_version")
+  refreshTokenCiphertext        Bytes                            @map("refresh_token_ciphertext") @db.ByteA
+  refreshTokenNonce             Bytes                            @map("refresh_token_nonce") @db.ByteA
+  refreshTokenAuthenticationTag Bytes                            @map("refresh_token_authentication_tag") @db.ByteA
+  refreshTokenKeyVersion        Int                              @map("refresh_token_key_version")
+  scopes                        String[]
+  providerExpiresAt             DateTime                         @map("provider_expires_at") @db.Timestamptz(3)
+  refreshVersion                Int                              @default(1) @map("refresh_version")
+  revokedAt                     DateTime?                        @map("revoked_at") @db.Timestamptz(3)
+  revocationReason              OAuthCredentialRevocationReason? @map("revocation_reason")
+  createdAt                     DateTime                         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                     DateTime                         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  externalIdentity  ExternalIdentity           @relation(fields: [externalIdentityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  auditTargetEvents AuthenticationAuditEvent[] @relation("AuthenticationAuditTargetCredential")
+
+  @@index([providerExpiresAt], map: "oauth_credentials_provider_expiry_idx")
+  @@map("oauth_credentials")
+}
+
+model DiscordGuildMembership {
+  id                 String                       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  externalIdentityId String                       @map("external_identity_id") @db.Uuid
+  guildId            String                       @map("guild_id") @db.Uuid
+  status             DiscordGuildMembershipStatus @default(UNKNOWN)
+  source             DiscordGuildMembershipSource
+  verifiedAt         DateTime?                    @map("verified_at") @db.Timestamptz(3)
+  validUntil         DateTime?                    @map("valid_until") @db.Timestamptz(3)
+  departedAt         DateTime?                    @map("departed_at") @db.Timestamptz(3)
+  createdAt          DateTime                     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime                     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  externalIdentity  ExternalIdentity             @relation(fields: [externalIdentityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  guild             Guild                        @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  roles             DiscordGuildMembershipRole[]
+  auditTargetEvents AuthenticationAuditEvent[]   @relation("AuthenticationAuditTargetMembership")
+
+  @@unique([externalIdentityId, guildId], map: "discord_guild_memberships_identity_guild_key")
+  @@index([guildId, status, validUntil], map: "discord_guild_memberships_guild_status_idx")
+  @@map("discord_guild_memberships")
+}
+
+model DiscordGuildMembershipRole {
+  membershipId String   @map("membership_id") @db.Uuid
+  roleId       String   @map("role_id")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  membership DiscordGuildMembership @relation(fields: [membershipId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@id([membershipId, roleId], map: "discord_guild_membership_roles_pkey")
+  @@index([roleId], map: "discord_guild_membership_roles_role_idx")
+  @@map("discord_guild_membership_roles")
+}
+
+model AuthenticationAuditEvent {
+  id                       String                        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  action                   AuthenticationAuditAction
+  outcome                  AuthenticationAuditOutcome
+  reasonCode               AuthenticationAuditReasonCode @map("reason_code")
+  requestId                String?                       @map("request_id") @db.Uuid
+  correlationId            String                        @map("correlation_id") @db.Uuid
+  actorType                AuthenticationAuditActorType? @map("actor_type")
+  actorPlatformUserId      String?                       @map("actor_platform_user_id") @db.Uuid
+  actorServiceIdentityId   String?                       @map("actor_service_identity_id") @db.Uuid
+  targetPlatformUserId     String?                       @map("target_platform_user_id") @db.Uuid
+  targetExternalIdentityId String?                       @map("target_external_identity_id") @db.Uuid
+  targetBrowserSessionId   String?                       @map("target_browser_session_id") @db.Uuid
+  targetOAuthTransactionId String?                       @map("target_oauth_transaction_id") @db.Uuid
+  targetOAuthCredentialId  String?                       @map("target_oauth_credential_id") @db.Uuid
+  targetGuildMembershipId  String?                       @map("target_guild_membership_id") @db.Uuid
+  provider                 AuthenticationProvider?
+  purpose                  OAuthTransactionPurpose?
+  metadata                 Json                          @default("{}") @db.JsonB
+  ipHmac                   String?                       @map("ip_hmac") @db.Char(64)
+  userAgentHmac            String?                       @map("user_agent_hmac") @db.Char(64)
+  deviceHmac               String?                       @map("device_hmac") @db.Char(64)
+  metadataKeyVersion       Int?                          @map("metadata_key_version")
+  occurredAt               DateTime                      @map("occurred_at") @db.Timestamptz(3)
+  createdAt                DateTime                      @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  actorPlatformUser      PlatformUser?           @relation("AuthenticationAuditActorPlatformUser", fields: [actorPlatformUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetPlatformUser     PlatformUser?           @relation("AuthenticationAuditTargetPlatformUser", fields: [targetPlatformUserId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetExternalIdentity ExternalIdentity?       @relation("AuthenticationAuditTargetIdentity", fields: [targetExternalIdentityId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetBrowserSession   BrowserSession?         @relation("AuthenticationAuditTargetSession", fields: [targetBrowserSessionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetOAuthTransaction OAuthTransaction?       @relation("AuthenticationAuditTargetTransaction", fields: [targetOAuthTransactionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetOAuthCredential  OAuthCredential?        @relation("AuthenticationAuditTargetCredential", fields: [targetOAuthCredentialId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  targetGuildMembership  DiscordGuildMembership? @relation("AuthenticationAuditTargetMembership", fields: [targetGuildMembershipId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([correlationId], map: "authentication_audit_events_correlation_idx")
+  @@index([actorPlatformUserId, occurredAt], map: "authentication_audit_events_actor_time_idx")
+  @@index([targetPlatformUserId, occurredAt], map: "authentication_audit_events_target_user_time_idx")
+  @@index([action, occurredAt], map: "authentication_audit_events_action_time_idx")
+  @@map("authentication_audit_events")
 }

@@ -70,3 +70,197 @@ export const PermissionAuditActorType = {
 } as const
 
 export type PermissionAuditActorType = (typeof PermissionAuditActorType)[keyof typeof PermissionAuditActorType]
+
+
+export const PlatformUserStatus = {
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED',
+  DISABLED: 'DISABLED',
+  DELETED: 'DELETED'
+} as const
+
+export type PlatformUserStatus = (typeof PlatformUserStatus)[keyof typeof PlatformUserStatus]
+
+
+export const PlatformUserStatusReasonCode = {
+  ACCOUNT_CREATED: 'ACCOUNT_CREATED',
+  USER_REQUEST: 'USER_REQUEST',
+  ADMINISTRATOR_ACTION: 'ADMINISTRATOR_ACTION',
+  SECURITY_RESPONSE: 'SECURITY_RESPONSE',
+  RECOVERY: 'RECOVERY',
+  IDENTITY_UNLINKED: 'IDENTITY_UNLINKED',
+  ACCOUNT_MERGED: 'ACCOUNT_MERGED'
+} as const
+
+export type PlatformUserStatusReasonCode = (typeof PlatformUserStatusReasonCode)[keyof typeof PlatformUserStatusReasonCode]
+
+
+export const AuthenticationProvider = {
+  DISCORD: 'DISCORD'
+} as const
+
+export type AuthenticationProvider = (typeof AuthenticationProvider)[keyof typeof AuthenticationProvider]
+
+
+export const BrowserSessionStatus = {
+  ACTIVE: 'ACTIVE',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED',
+  ROTATED: 'ROTATED'
+} as const
+
+export type BrowserSessionStatus = (typeof BrowserSessionStatus)[keyof typeof BrowserSessionStatus]
+
+
+export const BrowserSessionRevocationReason = {
+  LOGOUT: 'LOGOUT',
+  GLOBAL_LOGOUT: 'GLOBAL_LOGOUT',
+  ACCOUNT_STATUS_CHANGED: 'ACCOUNT_STATUS_CHANGED',
+  AUTHENTICATION_REVISION_CHANGED: 'AUTHENTICATION_REVISION_CHANGED',
+  IDENTITY_UNLINKED: 'IDENTITY_UNLINKED',
+  GUILD_DEPARTURE: 'GUILD_DEPARTURE',
+  SECURITY_RESPONSE: 'SECURITY_RESPONSE',
+  SESSION_LIMIT: 'SESSION_LIMIT',
+  ROTATED: 'ROTATED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type BrowserSessionRevocationReason = (typeof BrowserSessionRevocationReason)[keyof typeof BrowserSessionRevocationReason]
+
+
+export const OAuthTransactionState = {
+  PENDING: 'PENDING',
+  CLAIMED: 'CLAIMED',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type OAuthTransactionState = (typeof OAuthTransactionState)[keyof typeof OAuthTransactionState]
+
+
+export const OAuthTransactionPurpose = {
+  LOGIN: 'LOGIN',
+  LINK: 'LINK',
+  REAUTHENTICATE: 'REAUTHENTICATE'
+} as const
+
+export type OAuthTransactionPurpose = (typeof OAuthTransactionPurpose)[keyof typeof OAuthTransactionPurpose]
+
+
+export const OAuthTransactionFailureReason = {
+  PROVIDER_REJECTED: 'PROVIDER_REJECTED',
+  INVALID_CALLBACK: 'INVALID_CALLBACK',
+  STATE_MISMATCH: 'STATE_MISMATCH',
+  BROWSER_BINDING_MISMATCH: 'BROWSER_BINDING_MISMATCH',
+  PKCE_MISMATCH: 'PKCE_MISMATCH',
+  IDENTITY_CONFLICT: 'IDENTITY_CONFLICT',
+  DEPENDENCY_UNAVAILABLE: 'DEPENDENCY_UNAVAILABLE',
+  CANCELLED_BY_USER: 'CANCELLED_BY_USER',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type OAuthTransactionFailureReason = (typeof OAuthTransactionFailureReason)[keyof typeof OAuthTransactionFailureReason]
+
+
+export const OAuthPkceMode = {
+  DISABLED_UNVERIFIED: 'DISABLED_UNVERIFIED',
+  S256_VERIFIED: 'S256_VERIFIED'
+} as const
+
+export type OAuthPkceMode = (typeof OAuthPkceMode)[keyof typeof OAuthPkceMode]
+
+
+export const OAuthCredentialRevocationReason = {
+  IDENTITY_UNLINKED: 'IDENTITY_UNLINKED',
+  ACCOUNT_DISABLED: 'ACCOUNT_DISABLED',
+  PROVIDER_REVOKED: 'PROVIDER_REVOKED',
+  SECURITY_RESPONSE: 'SECURITY_RESPONSE',
+  REFRESH_FAILED: 'REFRESH_FAILED'
+} as const
+
+export type OAuthCredentialRevocationReason = (typeof OAuthCredentialRevocationReason)[keyof typeof OAuthCredentialRevocationReason]
+
+
+export const DiscordGuildMembershipStatus = {
+  PRESENT: 'PRESENT',
+  ABSENT: 'ABSENT',
+  UNKNOWN: 'UNKNOWN'
+} as const
+
+export type DiscordGuildMembershipStatus = (typeof DiscordGuildMembershipStatus)[keyof typeof DiscordGuildMembershipStatus]
+
+
+export const DiscordGuildMembershipSource = {
+  DISCORD_BOT: 'DISCORD_BOT',
+  DISCORD_OAUTH: 'DISCORD_OAUTH',
+  COMBINED: 'COMBINED'
+} as const
+
+export type DiscordGuildMembershipSource = (typeof DiscordGuildMembershipSource)[keyof typeof DiscordGuildMembershipSource]
+
+
+export const AuthenticationAuditAction = {
+  LOGIN_START: 'LOGIN_START',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGIN_FAILURE: 'LOGIN_FAILURE',
+  OAUTH_CLAIM: 'OAUTH_CLAIM',
+  OAUTH_COMPLETION: 'OAUTH_COMPLETION',
+  OAUTH_REJECTION: 'OAUTH_REJECTION',
+  OAUTH_REPLAY: 'OAUTH_REPLAY',
+  SESSION_CREATION: 'SESSION_CREATION',
+  SESSION_ROTATION: 'SESSION_ROTATION',
+  SESSION_EXPIRY: 'SESSION_EXPIRY',
+  SESSION_REVOCATION: 'SESSION_REVOCATION',
+  LOGOUT: 'LOGOUT',
+  GLOBAL_LOGOUT: 'GLOBAL_LOGOUT',
+  IDENTITY_LINK: 'IDENTITY_LINK',
+  IDENTITY_UNLINK: 'IDENTITY_UNLINK',
+  ACCOUNT_STATUS_CHANGE: 'ACCOUNT_STATUS_CHANGE',
+  GUILD_DEPARTURE: 'GUILD_DEPARTURE',
+  GUILD_REJOIN: 'GUILD_REJOIN',
+  RECOVERY: 'RECOVERY'
+} as const
+
+export type AuthenticationAuditAction = (typeof AuthenticationAuditAction)[keyof typeof AuthenticationAuditAction]
+
+
+export const AuthenticationAuditOutcome = {
+  SUCCESS: 'SUCCESS',
+  FAILURE: 'FAILURE',
+  REJECTED: 'REJECTED'
+} as const
+
+export type AuthenticationAuditOutcome = (typeof AuthenticationAuditOutcome)[keyof typeof AuthenticationAuditOutcome]
+
+
+export const AuthenticationAuditReasonCode = {
+  REQUESTED: 'REQUESTED',
+  COMPLETED: 'COMPLETED',
+  INVALID_CREDENTIAL: 'INVALID_CREDENTIAL',
+  INVALID_STATE: 'INVALID_STATE',
+  EXPIRED: 'EXPIRED',
+  REVOKED: 'REVOKED',
+  REPLAY_DETECTED: 'REPLAY_DETECTED',
+  PROVIDER_REJECTED: 'PROVIDER_REJECTED',
+  DEPENDENCY_UNAVAILABLE: 'DEPENDENCY_UNAVAILABLE',
+  ACCOUNT_UNAVAILABLE: 'ACCOUNT_UNAVAILABLE',
+  IDENTITY_CONFLICT: 'IDENTITY_CONFLICT',
+  GUILD_MEMBERSHIP_CHANGED: 'GUILD_MEMBERSHIP_CHANGED',
+  ADMINISTRATOR_ACTION: 'ADMINISTRATOR_ACTION',
+  SECURITY_RESPONSE: 'SECURITY_RESPONSE',
+  USER_ACTION: 'USER_ACTION',
+  RECOVERY: 'RECOVERY',
+  SYSTEM_MAINTENANCE: 'SYSTEM_MAINTENANCE'
+} as const
+
+export type AuthenticationAuditReasonCode = (typeof AuthenticationAuditReasonCode)[keyof typeof AuthenticationAuditReasonCode]
+
+
+export const AuthenticationAuditActorType = {
+  PLATFORM_USER: 'PLATFORM_USER',
+  SERVICE: 'SERVICE'
+} as const
+
+export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]

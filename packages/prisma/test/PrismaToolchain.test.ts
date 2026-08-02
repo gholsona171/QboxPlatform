@@ -6,6 +6,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  PRISMA_POSTGRES_SESSION_OPTIONS,
   PRISMA_SAFE_LOG_CONFIGURATION,
   Prisma,
   PrismaClient,
@@ -51,8 +52,18 @@ describe("Prisma 7 toolchain", () => {
       "PermissionAssignment",
       "PermissionAuditEvent",
       "PermissionCatalogState",
+      "PlatformUser",
+      "ExternalIdentity",
+      "BrowserSession",
+      "OAuthTransaction",
+      "OAuthCredential",
+      "DiscordGuildMembership",
+      "DiscordGuildMembershipRole",
+      "AuthenticationAuditEvent",
     ]);
-    expect(schema).not.toMatch(/FiveM|PlatformUser|ApiService|ResourceScope/);
+    expect(schema).not.toMatch(
+      /^model\s+(?:FiveM|ServiceIdentity|ServiceCredential|ApiService|ResourceScope)/m,
+    );
   });
 
   it("exports the generated client through an ESM-compatible package source", () => {
@@ -82,6 +93,7 @@ describe("PrismaClientFactory", () => {
   });
 
   it("configures only event-mode warning and error logging", () => {
+    expect(PRISMA_POSTGRES_SESSION_OPTIONS).toBe("-c timezone=UTC");
     expect(PRISMA_SAFE_LOG_CONFIGURATION).toEqual([
       { emit: "event", level: "warn" },
       { emit: "event", level: "error" },
@@ -109,7 +121,12 @@ describe("PrismaClientFactory", () => {
 
 describe("Prisma package boundaries", () => {
   it("keeps direct Prisma imports and generated paths inside @qbox/prisma", async () => {
-    const roots = ["apps", "packages/discord", "packages/permissions"];
+    const roots = [
+      "apps",
+      "packages/authentication",
+      "packages/discord",
+      "packages/permissions",
+    ];
     const violations: string[] = [];
     for (const root of roots) {
       for (const file of await typescriptFiles(resolve(repositoryRoot, root))) {

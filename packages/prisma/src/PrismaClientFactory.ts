@@ -25,6 +25,13 @@ export const PRISMA_SAFE_LOG_CONFIGURATION = [
 ] as const;
 
 /**
+ * PostgreSQL session option required by Prisma 7's JavaScript driver adapter.
+ * The adapter transmits UTC date components without an offset, so every pooled
+ * connection must interpret those values in UTC to preserve `timestamptz` instants.
+ */
+export const PRISMA_POSTGRES_SESSION_OPTIONS = "-c timezone=UTC";
+
+/**
  * Prisma 7 client factory for process-level dependency injection.
  *
  * Each call creates a distinct, disconnected Prisma Client backed by the
@@ -39,6 +46,7 @@ export class PrismaClientFactory {
   public create(configuration: PrismaClientConfiguration): PrismaClient {
     const adapter = new PrismaPg({
       connectionString: configuration.connectionStringForClientFactory(),
+      options: PRISMA_POSTGRES_SESSION_OPTIONS,
     });
 
     return new PrismaClient({

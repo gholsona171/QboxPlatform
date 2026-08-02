@@ -71,3 +71,43 @@ export type PermissionAuditEvent = Prisma.PermissionAuditEventModel
  *
  */
 export type PermissionCatalogState = Prisma.PermissionCatalogStateModel
+/**
+ * Model PlatformUser
+ *
+ */
+export type PlatformUser = Prisma.PlatformUserModel
+/**
+ * Model ExternalIdentity
+ *
+ */
+export type ExternalIdentity = Prisma.ExternalIdentityModel
+/**
+ * Model BrowserSession
+ *
+ */
+export type BrowserSession = Prisma.BrowserSessionModel
+/**
+ * Model OAuthTransaction
+ *
+ */
+export type OAuthTransaction = Prisma.OAuthTransactionModel
+/**
+ * Model OAuthCredential
+ *
+ */
+export type OAuthCredential = Prisma.OAuthCredentialModel
+/**
+ * Model DiscordGuildMembership
+ *
+ */
+export type DiscordGuildMembership = Prisma.DiscordGuildMembershipModel
+/**
+ * Model DiscordGuildMembershipRole
+ *
+ */
+export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
+/**
+ * Model AuthenticationAuditEvent
+ *
+ */
+export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel

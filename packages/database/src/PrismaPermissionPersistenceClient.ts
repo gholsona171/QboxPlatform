@@ -7,6 +7,7 @@ import { PrismaClientFactory, type PrismaClient } from "@qbox/prisma";
 
 import type { DatabaseConfiguration } from "./config/DatabaseConfiguration.js";
 import type { DatabaseClient } from "./contracts/DatabaseContracts.js";
+import { PrismaAuthenticationPersistence } from "./authentication/PrismaAuthenticationPersistence.js";
 import {
   PrismaGuildRepository,
   PrismaPermissionAuditRepository,
@@ -35,6 +36,8 @@ export interface PermissionPersistenceRepositories {
  */
 export class PrismaPermissionPersistenceClient implements DatabaseClient {
   public readonly repositories: PermissionPersistenceRepositories;
+  /** Authentication adapters sharing this exact lifecycle-owned Prisma client. */
+  public readonly authentication: PrismaAuthenticationPersistence;
   private readonly client: PrismaClient;
   private started = false;
 
@@ -49,6 +52,10 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
     this.client = (
       dependencies.clientFactory ?? new PrismaClientFactory()
     ).create(configuration);
+    this.authentication = new PrismaAuthenticationPersistence(
+      this.client,
+      configuration.diagnostics().queryTimeoutMs,
+    );
     const ownerProtection =
       dependencies.ownerProtection ?? new DeterministicOwnerProtectionService();
     this.repositories = {

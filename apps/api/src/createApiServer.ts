@@ -44,6 +44,7 @@ export interface ApiServerDependencies {
   readonly health?: ApiHealthProvider;
   readonly metrics?: MetricsRecorder;
   readonly rateLimit?: ApiRateLimitEvaluator;
+  readonly registerRoutes?: (server: FastifyInstance) => Promise<void> | void;
   readonly now?: () => Date;
   readonly monotonicNow?: () => number;
 }
@@ -255,6 +256,11 @@ export function createApiServer(
       .code(200)
       .send(aggregateApiHealth(health, diagnostics.buildVersion, now));
   });
+
+  if (dependencies.registerRoutes !== undefined)
+    void server.register(async (instance) => {
+      await dependencies.registerRoutes?.(instance);
+    });
 
   server.register(async () => undefined, { prefix: "/api/v1" });
   server.addHook("onClose", async () => {

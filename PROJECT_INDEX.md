@@ -3,10 +3,19 @@
 ## `@qbox/api`
 
 - **Location:** `apps/api/`
-- **Purpose:** Hardened Fastify API process composed with the platform kernel, PostgreSQL lifecycle, persistent permission catalog synchronization, typed Zod validation, strict host/content/header policy, cooperative cancellation, structured logging, normalized errors, metrics contracts, and lifecycle-backed health endpoints. No domain or authentication routes exist yet.
+- **Purpose:** Hardened Fastify API process composed with the platform kernel, PostgreSQL lifecycle, persistent permission catalog synchronization, typed Zod validation, strict host/content/header policy, cooperative cancellation, structured logging, normalized errors, metrics contracts, lifecycle-backed health endpoints, Discord OAuth browser login, opaque session cookies, authenticated request actor binding, and safe account/permission proof-of-concept routes.
 - **Entry points:** `apps/api/src/index.ts` exports the import-safe API contracts and factories; `apps/api/src/run.ts` is the executable entry point. `createApiServer()` remains unbound for injection tests, while `createApiApplication()` owns process composition.
-- **Declared dependencies:** `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
-- **Scripts:** `build`, `dev`, `start`, `typecheck`, `test`, `clean`
+- **Declared dependencies:** `@fastify/cookie`, `@qbox/authentication`, `@qbox/core`, `@qbox/database`, `@qbox/logger`, `@qbox/permissions`, `@qbox/shared`, Fastify, and Zod.
+- **Scripts:** `build`, `dev`, `start`, `typecheck`, `test`, `clean`, `auth:keys`
+
+## `@qbox/web`
+
+- **Location:** `apps/web/`
+- **Purpose:** Static, framework-free browser dashboard for the QboxPlatform proof of concept. It is designed to be deployed independently by Vercel with `apps/web` as the project root and calls only same-origin API, auth, and health paths.
+- **Entry points:** `apps/web/index.html`, `apps/web/app.js`, `apps/web/styles.css`
+- **Vercel proxy:** `apps/web/api/[...path].js` forwards `/api/*`, `/auth/*`, and `/health/*` to the configured VPS API origin from `QBOX_API_ORIGIN` without exposing that origin to browser JavaScript.
+- **Declared dependencies:** None.
+- **Scripts:** `build`, `test`
 
 ## `@qbox/bot`
 
@@ -29,6 +38,14 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 
 # Packages
 
+## `@qbox/authentication`
+
+- **Location:** `packages/authentication/`
+- **Responsibility:** Pure authentication domain contracts and transport-independent application services for platform accounts, Discord external identities, opaque browser sessions, one-time OAuth transactions, encrypted provider credentials, Discord guild-membership verification, immutable actors, authentication audit events, and adapter ports.
+- **Declared dependencies:** None.
+- **Public exports:** Branded internal and Discord identifiers; account, identity, session, OAuth, membership, actor, and audit models; deterministic invariant/state-machine helpers; repository, unit-of-work, clock, crypto, key-provider, Discord OAuth, membership-verifier, and owner-access-protection contracts; browser-session, OAuth-transaction, encrypted OAuth-credential, Discord guild-membership, and metadata-hashing services.
+- **Operational status:** The API now composes the browser-session, Discord OAuth, encrypted credential, membership verification, first-login account creation, and authenticated actor services for the proof-of-concept dashboard. Service credentials, account-linking UI, recovery UI, and generalized authentication middleware remain deferred.
+
 ## `@qbox/core`
 
 - **Location:** `packages/core/`
@@ -40,9 +57,9 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 ## `@qbox/database`
 
 - **Location:** `packages/database/`
-- **Responsibility:** PostgreSQL configuration and lifecycle, Prisma-backed persistent-permission repositories, transaction boundaries, and cache invalidation infrastructure.
-- **Declared dependencies:** `@qbox/permissions`, `@qbox/prisma`
-- **Public exports:** database configuration/lifecycle contracts, `PrismaPermissionPersistenceClient`, six permission repository implementations, and `InMemoryPermissionInvalidationBus`.
+- **Responsibility:** PostgreSQL configuration/lifecycle; Prisma-backed permission and authentication repositories; permission and authentication transaction boundaries; native authentication crypto/key infrastructure; owner protection; and permission cache invalidation infrastructure.
+- **Declared dependencies:** `@qbox/authentication`, `@qbox/permissions`, `@qbox/prisma`
+- **Public exports:** database configuration/lifecycle contracts, `PrismaPermissionPersistenceClient`, permission repositories, `PrismaAuthenticationPersistence`, seven authentication repositories, `PrismaAuthenticationUnitOfWork`, `AuthenticationKeyRing`, `NodeAuthenticationCrypto`, `NodeAuthenticationIdGenerator`, `PrismaOwnerAccessProtectionService`, and `InMemoryPermissionInvalidationBus`.
 
 ## `@qbox/discord`
 
@@ -77,7 +94,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 - **Location:** `packages/prisma/`
 - **Responsibility:** Prisma 7 toolchain, committed NodeNext/ESM generated client, schema/migration ownership, and disconnected client factory.
 - **Declared runtime dependencies:** `@prisma/adapter-pg`, `@prisma/client`, `pg`
-- **Public exports:** `PrismaClient`, `PrismaClientFactory`, Prisma types, and generated permission enums.
+- **Public exports:** `PrismaClient`, `PrismaClientFactory`, Prisma types, and generated permission/authentication models and enums.
 
 ## `@qbox/scheduler`
 
@@ -312,6 +329,9 @@ Environment variable names recognized by current source or `.env.example`:
 - `NODE_ENV`
 - `DISCORD_TOKEN`
 - `DISCORD_APPLICATION_ID`
+- `DISCORD_OAUTH_CLIENT_ID`
+- `DISCORD_OAUTH_CLIENT_SECRET`
+- `DISCORD_OAUTH_REDIRECT_URI`
 - `DISCORD_GUILD_ID`
 - `DISCORD_COMMAND_TIMEOUT_MS`
 - `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS`
@@ -321,10 +341,21 @@ Environment variable names recognized by current source or `.env.example`:
 - `ADMIN_ROLE_IDS`
 - `PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED`
 - `LOG_LEVEL`
+- `API_HOST`
+- `API_PORT`
+- `API_PUBLIC_BASE_URL`
+- `AUTH_KEY_VERSION`
+- `AUTH_SESSION_HMAC_KEY`
+- `AUTH_CSRF_HMAC_KEY`
+- `AUTH_METADATA_HMAC_KEY`
+- `AUTH_OAUTH_ENCRYPTION_KEY`
+- `QBOX_API_ORIGIN`
 
 `DISCORD_TOKEN` and `DISCORD_APPLICATION_ID` are required for the live Discord lifecycle. Guild deployment additionally requires `DISCORD_GUILD_ID`. `DISCORD_COMMAND_TIMEOUT_MS` defaults to `15000`; `DISCORD_COMMAND_SHUTDOWN_TIMEOUT_MS` defaults to `10000`. The shared environment loader expects the root `.env` file to be readable.
 
 `PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED` defaults to enabled and accepts the exact value `false` to request retirement. Startup then requires persistent owner and administrator recovery paths.
+
+The API browser proof of concept additionally requires Discord OAuth configuration and authentication key material. Development keys can be generated with `pnpm --filter @qbox/api auth:keys`; generated values belong only in ignored local environment configuration. The Vercel web project uses `QBOX_API_ORIGIN` to proxy same-origin browser requests to the public HTTPS VPS API.
 
 # Build Pipeline
 
@@ -343,20 +374,20 @@ The repository uses pnpm workspaces and TypeScript compilation.
 | `pnpm build`     | Runs `pnpm -r build` across workspaces defining `build`            |
 | `pnpm dev`       | Runs application `dev` scripts in parallel                         |
 | `pnpm typecheck` | Runs workspace `typecheck` scripts where defined                   |
-| `pnpm test`      | Runs the permission, Discord, and bot deployment Vitest suites     |
+| `pnpm test`      | Runs all workspace unit suites, including pure authentication tests |
 | `pnpm clean`     | Removes generated `dist/` directories across TypeScript workspaces |
 
 Workspace build scripts run `tsc`. For workspaces with configured output directories, compilation writes JavaScript, source maps, declaration files, and declaration maps to ignored `dist/` directories.
 
-The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover permission behavior, command registration and interaction handling, and deployment target safeguards.
+The recursive root typecheck covers every TypeScript application and package. Focused Vitest suites cover authentication invariants, permission behavior, command registration and interaction handling, API transport/lifecycle, and deployment safeguards. PostgreSQL schema and repository integration tests run separately through `pnpm test:database`.
 
-There is no configured CI workflow, deployment pipeline, lint script, or formatting script in the repository.
+`.github/workflows/quality.yml` runs frozen installation, Prisma formatting/validation/generation, build, typecheck, migration deployment, drift checks, PostgreSQL integration tests, unit tests, and patch whitespace checks for pull requests to and pushes on `main`. No production deployment pipeline, lint script, or repository-wide formatting script exists.
 
 # Future Placeholders
 
 The following systems have repository locations or placeholder classes but no functional implementation:
 
-- API domain routes and authentication: the API listens and exposes operational health routes, but `/api/v1` contains no business endpoints.
+- Production authentication features beyond the browser proof of concept: account linking UI, owner recovery UI, service credentials, generalized CSRF middleware, authenticated domain-management routes, and session-management UI are not implemented.
 - Background worker: `apps/worker/` does not create BullMQ or Redis workers.
 - OpenAI integration: `packages/openai/` does not construct or call an OpenAI client.
 - Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ.

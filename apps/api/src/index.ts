@@ -1,3 +1,7 @@
+export * from "./auth/DiscordOAuthConfiguration.js";
+export * from "./auth/DiscordOAuthProvider.js";
+export * from "./auth/ApiAuthenticationConfiguration.js";
+export * from "./auth/BrowserAuthenticationRoutes.js";
 export * from "./config/ApiConfiguration.js";
 export * from "./context/ApiRequestContext.js";
 export * from "./createApiServer.js";

@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@qbox/api",
   "version": "0.1.0",
   "private": true,
@@ -6,12 +6,15 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src/run.ts",
+    "auth:keys": "tsx src/auth/generateDevelopmentKeys.ts",
     "start": "node dist/run.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest run test",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },
   "dependencies": {
+    "@fastify/cookie": "^11.1.2",
+    "@qbox/authentication": "workspace:*",
     "@qbox/core": "workspace:*",
     "@qbox/database": "workspace:*",
     "@qbox/logger": "workspace:*",
@@ -21,4 +24,3 @@
     "zod": "^4.4.3"
   }
 }
-

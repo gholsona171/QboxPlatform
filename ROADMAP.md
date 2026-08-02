@@ -2,7 +2,7 @@
 
 ## Status and estimation notes
 
-QboxPlatform is currently in its foundation phase. The repository has an implemented TypeScript monorepo structure, a small platform kernel, in-process events, named service registration, in-memory permissions, structured logging, and a Discord bot with two slash commands. Full-workspace type checking passes, and focused permission and Discord command authorization tests run through the root test workflow. The API, worker, database, Prisma, scheduler, OpenAI, FiveM/Qbox, and feature-module areas are placeholders or empty directories.
+QboxPlatform has an implemented TypeScript monorepo, platform kernel, persistent PostgreSQL permission system, complete Discord command platform, hardened Fastify API foundation, and a browser-accessible authentication proof of concept. The proof of concept includes Discord OAuth login, first-login platform account creation, encrypted OAuth credential persistence, guild membership verification, opaque session cookies, authenticated request actor binding, `/api/v1/me`, `/api/v1/admin-check`, logout, and a framework-free dashboard that can be served locally or deployed as an independent Vercel web workspace. Worker, scheduler, OpenAI, FiveM/Qbox, and feature-module areas remain placeholders or empty directories.
 
 This roadmap separates existing functionality from planned work. A listed milestone does not indicate that its work is already implemented.
 
@@ -156,7 +156,10 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - Private `@qbox/api` workspace with build, development, start, typecheck, test, and clean scripts.
 - Package-owned Fastify and Zod dependencies.
 - An unbound Fastify server factory with immutable configuration, request context, structured request logging, typed Problem Details errors, metrics boundary, health endpoints, and injection tests.
-- No process lifecycle, socket binding, database composition, authentication, authorization middleware, or domain endpoints yet.
+- Persistence-first process lifecycle, loopback socket binding, health/readiness composition, graceful signal shutdown, Zod transport validation, and HTTP hardening.
+- Pure authentication contracts, additive PostgreSQL models, repository/crypto/session/credential/membership services, Discord provider infrastructure, browser login routes, authenticated actor binding, and proof-of-concept account/permission endpoints exist.
+- `apps/web` contains a deployable Vercel static dashboard and same-origin proxy to the VPS API.
+- General authentication middleware, service credentials, account-management endpoints, and production domain-management APIs remain deferred.
 
 ## Milestone 4.1 — Establish the API runtime
 
@@ -171,11 +174,12 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 ## Milestone 4.2 — Define API security and validation
 
 - **Goal:** Implement an approved authentication model, authorization integration, request/response schemas, secure headers, CORS policy, rate limiting, and safe error responses.
+- **Existing functionality:** Transport validation, safe errors, host/proxy/content/header/body hardening, cooperative timeouts, security headers, Discord OAuth proof-of-concept login, opaque session cookies, authenticated request actor binding, safe profile/permission test routes, and a static dashboard are complete. Authentication foundations include pure account/identity/session/OAuth/audit contracts, additive storage, repository adapters, crypto/key infrastructure, encrypted provider credentials, a Discord OAuth provider adapter, and membership verification services.
 - **Why it matters:** No API security boundary currently exists. These controls must precede exposure of management or user data.
 - **Dependencies:** Milestone 4.1, Phase 2/3 permission contracts, approved client and identity requirements, and potentially Phase 5 persistence.
 - **Estimated complexity:** High.
 - **Estimated effort:** 1–3 engineer weeks after authentication requirements are defined.
-- **Risks:** Authentication cannot be selected safely without consumer requirements; authorization must preserve tenant/guild boundaries; incorrect proxy or CORS configuration can expose the service.
+- **Risks:** The proof of concept is intentionally narrow; production authentication still needs generalized middleware, account/recovery operations, explicit CORS deployment policy, and operational hardening before management features are exposed.
 
 ## Milestone 4.3 — Add versioned feature endpoints
 
@@ -190,11 +194,11 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 
 ## Existing functionality
 
-- `DATABASE_URL` is loaded into shared environment configuration.
-- `@qbox/database` exports a placeholder `Database` singleton.
-- `@qbox/prisma` exists but exports nothing.
-- Prisma and `@prisma/client` are installed at the repository root.
-- The root `prisma/` directory is empty; there is no schema, migration, seed, or generated-client workflow.
+- `@qbox/database` owns validated PostgreSQL configuration, lifecycle/readiness, persistent-permission repositories, transaction boundaries, owner protection, bootstrap/migration operators, and process-local invalidation.
+- `@qbox/prisma` owns Prisma 7.9.1, the ESM generated client, disconnected client factory, canonical schema tooling, migration deployment, and drift checks.
+- Root `prisma/` contains committed permission and additive authentication schemas/migrations; generated client output is deterministic and committed under `packages/prisma/src/generated/client`.
+- Disposable PostgreSQL integration tests cover migrations, constraints, transactions, permission repositories, owner protection, and authentication-foundation invariants.
+- Authentication repository adapters, transaction boundaries, native cryptography, key-ring support, owner-access locking, session/OAuth transaction services, encrypted provider-credential lifecycle, Discord membership verification services, and HTTP proof-of-concept authentication composition are implemented and tested. No service credentials, account-linking UI, recovery UI, or generalized domain-management API exists yet.
 
 ## Milestone 5.1 — Define persistence ownership and data requirements
 

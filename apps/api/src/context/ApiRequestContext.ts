@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { FastifyRequest } from "fastify";
+import type { AuthenticationActor } from "@qbox/authentication";
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { ApiCorrelationIdSchema } from "../transport/ApiTransportSchemas.js";
 
@@ -12,7 +13,7 @@ export interface UnauthenticatedApiActor {
 export interface ApiRequestContext {
   readonly requestId: string;
   readonly correlationId: string;
-  readonly actor: UnauthenticatedApiActor;
+  readonly actor: AuthenticationActor;
   readonly startedAt: number;
   readonly logger: ApiLogger;
   readonly signal: AbortSignal;

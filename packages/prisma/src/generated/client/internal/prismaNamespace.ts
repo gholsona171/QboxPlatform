@@ -402,7 +402,15 @@ export const ModelName = {
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
   PermissionAuditEvent: 'PermissionAuditEvent',
-  PermissionCatalogState: 'PermissionCatalogState'
+  PermissionCatalogState: 'PermissionCatalogState',
+  PlatformUser: 'PlatformUser',
+  ExternalIdentity: 'ExternalIdentity',
+  BrowserSession: 'BrowserSession',
+  OAuthTransaction: 'OAuthTransaction',
+  OAuthCredential: 'OAuthCredential',
+  DiscordGuildMembership: 'DiscordGuildMembership',
+  DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
+  AuthenticationAuditEvent: 'AuthenticationAuditEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -418,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState"
+    modelProps: "guild" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -866,6 +874,598 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlatformUser: {
+      payload: Prisma.$PlatformUserPayload<ExtArgs>
+      fields: Prisma.PlatformUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformUserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        update: {
+          args: Prisma.PlatformUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformUserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformUserPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformUser>
+        }
+        groupBy: {
+          args: Prisma.PlatformUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformUserCountAggregateOutputType> | number
+        }
+      }
+    }
+    ExternalIdentity: {
+      payload: Prisma.$ExternalIdentityPayload<ExtArgs>
+      fields: Prisma.ExternalIdentityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ExternalIdentityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ExternalIdentityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        findFirst: {
+          args: Prisma.ExternalIdentityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ExternalIdentityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        findMany: {
+          args: Prisma.ExternalIdentityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>[]
+        }
+        create: {
+          args: Prisma.ExternalIdentityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        createMany: {
+          args: Prisma.ExternalIdentityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ExternalIdentityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>[]
+        }
+        delete: {
+          args: Prisma.ExternalIdentityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        update: {
+          args: Prisma.ExternalIdentityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        deleteMany: {
+          args: Prisma.ExternalIdentityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ExternalIdentityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ExternalIdentityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>[]
+        }
+        upsert: {
+          args: Prisma.ExternalIdentityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ExternalIdentityPayload>
+        }
+        aggregate: {
+          args: Prisma.ExternalIdentityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateExternalIdentity>
+        }
+        groupBy: {
+          args: Prisma.ExternalIdentityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalIdentityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ExternalIdentityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ExternalIdentityCountAggregateOutputType> | number
+        }
+      }
+    }
+    BrowserSession: {
+      payload: Prisma.$BrowserSessionPayload<ExtArgs>
+      fields: Prisma.BrowserSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BrowserSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BrowserSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.BrowserSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BrowserSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        findMany: {
+          args: Prisma.BrowserSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>[]
+        }
+        create: {
+          args: Prisma.BrowserSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        createMany: {
+          args: Prisma.BrowserSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BrowserSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.BrowserSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        update: {
+          args: Prisma.BrowserSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.BrowserSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BrowserSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BrowserSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.BrowserSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.BrowserSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBrowserSession>
+        }
+        groupBy: {
+          args: Prisma.BrowserSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrowserSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BrowserSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrowserSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    OAuthTransaction: {
+      payload: Prisma.$OAuthTransactionPayload<ExtArgs>
+      fields: Prisma.OAuthTransactionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OAuthTransactionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OAuthTransactionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        findFirst: {
+          args: Prisma.OAuthTransactionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OAuthTransactionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        findMany: {
+          args: Prisma.OAuthTransactionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>[]
+        }
+        create: {
+          args: Prisma.OAuthTransactionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        createMany: {
+          args: Prisma.OAuthTransactionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OAuthTransactionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>[]
+        }
+        delete: {
+          args: Prisma.OAuthTransactionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        update: {
+          args: Prisma.OAuthTransactionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        deleteMany: {
+          args: Prisma.OAuthTransactionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OAuthTransactionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OAuthTransactionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>[]
+        }
+        upsert: {
+          args: Prisma.OAuthTransactionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthTransactionPayload>
+        }
+        aggregate: {
+          args: Prisma.OAuthTransactionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOAuthTransaction>
+        }
+        groupBy: {
+          args: Prisma.OAuthTransactionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthTransactionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OAuthTransactionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthTransactionCountAggregateOutputType> | number
+        }
+      }
+    }
+    OAuthCredential: {
+      payload: Prisma.$OAuthCredentialPayload<ExtArgs>
+      fields: Prisma.OAuthCredentialFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OAuthCredentialFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OAuthCredentialFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        findFirst: {
+          args: Prisma.OAuthCredentialFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OAuthCredentialFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        findMany: {
+          args: Prisma.OAuthCredentialFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>[]
+        }
+        create: {
+          args: Prisma.OAuthCredentialCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        createMany: {
+          args: Prisma.OAuthCredentialCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OAuthCredentialCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>[]
+        }
+        delete: {
+          args: Prisma.OAuthCredentialDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        update: {
+          args: Prisma.OAuthCredentialUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        deleteMany: {
+          args: Prisma.OAuthCredentialDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OAuthCredentialUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OAuthCredentialUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>[]
+        }
+        upsert: {
+          args: Prisma.OAuthCredentialUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OAuthCredentialPayload>
+        }
+        aggregate: {
+          args: Prisma.OAuthCredentialAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOAuthCredential>
+        }
+        groupBy: {
+          args: Prisma.OAuthCredentialGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthCredentialGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OAuthCredentialCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OAuthCredentialCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordGuildMembership: {
+      payload: Prisma.$DiscordGuildMembershipPayload<ExtArgs>
+      fields: Prisma.DiscordGuildMembershipFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordGuildMembershipFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordGuildMembershipFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordGuildMembershipFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordGuildMembershipFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        findMany: {
+          args: Prisma.DiscordGuildMembershipFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>[]
+        }
+        create: {
+          args: Prisma.DiscordGuildMembershipCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        createMany: {
+          args: Prisma.DiscordGuildMembershipCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordGuildMembershipCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordGuildMembershipDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        update: {
+          args: Prisma.DiscordGuildMembershipUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordGuildMembershipDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordGuildMembershipUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordGuildMembershipUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordGuildMembershipUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordGuildMembershipAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordGuildMembership>
+        }
+        groupBy: {
+          args: Prisma.DiscordGuildMembershipGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordGuildMembershipGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordGuildMembershipCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordGuildMembershipCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordGuildMembershipRole: {
+      payload: Prisma.$DiscordGuildMembershipRolePayload<ExtArgs>
+      fields: Prisma.DiscordGuildMembershipRoleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordGuildMembershipRoleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordGuildMembershipRoleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordGuildMembershipRoleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordGuildMembershipRoleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        findMany: {
+          args: Prisma.DiscordGuildMembershipRoleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>[]
+        }
+        create: {
+          args: Prisma.DiscordGuildMembershipRoleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        createMany: {
+          args: Prisma.DiscordGuildMembershipRoleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordGuildMembershipRoleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordGuildMembershipRoleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        update: {
+          args: Prisma.DiscordGuildMembershipRoleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordGuildMembershipRoleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordGuildMembershipRoleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordGuildMembershipRoleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordGuildMembershipRoleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordGuildMembershipRolePayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordGuildMembershipRoleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordGuildMembershipRole>
+        }
+        groupBy: {
+          args: Prisma.DiscordGuildMembershipRoleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordGuildMembershipRoleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordGuildMembershipRoleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordGuildMembershipRoleCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthenticationAuditEvent: {
+      payload: Prisma.$AuthenticationAuditEventPayload<ExtArgs>
+      fields: Prisma.AuthenticationAuditEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthenticationAuditEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthenticationAuditEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        findFirst: {
+          args: Prisma.AuthenticationAuditEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthenticationAuditEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        findMany: {
+          args: Prisma.AuthenticationAuditEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>[]
+        }
+        create: {
+          args: Prisma.AuthenticationAuditEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        createMany: {
+          args: Prisma.AuthenticationAuditEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthenticationAuditEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>[]
+        }
+        delete: {
+          args: Prisma.AuthenticationAuditEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        update: {
+          args: Prisma.AuthenticationAuditEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthenticationAuditEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthenticationAuditEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthenticationAuditEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthenticationAuditEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthenticationAuditEventPayload>
+        }
+        aggregate: {
+          args: Prisma.AuthenticationAuditEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthenticationAuditEvent>
+        }
+        groupBy: {
+          args: Prisma.AuthenticationAuditEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthenticationAuditEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthenticationAuditEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthenticationAuditEventCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1005,6 +1605,180 @@ export const PermissionCatalogStateScalarFieldEnum = {
 } as const
 
 export type PermissionCatalogStateScalarFieldEnum = (typeof PermissionCatalogStateScalarFieldEnum)[keyof typeof PermissionCatalogStateScalarFieldEnum]
+
+
+export const PlatformUserScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  authenticationRevision: 'authenticationRevision',
+  statusReasonCode: 'statusReasonCode',
+  suspendedAt: 'suspendedAt',
+  disabledAt: 'disabledAt',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlatformUserScalarFieldEnum = (typeof PlatformUserScalarFieldEnum)[keyof typeof PlatformUserScalarFieldEnum]
+
+
+export const ExternalIdentityScalarFieldEnum = {
+  id: 'id',
+  platformUserId: 'platformUserId',
+  provider: 'provider',
+  providerSubjectId: 'providerSubjectId',
+  username: 'username',
+  globalName: 'globalName',
+  avatar: 'avatar',
+  enabled: 'enabled',
+  linkedAt: 'linkedAt',
+  verifiedAt: 'verifiedAt',
+  lastProviderRefreshAt: 'lastProviderRefreshAt',
+  unlinkedAt: 'unlinkedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ExternalIdentityScalarFieldEnum = (typeof ExternalIdentityScalarFieldEnum)[keyof typeof ExternalIdentityScalarFieldEnum]
+
+
+export const BrowserSessionScalarFieldEnum = {
+  id: 'id',
+  platformUserId: 'platformUserId',
+  loginIdentityId: 'loginIdentityId',
+  tokenDigest: 'tokenDigest',
+  tokenKeyVersion: 'tokenKeyVersion',
+  csrfDigest: 'csrfDigest',
+  csrfKeyVersion: 'csrfKeyVersion',
+  authenticationRevisionAtIssue: 'authenticationRevisionAtIssue',
+  authenticatedAt: 'authenticatedAt',
+  lastSeenAt: 'lastSeenAt',
+  idleExpiresAt: 'idleExpiresAt',
+  absoluteExpiresAt: 'absoluteExpiresAt',
+  status: 'status',
+  revokedAt: 'revokedAt',
+  revocationReason: 'revocationReason',
+  rotatedFromSessionId: 'rotatedFromSessionId',
+  ipHmac: 'ipHmac',
+  userAgentHmac: 'userAgentHmac',
+  deviceHmac: 'deviceHmac',
+  metadataKeyVersion: 'metadataKeyVersion',
+  deviceLabel: 'deviceLabel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserSessionScalarFieldEnum = (typeof BrowserSessionScalarFieldEnum)[keyof typeof BrowserSessionScalarFieldEnum]
+
+
+export const OAuthTransactionScalarFieldEnum = {
+  id: 'id',
+  provider: 'provider',
+  purpose: 'purpose',
+  state: 'state',
+  stateDigest: 'stateDigest',
+  browserBindingDigest: 'browserBindingDigest',
+  platformUserId: 'platformUserId',
+  initiatingSessionId: 'initiatingSessionId',
+  redirectKey: 'redirectKey',
+  returnTargetKey: 'returnTargetKey',
+  pkceMode: 'pkceMode',
+  pkceCiphertext: 'pkceCiphertext',
+  pkceNonce: 'pkceNonce',
+  pkceAuthenticationTag: 'pkceAuthenticationTag',
+  pkceKeyVersion: 'pkceKeyVersion',
+  expiresAt: 'expiresAt',
+  claimedAt: 'claimedAt',
+  claimExpiresAt: 'claimExpiresAt',
+  completedAt: 'completedAt',
+  failedAt: 'failedAt',
+  cancelledAt: 'cancelledAt',
+  expiredAt: 'expiredAt',
+  failureReason: 'failureReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OAuthTransactionScalarFieldEnum = (typeof OAuthTransactionScalarFieldEnum)[keyof typeof OAuthTransactionScalarFieldEnum]
+
+
+export const OAuthCredentialScalarFieldEnum = {
+  id: 'id',
+  externalIdentityId: 'externalIdentityId',
+  provider: 'provider',
+  accessTokenCiphertext: 'accessTokenCiphertext',
+  accessTokenNonce: 'accessTokenNonce',
+  accessTokenAuthenticationTag: 'accessTokenAuthenticationTag',
+  accessTokenKeyVersion: 'accessTokenKeyVersion',
+  refreshTokenCiphertext: 'refreshTokenCiphertext',
+  refreshTokenNonce: 'refreshTokenNonce',
+  refreshTokenAuthenticationTag: 'refreshTokenAuthenticationTag',
+  refreshTokenKeyVersion: 'refreshTokenKeyVersion',
+  scopes: 'scopes',
+  providerExpiresAt: 'providerExpiresAt',
+  refreshVersion: 'refreshVersion',
+  revokedAt: 'revokedAt',
+  revocationReason: 'revocationReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OAuthCredentialScalarFieldEnum = (typeof OAuthCredentialScalarFieldEnum)[keyof typeof OAuthCredentialScalarFieldEnum]
+
+
+export const DiscordGuildMembershipScalarFieldEnum = {
+  id: 'id',
+  externalIdentityId: 'externalIdentityId',
+  guildId: 'guildId',
+  status: 'status',
+  source: 'source',
+  verifiedAt: 'verifiedAt',
+  validUntil: 'validUntil',
+  departedAt: 'departedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DiscordGuildMembershipScalarFieldEnum = (typeof DiscordGuildMembershipScalarFieldEnum)[keyof typeof DiscordGuildMembershipScalarFieldEnum]
+
+
+export const DiscordGuildMembershipRoleScalarFieldEnum = {
+  membershipId: 'membershipId',
+  roleId: 'roleId',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordGuildMembershipRoleScalarFieldEnum = (typeof DiscordGuildMembershipRoleScalarFieldEnum)[keyof typeof DiscordGuildMembershipRoleScalarFieldEnum]
+
+
+export const AuthenticationAuditEventScalarFieldEnum = {
+  id: 'id',
+  action: 'action',
+  outcome: 'outcome',
+  reasonCode: 'reasonCode',
+  requestId: 'requestId',
+  correlationId: 'correlationId',
+  actorType: 'actorType',
+  actorPlatformUserId: 'actorPlatformUserId',
+  actorServiceIdentityId: 'actorServiceIdentityId',
+  targetPlatformUserId: 'targetPlatformUserId',
+  targetExternalIdentityId: 'targetExternalIdentityId',
+  targetBrowserSessionId: 'targetBrowserSessionId',
+  targetOAuthTransactionId: 'targetOAuthTransactionId',
+  targetOAuthCredentialId: 'targetOAuthCredentialId',
+  targetGuildMembershipId: 'targetGuildMembershipId',
+  provider: 'provider',
+  purpose: 'purpose',
+  metadata: 'metadata',
+  ipHmac: 'ipHmac',
+  userAgentHmac: 'userAgentHmac',
+  deviceHmac: 'deviceHmac',
+  metadataKeyVersion: 'metadataKeyVersion',
+  occurredAt: 'occurredAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1195,6 +1969,20 @@ export type ListEnumPermissionMutationReasonCodeFieldRefInput<$PrismaModel> = Fi
 
 
 /**
+ * Reference to a field of type 'PlatformUserStatus'
+ */
+export type EnumPlatformUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformUserStatus'>
+
+
+
+/**
+ * Reference to a field of type 'PlatformUserStatus[]'
+ */
+export type ListEnumPlatformUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformUserStatus[]'>
+
+
+
+/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -1205,6 +1993,244 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+
+
+
+/**
+ * Reference to a field of type 'PlatformUserStatusReasonCode'
+ */
+export type EnumPlatformUserStatusReasonCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformUserStatusReasonCode'>
+
+
+
+/**
+ * Reference to a field of type 'PlatformUserStatusReasonCode[]'
+ */
+export type ListEnumPlatformUserStatusReasonCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformUserStatusReasonCode[]'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationProvider'
+ */
+export type EnumAuthenticationProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationProvider'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationProvider[]'
+ */
+export type ListEnumAuthenticationProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationProvider[]'>
+
+
+
+/**
+ * Reference to a field of type 'BrowserSessionStatus'
+ */
+export type EnumBrowserSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BrowserSessionStatus'>
+
+
+
+/**
+ * Reference to a field of type 'BrowserSessionStatus[]'
+ */
+export type ListEnumBrowserSessionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BrowserSessionStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'BrowserSessionRevocationReason'
+ */
+export type EnumBrowserSessionRevocationReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BrowserSessionRevocationReason'>
+
+
+
+/**
+ * Reference to a field of type 'BrowserSessionRevocationReason[]'
+ */
+export type ListEnumBrowserSessionRevocationReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BrowserSessionRevocationReason[]'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionPurpose'
+ */
+export type EnumOAuthTransactionPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionPurpose'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionPurpose[]'
+ */
+export type ListEnumOAuthTransactionPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionPurpose[]'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionState'
+ */
+export type EnumOAuthTransactionStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionState'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionState[]'
+ */
+export type ListEnumOAuthTransactionStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionState[]'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthPkceMode'
+ */
+export type EnumOAuthPkceModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthPkceMode'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthPkceMode[]'
+ */
+export type ListEnumOAuthPkceModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthPkceMode[]'>
+
+
+
+/**
+ * Reference to a field of type 'Bytes'
+ */
+export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
+
+
+
+/**
+ * Reference to a field of type 'Bytes[]'
+ */
+export type ListBytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes[]'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionFailureReason'
+ */
+export type EnumOAuthTransactionFailureReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionFailureReason'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthTransactionFailureReason[]'
+ */
+export type ListEnumOAuthTransactionFailureReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthTransactionFailureReason[]'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthCredentialRevocationReason'
+ */
+export type EnumOAuthCredentialRevocationReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthCredentialRevocationReason'>
+
+
+
+/**
+ * Reference to a field of type 'OAuthCredentialRevocationReason[]'
+ */
+export type ListEnumOAuthCredentialRevocationReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OAuthCredentialRevocationReason[]'>
+
+
+
+/**
+ * Reference to a field of type 'DiscordGuildMembershipStatus'
+ */
+export type EnumDiscordGuildMembershipStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordGuildMembershipStatus'>
+
+
+
+/**
+ * Reference to a field of type 'DiscordGuildMembershipStatus[]'
+ */
+export type ListEnumDiscordGuildMembershipStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordGuildMembershipStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'DiscordGuildMembershipSource'
+ */
+export type EnumDiscordGuildMembershipSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordGuildMembershipSource'>
+
+
+
+/**
+ * Reference to a field of type 'DiscordGuildMembershipSource[]'
+ */
+export type ListEnumDiscordGuildMembershipSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DiscordGuildMembershipSource[]'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditAction'
+ */
+export type EnumAuthenticationAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditAction'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditAction[]'
+ */
+export type ListEnumAuthenticationAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditAction[]'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditOutcome'
+ */
+export type EnumAuthenticationAuditOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditOutcome'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditOutcome[]'
+ */
+export type ListEnumAuthenticationAuditOutcomeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditOutcome[]'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditReasonCode'
+ */
+export type EnumAuthenticationAuditReasonCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditReasonCode'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditReasonCode[]'
+ */
+export type ListEnumAuthenticationAuditReasonCodeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditReasonCode[]'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditActorType'
+ */
+export type EnumAuthenticationAuditActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditActorType'>
+
+
+
+/**
+ * Reference to a field of type 'AuthenticationAuditActorType[]'
+ */
+export type ListEnumAuthenticationAuditActorTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthenticationAuditActorType[]'>
+
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
 
 
 /**
@@ -1364,6 +2390,14 @@ export type GlobalOmitConfig = {
   permissionAssignment?: Prisma.PermissionAssignmentOmit
   permissionAuditEvent?: Prisma.PermissionAuditEventOmit
   permissionCatalogState?: Prisma.PermissionCatalogStateOmit
+  platformUser?: Prisma.PlatformUserOmit
+  externalIdentity?: Prisma.ExternalIdentityOmit
+  browserSession?: Prisma.BrowserSessionOmit
+  oAuthTransaction?: Prisma.OAuthTransactionOmit
+  oAuthCredential?: Prisma.OAuthCredentialOmit
+  discordGuildMembership?: Prisma.DiscordGuildMembershipOmit
+  discordGuildMembershipRole?: Prisma.DiscordGuildMembershipRoleOmit
+  authenticationAuditEvent?: Prisma.AuthenticationAuditEventOmit
 }
 
 /* Types for Logging */

@@ -195,6 +195,20 @@ Responsibilities:
 
 It has no external package dependencies and no persistence lifecycle. `@qbox/database` implements its repository ports; no Redis adapter exists. The bot supplies the repository-backed authorizer and environment compatibility overlay to Discord without resetting global singleton state. See `docs/PermissionDomain.md` and `docs/PersistentPermissionRepository.md`.
 
+## Authentication package
+
+Package: `@qbox/authentication`
+
+Responsibilities:
+
+- Define canonical branded platform, identity, session, OAuth, membership, audit, and Discord identifiers.
+- Model immutable verified actors without credentials, profile display data, or computed permissions.
+- Enforce pure platform-account, identity-ownership, browser-session, OAuth transaction, encrypted credential, membership, and audit invariants.
+- Define persistence repositories, a transaction boundary, time and cryptography ports, a key-provider port, a Discord OAuth provider port, a guild-membership verifier port, and owner-access protection without selecting an adapter.
+- Provide transport-independent browser-session, OAuth-transaction, encrypted OAuth-credential, Discord guild-membership verification, and keyed metadata-hashing application services. These services issue raw values only as ephemeral post-commit results, persist digests/ciphertext only, call providers outside database transactions, and require same-transaction audit writes.
+
+The package has no runtime dependencies and does not import Prisma, Fastify, Discord.js, database infrastructure, Redis, or HTTP transports. `@qbox/database` now implements its persistence, transaction, key-ring, native-crypto, ID-generation, and owner-access ports. `@qbox/api` owns an import-safe native-fetch Discord OAuth provider adapter and strict provider configuration, but authentication is still not composed into the running API or bot: no login endpoint exists, no callback route exists, no cookie is issued, no browser credential can be created over HTTP, and no verified actor is attached to an HTTP request. `@qbox/permissions` remains the sole permission-evaluation domain. See `docs/AuthenticationArchitectureReview.md`.
+
 ## Shared package
 
 Package: `@qbox/shared`
@@ -213,15 +227,15 @@ Environment loading happens as an import-time side effect rather than through an
 
 Package: `@qbox/database`
 
-Current responsibility: owns the authoritative typed PostgreSQL configuration value object, lifecycle coordination, health/readiness contracts, Prisma-backed permission repositories, advisory-locked owner protection, dry-run-first bootstrap/migration workflows, transaction boundaries, and in-memory cache invalidation adapter.
+Current responsibility: owns the authoritative typed PostgreSQL configuration value object, lifecycle coordination, health/readiness contracts, Prisma-backed permission and authentication repositories, advisory-locked permission and authentication owner protection, dry-run-first permission bootstrap/migration workflows, authentication transaction boundaries, native Node authentication cryptography/key-ring infrastructure, and in-memory permission cache invalidation adapter.
 
 `DatabaseService` uses an injected `ClientFactory`, reports `LIVE`, `READY`, or `DEGRADED`, rejects readiness until its client starts, and attempts cleanup after startup failure. `PrismaPermissionPersistenceClient` owns one injected Prisma client and repository collection for the process lifecycle.
 
 `@qbox/database` is the application-facing infrastructure boundary. `@qbox/prisma` owns the Prisma 7 CLI/runtime dependencies, root schema and migration tooling, committed ESM generated client, and disconnected PostgreSQL client factory. Repository adapters and the readiness probe remain in `@qbox/database`. See `docs/DatabaseDecisionRecord.md`, `docs/DatabaseFoundationArchitectureReview.md`, `docs/PersistentPermissionRepository.md`, and `docs/PermissionAdministration.md`.
 
-The canonical schema is `prisma/schema.prisma`. It contains the PostgreSQL datasource, `prisma-client` generator, and initial persistent-permission models. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
+The canonical schema is `prisma/schema.prisma`. It contains the PostgreSQL datasource, `prisma-client` generator, persistent-permission models, additive authentication-foundation models, and an additive OAuth PKCE mode column/constraint for transaction-specific PKCE decisions. Authentication adapters can be bound to the exact lifecycle-owned Prisma client through `PrismaAuthenticationPersistence`, but no application composes a usable authentication flow yet. Applications import `@qbox/prisma` only through infrastructure composition; commands, domain packages, and API handlers never import generated paths or Prisma directly. Connection startup and shutdown remain owned by `@qbox/database`.
 
-The package depends on `@qbox/permissions` and `@qbox/prisma` through workspace boundaries.
+The package depends on `@qbox/authentication`, `@qbox/permissions`, and `@qbox/prisma` through workspace boundaries.
 
 ## Prisma package
 

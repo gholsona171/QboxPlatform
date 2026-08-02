@@ -197,6 +197,7 @@ export type GuildWhereInput = {
   principals?: Prisma.PermissionPrincipalListRelationFilter
   assignments?: Prisma.PermissionAssignmentListRelationFilter
   auditScopeEvents?: Prisma.PermissionAuditEventListRelationFilter
+  authMemberships?: Prisma.DiscordGuildMembershipListRelationFilter
 }
 
 export type GuildOrderByWithRelationInput = {
@@ -210,6 +211,7 @@ export type GuildOrderByWithRelationInput = {
   principals?: Prisma.PermissionPrincipalOrderByRelationAggregateInput
   assignments?: Prisma.PermissionAssignmentOrderByRelationAggregateInput
   auditScopeEvents?: Prisma.PermissionAuditEventOrderByRelationAggregateInput
+  authMemberships?: Prisma.DiscordGuildMembershipOrderByRelationAggregateInput
 }
 
 export type GuildWhereUniqueInput = Prisma.AtLeast<{
@@ -226,6 +228,7 @@ export type GuildWhereUniqueInput = Prisma.AtLeast<{
   principals?: Prisma.PermissionPrincipalListRelationFilter
   assignments?: Prisma.PermissionAssignmentListRelationFilter
   auditScopeEvents?: Prisma.PermissionAuditEventListRelationFilter
+  authMemberships?: Prisma.DiscordGuildMembershipListRelationFilter
 }, "id" | "discordGuildId">
 
 export type GuildOrderByWithAggregationInput = {
@@ -265,6 +268,7 @@ export type GuildCreateInput = {
   principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
   assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateInput = {
@@ -278,6 +282,7 @@ export type GuildUncheckedCreateInput = {
   principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
   assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUpdateInput = {
@@ -291,6 +296,7 @@ export type GuildUpdateInput = {
   principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
   assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateInput = {
@@ -304,6 +310,7 @@ export type GuildUncheckedUpdateInput = {
   principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
   assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateManyInput = {
@@ -436,6 +443,20 @@ export type GuildUpdateOneWithoutAuditScopeEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutAuditScopeEventsInput, Prisma.GuildUpdateWithoutAuditScopeEventsInput>, Prisma.GuildUncheckedUpdateWithoutAuditScopeEventsInput>
 }
 
+export type GuildCreateNestedOneWithoutAuthMembershipsInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutAuthMembershipsInput, Prisma.GuildUncheckedCreateWithoutAuthMembershipsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutAuthMembershipsInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutAuthMembershipsInput, Prisma.GuildUncheckedCreateWithoutAuthMembershipsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutAuthMembershipsInput
+  upsert?: Prisma.GuildUpsertWithoutAuthMembershipsInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutAuthMembershipsInput, Prisma.GuildUpdateWithoutAuthMembershipsInput>, Prisma.GuildUncheckedUpdateWithoutAuthMembershipsInput>
+}
+
 export type GuildCreateWithoutPrincipalsInput = {
   id?: string
   discordGuildId: string
@@ -446,6 +467,7 @@ export type GuildCreateWithoutPrincipalsInput = {
   updatedAt?: Date | string
   assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutPrincipalsInput = {
@@ -458,6 +480,7 @@ export type GuildUncheckedCreateWithoutPrincipalsInput = {
   updatedAt?: Date | string
   assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutPrincipalsInput = {
@@ -486,6 +509,7 @@ export type GuildUpdateWithoutPrincipalsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutPrincipalsInput = {
@@ -498,6 +522,7 @@ export type GuildUncheckedUpdateWithoutPrincipalsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAssignmentsInput = {
@@ -510,6 +535,7 @@ export type GuildCreateWithoutAssignmentsInput = {
   updatedAt?: Date | string
   principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAssignmentsInput = {
@@ -522,6 +548,7 @@ export type GuildUncheckedCreateWithoutAssignmentsInput = {
   updatedAt?: Date | string
   principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAssignmentsInput = {
@@ -550,6 +577,7 @@ export type GuildUpdateWithoutAssignmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAssignmentsInput = {
@@ -562,6 +590,7 @@ export type GuildUncheckedUpdateWithoutAssignmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
   auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAuditScopeEventsInput = {
@@ -574,6 +603,7 @@ export type GuildCreateWithoutAuditScopeEventsInput = {
   updatedAt?: Date | string
   principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
   assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAuditScopeEventsInput = {
@@ -586,6 +616,7 @@ export type GuildUncheckedCreateWithoutAuditScopeEventsInput = {
   updatedAt?: Date | string
   principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
   assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAuditScopeEventsInput = {
@@ -614,6 +645,7 @@ export type GuildUpdateWithoutAuditScopeEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
   assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAuditScopeEventsInput = {
@@ -626,6 +658,75 @@ export type GuildUncheckedUpdateWithoutAuditScopeEventsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
   assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutAuthMembershipsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+}
+
+export type GuildUncheckedCreateWithoutAuthMembershipsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+}
+
+export type GuildCreateOrConnectWithoutAuthMembershipsInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutAuthMembershipsInput, Prisma.GuildUncheckedCreateWithoutAuthMembershipsInput>
+}
+
+export type GuildUpsertWithoutAuthMembershipsInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutAuthMembershipsInput, Prisma.GuildUncheckedUpdateWithoutAuthMembershipsInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutAuthMembershipsInput, Prisma.GuildUncheckedCreateWithoutAuthMembershipsInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutAuthMembershipsInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutAuthMembershipsInput, Prisma.GuildUncheckedUpdateWithoutAuthMembershipsInput>
+}
+
+export type GuildUpdateWithoutAuthMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutAuthMembershipsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
 }
 
 
@@ -637,12 +738,14 @@ export type GuildCountOutputType = {
   principals: number
   assignments: number
   auditScopeEvents: number
+  authMemberships: number
 }
 
 export type GuildCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   principals?: boolean | GuildCountOutputTypeCountPrincipalsArgs
   assignments?: boolean | GuildCountOutputTypeCountAssignmentsArgs
   auditScopeEvents?: boolean | GuildCountOutputTypeCountAuditScopeEventsArgs
+  authMemberships?: boolean | GuildCountOutputTypeCountAuthMembershipsArgs
 }
 
 /**
@@ -676,6 +779,13 @@ export type GuildCountOutputTypeCountAuditScopeEventsArgs<ExtArgs extends runtim
   where?: Prisma.PermissionAuditEventWhereInput
 }
 
+/**
+ * GuildCountOutputType without action
+ */
+export type GuildCountOutputTypeCountAuthMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscordGuildMembershipWhereInput
+}
+
 
 export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -688,6 +798,7 @@ export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   principals?: boolean | Prisma.Guild$principalsArgs<ExtArgs>
   assignments?: boolean | Prisma.Guild$assignmentsArgs<ExtArgs>
   auditScopeEvents?: boolean | Prisma.Guild$auditScopeEventsArgs<ExtArgs>
+  authMemberships?: boolean | Prisma.Guild$authMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.GuildCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guild"]>
 
@@ -726,6 +837,7 @@ export type GuildInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   principals?: boolean | Prisma.Guild$principalsArgs<ExtArgs>
   assignments?: boolean | Prisma.Guild$assignmentsArgs<ExtArgs>
   auditScopeEvents?: boolean | Prisma.Guild$auditScopeEventsArgs<ExtArgs>
+  authMemberships?: boolean | Prisma.Guild$authMembershipsArgs<ExtArgs>
   _count?: boolean | Prisma.GuildCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuildIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -737,6 +849,7 @@ export type $GuildPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     principals: Prisma.$PermissionPrincipalPayload<ExtArgs>[]
     assignments: Prisma.$PermissionAssignmentPayload<ExtArgs>[]
     auditScopeEvents: Prisma.$PermissionAuditEventPayload<ExtArgs>[]
+    authMemberships: Prisma.$DiscordGuildMembershipPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1143,6 +1256,7 @@ export interface Prisma__GuildClient<T, Null = never, ExtArgs extends runtime.Ty
   principals<T extends Prisma.Guild$principalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$principalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionPrincipalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   assignments<T extends Prisma.Guild$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditScopeEvents<T extends Prisma.Guild$auditScopeEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$auditScopeEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authMemberships<T extends Prisma.Guild$authMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$authMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1641,6 +1755,30 @@ export type Guild$auditScopeEventsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.PermissionAuditEventScalarFieldEnum | Prisma.PermissionAuditEventScalarFieldEnum[]
+}
+
+/**
+ * Guild.authMemberships
+ */
+export type Guild$authMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscordGuildMembership
+   */
+  select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscordGuildMembership
+   */
+  omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null
+  where?: Prisma.DiscordGuildMembershipWhereInput
+  orderBy?: Prisma.DiscordGuildMembershipOrderByWithRelationInput | Prisma.DiscordGuildMembershipOrderByWithRelationInput[]
+  cursor?: Prisma.DiscordGuildMembershipWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscordGuildMembershipScalarFieldEnum | Prisma.DiscordGuildMembershipScalarFieldEnum[]
 }
 
 /**
