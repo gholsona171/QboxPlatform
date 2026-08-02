@@ -27,6 +27,7 @@ import type {
   PermissionAuthorizationDecision,
   PermissionPrincipal,
 } from "@qbox/permissions";
+import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
@@ -47,6 +48,7 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly memberships: DiscordGuildMembershipService;
   readonly guilds: Pick<GuildRepository, "findByDiscordId" | "create">;
   readonly authorizer: PermissionAuthorizer;
+  readonly roleMenus: RoleMenuService;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -264,6 +266,121 @@ export async function registerBrowserAuthenticationRoutes(
     return { allowed: true, decision: permissions.platformAdmin };
   });
 
+  server.get("/api/v1/discord/role-menus", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    return { data: await dependencies.roleMenus.listByGuild(diagnostics.discordGuildId) };
+  });
+
+  server.post("/api/v1/discord/role-menus", async (request) => {
+    const { account } = await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
+    const description = optionalStringField(body, "description");
+    return {
+      data: await safeRoleMenuCall(() =>
+        dependencies.roleMenus.createDraft({
+          guildId: diagnostics.discordGuildId,
+          channelId: stringField(body, "channelId"),
+          title: stringField(body, "title"),
+          ...(description === undefined ? {} : { description }),
+          presentationType: enumField(body, "presentationType", ["BUTTONS", "SELECT_MENU", "REACTIONS"]),
+          assignmentMode: enumField(body, "assignmentMode", ["TOGGLE", "ADD_ONLY", "REMOVE_ONLY", "EXCLUSIVE"]),
+          createdByDiscordUserId: account.identity.providerSubjectId,
+        }),
+      ),
+    };
+  });
+
+  server.get("/api/v1/discord/role-menus/:id", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    const menu = await dependencies.roleMenus.getById(param(request, "id"));
+    if (!menu) throw new ValidationApiError([{ path: ["id"], code: "not_found", message: "Role menu was not found." }]);
+    return { data: menu };
+  });
+
+  server.patch("/api/v1/discord/role-menus/:id", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
+    const channelId = optionalStringField(body, "channelId");
+    const title = optionalStringField(body, "title");
+    const description = optionalStringField(body, "description");
+    const presentationType = optionalEnumField(body, "presentationType", ["BUTTONS", "SELECT_MENU", "REACTIONS"]);
+    const assignmentMode = optionalEnumField(body, "assignmentMode", ["TOGGLE", "ADD_ONLY", "REMOVE_ONLY", "EXCLUSIVE"]);
+    return {
+      data: await safeRoleMenuCall(() =>
+        dependencies.roleMenus.updateDraft(param(request, "id"), {
+          ...(channelId === undefined ? {} : { channelId }),
+          ...(title === undefined ? {} : { title }),
+          ...(description === undefined ? {} : { description }),
+          ...(presentationType === undefined ? {} : { presentationType }),
+          ...(assignmentMode === undefined ? {} : { assignmentMode }),
+        }),
+      ),
+    };
+  });
+
+  server.delete("/api/v1/discord/role-menus/:id", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    await dependencies.roleMenus.delete(param(request, "id"));
+    return { ok: true };
+  });
+
+  server.post("/api/v1/discord/role-menus/:id/options", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
+    const description = optionalStringField(body, "description");
+    const emoji = optionalStringField(body, "emoji");
+    return {
+      data: await safeRoleMenuCall(() =>
+        dependencies.roleMenus.addOption(param(request, "id"), {
+          roleId: stringField(body, "roleId"),
+          label: stringField(body, "label"),
+          ...(description === undefined ? {} : { description }),
+          ...(emoji === undefined ? {} : { emoji }),
+        }),
+      ),
+    };
+  });
+
+  server.patch("/api/v1/discord/role-menus/:id/options/:optionId", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
+    const roleId = optionalStringField(body, "roleId");
+    const label = optionalStringField(body, "label");
+    const description = optionalStringField(body, "description");
+    const emoji = optionalStringField(body, "emoji");
+    return {
+      data: await safeRoleMenuCall(() =>
+        dependencies.roleMenus.updateOption(param(request, "id"), param(request, "optionId"), {
+          ...(roleId === undefined ? {} : { roleId }),
+          ...(label === undefined ? {} : { label }),
+          ...(description === undefined ? {} : { description }),
+          ...(emoji === undefined ? {} : { emoji }),
+        }),
+      ),
+    };
+  });
+
+  server.delete("/api/v1/discord/role-menus/:id/options/:optionId", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    return {
+      data: await dependencies.roleMenus.removeOption(param(request, "id"), param(request, "optionId")),
+    };
+  });
+
+  server.post("/api/v1/discord/role-menus/:id/publish", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    return {
+      data: await safeRoleMenuCall(() =>
+        dependencies.roleMenus.publish(param(request, "id"), stringField(objectBody(request), "messageId")),
+      ),
+    };
+  });
+
+  server.post("/api/v1/discord/role-menus/:id/disable", async (request) => {
+    await requireRoleMenuManager(request, dependencies);
+    return { data: await dependencies.roleMenus.disable(param(request, "id")) };
+  });
+
   server.post("/auth/logout", async (request, reply) => {
     validateSameOrigin(request, diagnostics.dashboardUrl);
     const sessionSecret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
@@ -308,6 +425,117 @@ async function requireSession(
   } catch {
     throw new AuthenticationRequiredApiError();
   }
+}
+
+async function requireRoleMenuManager(
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+) {
+  const verified = await requireSession(request, dependencies);
+  const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+  const guild = await dependencies.guilds.findByDiscordId(
+    dependencies.configuration.diagnostics().discordGuildId,
+  );
+  const membership = guild
+    ? await dependencies.unitOfWork.run((repositories) =>
+        repositories.guildMemberships.find(
+          account.identity.id,
+          discordGuildId(dependencies.configuration.diagnostics().discordGuildId),
+        ),
+      )
+    : undefined;
+  if (!membership || membership.status !== "PRESENT")
+    throw new AuthorizationDeniedApiError();
+  const principals: PermissionPrincipal[] = [
+    {
+      type: "discord-user",
+      externalId: account.identity.providerSubjectId,
+      guildId: dependencies.configuration.diagnostics().discordGuildId,
+    },
+    ...membership.roles.map((role) => ({
+      type: "discord-role" as const,
+      externalId: role.roleId,
+      guildId: dependencies.configuration.diagnostics().discordGuildId,
+    })),
+  ];
+  const decision = await dependencies.authorizer.authorize({
+    principals,
+    scope: {
+      type: "discord-guild",
+      guildId: dependencies.configuration.diagnostics().discordGuildId,
+    },
+    required: ["discord.role-menus.manage" satisfies Permission],
+    mode: "all",
+    administratorOverride: true,
+  });
+  if (!decision.allowed) throw new AuthorizationDeniedApiError();
+  return { verified, account };
+}
+
+async function safeRoleMenuCall<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (error instanceof RoleMenuError) {
+      throw new ValidationApiError([
+        { path: ["roleMenu"], code: error.code, message: error.message },
+      ]);
+    }
+    throw error;
+  }
+}
+
+function objectBody(request: FastifyRequest): Record<string, unknown> {
+  if (!request.body || typeof request.body !== "object" || Array.isArray(request.body))
+    throw new ValidationApiError([{ path: ["body"], code: "invalid_type", message: "JSON object body is required." }]);
+  return request.body as Record<string, unknown>;
+}
+
+function param(request: FastifyRequest, name: string): string {
+  const params = request.params;
+  if (!params || typeof params !== "object") throw new ValidationApiError([{ path: ["params"], code: "missing", message: `${name} is required.` }]);
+  const value = Reflect.get(params, name);
+  if (typeof value !== "string" || value.length === 0)
+    throw new ValidationApiError([{ path: ["params", name], code: "invalid_type", message: `${name} is required.` }]);
+  return value;
+}
+
+function stringField(body: Record<string, unknown>, name: string): string {
+  const value = body[name];
+  if (typeof value !== "string" || value.length === 0)
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} is required.` }]);
+  return value;
+}
+
+function optionalStringField(body: Record<string, unknown>, name: string): string | undefined {
+  const value = body[name];
+  if (value === undefined || value === null || value === "") return undefined;
+  if (typeof value !== "string")
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be a string.` }]);
+  return value;
+}
+
+function enumField<const T extends readonly string[]>(
+  body: Record<string, unknown>,
+  name: string,
+  values: T,
+): T[number] {
+  const value = stringField(body, name);
+  if (!(values as readonly string[]).includes(value))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_enum", message: `${name} is invalid.` }]);
+  return value;
+}
+
+function optionalEnumField<const T extends readonly string[]>(
+  body: Record<string, unknown>,
+  name: string,
+  values: T,
+): T[number] | undefined {
+  const value = optionalStringField(body, name);
+  if (value === undefined) return undefined;
+  if (!(values as readonly string[]).includes(value))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_enum", message: `${name} is invalid.` }]);
+  return value;
 }
 
 async function loadAccountSummary(

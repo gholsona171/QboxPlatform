@@ -15,7 +15,7 @@ document.addEventListener("click", async (event) => {
   const route = event.target.closest("[data-route]");
   if (route) {
     event.preventDefault();
-    navigate(route.dataset.route);
+    navigate(route.dataset.route, route.dataset.tab);
     closeMobileNav();
     return;
   }
@@ -61,8 +61,8 @@ await refreshLiveState({ quiet: true });
 renderCurrentRoute();
 renderAccountChrome();
 
-function navigate(page) {
-  const path = page === "overview" ? "/" : `/${page}`;
+function navigate(page, tab) {
+  const path = page === "overview" ? "/" : `/${page}${tab ? `?tab=${encodeURIComponent(tab)}` : ""}`;
   history.pushState({}, "", path);
   renderPage(page);
 }

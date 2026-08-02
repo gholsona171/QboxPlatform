@@ -23,6 +23,16 @@ export * from './enums.js';
  */
 export type Guild = Prisma.GuildModel
 /**
+ * Model RoleMenu
+ *
+ */
+export type RoleMenu = Prisma.RoleMenuModel
+/**
+ * Model RoleMenuOption
+ *
+ */
+export type RoleMenuOption = Prisma.RoleMenuOptionModel
+/**
  * Model PermissionPrincipal
  *
  */

@@ -1,5 +1,5 @@
 {
-  "name": "@qbox/discord",
+  "name": "@qbox/role-menus",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,13 +10,5 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run test",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
-  },
-  "dependencies": {
-    "@qbox/core": "workspace:*",
-    "@qbox/logger": "workspace:*",
-    "@qbox/permissions": "workspace:*",
-    "@qbox/role-menus": "workspace:*",
-    "@qbox/shared": "workspace:*",
-    "discord.js": "^14"
   }
 }

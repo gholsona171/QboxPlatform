@@ -201,6 +201,34 @@ export const DiscordGuildMembershipSource = {
 export type DiscordGuildMembershipSource = (typeof DiscordGuildMembershipSource)[keyof typeof DiscordGuildMembershipSource]
 
 
+export const RoleMenuPresentationType = {
+  BUTTONS: 'BUTTONS',
+  SELECT_MENU: 'SELECT_MENU',
+  REACTIONS: 'REACTIONS'
+} as const
+
+export type RoleMenuPresentationType = (typeof RoleMenuPresentationType)[keyof typeof RoleMenuPresentationType]
+
+
+export const RoleMenuAssignmentMode = {
+  TOGGLE: 'TOGGLE',
+  ADD_ONLY: 'ADD_ONLY',
+  REMOVE_ONLY: 'REMOVE_ONLY',
+  EXCLUSIVE: 'EXCLUSIVE'
+} as const
+
+export type RoleMenuAssignmentMode = (typeof RoleMenuAssignmentMode)[keyof typeof RoleMenuAssignmentMode]
+
+
+export const RoleMenuStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  DISABLED: 'DISABLED'
+} as const
+
+export type RoleMenuStatus = (typeof RoleMenuStatus)[keyof typeof RoleMenuStatus]
+
+
 export const AuthenticationAuditAction = {
   LOGIN_START: 'LOGIN_START',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',

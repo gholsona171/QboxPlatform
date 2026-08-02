@@ -9,3 +9,4 @@ export * from "./authentication/NodeAuthenticationCryptography.js";
 export * from "./authentication/PrismaAuthenticationPersistence.js";
 export * from "./authentication/PrismaAuthenticationRepositories.js";
 export * from "./authentication/PrismaOwnerAccessProtectionService.js";
+export * from "./roleMenus/PrismaRoleMenuRepository.js";

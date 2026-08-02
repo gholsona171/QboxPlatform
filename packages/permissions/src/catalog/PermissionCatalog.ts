@@ -1,13 +1,13 @@
 /** Lowercase dot-separated permission identifier syntax. */
 export const PERMISSION_IDENTIFIER_PATTERN =
-  /^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9]*)+$/;
+  /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/;
 
 /** Version of the compiled permission catalog contract. */
 export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:4d29682d918d871ac9fcfde06d25c1155813f0ead8f04c28046afba3ee6e1613" as const;
+  "sha256:0892995171df7728888ad7f24dda2c20b6560afa92f2d5d0dccd1d60bcd8d5de" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -25,6 +25,7 @@ export const PERMISSIONS = [
   "applications.review",
   "staff.manage",
   "knowledge.manage",
+  "discord.role-menus.manage",
 ] as const;
 
 /** An exact identifier present in the compiled permission catalog. */

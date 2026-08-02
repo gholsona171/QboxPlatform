@@ -1,17 +1,18 @@
-export const appVersion = "0.2.0-demo-showcase";
+export const appVersion = "0.3.0-discord-essentials";
 
 export const navItems = [
-  ["overview", "◈", "Overview"],
-  ["applications", "▣", "Applications"],
-  ["tickets", "◇", "Tickets"],
-  ["staff", "◎", "Staff"],
-  ["moderation", "⚖", "Moderation"],
-  ["verification", "✓", "Verification"],
-  ["polls", "◍", "Polls"],
-  ["birthdays", "✦", "Birthdays"],
-  ["knowledge", "▤", "Knowledge Base"],
-  ["fivem", "⌁", "FiveM Server"],
-  ["settings", "⚙", "Settings"],
+  ["overview", "OV", "Overview"],
+  ["discord", "DB", "Discord Bot"],
+  ["applications", "AP", "Applications"],
+  ["tickets", "TK", "Tickets"],
+  ["staff", "ST", "Staff"],
+  ["moderation", "MD", "Moderation"],
+  ["verification", "VF", "Verification"],
+  ["polls", "PL", "Polls"],
+  ["birthdays", "BD", "Birthdays"],
+  ["knowledge", "KB", "Knowledge Base"],
+  ["fivem", "5M", "FiveM Server"],
+  ["settings", "SE", "Settings"],
 ];
 
 export function seedDemoData() {
@@ -23,7 +24,7 @@ export function seedDemoData() {
       event("EVT-1", "Application status changed to Under Review", "Applications", "10 minutes ago"),
       event("EVT-2", "Ticket #104 claimed by Aria", "Tickets", "25 minutes ago"),
       event("EVT-3", "Verification approved for DemoMember42", "Verification", "1 hour ago"),
-      event("EVT-4", "Knowledge article moved to Published", "Knowledge Base", "2 hours ago"),
+      event("EVT-4", "Role Menus moved to LIVE in the Discord catalog", "Discord Bot", "2 hours ago"),
     ],
     applications: [
       application("APP-1001", "Nova Hart", "Civilian", "Submitted", "Mason", "Reliable schedule, wants to join weekend patrols."),
@@ -64,6 +65,36 @@ export function seedDemoData() {
       article("KB-701", "FiveM Connection Help", "Common connection fixes and cache steps", "Published", ["fivem", "support"]),
       article("KB-702", "Staff Review Checklist", "Internal review draft for applications", "Draft", ["staff"]),
     ],
+    discord: {
+      features: [
+        discordFeature("Command Center", "LIVE", ["Discord command", "portal", "API"], "Command deployment, validation, and diagnostics are implemented."),
+        discordFeature("Role Menus", "LIVE", ["Discord command", "Discord component", "automatic event", "portal", "API"], "Persistent role menus and reaction roles are the first live Discord feature."),
+        discordFeature("Welcome and Goodbye", "DEMO", ["automatic event", "portal", "API"], "Message template and channel routing preview."),
+        discordFeature("Autoroles", "DEMO", ["automatic event", "portal", "API"], "Default role assignment configuration preview."),
+        discordFeature("AutoMod and Filters", "DEMO", ["automatic event", "portal", "API"], "Filter-rule concept. No live moderation action is sent."),
+        discordFeature("Server Logs", "DEMO", ["automatic event", "portal"], "Audit channel routing preview."),
+        discordFeature("Embeds and Announcements", "DEMO", ["Discord command", "portal", "API"], "Announcement composer concept."),
+        discordFeature("Scheduled Messages and Reminders", "PLANNED", ["automatic event", "portal", "API"], "Blocked by scheduler execution."),
+        discordFeature("Giveaways", "PLANNED", ["Discord component", "automatic event", "portal", "API"], "Blocked by scheduler and persistence workflow."),
+        discordFeature("Levels and Rewards", "PLANNED", ["automatic event", "portal"], "Blocked by activity/event ingestion."),
+        discordFeature("Starboard", "PLANNED", ["automatic event", "portal"], "Blocked by reaction/message event design."),
+        discordFeature("Voice Rooms", "PLANNED", ["Discord component", "automatic event", "portal"], "Blocked by voice state workflow."),
+        discordFeature("Custom Commands", "PLANNED", ["Discord command", "portal", "API"], "Blocked by command content policy."),
+        discordFeature("Server Utilities", "DEMO", ["Discord command", "portal"], "Operational utility concept."),
+        discordFeature("Bot Settings", "DEMO", ["portal", "API"], "Configuration preview."),
+      ],
+      roleMenus: [
+        roleMenu("RM-100", "Community Roles", "PUBLISHED", "1257928923048837201", "1262656532902842423", "BUTTONS", "TOGGLE", [
+          roleOption("RM-OPT-1", "1262656532902842423", "Staff Alerts", "Bell"),
+          roleOption("RM-OPT-2", "1262656532902842424", "Event Pings", "Party"),
+        ], "1432100000000000000"),
+        roleMenu("RM-101", "Civilian Departments", "DRAFT", "1257928923048837201", "1262656532902842425", "SELECT_MENU", "EXCLUSIVE", [
+          roleOption("RM-OPT-3", "1262656532902842426", "EMS", "Ambulance"),
+          roleOption("RM-OPT-4", "1262656532902842427", "Mechanic", "Wrench"),
+          roleOption("RM-OPT-5", "1262656532902842428", "Business", "Office"),
+        ]),
+      ],
+    },
     fivem: {
       online: true,
       players: [
@@ -169,4 +200,28 @@ function article(id, title, summary, status, tags) {
     body: `${summary}\n\nThis demo article is editable locally and is not published to a live knowledge base.`,
     edited: "2026-08-02",
   };
+}
+
+function discordFeature(name, status, surfaces, summary) {
+  return { name, status, surfaces, summary };
+}
+
+function roleMenu(id, title, status, guildId, channelId, presentationType, assignmentMode, options, messageId = "") {
+  return {
+    id,
+    title,
+    description: "Demo role menu configuration. Live menus use the same persistent service through Discord commands and API routes.",
+    status,
+    guildId,
+    channelId,
+    messageId,
+    presentationType,
+    assignmentMode,
+    options,
+    history: history(`${title} ${status.toLowerCase()}`),
+  };
+}
+
+function roleOption(id, roleId, label, emoji) {
+  return { id, roleId, label, emoji, description: `${label} demo option.` };
 }

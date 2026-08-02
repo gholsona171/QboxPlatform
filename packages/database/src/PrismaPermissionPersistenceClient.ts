@@ -8,6 +8,7 @@ import { PrismaClientFactory, type PrismaClient } from "@qbox/prisma";
 import type { DatabaseConfiguration } from "./config/DatabaseConfiguration.js";
 import type { DatabaseClient } from "./contracts/DatabaseContracts.js";
 import { PrismaAuthenticationPersistence } from "./authentication/PrismaAuthenticationPersistence.js";
+import { PrismaRoleMenuRepository } from "./roleMenus/PrismaRoleMenuRepository.js";
 import {
   PrismaGuildRepository,
   PrismaPermissionAuditRepository,
@@ -25,6 +26,7 @@ export interface PermissionPersistenceRepositories {
   readonly guilds: PrismaGuildRepository;
   readonly audits: PrismaPermissionAuditRepository;
   readonly catalog: PrismaPermissionCatalogRepository;
+  readonly roleMenus: PrismaRoleMenuRepository;
 }
 
 /**
@@ -75,6 +77,7 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
       guilds: new PrismaGuildRepository(this.client, ownerProtection),
       audits: new PrismaPermissionAuditRepository(this.client),
       catalog: new PrismaPermissionCatalogRepository(this.client),
+      roleMenus: new PrismaRoleMenuRepository(this.client),
     };
   }
 

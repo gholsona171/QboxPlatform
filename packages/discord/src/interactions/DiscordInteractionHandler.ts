@@ -18,6 +18,7 @@ import {
   CommandOptionReader,
   CommandRoute
 } from "../commands/CommandInput.js";
+import type { DiscordRoleMenuInteractionHandler } from "../roleMenus/DiscordRoleMenuInteractionHandler.js";
 
 interface InteractionLogger {
   debug(context: object, message: string): void;
@@ -30,6 +31,7 @@ export interface DiscordInteractionHandlerOptions {
   readonly executionTimeoutMs: number;
   readonly acknowledgementTimeoutMs?: number;
   readonly log?: InteractionLogger;
+  readonly roleMenuInteractions?: DiscordRoleMenuInteractionHandler;
 }
 
 export class CommandExecutionTimeoutError extends Error {
@@ -60,6 +62,7 @@ export class DiscordInteractionHandler {
   private readonly executionTimeoutMs: number;
   private readonly acknowledgementTimeoutMs: number;
   private readonly log: InteractionLogger;
+  private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly activeExecutions = new Set<Promise<void>>();
   private readonly activeControllers = new Set<AbortController>();
   private acceptingExecutions = true;
@@ -77,9 +80,20 @@ export class DiscordInteractionHandler {
       options.acknowledgementTimeoutMs ?? defaultAcknowledgementTimeoutMs
     );
     this.log = options.log ?? logger;
+    this.roleMenuInteractions = options.roleMenuInteractions;
   }
 
   public async handle(interaction: Interaction): Promise<void> {
+    const isRoleMenuComponent =
+      (typeof interaction.isButton === "function" && interaction.isButton()) ||
+      (typeof interaction.isStringSelectMenu === "function" && interaction.isStringSelectMenu());
+    if (isRoleMenuComponent) {
+      if (this.roleMenuInteractions) {
+        await this.roleMenuInteractions.handleComponent(interaction);
+        return;
+      }
+    }
+
     if (!interaction.isChatInputCommand()) {
       this.log.debug(
         {

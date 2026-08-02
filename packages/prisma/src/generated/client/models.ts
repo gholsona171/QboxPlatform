@@ -9,6 +9,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Guild.js'
+export type * from './models/RoleMenu.js'
+export type * from './models/RoleMenuOption.js'
 export type * from './models/PermissionPrincipal.js'
 export type * from './models/PermissionDefinition.js'
 export type * from './models/PermissionAssignment.js'

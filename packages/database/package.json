@@ -8,7 +8,8 @@
   "dependencies": {
     "@qbox/authentication": "workspace:*",
     "@qbox/permissions": "workspace:*",
-    "@qbox/prisma": "workspace:*"
+    "@qbox/prisma": "workspace:*",
+    "@qbox/role-menus": "workspace:*"
   },
   "scripts": {
     "build": "tsc",

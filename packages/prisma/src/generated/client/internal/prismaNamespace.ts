@@ -398,6 +398,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   Guild: 'Guild',
+  RoleMenu: 'RoleMenu',
+  RoleMenuOption: 'RoleMenuOption',
   PermissionPrincipal: 'PermissionPrincipal',
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
@@ -426,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent"
+    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -501,6 +503,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GuildCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GuildCountAggregateOutputType> | number
+        }
+      }
+    }
+    RoleMenu: {
+      payload: Prisma.$RoleMenuPayload<ExtArgs>
+      fields: Prisma.RoleMenuFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoleMenuFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoleMenuFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        findFirst: {
+          args: Prisma.RoleMenuFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoleMenuFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        findMany: {
+          args: Prisma.RoleMenuFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>[]
+        }
+        create: {
+          args: Prisma.RoleMenuCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        createMany: {
+          args: Prisma.RoleMenuCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoleMenuCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>[]
+        }
+        delete: {
+          args: Prisma.RoleMenuDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        update: {
+          args: Prisma.RoleMenuUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoleMenuDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoleMenuUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoleMenuUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoleMenuUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuPayload>
+        }
+        aggregate: {
+          args: Prisma.RoleMenuAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoleMenu>
+        }
+        groupBy: {
+          args: Prisma.RoleMenuGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleMenuGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoleMenuCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleMenuCountAggregateOutputType> | number
+        }
+      }
+    }
+    RoleMenuOption: {
+      payload: Prisma.$RoleMenuOptionPayload<ExtArgs>
+      fields: Prisma.RoleMenuOptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RoleMenuOptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RoleMenuOptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        findFirst: {
+          args: Prisma.RoleMenuOptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RoleMenuOptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        findMany: {
+          args: Prisma.RoleMenuOptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>[]
+        }
+        create: {
+          args: Prisma.RoleMenuOptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        createMany: {
+          args: Prisma.RoleMenuOptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RoleMenuOptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>[]
+        }
+        delete: {
+          args: Prisma.RoleMenuOptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        update: {
+          args: Prisma.RoleMenuOptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.RoleMenuOptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RoleMenuOptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RoleMenuOptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.RoleMenuOptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RoleMenuOptionPayload>
+        }
+        aggregate: {
+          args: Prisma.RoleMenuOptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRoleMenuOption>
+        }
+        groupBy: {
+          args: Prisma.RoleMenuOptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleMenuOptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RoleMenuOptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RoleMenuOptionCountAggregateOutputType> | number
         }
       }
     }
@@ -1518,6 +1668,38 @@ export const GuildScalarFieldEnum = {
 export type GuildScalarFieldEnum = (typeof GuildScalarFieldEnum)[keyof typeof GuildScalarFieldEnum]
 
 
+export const RoleMenuScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  presentationType: 'presentationType',
+  assignmentMode: 'assignmentMode',
+  status: 'status',
+  createdByDiscordUserId: 'createdByDiscordUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleMenuScalarFieldEnum = (typeof RoleMenuScalarFieldEnum)[keyof typeof RoleMenuScalarFieldEnum]
+
+
+export const RoleMenuOptionScalarFieldEnum = {
+  id: 'id',
+  roleMenuId: 'roleMenuId',
+  roleId: 'roleId',
+  label: 'label',
+  description: 'description',
+  emoji: 'emoji',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type RoleMenuOptionScalarFieldEnum = (typeof RoleMenuOptionScalarFieldEnum)[keyof typeof RoleMenuOptionScalarFieldEnum]
+
+
 export const PermissionPrincipalScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -1885,6 +2067,62 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'RoleMenuPresentationType'
+ */
+export type EnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuPresentationType'>
+
+
+
+/**
+ * Reference to a field of type 'RoleMenuPresentationType[]'
+ */
+export type ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuPresentationType[]'>
+
+
+
+/**
+ * Reference to a field of type 'RoleMenuAssignmentMode'
+ */
+export type EnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuAssignmentMode'>
+
+
+
+/**
+ * Reference to a field of type 'RoleMenuAssignmentMode[]'
+ */
+export type ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuAssignmentMode[]'>
+
+
+
+/**
+ * Reference to a field of type 'RoleMenuStatus'
+ */
+export type EnumRoleMenuStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuStatus'>
+
+
+
+/**
+ * Reference to a field of type 'RoleMenuStatus[]'
+ */
+export type ListEnumRoleMenuStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RoleMenuStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+
+
+
+/**
  * Reference to a field of type 'PermissionPrincipalType'
  */
 export type EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionPrincipalType'>
@@ -1979,20 +2217,6 @@ export type EnumPlatformUserStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'PlatformUserStatus[]'
  */
 export type ListEnumPlatformUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformUserStatus[]'>
-
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
 
 
 
@@ -2385,6 +2609,8 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter
 export type GlobalOmitConfig = {
   guild?: Prisma.GuildOmit
+  roleMenu?: Prisma.RoleMenuOmit
+  roleMenuOption?: Prisma.RoleMenuOptionOmit
   permissionPrincipal?: Prisma.PermissionPrincipalOmit
   permissionDefinition?: Prisma.PermissionDefinitionOmit
   permissionAssignment?: Prisma.PermissionAssignmentOmit

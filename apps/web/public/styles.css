@@ -353,6 +353,17 @@ textarea { resize: vertical; min-height: 94px; }
 .button.compact { padding: 8px 11px; font-size: 13px; }
 .button.ghost { background: transparent; }
 
+.discord-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.discord-tabs .button {
+  text-decoration: none;
+}
+
 .table-wrap { overflow-x: auto; }
 
 table {

@@ -395,10 +395,6 @@ export type PermissionDefinitionNullableScalarRelationFilter = {
   isNot?: Prisma.PermissionDefinitionWhereInput | null
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type PermissionDefinitionCreateNestedOneWithoutAssignmentsInput = {
   create?: Prisma.XOR<Prisma.PermissionDefinitionCreateWithoutAssignmentsInput, Prisma.PermissionDefinitionUncheckedCreateWithoutAssignmentsInput>
   connectOrCreate?: Prisma.PermissionDefinitionCreateOrConnectWithoutAssignmentsInput

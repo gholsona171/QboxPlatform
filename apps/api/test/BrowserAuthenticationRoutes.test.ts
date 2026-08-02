@@ -60,6 +60,29 @@ describe("browser authentication routes", () => {
     await server.close();
   });
 
+  it("allows role-menu management routes through the existing permission authorizer", async () => {
+    const server = serverWithRoutes();
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/v1/discord/role-menus",
+      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
+    });
+    expect(response.statusCode).toBe(200);
+    expect(response.json().data).toEqual([{ id: "menu-1", title: "Community Roles", status: "PUBLISHED" }]);
+    await server.close();
+  });
+
+  it("denies role-menu management routes when permission authorization fails", async () => {
+    const server = serverWithRoutes({ roleMenuAllowed: false });
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/v1/discord/role-menus",
+      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
+    });
+    expect(response.statusCode).toBe(403);
+    await server.close();
+  });
+
   it("requires CSRF for logout while health remains public", async () => {
     const server = serverWithRoutes();
     const health = await server.inject({ method: "GET", url: "/health/live", headers: { host: "127.0.0.1:3000" } });
@@ -78,7 +101,7 @@ describe("browser authentication routes", () => {
   });
 });
 
-function serverWithRoutes(options: { readonly adminAllowed?: boolean } = {}) {
+function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean } = {}) {
   const auth = authenticationConfiguration();
   return createApiServer({
     configuration: ApiConfiguration.from({
@@ -146,7 +169,11 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean } = {}) {
         },
         authorizer: {
           authorize: async (request) => ({
-            allowed: request.required.includes("platform.admin") ? options.adminAllowed ?? true : true,
+            allowed: request.required.includes("discord.role-menus.manage")
+              ? options.roleMenuAllowed ?? true
+              : request.required.includes("platform.admin")
+                ? options.adminAllowed ?? true
+                : true,
             reason: "permissions-satisfied",
             effectivePermissions: request.required,
             deniedPermissions: [],
@@ -159,8 +186,11 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean } = {}) {
             operation({
               externalIdentities: { findById: async () => externalIdentity() },
               guildMemberships: { find: async () => membership() },
-            } as never),
+          } as never),
         },
+        roleMenus: {
+          listByGuild: async () => [{ id: "menu-1", title: "Community Roles", status: "PUBLISHED" }],
+        } as never,
         logger,
       }),
   });

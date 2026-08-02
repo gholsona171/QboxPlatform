@@ -16,6 +16,7 @@ import {
   PrismaPermissionPersistenceClient,
 } from "@qbox/database";
 import { logger } from "@qbox/logger";
+import { RoleMenuService } from "@qbox/role-menus";
 import {
   InMemoryPermissionCache,
   PersistentPermissionService,
@@ -113,6 +114,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     persistence.repositories.permissions,
     cache,
   );
+  const roleMenus = new RoleMenuService(persistence.repositories.roleMenus);
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -174,6 +176,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         memberships,
         guilds: persistence.repositories.guilds,
         authorizer,
+        roleMenus,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       }),

@@ -1,5 +1,5 @@
 import { appVersion } from "./data.js";
-import { adminCheck, loadHealth, loadMe, loginUrl, logout } from "./api.js";
+import { addRoleMenuOption, adminCheck, createRoleMenu, deleteRoleMenu, disableRoleMenu, listRoleMenus, loadHealth, loadMe, loginUrl, logout, publishRoleMenu } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
 import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
 
@@ -59,6 +59,7 @@ export function renderAccountChrome() {
 function route(page, state) {
   switch (page) {
     case "applications": return applicationsPage(state);
+    case "discord": return discordPage(state);
     case "tickets": return ticketsPage(state);
     case "staff": return staffPage(state);
     case "moderation": return moderationPage(state);
@@ -70,6 +71,123 @@ function route(page, state) {
     case "settings": return settingsPage(state);
     default: return overviewPage(state);
   }
+}
+
+function discordPage(state) {
+  const tab = new URLSearchParams(location.search).get("tab") || "overview";
+  const tabs = [
+    ["overview", "Overview"],
+    ["roles", "Role Menus"],
+    ["welcome", "Welcome and Goodbye"],
+    ["autoroles", "Autoroles"],
+    ["automod", "AutoMod and Filters"],
+    ["logs", "Server Logs"],
+    ["announcements", "Embeds and Announcements"],
+    ["scheduled", "Scheduled Messages and Reminders"],
+    ["giveaways", "Giveaways"],
+    ["levels", "Levels and Rewards"],
+    ["starboard", "Starboard"],
+    ["voice", "Voice Rooms"],
+    ["custom", "Custom Commands"],
+    ["utilities", "Server Utilities"],
+    ["settings", "Bot Settings"],
+  ];
+  return `
+    ${shellIntro("Discord Bot", "Discord remains fully usable without the portal. The portal configures and manages the same underlying features. Demo sections are browser-only until their backend is implemented.")}
+    <section class="discord-tabs" aria-label="Discord Bot sections">
+      ${tabs.map(([id, label]) => `<a class="button compact ${tab === id ? "primary" : "ghost"}" href="/discord?tab=${id}" data-route="discord" data-tab="${id}">${escapeHtml(label)}</a>`).join("")}
+    </section>
+    ${tab === "roles" ? discordRoleMenusPage(state) : discordCatalogPage(state, tab)}
+  `;
+}
+
+function discordCatalogPage(state, tab) {
+  const selected = state.discord.features.find((feature) => feature.name.toLowerCase().replaceAll(" ", "-").startsWith(tab));
+  return `
+    <section class="grid main-detail">
+      <div class="card">
+        <div class="split-line"><h2>Discord feature catalog</h2>${demoChip()}</div>
+        ${table(["Feature", "Status", "Control surfaces", "Notes"], state.discord.features.map((feature) => row([
+          ["Feature", `<strong>${escapeHtml(feature.name)}</strong>`],
+          ["Status", badge(feature.status)],
+          ["Control surfaces", feature.surfaces.map((surface) => `<span class="tag">${escapeHtml(surface)}</span>`).join(" ")],
+          ["Notes", escapeHtml(feature.summary)],
+        ])))}
+      </div>
+      <div class="card">
+        <h2>${escapeHtml(selected?.name ?? "Feature links")}</h2>
+        <p class="microcopy">Related product pages reuse the same future platform concepts instead of duplicating workflows.</p>
+        <div class="grid">
+          ${quick("tickets", "Discord Tickets -> Tickets")}
+          ${quick("verification", "Discord Verification -> Verification")}
+          ${quick("polls", "Discord Polls -> Polls")}
+          ${quick("moderation", "Discord Moderation -> Moderation")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function discordRoleMenusPage(state) {
+  return `
+    <section class="grid main-detail">
+      <div class="card">
+        <div class="split-line"><h2>Role Menus</h2>${badge(account ? "LIVE API when authorized" : "DEMO")}</div>
+        <p class="microcopy">Buttons and select menus are preferred. Reaction roles remain available for compatibility. Demo changes stay in this browser unless live API calls are authorized.</p>
+        <div class="toolbar">
+          <button class="button compact" data-action="load-live-role-menus">Load live menus</button>
+        </div>
+        ${table(["Menu", "Status", "Channel", "Presentation", "Mode", "Options"], state.discord.roleMenus.map((menu) => row([
+          ["Menu", `<strong>${escapeHtml(menu.title)}</strong><small>${escapeHtml(menu.id)}</small>`],
+          ["Status", badge(menu.status)],
+          ["Channel", `<code>${escapeHtml(menu.channelId)}</code>`],
+          ["Presentation", escapeHtml(menu.presentationType)],
+          ["Mode", escapeHtml(menu.assignmentMode)],
+          ["Options", String(menu.options.length)],
+        ], `class="clickable" data-select="${menu.id}"`)))}
+      </div>
+      <div class="card" id="detailPanel">${roleMenuDetail(state.discord.roleMenus[0])}</div>
+    </section>
+    <section class="card">
+      <h2>Create role menu</h2>
+      <form class="form-grid" data-action="create-role-menu">
+        ${input("title", "Title", "Notification Roles")}
+        ${input("channelId", "Discord channel ID", "1262656532902842423")}
+        ${select("presentationType", "Presentation", ["BUTTONS", "SELECT_MENU", "REACTIONS"])}
+        ${select("assignmentMode", "Assignment mode", ["TOGGLE", "ADD_ONLY", "REMOVE_ONLY", "EXCLUSIVE"])}
+        ${textarea("description", "Description", "Choose the Discord roles you want.")}
+        <button class="button primary full">Create role-menu draft</button>
+      </form>
+    </section>
+  `;
+}
+
+function roleMenuDetail(menu) {
+  if (!menu) return `<div class="empty-state">Select a role menu.</div>`;
+  return `
+    <div class="detail-stack" data-detail-id="${menu.id}">
+      <div class="split-line"><h2>${escapeHtml(menu.title)}</h2>${badge(menu.status)}</div>
+      ${detail("Guild", menu.guildId)}
+      ${detail("Channel", menu.channelId)}
+      ${detail("Message", menu.messageId ? `https://discord.com/channels/${menu.guildId}/${menu.channelId}/${menu.messageId}` : "Not published")}
+      ${detail("Presentation", menu.presentationType)}
+      ${detail("Mode", menu.assignmentMode)}
+      <h3>Options</h3>
+      <ul class="list">${menu.options.map((option) => `<li><strong>${escapeHtml(option.label)}</strong><small>${escapeHtml(option.emoji || "No emoji")} - role ${escapeHtml(option.roleId)}</small></li>`).join("") || "<li>No options yet.</li>"}</ul>
+      <form class="form-grid" data-action="add-role-menu-option">
+        ${input("roleId", "Role ID", "1262656532902842429")}
+        ${input("label", "Label", "Announcements")}
+        ${input("emoji", "Emoji", "Bell")}
+        <button class="button full">Add option</button>
+      </form>
+      <div class="toolbar">
+        <button class="button" data-action="publish-role-menu">Publish/republish demo</button>
+        <button class="button" data-action="disable-role-menu">Disable</button>
+        <button class="button danger" data-action="delete-role-menu">Delete</button>
+      </div>
+      <h3>Status history</h3>${timeline(menu.history)}
+    </div>
+  `;
 }
 
 function shellIntro(title, description) {
@@ -302,6 +420,7 @@ function selectDetail(page, id) {
     moderation: () => moderationDetail(state.moderation.find((i) => i.id === id)),
     verification: () => verificationDetail(state.verification.find((i) => i.id === id)),
     knowledge: () => articleDetail(state.articles.find((i) => i.id === id)),
+    discord: () => roleMenuDetail(state.discord.roleMenus.find((i) => i.id === id)),
   };
   panel.innerHTML = maps[page]?.() || "";
   bindPageEvents(page);
@@ -335,6 +454,21 @@ async function handleForm(event, action) {
       draft.articles.unshift({ id: `KB-${700 + draft.articles.length}`, title: data.title, category: data.category, summary: String(data.body).slice(0, 90), status: data.status, tags: String(data.tags).split(",").map((tag) => tag.trim()).filter(Boolean), body: data.body, edited: "Just now" });
       recordActivity(draft, `Article created: ${data.title}`, "Knowledge Base");
     }
+    if (action === "create-role-menu") {
+      draft.discord.roleMenus.unshift({ id: `RM-${200 + draft.discord.roleMenus.length}`, title: data.title, description: data.description, status: "DRAFT", guildId: "1257928923048837201", channelId: data.channelId, messageId: "", presentationType: data.presentationType, assignmentMode: data.assignmentMode, options: [], history: [{ at: "Just now", action: "Role-menu draft created in Demo Mode" }] });
+      recordActivity(draft, `Role menu created: ${data.title}`, "Discord Bot");
+    }
+    if (action === "add-role-menu-option") {
+      const id = event.currentTarget.closest("[data-detail-id]")?.dataset.detailId;
+      const menu = draft.discord.roleMenus.find((candidate) => candidate.id === id);
+      if (menu) {
+        menu.options.push({ id: `RM-OPT-${Date.now()}`, roleId: data.roleId, label: data.label, emoji: data.emoji, description: `${data.label} demo option.` });
+        menu.status = "DRAFT";
+        menu.history.unshift({ at: "Just now", action: `Option added for role ${data.roleId}` });
+        recordActivity(draft, `Role-menu option added to ${menu.title}`, "Discord Bot");
+        if (account) void addRoleMenuOption(menu.id, { roleId: data.roleId, label: data.label, emoji: data.emoji }).catch((error) => notify(error.message || "Live option add unavailable. Demo state updated only.", "warning"));
+      }
+    }
     if (action === "save-settings") {
       draft.settings.theme = "dark";
       draft.settings.notifications = data.notifications === "On";
@@ -361,6 +495,10 @@ async function handleAction(action, element) {
   if (action === "remove-birthday") return confirmThen("Remove Birthday", "This removes a demo birthday from this browser only.", () => mutateAndRender((s) => { s.birthdays = s.birthdays.filter((b) => b.id !== id); recordActivity(s, "Birthday removed", "Birthdays"); }));
   if (action === "restart-server") return confirmThen("Demo Restart", "This records a demo activity item only. No FiveM server command is sent.", () => mutateAndRender((s) => recordActivity(s, "FiveM restart demo action previewed", "FiveM")));
   if (action === "send-announcement") return mutateAndRender((s) => { s.fivem.announcements.unshift(value("[data-action='fivem-announcement']")); recordActivity(s, "FiveM announcement preview saved", "FiveM"); });
+  if (action === "load-live-role-menus") return loadLiveRoleMenus();
+  if (action === "publish-role-menu") return updateRoleMenu(action, id);
+  if (action === "disable-role-menu") return updateRoleMenu(action, id);
+  if (action === "delete-role-menu") return updateRoleMenu(action, id);
   if (action === "toggle-resource") return mutateAndRender((s) => { const r = s.fivem.resources.find((resource) => resource.name === element.dataset.resource); r.status = r.status === "Running" ? "Stopped" : "Running"; recordActivity(s, `${r.name} toggled in Demo Mode`, "FiveM"); });
   if (["approve-verification", "reject-verification", "more-info-verification"].includes(action)) return updateVerification(action, id);
   if (["promote-staff", "demote-staff", "save-staff"].includes(action)) return updateStaff(action, id);
@@ -368,6 +506,57 @@ async function handleAction(action, element) {
   if (["save-application", "delete-application"].includes(action)) return updateApplication(action, id);
   if (["save-ticket", "reopen-ticket"].includes(action)) return updateTicket(action, id);
   if (action === "save-article") return mutateAndRender((s) => { const item = s.articles.find((i) => i.id === id); item.status = value("[data-action='article-status']"); item.body = value("[data-action='article-body']"); item.edited = "Just now"; recordActivity(s, `Article updated: ${item.title}`, "Knowledge Base"); });
+}
+
+async function loadLiveRoleMenus() {
+  try {
+    const result = await listRoleMenus();
+    mutateDemoState((draft) => {
+      draft.discord.roleMenus = result.data.map((menu) => ({
+        id: menu.id,
+        title: menu.title,
+        description: menu.description || "",
+        status: menu.status,
+        guildId: menu.guildId,
+        channelId: menu.channelId,
+        messageId: menu.messageId || "",
+        presentationType: menu.presentationType,
+        assignmentMode: menu.assignmentMode,
+        options: menu.options,
+        history: [{ at: "Live API", action: "Loaded from persistent role-menu service" }],
+      }));
+      recordActivity(draft, "Live role menus loaded from API", "Discord Bot");
+    });
+    notify("Live role menus loaded.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Live role menus unavailable. Demo Mode remains usable.", "warning");
+  }
+}
+
+function updateRoleMenu(action, id) {
+  if (action === "delete-role-menu") {
+    return confirmThen("Delete role menu", "This removes a demo role-menu configuration from this browser only unless you use the live API directly.", async () => {
+      try { if (account) await deleteRoleMenu(id); } catch (error) { notify(error.message || "Live delete unavailable. Applying demo change only.", "warning"); }
+      mutateAndRender((s) => { s.discord.roleMenus = s.discord.roleMenus.filter((menu) => menu.id !== id); recordActivity(s, "Role menu deleted in Demo Mode", "Discord Bot"); });
+    });
+  }
+  return mutateAndRender((s) => {
+    const menu = s.discord.roleMenus.find((candidate) => candidate.id === id);
+    if (!menu) return;
+    if (action === "publish-role-menu") {
+      menu.status = "PUBLISHED";
+      menu.messageId = menu.messageId || "1432100000000000001";
+      menu.history.unshift({ at: "Just now", action: "Publish preview recorded in Demo Mode" });
+      if (account) void publishRoleMenu(menu.id, menu.messageId).catch((error) => notify(error.message || "Live publish unavailable. Demo state updated only.", "warning"));
+    }
+    if (action === "disable-role-menu") {
+      menu.status = "DISABLED";
+      menu.history.unshift({ at: "Just now", action: "Disabled in Demo Mode" });
+      if (account) void disableRoleMenu(menu.id).catch((error) => notify(error.message || "Live disable unavailable. Demo state updated only.", "warning"));
+    }
+    recordActivity(s, `Role menu ${menu.title} changed to ${menu.status}`, "Discord Bot");
+  });
 }
 
 function updateApplication(action, id) {

@@ -20,6 +20,46 @@ export async function adminCheck() {
   return requestJson("/api/v1/admin-check");
 }
 
+export async function listRoleMenus() {
+  return requestJson("/api/v1/discord/role-menus");
+}
+
+export async function createRoleMenu(input) {
+  return requestJson("/api/v1/discord/role-menus", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function addRoleMenuOption(menuId, input) {
+  return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}/options`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function publishRoleMenu(menuId, messageId) {
+  return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}/publish`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ messageId }),
+  });
+}
+
+export async function disableRoleMenu(menuId) {
+  return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}/disable`, {
+    method: "POST",
+  });
+}
+
+export async function deleteRoleMenu(menuId) {
+  return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}`, {
+    method: "DELETE",
+  });
+}
+
 export async function logout() {
   const csrf = cookieValue(csrfCookieName);
   if (!csrf) throw Object.assign(new Error("Session expired."), { code: "AUTHENTICATION_REQUIRED" });

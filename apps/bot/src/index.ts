@@ -57,7 +57,11 @@ kernel.registerModule(
     },
   ),
 );
-kernel.registerModule(new DiscordModule(authorizer, compatibility));
+kernel.registerModule(
+  new DiscordModule(authorizer, compatibility, {
+    roleMenuRepository: persistence.repositories.roleMenus,
+  }),
+);
 
 let shuttingDown = false;
 

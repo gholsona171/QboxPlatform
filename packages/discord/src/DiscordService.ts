@@ -1,13 +1,16 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
-import type { Interaction } from "discord.js";
+import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
+import type { Interaction, MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 
 import { env } from "@qbox/shared";
 import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
+import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
 import { DiscordInteractionHandler } from "./interactions/DiscordInteractionHandler.js";
+import { DiscordRoleMenuGateway } from "./roleMenus/DiscordRoleMenuGateway.js";
+import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuInteractionHandler.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -44,12 +47,15 @@ export class DiscordService {
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.MessageContent,
+      GatewayIntentBits.GuildMessageReactions,
     ],
+    partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   });
 
   public readonly commands: CommandRegistry;
+  public readonly roleMenus: RoleMenuService | undefined;
   private readonly interactions: DiscordInteractionHandler;
+  private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly interactionListener = (interaction: Interaction): void => {
     void this.interactions.handle(interaction).catch((error: unknown) => {
       logger.error(
@@ -63,11 +69,34 @@ export class DiscordService {
       );
     });
   };
+  private readonly reactionAddListener = (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser): void => {
+    void this.roleMenuInteractions?.handleReaction(reaction, user, "add").catch((error: unknown) => {
+      logger.error({ err: error, stack: error instanceof Error ? error.stack : undefined }, "Unhandled Discord role-menu reaction-add failure.");
+    });
+  };
+  private readonly reactionRemoveListener = (reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser): void => {
+    void this.roleMenuInteractions?.handleReaction(reaction, user, "remove").catch((error: unknown) => {
+      logger.error({ err: error, stack: error instanceof Error ? error.stack : undefined }, "Unhandled Discord role-menu reaction-remove failure.");
+    });
+  };
 
-  public constructor(permissionAuthorizer: PermissionAuthorizer) {
+  public constructor(
+    permissionAuthorizer: PermissionAuthorizer,
+    roleMenuRepository?: RoleMenuRepository,
+  ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
+    if (roleMenuRepository) {
+      this.roleMenus = new RoleMenuService(
+        roleMenuRepository,
+        new DiscordRoleMenuGateway(this.client),
+      );
+      this.roleMenuInteractions = new DiscordRoleMenuInteractionHandler(
+        this.roleMenus,
+      );
+    }
     this.interactions = new DiscordInteractionHandler(this.commands, {
       executionTimeoutMs: readExecutionTimeout(),
+      ...(this.roleMenuInteractions ? { roleMenuInteractions: this.roleMenuInteractions } : {}),
     });
   }
 
@@ -85,6 +114,8 @@ export class DiscordService {
     }
 
     this.client.on(Events.InteractionCreate, this.interactionListener);
+    this.client.on(Events.MessageReactionAdd, this.reactionAddListener);
+    this.client.on(Events.MessageReactionRemove, this.reactionRemoveListener);
 
     logger.info(
       {
@@ -97,6 +128,8 @@ export class DiscordService {
       await this.client.login(env.DISCORD_TOKEN);
     } catch (error) {
       this.client.off(Events.InteractionCreate, this.interactionListener);
+      this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
+      this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
       this.client.destroy();
       throw error;
     }
@@ -202,6 +235,8 @@ export class DiscordService {
   public async stop(): Promise<void> {
     await this.interactions.shutdown(readShutdownTimeout());
     this.client.off(Events.InteractionCreate, this.interactionListener);
+    this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
+    this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.client.destroy();
   }
 }

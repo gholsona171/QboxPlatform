@@ -52,6 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   Guild: 'Guild',
+  RoleMenu: 'RoleMenu',
+  RoleMenuOption: 'RoleMenuOption',
   PermissionPrincipal: 'PermissionPrincipal',
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
@@ -94,6 +96,38 @@ export const GuildScalarFieldEnum = {
 } as const
 
 export type GuildScalarFieldEnum = (typeof GuildScalarFieldEnum)[keyof typeof GuildScalarFieldEnum]
+
+
+export const RoleMenuScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  presentationType: 'presentationType',
+  assignmentMode: 'assignmentMode',
+  status: 'status',
+  createdByDiscordUserId: 'createdByDiscordUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoleMenuScalarFieldEnum = (typeof RoleMenuScalarFieldEnum)[keyof typeof RoleMenuScalarFieldEnum]
+
+
+export const RoleMenuOptionScalarFieldEnum = {
+  id: 'id',
+  roleMenuId: 'roleMenuId',
+  roleId: 'roleId',
+  label: 'label',
+  description: 'description',
+  emoji: 'emoji',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type RoleMenuOptionScalarFieldEnum = (typeof RoleMenuOptionScalarFieldEnum)[keyof typeof RoleMenuOptionScalarFieldEnum]
 
 
 export const PermissionPrincipalScalarFieldEnum = {

@@ -15,6 +15,7 @@ describe("permission catalog", () => {
   it.each([
     "platform.owner",
     "moderation.warn",
+    "discord.role-menus.manage",
     "tickets.close",
     "knowledge.publish",
   ])("accepts lowercase dot-separated syntax for %s", (permission) =>

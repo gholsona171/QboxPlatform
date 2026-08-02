@@ -2,8 +2,10 @@ import type { PlatformModule, PlatformModuleContext } from "@qbox/core";
 
 import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
+import type { RoleMenuRepository } from "@qbox/role-menus";
 import { env } from "@qbox/shared";
 
+import { RoleMenuCommand } from "./commands/RoleMenu.command.js";
 import { DiscordService } from "./DiscordService.js";
 import { CommandLoadError, CommandLoader } from "./loaders/CommandLoader.js";
 
@@ -24,10 +26,11 @@ export class DiscordModule implements PlatformModule {
     dependencies: {
       readonly discordService?: DiscordService;
       readonly commandLoader?: CommandLoader;
+      readonly roleMenuRepository?: RoleMenuRepository;
     } = {},
   ) {
     this.discordService =
-      dependencies.discordService ?? new DiscordService(permissionAuthorizer);
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository);
     this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
   }
 
@@ -60,7 +63,8 @@ export class DiscordModule implements PlatformModule {
     let registered: number;
 
     try {
-      registered = this.discordService.registerCommands(loadResult.commands);
+      const commands = [...loadResult.commands, new RoleMenuCommand(this.discordService.roleMenus)];
+      registered = this.discordService.registerCommands(commands);
     } catch (error) {
       logger.error(
         {

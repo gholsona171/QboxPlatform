@@ -69,6 +69,9 @@ importers:
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../../packages/permissions
+      '@qbox/role-menus':
+        specifier: workspace:*
+        version: link:../../modules/role-menus
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -108,6 +111,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  modules/role-menus: {}
+
   packages/authentication: {}
 
   packages/core:
@@ -127,6 +132,9 @@ importers:
       '@qbox/prisma':
         specifier: workspace:*
         version: link:../prisma
+      '@qbox/role-menus':
+        specifier: workspace:*
+        version: link:../../modules/role-menus
 
   packages/discord:
     dependencies:
@@ -139,6 +147,9 @@ importers:
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
+      '@qbox/role-menus':
+        specifier: workspace:*
+        version: link:../../modules/role-menus
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared

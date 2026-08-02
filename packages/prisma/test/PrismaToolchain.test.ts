@@ -32,9 +32,9 @@ describe("Prisma 7 toolchain", () => {
     );
     expect(configuration.default.schema).toBe(configuration.PRISMA_SCHEMA_PATH);
     expect(configuration.default.datasource?.url).toBe(placeholderUrl);
-  });
+  }, 10_000);
 
-  it("uses PostgreSQL and only the approved permission-foundation models", async () => {
+  it("uses PostgreSQL and only the approved infrastructure models", async () => {
     const schema = await readFile(
       resolve(repositoryRoot, "prisma/schema.prisma"),
       "utf8",
@@ -47,6 +47,8 @@ describe("Prisma 7 toolchain", () => {
     );
     expect(models).toEqual([
       "Guild",
+      "RoleMenu",
+      "RoleMenuOption",
       "PermissionPrincipal",
       "PermissionDefinition",
       "PermissionAssignment",

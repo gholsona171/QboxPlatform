@@ -32,7 +32,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await client.$executeRawUnsafe(
-    'TRUNCATE TABLE "authentication_audit_events", "discord_guild_membership_roles", "discord_guild_memberships", "oauth_credentials", "oauth_transactions", "browser_sessions", "external_identities", "platform_users", "permission_audit_events", "permission_assignments", "permission_principals", "permission_definitions", "permission_catalog_state", "guilds" CASCADE',
+    'TRUNCATE TABLE "authentication_audit_events", "discord_guild_membership_roles", "discord_guild_memberships", "oauth_credentials", "oauth_transactions", "browser_sessions", "external_identities", "platform_users", "role_menu_options", "role_menus", "permission_audit_events", "permission_assignments", "permission_principals", "permission_definitions", "permission_catalog_state", "guilds" CASCADE',
   );
 });
 
@@ -57,6 +57,8 @@ describe("permission foundation migration", () => {
       "20260731234500_owner_protection_audit_actions",
       "20260801000000_authentication_foundation",
       "20260801030000_oauth_pkce_mode",
+      "20260802090000_role_menus",
+      "20260802093000_permission_hyphenated_segments",
     ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",

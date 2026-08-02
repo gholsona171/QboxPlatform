@@ -148,6 +148,25 @@ enum DiscordGuildMembershipSource {
   COMBINED      @map("combined")
 }
 
+enum RoleMenuPresentationType {
+  BUTTONS     @map("buttons")
+  SELECT_MENU @map("select-menu")
+  REACTIONS   @map("reactions")
+}
+
+enum RoleMenuAssignmentMode {
+  TOGGLE      @map("toggle")
+  ADD_ONLY    @map("add-only")
+  REMOVE_ONLY @map("remove-only")
+  EXCLUSIVE   @map("exclusive")
+}
+
+enum RoleMenuStatus {
+  DRAFT     @map("draft")
+  PUBLISHED @map("published")
+  DISABLED  @map("disabled")
+}
+
 enum AuthenticationAuditAction {
   LOGIN_START           @map("login-start")
   LOGIN_SUCCESS         @map("login-success")
@@ -214,8 +233,49 @@ model Guild {
   assignments      PermissionAssignment[]
   auditScopeEvents PermissionAuditEvent[]   @relation("AuditScopeGuild")
   authMemberships  DiscordGuildMembership[]
+  roleMenus        RoleMenu[]
 
   @@map("guilds")
+}
+
+model RoleMenu {
+  id                     String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId                String                   @map("guild_id") @db.Uuid
+  channelId              String                   @map("channel_id")
+  messageId              String?                  @map("message_id")
+  title                  String
+  description            String?
+  presentationType       RoleMenuPresentationType @map("presentation_type")
+  assignmentMode         RoleMenuAssignmentMode   @map("assignment_mode")
+  status                 RoleMenuStatus           @default(DRAFT)
+  createdByDiscordUserId String                   @map("created_by_discord_user_id")
+  createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt              DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild   Guild            @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  options RoleMenuOption[]
+
+  @@index([guildId, status], map: "role_menus_guild_status_idx")
+  @@index([guildId, channelId, messageId], map: "role_menus_published_message_idx")
+  @@map("role_menus")
+}
+
+model RoleMenuOption {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roleMenuId  String   @map("role_menu_id") @db.Uuid
+  roleId      String   @map("role_id")
+  label       String
+  description String?
+  emoji       String?
+  position    Int
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  roleMenu RoleMenu @relation(fields: [roleMenuId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([roleMenuId, position], map: "role_menu_options_position_key")
+  @@unique([roleMenuId, roleId], map: "role_menu_options_role_key")
+  @@index([roleId], map: "role_menu_options_role_idx")
+  @@map("role_menu_options")
 }
 
 model PermissionPrincipal {

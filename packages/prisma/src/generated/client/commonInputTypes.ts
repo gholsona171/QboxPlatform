@@ -193,23 +193,6 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
-export type EnumPermissionPrincipalTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel> | $Enums.PermissionPrincipalType
-}
-
-export type EnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionPrincipalType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
-}
-
 export type StringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -223,6 +206,27 @@ export type StringNullableFilter<$PrismaModel = never> = {
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
   mode?: Prisma.QueryMode
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
+}
+
+export type EnumRoleMenuPresentationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuPresentationType | Prisma.EnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel> | $Enums.RoleMenuPresentationType
+}
+
+export type EnumRoleMenuAssignmentModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuAssignmentMode | Prisma.EnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel> | $Enums.RoleMenuAssignmentMode
+}
+
+export type EnumRoleMenuStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuStatus | Prisma.EnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel> | $Enums.RoleMenuStatus
 }
 
 export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -241,6 +245,80 @@ export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type EnumRoleMenuPresentationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuPresentationType | Prisma.EnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuPresentationTypeWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuPresentationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel>
+}
+
+export type EnumRoleMenuAssignmentModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuAssignmentMode | Prisma.EnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuAssignmentModeWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuAssignmentMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel>
+}
+
+export type EnumRoleMenuStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuStatus | Prisma.EnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuStatusWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel>
+}
+
+export type IntFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntFilter<$PrismaModel> | number
+}
+
+export type IntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedIntFilter<$PrismaModel>
+  _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type EnumPermissionPrincipalTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel> | $Enums.PermissionPrincipalType
+}
+
+export type EnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionPrincipalType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
 }
 
 export type EnumPermissionScopeTypeFilter<$PrismaModel = never> = {
@@ -447,17 +525,6 @@ export type EnumPlatformUserStatusFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPlatformUserStatusFilter<$PrismaModel> | $Enums.PlatformUserStatus
 }
 
-export type IntFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntFilter<$PrismaModel> | number
-}
-
 export type EnumPlatformUserStatusReasonCodeFilter<$PrismaModel = never> = {
   equals?: $Enums.PlatformUserStatusReasonCode | Prisma.EnumPlatformUserStatusReasonCodeFieldRefInput<$PrismaModel>
   in?: $Enums.PlatformUserStatusReasonCode[] | Prisma.ListEnumPlatformUserStatusReasonCodeFieldRefInput<$PrismaModel>
@@ -473,22 +540,6 @@ export type EnumPlatformUserStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPlatformUserStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPlatformUserStatusFilter<$PrismaModel>
-}
-
-export type IntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedIntFilter<$PrismaModel>
-  _max?: Prisma.NestedIntFilter<$PrismaModel>
 }
 
 export type EnumPlatformUserStatusReasonCodeWithAggregatesFilter<$PrismaModel = never> = {
@@ -999,23 +1050,6 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
-export type NestedEnumPermissionPrincipalTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel> | $Enums.PermissionPrincipalType
-}
-
-export type NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionPrincipalType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
-}
-
 export type NestedStringNullableFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
@@ -1028,6 +1062,27 @@ export type NestedStringNullableFilter<$PrismaModel = never> = {
   startsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
   endsWith?: string | Prisma.StringFieldRefInput<$PrismaModel>
   not?: Prisma.NestedStringNullableFilter<$PrismaModel> | string | null
+}
+
+export type NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuPresentationType | Prisma.EnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel> | $Enums.RoleMenuPresentationType
+}
+
+export type NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuAssignmentMode | Prisma.EnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel> | $Enums.RoleMenuAssignmentMode
+}
+
+export type NestedEnumRoleMenuStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuStatus | Prisma.EnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel> | $Enums.RoleMenuStatus
 }
 
 export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -1045,6 +1100,80 @@ export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedStringNullableFilter<$PrismaModel>
   _max?: Prisma.NestedStringNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumRoleMenuPresentationTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuPresentationType | Prisma.EnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuPresentationType[] | Prisma.ListEnumRoleMenuPresentationTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuPresentationTypeWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuPresentationType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuPresentationTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumRoleMenuAssignmentModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuAssignmentMode | Prisma.EnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuAssignmentMode[] | Prisma.ListEnumRoleMenuAssignmentModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuAssignmentModeWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuAssignmentMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuAssignmentModeFilter<$PrismaModel>
+}
+
+export type NestedEnumRoleMenuStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RoleMenuStatus | Prisma.EnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RoleMenuStatus[] | Prisma.ListEnumRoleMenuStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRoleMenuStatusWithAggregatesFilter<$PrismaModel> | $Enums.RoleMenuStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRoleMenuStatusFilter<$PrismaModel>
+}
+
+export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedIntFilter<$PrismaModel>
+  _max?: Prisma.NestedIntFilter<$PrismaModel>
+}
+
+export type NestedFloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type NestedEnumPermissionPrincipalTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel> | $Enums.PermissionPrincipalType
+}
+
+export type NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PermissionPrincipalType | Prisma.EnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PermissionPrincipalType[] | Prisma.ListEnumPermissionPrincipalTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPermissionPrincipalTypeWithAggregatesFilter<$PrismaModel> | $Enums.PermissionPrincipalType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPermissionPrincipalTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumPermissionScopeTypeFilter<$PrismaModel = never> = {
@@ -1237,33 +1366,6 @@ export type NestedEnumPlatformUserStatusWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPlatformUserStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPlatformUserStatusFilter<$PrismaModel>
-}
-
-export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedIntFilter<$PrismaModel>
-  _max?: Prisma.NestedIntFilter<$PrismaModel>
-}
-
-export type NestedFloatFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
-  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedFloatFilter<$PrismaModel> | number
 }
 
 export type NestedEnumPlatformUserStatusReasonCodeWithAggregatesFilter<$PrismaModel = never> = {
