@@ -737,7 +737,7 @@ async function safeRoleMenuCall<T>(operation: () => Promise<T>): Promise<T> {
     return await operation();
   } catch (error) {
     if (error instanceof RoleMenuError) {
-      if (error.code === "CONFLICT") throw new ConflictApiError();
+      if (error.code === "CONFLICT") throw new ConflictApiError(conflictDetails("roleMenu", error.details));
       throw new ValidationApiError([
         { path: ["roleMenu"], code: error.code, message: error.message },
       ]);
@@ -751,7 +751,7 @@ async function safeCommunityCall<T>(operation: () => Promise<T>): Promise<T> {
     return await operation();
   } catch (error) {
     if (error instanceof CommunityFeatureError) {
-      if (error.code === "CONFLICT") throw new ConflictApiError();
+      if (error.code === "CONFLICT") throw new ConflictApiError(conflictDetails("community", error.details));
       if (error.code === "DEPENDENCY_UNAVAILABLE") throw new DependencyUnavailableApiError();
       throw new ValidationApiError([
         { path: ["community"], code: error.code, message: error.message },
@@ -759,6 +759,17 @@ async function safeCommunityCall<T>(operation: () => Promise<T>): Promise<T> {
     }
     throw error;
   }
+}
+
+function conflictDetails(
+  path: string,
+  details: Readonly<Record<string, string | number>> | undefined,
+): readonly Readonly<Record<string, unknown>>[] {
+  return [{
+    path,
+    code: "STALE_REVISION",
+    ...(details ?? {}),
+  }];
 }
 
 async function safeRoleCall<T>(operation: () => Promise<T>): Promise<T> {

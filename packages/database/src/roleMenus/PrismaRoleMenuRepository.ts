@@ -220,9 +220,12 @@ async function updateMenuRevision(
     },
   });
   if (result.count === 0) {
-    const existing = await client.roleMenu.findUnique({ where: { id: roleMenuId }, select: { id: true } });
+    const existing = await client.roleMenu.findUnique({ where: { id: roleMenuId }, select: { id: true, revision: true, updatedAt: true } });
     throw existing
-      ? new RoleMenuError("CONFLICT", "Role menu was changed by another operation.")
+      ? new RoleMenuError("CONFLICT", "Role menu was changed by another operation.", {
+        currentRevision: existing.revision,
+        currentUpdatedAt: existing.updatedAt.toISOString(),
+      })
       : new RoleMenuError("NOT_FOUND", "Role menu was not found.");
   }
 }

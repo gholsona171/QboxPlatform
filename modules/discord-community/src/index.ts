@@ -324,6 +324,7 @@ export class CommunityFeatureError extends Error {
   public constructor(
     public readonly code: "INVALID_INPUT" | "NOT_FOUND" | "DISABLED" | "FORBIDDEN" | "DEPENDENCY_UNAVAILABLE" | "CONFLICT",
     message: string,
+    public readonly details?: Readonly<Record<string, string | number>> | undefined,
   ) {
     super(message);
     this.name = "CommunityFeatureError";

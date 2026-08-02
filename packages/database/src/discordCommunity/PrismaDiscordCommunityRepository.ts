@@ -285,7 +285,13 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
         revision: { increment: 1 },
       },
     });
-    if (result.count === 0) throw new CommunityFeatureError("CONFLICT", "Autorole configuration was changed by another operation.");
+    if (result.count === 0) {
+      const current = await this.client.autoroleConfig.findUnique({ where: { guildId }, select: { revision: true, updatedAt: true } });
+      throw new CommunityFeatureError("CONFLICT", "Autorole configuration was changed by another operation.", current ? {
+        currentRevision: current.revision,
+        currentUpdatedAt: current.updatedAt.toISOString(),
+      } : undefined);
+    }
     return this.client.autoroleConfig.findUniqueOrThrow({ where: { guildId } });
   }
 
@@ -304,7 +310,13 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
         revision: { increment: 1 },
       },
     });
-    if (result.count === 0) throw new CommunityFeatureError("CONFLICT", "Rules configuration was changed by another operation.");
+    if (result.count === 0) {
+      const current = await this.client.rulesConfig.findUnique({ where: { guildId }, select: { revision: true, updatedAt: true } });
+      throw new CommunityFeatureError("CONFLICT", "Rules configuration was changed by another operation.", current ? {
+        currentRevision: current.revision,
+        currentUpdatedAt: current.updatedAt.toISOString(),
+      } : undefined);
+    }
     return this.client.rulesConfig.findUniqueOrThrow({ where: { guildId } });
   }
 }

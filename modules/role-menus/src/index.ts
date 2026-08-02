@@ -127,6 +127,7 @@ export class RoleMenuError extends Error {
       | "ROLE_NOT_ASSIGNABLE"
       | "CONFLICT",
     message: string,
+    public readonly details?: Readonly<Record<string, string | number>> | undefined,
   ) {
     super(message);
     this.name = "RoleMenuError";

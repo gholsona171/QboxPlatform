@@ -56,8 +56,8 @@ export class NotFoundApiError extends ApiError {
 }
 
 export class ConflictApiError extends ApiError {
-  public constructor() {
-    super("RESOURCE_CONFLICT", 409, "Resource conflict", "The request conflicts with current resource state.", "warn");
+  public constructor(details?: readonly Readonly<Record<string, unknown>>[]) {
+    super("RESOURCE_CONFLICT", 409, "Resource conflict", "The request conflicts with current resource state.", "warn", details);
   }
 }
 
