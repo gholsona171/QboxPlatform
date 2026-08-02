@@ -61,6 +61,7 @@ kernel.registerModule(
   new DiscordModule(authorizer, compatibility, {
     roleMenuRepository: persistence.repositories.roleMenus,
     communityRepository: persistence.repositories.discordCommunity,
+    roleDependencyRepository: persistence.repositories.discordRoles,
   }),
 );
 

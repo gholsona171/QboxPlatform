@@ -69,6 +69,12 @@ export function seedDemoData() {
     ],
     discord: {
       features: featureRegistry.map(featureFromRegistry),
+      roles: [
+        discordRole("1257928923048837201", "@everyone", "#000000", 0, false, false, false, 2418, false, false, 0),
+        discordRole("1262656532902842423", "Platform Admin", "#f97316", 8, true, false, false, 5, false, false, 3, "Role is above the demo bot role."),
+        discordRole("1262656532902842424", "Member", "#22c55e", 4, false, false, false, 2390, true, true, 1),
+        discordRole("1262656532902842425", "Pending Rules", "#94a3b8", 2, false, false, false, 28, true, true, 1),
+      ],
       roleMenus: [
         roleMenu("RM-100", "Community Roles", "PUBLISHED", "1257928923048837201", "1262656532902842423", "BUTTONS", "TOGGLE", [
           roleOption("RM-OPT-1", "1262656532902842423", "Staff Alerts", "Bell"),
@@ -238,4 +244,8 @@ function roleMenu(id, title, status, guildId, channelId, presentationType, assig
 
 function roleOption(id, roleId, label, emoji) {
   return { id, roleId, label, emoji, description: `${label} demo option.` };
+}
+
+function discordRole(id, name, color, position, hoisted, mentionable, managed, memberCount, assignable, editable, dependencyCount, unavailableReason = "") {
+  return { id, guildId: "1257928923048837201", name, color, position, hoisted, mentionable, managed, memberCount, assignable, editable, deletable: editable, dependencyCount, unavailableReason };
 }

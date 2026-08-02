@@ -12,6 +12,7 @@ describe("community command discovery", () => {
       "ping",
       "adminping",
       "role-menu",
+      "roles",
       "welcome",
       "goodbye",
       "autorole",

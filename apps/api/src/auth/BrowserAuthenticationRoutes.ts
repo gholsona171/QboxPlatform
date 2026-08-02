@@ -29,6 +29,7 @@ import type {
 } from "@qbox/permissions";
 import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
 import type { CounterType, DiscordCommunityService, SuggestionStatus } from "@qbox/discord-community";
+import { RoleManagementError, type RoleManagementService } from "@qbox/discord-roles";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
@@ -51,6 +52,7 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly authorizer: PermissionAuthorizer;
   readonly roleMenus: RoleMenuService;
   readonly community: DiscordCommunityService;
+  readonly roles: RoleManagementService;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -383,6 +385,149 @@ export async function registerBrowserAuthenticationRoutes(
     return { data: await dependencies.roleMenus.disable(param(request, "id")) };
   });
 
+  server.get("/api/v1/discord/roles", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.listRoles(diagnostics.discordGuildId)) };
+  });
+
+  server.get("/api/v1/discord/roles/capabilities", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.capabilities(diagnostics.discordGuildId)) };
+  });
+
+  server.get("/api/v1/discord/roles/:roleId", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.inspectRole(diagnostics.discordGuildId, param(request, "roleId"))) };
+  });
+
+  server.get("/api/v1/discord/roles/:roleId/dependencies", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await dependencies.roles.listDependencies(diagnostics.discordGuildId, param(request, "roleId")) };
+  });
+
+  server.post("/api/v1/discord/roles", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    const { account } = await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    const body = objectBody(request);
+    const allowAdministrator = await roleAdministratorAllowed(request, dependencies, body);
+    return {
+      data: await safeRoleCall(() =>
+        dependencies.roles.createRole({
+          guildId: diagnostics.discordGuildId,
+          name: stringField(body, "name"),
+          ...(optionalStringField(body, "color") === undefined ? {} : { color: optionalStringField(body, "color") }),
+          ...(optionalBooleanField(body, "hoist") === undefined ? {} : { hoist: optionalBooleanField(body, "hoist") }),
+          ...(optionalBooleanField(body, "mentionable") === undefined ? {} : { mentionable: optionalBooleanField(body, "mentionable") }),
+          ...(optionalIntegerField(body, "position") === undefined ? {} : { position: optionalIntegerField(body, "position") }),
+          ...(allowAdministrator ? { allowAdministrator } : {}),
+          actor: { type: "platform-user", id: account.identity.providerSubjectId },
+          source: "WEB",
+        }),
+      ),
+    };
+  });
+
+  server.patch("/api/v1/discord/roles/:roleId", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    const { account } = await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    const body = objectBody(request);
+    const allowAdministrator = await roleAdministratorAllowed(request, dependencies, body);
+    const name = optionalStringField(body, "name");
+    const color = optionalStringField(body, "color");
+    const hoist = optionalBooleanField(body, "hoist");
+    const mentionable = optionalBooleanField(body, "mentionable");
+    const position = optionalIntegerField(body, "position");
+    return {
+      data: await safeRoleCall(() =>
+        dependencies.roles.editRole({
+          guildId: diagnostics.discordGuildId,
+          roleId: param(request, "roleId"),
+          ...(name === undefined ? {} : { name }),
+          ...(color === undefined ? {} : { color }),
+          ...(hoist === undefined ? {} : { hoist }),
+          ...(mentionable === undefined ? {} : { mentionable }),
+          ...(position === undefined ? {} : { position }),
+          ...(allowAdministrator ? { allowAdministrator } : {}),
+          actor: { type: "platform-user", id: account.identity.providerSubjectId },
+          source: "WEB",
+        }),
+      ),
+    };
+  });
+
+  server.delete("/api/v1/discord/roles/:roleId", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    const { account } = await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    const body = objectBody(request);
+    await safeRoleCall(() =>
+      dependencies.roles.deleteRole({
+        guildId: diagnostics.discordGuildId,
+        roleId: param(request, "roleId"),
+        confirmation: stringField(body, "confirmation"),
+        actor: { type: "platform-user", id: account.identity.providerSubjectId },
+        source: "WEB",
+      }),
+    );
+    return { ok: true };
+  });
+
+  server.post("/api/v1/discord/roles/:roleId/move", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    const { account } = await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    const body = objectBody(request);
+    return {
+      data: await safeRoleCall(() =>
+        dependencies.roles.moveRole({
+          guildId: diagnostics.discordGuildId,
+          roleId: param(request, "roleId"),
+          position: integerField(body, "position"),
+          actor: { type: "platform-user", id: account.identity.providerSubjectId },
+          source: "WEB",
+        }),
+      ),
+    };
+  });
+
+  server.post("/api/v1/discord/roles/:roleId/replace-dependency", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    const { account } = await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    const body = objectBody(request);
+    return {
+      data: {
+        changed: await safeRoleCall(() =>
+          dependencies.roles.replaceDependency({
+            guildId: diagnostics.discordGuildId,
+            oldRoleId: param(request, "roleId"),
+            newRoleId: stringField(body, "newRoleId"),
+            actor: { type: "platform-user", id: account.identity.providerSubjectId },
+            source: "WEB",
+          }),
+        ),
+      },
+    };
+  });
+
+  server.get("/api/v1/discord/resources/roles", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.listRoles(diagnostics.discordGuildId)) };
+  });
+
+  server.get("/api/v1/discord/resources/bot-capabilities", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.capabilities(diagnostics.discordGuildId)) };
+  });
+
+  server.get("/api/v1/discord/resources/channels", async (_request, reply) => {
+    reply.header("cache-control", "no-store");
+    return { data: [], discord: { connected: false, reason: "Channel lookup is not yet exposed by the Discord role adapter." } };
+  });
+
   const communityRoutes = [
     ["welcome", "discord.welcome.manage"],
     ["goodbye", "discord.welcome.manage"],
@@ -580,6 +725,31 @@ async function safeRoleMenuCall<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 
+async function safeRoleCall<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (error instanceof RoleManagementError) {
+      if (error.code === "DISCORD_UNAVAILABLE")
+        throw new DependencyUnavailableApiError();
+      throw new ValidationApiError([
+        { path: ["role"], code: error.code, message: error.message },
+      ]);
+    }
+    throw error;
+  }
+}
+
+async function roleAdministratorAllowed(
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+  body: Record<string, unknown>,
+): Promise<boolean> {
+  if (optionalBooleanField(body, "allowAdministrator") !== true) return false;
+  await requireDiscordManager(request, dependencies, "discord.roles.administrator");
+  return true;
+}
+
 function objectBody(request: FastifyRequest): Record<string, unknown> {
   if (!request.body || typeof request.body !== "object" || Array.isArray(request.body))
     throw new ValidationApiError([{ path: ["body"], code: "invalid_type", message: "JSON object body is required." }]);
@@ -615,6 +785,13 @@ function booleanField(body: Record<string, unknown>, name: string): boolean {
   if (typeof value !== "boolean")
     throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} is required.` }]);
   return value;
+}
+
+function integerField(body: Record<string, unknown>, name: string): number {
+  const value = body[name];
+  if (!Number.isInteger(value))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be integer.` }]);
+  return value as number;
 }
 
 function optionalBooleanField(body: Record<string, unknown>, name: string): boolean | undefined {

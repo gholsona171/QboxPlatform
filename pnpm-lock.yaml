@@ -66,6 +66,9 @@ importers:
       '@qbox/discord-community':
         specifier: workspace:*
         version: link:../../modules/discord-community
+      '@qbox/discord-roles':
+        specifier: workspace:*
+        version: link:../../modules/discord-roles
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -78,6 +81,9 @@ importers:
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      discord.js:
+        specifier: ^14
+        version: 14.27.0
       fastify:
         specifier: ^5.11.0
         version: 5.11.0
@@ -119,6 +125,8 @@ importers:
 
   modules/discord-community: {}
 
+  modules/discord-roles: {}
+
   modules/role-menus: {}
 
   packages/authentication: {}
@@ -137,6 +145,9 @@ importers:
       '@qbox/discord-community':
         specifier: workspace:*
         version: link:../../modules/discord-community
+      '@qbox/discord-roles':
+        specifier: workspace:*
+        version: link:../../modules/discord-roles
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
@@ -155,6 +166,9 @@ importers:
       '@qbox/discord-community':
         specifier: workspace:*
         version: link:../../modules/discord-community
+      '@qbox/discord-roles':
+        specifier: workspace:*
+        version: link:../../modules/discord-roles
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger

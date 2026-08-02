@@ -1,5 +1,5 @@
 import { appVersion } from "./data.js";
-import { addRoleMenuOption, adminCheck, createRoleMenu, deleteRoleMenu, disableRoleMenu, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, publishRoleMenu, saveDiscordFeature } from "./api.js";
+import { addRoleMenuOption, adminCheck, createDiscordRole, createRoleMenu, deleteDiscordRole, deleteRoleMenu, disableRoleMenu, editDiscordRole, inspectDiscordRole, listDiscordRoleDependencies, listDiscordRoles, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, moveDiscordRole, publishRoleMenu, saveDiscordFeature } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
 import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
 
@@ -77,6 +77,7 @@ function discordPage(state) {
   const tab = new URLSearchParams(location.search).get("tab") || "overview";
   const tabs = [
     ["overview", "Overview"],
+    ["role-management", "Role Management"],
     ["roles", "Role Menus"],
     ["welcome", "Welcome and Goodbye"],
     ["autoroles", "Autoroles"],
@@ -93,7 +94,76 @@ function discordPage(state) {
     <section class="discord-tabs" aria-label="Discord Bot sections">
       ${tabs.map(([id, label]) => `<a class="button compact ${tab === id ? "primary" : "ghost"}" href="/discord?tab=${id}" data-route="discord" data-tab="${id}">${escapeHtml(label)}</a>`).join("")}
     </section>
-    ${tab === "roles" ? discordRoleMenusPage(state) : discordCommunityFeaturePage(state, tab)}
+    ${tab === "role-management" ? discordRoleManagementPage(state) : tab === "roles" ? discordRoleMenusPage(state) : discordCommunityFeaturePage(state, tab)}
+  `;
+}
+
+function discordRoleManagementPage(state) {
+  const roles = [...(state.discord.roles || [])].sort((left, right) => right.position - left.position);
+  const selected = roles[0];
+  return `
+    <section class="grid main-detail role-management-grid">
+      <div class="card">
+        <div class="split-line"><h2>Role Catalog</h2>${badge(account ? "LIVE" : "DEMO")}</div>
+        <p class="microcopy">Discord is the source for role names, hierarchy, colors, and managed status. Qbox PostgreSQL is the source for feature dependencies and audit history.</p>
+        <div class="toolbar">
+          <input id="roleSearch" placeholder="Search roles" aria-label="Search roles">
+          <select aria-label="Filter roles"><option>All</option><option>Assignable</option><option>Blocked</option><option>Managed</option></select>
+          <button class="button compact" data-action="load-live-discord-roles">Load live roles</button>
+        </div>
+        ${table(["Role", "Position", "Members", "Status", "Usage"], roles.map((role) => row([
+          ["Role", `<span class="role-chip" style="--role-color:${escapeHtml(role.color)}"></span><strong>${escapeHtml(role.name)}</strong><small>${escapeHtml(role.id)}</small>`],
+          ["Position", String(role.position)],
+          ["Members", role.memberCount === undefined ? "Unavailable" : String(role.memberCount)],
+          ["Status", `${badge(role.assignable ? "Assignable" : "Blocked")} ${role.managed ? badge("Managed") : ""}`],
+          ["Usage", String(role.dependencyCount || 0)],
+        ], `class="clickable" data-select="${role.id}"`)))}
+      </div>
+      <div class="card" id="detailPanel">${roleCatalogDetail(selected)}</div>
+    </section>
+    <section class="card readable-form">
+      <h2>Create Role</h2>
+      <form class="form-grid" data-action="create-discord-role">
+        ${input("name", "Role name", "Community Member")}
+        ${input("color", "Color", "#22c55e")}
+        ${select("hoist", "Display separately", ["false", "true"], "false")}
+        ${select("mentionable", "Mentionable", ["false", "true"], "false")}
+        <div class="sticky-actions full"><button class="button primary">Create live role</button><span class="microcopy">Discord validates hierarchy and bot capability before saving.</span></div>
+      </form>
+    </section>
+  `;
+}
+
+function roleCatalogDetail(role) {
+  if (!role) return `<div class="empty-state">Load live roles or select a demo role.</div>`;
+  return `
+    <div class="detail-stack" data-detail-id="${role.id}">
+      <div class="split-line"><h2><span class="role-chip" style="--role-color:${escapeHtml(role.color)}"></span>${escapeHtml(role.name)}</h2>${badge(role.assignable ? "Assignable" : "Blocked")}</div>
+      <p class="microcopy">${escapeHtml(role.unavailableReason || "Role is available for permitted Qbox operations.")}</p>
+      ${detail("Role ID", role.id)}
+      ${detail("Color", role.color)}
+      ${detail("Position", String(role.position))}
+      ${detail("Member count", role.memberCount === undefined ? "Unavailable" : String(role.memberCount))}
+      ${detail("Managed", role.managed ? "Yes" : "No")}
+      ${detail("Hoisted", role.hoisted ? "Yes" : "No")}
+      ${detail("Mentionable", role.mentionable ? "Yes" : "No")}
+      ${detail("Feature dependencies", String(role.dependencyCount || 0))}
+      <h3>Edit Role</h3>
+      <form class="form-grid" data-action="edit-discord-role">
+        ${input("name", "Role name", role.name)}
+        ${input("color", "Color", role.color)}
+        ${select("hoist", "Display separately", ["false", "true"], String(role.hoisted))}
+        ${select("mentionable", "Mentionable", ["false", "true"], String(role.mentionable))}
+        ${input("position", "Hierarchy position", String(role.position))}
+        <div class="sticky-actions full">
+          <button class="button primary">Save role</button>
+          <button class="button" type="button" data-action="inspect-role-dependencies">Inspect dependencies</button>
+          <button class="button" type="button" data-action="move-discord-role">Move</button>
+          <button class="button danger" type="button" data-action="delete-discord-role">Delete</button>
+        </div>
+      </form>
+      <div id="roleDependencies" aria-live="polite"></div>
+    </div>
   `;
 }
 
@@ -487,6 +557,7 @@ function selectDetail(page, id) {
   const state = loadDemoState();
   const panel = document.getElementById("detailPanel");
   if (!panel) return;
+  const discordTab = new URLSearchParams(location.search).get("tab") || "overview";
   const maps = {
     applications: () => applicationDetail(state.applications.find((i) => i.id === id)),
     tickets: () => ticketDetail(state.tickets.find((i) => i.id === id)),
@@ -494,7 +565,9 @@ function selectDetail(page, id) {
     moderation: () => moderationDetail(state.moderation.find((i) => i.id === id)),
     verification: () => verificationDetail(state.verification.find((i) => i.id === id)),
     knowledge: () => articleDetail(state.articles.find((i) => i.id === id)),
-    discord: () => roleMenuDetail(state.discord.roleMenus.find((i) => i.id === id)),
+    discord: () => discordTab === "role-management"
+      ? roleCatalogDetail(state.discord.roles.find((i) => i.id === id))
+      : roleMenuDetail(state.discord.roleMenus.find((i) => i.id === id)),
   };
   panel.innerHTML = maps[page]?.() || "";
   bindPageEvents(page);
@@ -531,6 +604,25 @@ async function handleForm(event, action) {
     if (action === "create-role-menu") {
       draft.discord.roleMenus.unshift({ id: `RM-${200 + draft.discord.roleMenus.length}`, title: data.title, description: data.description, status: "DRAFT", guildId: "1257928923048837201", channelId: data.channelId, messageId: "", presentationType: data.presentationType, assignmentMode: data.assignmentMode, options: [], history: [{ at: "Just now", action: "Role-menu draft created in Demo Mode" }] });
       recordActivity(draft, `Role menu created: ${data.title}`, "Discord Bot");
+    }
+    if (action === "create-discord-role") {
+      const role = { id: `ROLE-${Date.now()}`, guildId: "1257928923048837201", name: data.name, color: data.color, position: draft.discord.roles.length + 1, hoisted: data.hoist === "true", mentionable: data.mentionable === "true", managed: false, memberCount: 0, assignable: true, editable: true, deletable: true, dependencyCount: 0 };
+      draft.discord.roles.unshift(role);
+      recordActivity(draft, `Role created: ${data.name}`, "Discord Bot");
+      if (account) void createDiscordRole({ name: data.name, color: data.color, hoist: data.hoist === "true", mentionable: data.mentionable === "true" }).then(loadLiveDiscordRoles).catch((error) => notify(error.message || "Live role create unavailable. Demo state updated only.", "warning"));
+    }
+    if (action === "edit-discord-role") {
+      const id = event.currentTarget.closest("[data-detail-id]")?.dataset.detailId;
+      const role = draft.discord.roles.find((candidate) => candidate.id === id);
+      if (role) {
+        role.name = data.name;
+        role.color = data.color;
+        role.hoisted = data.hoist === "true";
+        role.mentionable = data.mentionable === "true";
+        role.position = Number(data.position);
+        recordActivity(draft, `Role edited: ${data.name}`, "Discord Bot");
+        if (account) void editDiscordRole(id, { name: data.name, color: data.color, hoist: data.hoist === "true", mentionable: data.mentionable === "true", position: Number(data.position) }).then(loadLiveDiscordRoles).catch((error) => notify(error.message || "Live role edit unavailable. Demo state updated only.", "warning"));
+      }
     }
     if (action === "add-role-menu-option") {
       const id = event.currentTarget.closest("[data-detail-id]")?.dataset.detailId;
@@ -570,6 +662,10 @@ async function handleAction(action, element) {
   if (action === "restart-server") return confirmThen("Demo Restart", "This records a demo activity item only. No FiveM server command is sent.", () => mutateAndRender((s) => recordActivity(s, "FiveM restart demo action previewed", "FiveM")));
   if (action === "send-announcement") return mutateAndRender((s) => { s.fivem.announcements.unshift(value("[data-action='fivem-announcement']")); recordActivity(s, "FiveM announcement preview saved", "FiveM"); });
   if (action === "load-live-role-menus") return loadLiveRoleMenus();
+  if (action === "load-live-discord-roles") return loadLiveDiscordRoles();
+  if (action === "inspect-role-dependencies") return loadRoleDependencies(id);
+  if (action === "move-discord-role") return moveRoleFromForm(id);
+  if (action === "delete-discord-role") return deleteRoleFromDetail(id);
   if (action === "load-live-discord-feature") return loadLiveDiscordFeature(element.dataset.feature);
   if (action === "publish-role-menu") return updateRoleMenu(action, id);
   if (action === "disable-role-menu") return updateRoleMenu(action, id);
@@ -629,6 +725,82 @@ async function loadLiveRoleMenus() {
     renderPage("discord");
   } catch (error) {
     notify(error.message || "Live role menus unavailable. Demo Mode remains usable.", "warning");
+  }
+}
+
+async function loadLiveDiscordRoles() {
+  try {
+    const result = await listDiscordRoles();
+    mutateDemoState((draft) => {
+      draft.discord.roles = result.data.map((role) => ({
+        id: role.id,
+        guildId: role.guildId,
+        name: role.name,
+        color: role.color,
+        position: role.position,
+        hoisted: role.hoisted,
+        mentionable: role.mentionable,
+        managed: role.managed,
+        memberCount: role.memberCount,
+        assignable: role.assignable,
+        editable: role.editable,
+        deletable: role.deletable,
+        dependencyCount: role.dependencyCount,
+        unavailableReason: role.unavailableReason || "",
+      }));
+      recordActivity(draft, "Live Discord role catalog loaded from API", "Discord Bot");
+    });
+    notify("Live Discord roles loaded.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Live role catalog unavailable. Demo Mode remains usable.", "warning");
+  }
+}
+
+async function loadRoleDependencies(roleId) {
+  const panel = document.getElementById("roleDependencies");
+  if (!panel) return;
+  try {
+    const result = account ? await listDiscordRoleDependencies(roleId) : { data: [] };
+    panel.innerHTML = `<h3>Dependencies</h3><ul class="list">${result.data.map((dependency) => `<li><strong>${escapeHtml(dependency.feature)}</strong><small>${escapeHtml(dependency.label)} - ${escapeHtml(dependency.field)}</small></li>`).join("") || "<li>No Qbox feature dependencies reference this role.</li>"}</ul>`;
+  } catch (error) {
+    panel.innerHTML = `<p class="validation-error">${escapeHtml(error.message || "Dependencies unavailable.")}</p>`;
+  }
+}
+
+async function moveRoleFromForm(roleId) {
+  const position = Number(value("[name='position']"));
+  if (!Number.isInteger(position)) return notify("Role position must be an integer.", "warning");
+  if (!account) return notify("Demo role position is edited when you save the form. Login for live moves.", "warning");
+  try {
+    await moveDiscordRole(roleId, position);
+    notify("Role moved in Discord.", "success");
+    await loadLiveDiscordRoles();
+  } catch (error) {
+    notify(error.message || "Live role move failed.", "warning");
+  }
+}
+
+async function deleteRoleFromDetail(roleId) {
+  const state = loadDemoState();
+  const role = state.discord.roles.find((candidate) => candidate.id === roleId);
+  if (!role) return;
+  const confirmed = await confirmAction({
+    title: "Delete Discord Role",
+    body: `Type-level confirmation is still enforced by the API. This action deletes ${role.name} only when Discord and Qbox validation allow it.`,
+    confirmText: "Delete",
+  });
+  if (!confirmed) return;
+  try {
+    if (account) await deleteDiscordRole(roleId, role.name);
+    mutateDemoState((draft) => {
+      draft.discord.roles = draft.discord.roles.filter((candidate) => candidate.id !== roleId);
+      recordActivity(draft, `Role deleted: ${role.name}`, "Discord Bot");
+    });
+    notify(account ? "Role deleted in Discord." : "Demo role removed from this browser.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Role delete failed.", "warning");
   }
 }
 

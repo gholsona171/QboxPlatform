@@ -14,6 +14,7 @@ export interface RoleMenu {
   readonly assignmentMode: RoleMenuAssignmentMode;
   readonly status: RoleMenuStatus;
   readonly createdByDiscordUserId: string;
+  readonly revision: number;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly options: readonly RoleMenuOption[];
@@ -27,6 +28,7 @@ export interface RoleMenuOption {
   readonly description?: string;
   readonly emoji?: string;
   readonly position: number;
+  readonly revision: number;
   readonly createdAt: Date;
 }
 

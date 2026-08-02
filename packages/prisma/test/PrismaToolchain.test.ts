@@ -53,6 +53,7 @@ describe("Prisma 7 toolchain", () => {
       "AutoroleConfig",
       "AutoroleRule",
       "RulesConfig",
+      "DiscordRoleAuditEvent",
       "CommunityCounter",
       "ServerLogConfig",
       "EmbedTemplate",

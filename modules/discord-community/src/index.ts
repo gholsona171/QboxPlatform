@@ -93,6 +93,7 @@ export interface AutoroleConfig {
   readonly enabled: boolean;
   readonly delaySeconds: number;
   readonly includeBots: boolean;
+  readonly revision?: number | undefined;
   readonly roles: readonly AutoroleRule[];
 }
 
@@ -115,6 +116,7 @@ export interface RulesConfig {
   readonly acceptedRoleId: string;
   readonly pendingRoleId?: string | undefined;
   readonly messageId?: string | undefined;
+  readonly revision?: number | undefined;
 }
 
 export interface CounterInput {

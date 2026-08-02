@@ -77,6 +77,11 @@ export type AutoroleRule = Prisma.AutoroleRuleModel
  */
 export type RulesConfig = Prisma.RulesConfigModel
 /**
+ * Model DiscordRoleAuditEvent
+ *
+ */
+export type DiscordRoleAuditEvent = Prisma.DiscordRoleAuditEventModel
+/**
  * Model CommunityCounter
  *
  */

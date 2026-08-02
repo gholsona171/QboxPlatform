@@ -8,6 +8,7 @@
   "dependencies": {
     "@qbox/authentication": "workspace:*",
     "@qbox/discord-community": "workspace:*",
+    "@qbox/discord-roles": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/prisma": "workspace:*",
     "@qbox/role-menus": "workspace:*"

@@ -20,8 +20,18 @@ export type RulesConfigModel = runtime.Types.Result.DefaultSelection<Prisma.$Rul
 
 export type AggregateRulesConfig = {
   _count: RulesConfigCountAggregateOutputType | null
+  _avg: RulesConfigAvgAggregateOutputType | null
+  _sum: RulesConfigSumAggregateOutputType | null
   _min: RulesConfigMinAggregateOutputType | null
   _max: RulesConfigMaxAggregateOutputType | null
+}
+
+export type RulesConfigAvgAggregateOutputType = {
+  revision: number | null
+}
+
+export type RulesConfigSumAggregateOutputType = {
+  revision: number | null
 }
 
 export type RulesConfigMinAggregateOutputType = {
@@ -33,6 +43,7 @@ export type RulesConfigMinAggregateOutputType = {
   acceptedRoleId: string | null
   pendingRoleId: string | null
   messageId: string | null
+  revision: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,6 +57,7 @@ export type RulesConfigMaxAggregateOutputType = {
   acceptedRoleId: string | null
   pendingRoleId: string | null
   messageId: string | null
+  revision: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,11 +71,20 @@ export type RulesConfigCountAggregateOutputType = {
   acceptedRoleId: number
   pendingRoleId: number
   messageId: number
+  revision: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type RulesConfigAvgAggregateInputType = {
+  revision?: true
+}
+
+export type RulesConfigSumAggregateInputType = {
+  revision?: true
+}
 
 export type RulesConfigMinAggregateInputType = {
   guildId?: true
@@ -74,6 +95,7 @@ export type RulesConfigMinAggregateInputType = {
   acceptedRoleId?: true
   pendingRoleId?: true
   messageId?: true
+  revision?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -87,6 +109,7 @@ export type RulesConfigMaxAggregateInputType = {
   acceptedRoleId?: true
   pendingRoleId?: true
   messageId?: true
+  revision?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +123,7 @@ export type RulesConfigCountAggregateInputType = {
   acceptedRoleId?: true
   pendingRoleId?: true
   messageId?: true
+  revision?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -143,6 +167,18 @@ export type RulesConfigAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+  **/
+  _avg?: RulesConfigAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: RulesConfigSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: RulesConfigMinAggregateInputType
@@ -173,6 +209,8 @@ export type RulesConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: RulesConfigCountAggregateInputType | true
+  _avg?: RulesConfigAvgAggregateInputType
+  _sum?: RulesConfigSumAggregateInputType
   _min?: RulesConfigMinAggregateInputType
   _max?: RulesConfigMaxAggregateInputType
 }
@@ -186,9 +224,12 @@ export type RulesConfigGroupByOutputType = {
   acceptedRoleId: string
   pendingRoleId: string | null
   messageId: string | null
+  revision: number
   createdAt: Date
   updatedAt: Date
   _count: RulesConfigCountAggregateOutputType | null
+  _avg: RulesConfigAvgAggregateOutputType | null
+  _sum: RulesConfigSumAggregateOutputType | null
   _min: RulesConfigMinAggregateOutputType | null
   _max: RulesConfigMaxAggregateOutputType | null
 }
@@ -220,6 +261,7 @@ export type RulesConfigWhereInput = {
   acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string
   pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
   messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
+  revision?: Prisma.IntFilter<"RulesConfig"> | number
   createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -234,6 +276,7 @@ export type RulesConfigOrderByWithRelationInput = {
   acceptedRoleId?: Prisma.SortOrder
   pendingRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   messageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guild?: Prisma.GuildOrderByWithRelationInput
@@ -251,6 +294,7 @@ export type RulesConfigWhereUniqueInput = Prisma.AtLeast<{
   acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string
   pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
   messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
+  revision?: Prisma.IntFilter<"RulesConfig"> | number
   createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -265,11 +309,14 @@ export type RulesConfigOrderByWithAggregationInput = {
   acceptedRoleId?: Prisma.SortOrder
   pendingRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   messageId?: Prisma.SortOrderInput | Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RulesConfigCountOrderByAggregateInput
+  _avg?: Prisma.RulesConfigAvgOrderByAggregateInput
   _max?: Prisma.RulesConfigMaxOrderByAggregateInput
   _min?: Prisma.RulesConfigMinOrderByAggregateInput
+  _sum?: Prisma.RulesConfigSumOrderByAggregateInput
 }
 
 export type RulesConfigScalarWhereWithAggregatesInput = {
@@ -284,6 +331,7 @@ export type RulesConfigScalarWhereWithAggregatesInput = {
   acceptedRoleId?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string
   pendingRoleId?: Prisma.StringNullableWithAggregatesFilter<"RulesConfig"> | string | null
   messageId?: Prisma.StringNullableWithAggregatesFilter<"RulesConfig"> | string | null
+  revision?: Prisma.IntWithAggregatesFilter<"RulesConfig"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RulesConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RulesConfig"> | Date | string
 }
@@ -296,6 +344,7 @@ export type RulesConfigCreateInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutRulesConfigsInput
@@ -310,6 +359,7 @@ export type RulesConfigUncheckedCreateInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -322,6 +372,7 @@ export type RulesConfigUpdateInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutRulesConfigsNestedInput
@@ -336,6 +387,7 @@ export type RulesConfigUncheckedUpdateInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,6 +401,7 @@ export type RulesConfigCreateManyInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -361,6 +414,7 @@ export type RulesConfigUpdateManyMutationInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -374,6 +428,7 @@ export type RulesConfigUncheckedUpdateManyInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -397,8 +452,13 @@ export type RulesConfigCountOrderByAggregateInput = {
   acceptedRoleId?: Prisma.SortOrder
   pendingRoleId?: Prisma.SortOrder
   messageId?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RulesConfigAvgOrderByAggregateInput = {
+  revision?: Prisma.SortOrder
 }
 
 export type RulesConfigMaxOrderByAggregateInput = {
@@ -410,6 +470,7 @@ export type RulesConfigMaxOrderByAggregateInput = {
   acceptedRoleId?: Prisma.SortOrder
   pendingRoleId?: Prisma.SortOrder
   messageId?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -423,8 +484,13 @@ export type RulesConfigMinOrderByAggregateInput = {
   acceptedRoleId?: Prisma.SortOrder
   pendingRoleId?: Prisma.SortOrder
   messageId?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RulesConfigSumOrderByAggregateInput = {
+  revision?: Prisma.SortOrder
 }
 
 export type RulesConfigCreateNestedManyWithoutGuildInput = {
@@ -477,6 +543,7 @@ export type RulesConfigCreateWithoutGuildInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -489,6 +556,7 @@ export type RulesConfigUncheckedCreateWithoutGuildInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -531,6 +599,7 @@ export type RulesConfigScalarWhereInput = {
   acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string
   pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
   messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null
+  revision?: Prisma.IntFilter<"RulesConfig"> | number
   createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string
 }
@@ -543,6 +612,7 @@ export type RulesConfigCreateManyGuildInput = {
   acceptedRoleId: string
   pendingRoleId?: string | null
   messageId?: string | null
+  revision?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -555,6 +625,7 @@ export type RulesConfigUpdateWithoutGuildInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -567,6 +638,7 @@ export type RulesConfigUncheckedUpdateWithoutGuildInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -579,6 +651,7 @@ export type RulesConfigUncheckedUpdateManyWithoutGuildInput = {
   acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string
   pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -594,6 +667,7 @@ export type RulesConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   acceptedRoleId?: boolean
   pendingRoleId?: boolean
   messageId?: boolean
+  revision?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -608,6 +682,7 @@ export type RulesConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   acceptedRoleId?: boolean
   pendingRoleId?: boolean
   messageId?: boolean
+  revision?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -622,6 +697,7 @@ export type RulesConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   acceptedRoleId?: boolean
   pendingRoleId?: boolean
   messageId?: boolean
+  revision?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -636,11 +712,12 @@ export type RulesConfigSelectScalar = {
   acceptedRoleId?: boolean
   pendingRoleId?: boolean
   messageId?: boolean
+  revision?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RulesConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "channelId" | "messageText" | "buttonLabel" | "acceptedRoleId" | "pendingRoleId" | "messageId" | "createdAt" | "updatedAt", ExtArgs["result"]["rulesConfig"]>
+export type RulesConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "channelId" | "messageText" | "buttonLabel" | "acceptedRoleId" | "pendingRoleId" | "messageId" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["rulesConfig"]>
 export type RulesConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -665,6 +742,7 @@ export type $RulesConfigPayload<ExtArgs extends runtime.Types.Extensions.Interna
     acceptedRoleId: string
     pendingRoleId: string | null
     messageId: string | null
+    revision: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["rulesConfig"]>
@@ -1099,6 +1177,7 @@ export interface RulesConfigFieldRefs {
   readonly acceptedRoleId: Prisma.FieldRef<"RulesConfig", 'String'>
   readonly pendingRoleId: Prisma.FieldRef<"RulesConfig", 'String'>
   readonly messageId: Prisma.FieldRef<"RulesConfig", 'String'>
+  readonly revision: Prisma.FieldRef<"RulesConfig", 'Int'>
   readonly createdAt: Prisma.FieldRef<"RulesConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RulesConfig", 'DateTime'>
 }

@@ -288,6 +288,7 @@ model Guild {
   suggestions      Suggestion[]
   starboards       StarboardConfig[]
   starboardEntries StarboardEntry[]
+  roleAuditEvents  DiscordRoleAuditEvent[]
 
   @@map("guilds")
 }
@@ -302,6 +303,7 @@ model RoleMenu {
   presentationType       RoleMenuPresentationType @map("presentation_type")
   assignmentMode         RoleMenuAssignmentMode   @map("assignment_mode")
   status                 RoleMenuStatus           @default(DRAFT)
+  revision               Int                      @default(1)
   createdByDiscordUserId String                   @map("created_by_discord_user_id")
   createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -322,6 +324,7 @@ model RoleMenuOption {
   description String?
   emoji       String?
   position    Int
+  revision    Int      @default(1)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   roleMenu RoleMenu @relation(fields: [roleMenuId], references: [id], onDelete: Restrict, onUpdate: Restrict)
@@ -363,6 +366,7 @@ model AutoroleConfig {
   enabled      Boolean  @default(false)
   delaySeconds Int      @default(0) @map("delay_seconds")
   includeBots  Boolean  @default(false) @map("include_bots")
+  revision     Int      @default(1)
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -394,12 +398,33 @@ model RulesConfig {
   acceptedRoleId String   @map("accepted_role_id")
   pendingRoleId  String?  @map("pending_role_id")
   messageId      String?  @map("message_id")
+  revision       Int      @default(1)
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
   @@map("rules_configs")
+}
+
+model DiscordRoleAuditEvent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String   @map("guild_id") @db.Uuid
+  roleId    String?  @map("role_id")
+  feature   String
+  operation String
+  source    String
+  actorType String   @map("actor_type")
+  actorId   String   @map("actor_id")
+  summary   String
+  result    String
+  metadata  Json     @default("{}") @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([guildId, roleId, createdAt], map: "discord_role_audit_guild_role_created_idx")
+  @@map("discord_role_audit_events")
 }
 
 model CommunityCounter {

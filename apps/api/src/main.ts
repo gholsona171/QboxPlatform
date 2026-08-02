@@ -23,6 +23,8 @@ export interface ApiProcessEnvironment {
   readonly DISCORD_OAUTH_CLIENT_SECRET?: string | undefined;
   readonly DISCORD_OAUTH_REDIRECT_URI?: string | undefined;
   readonly DISCORD_GUILD_ID?: string | undefined;
+  readonly DISCORD_TOKEN?: string | undefined;
+  readonly DISCORD_APPLICATION_ID?: string | undefined;
   readonly AUTH_SESSION_HMAC_KEY?: string | undefined;
   readonly AUTH_CSRF_HMAC_KEY?: string | undefined;
   readonly AUTH_METADATA_HMAC_KEY?: string | undefined;
@@ -65,6 +67,10 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
       metadataHmacKey: environment.AUTH_METADATA_HMAC_KEY,
       oauthEncryptionKey: environment.AUTH_OAUTH_ENCRYPTION_KEY,
       keyVersion: environment.AUTH_KEY_VERSION,
+    },
+    discord: {
+      token: environment.DISCORD_TOKEN,
+      applicationId: environment.DISCORD_APPLICATION_ID,
     },
     databaseUrl: environment.DATABASE_URL,
   });

@@ -17,7 +17,7 @@ export interface FeatureRegistryRecord {
 
 export const featureRegistry = [
   live("command-center", "Command Center", ["ping", "adminping"], [], [], [], "/discord?tab=overview", [], [], true, true),
-  { id: "role-management", displayName: "Role Management", status: "PARTIAL", discordCommands: ["roles"], discordInteractions: [], automaticHandlers: [], apiRoutes: ["/api/v1/discord/roles", "/api/v1/discord/resources/roles"], portalRoute: "/discord?tab=role-management", requiredPermissions: ["discord.roles.manage"], persistence: ["DiscordRoleAuditEvent", "RoleManagementDependencyRepository"], discordFallbackAvailable: true, portalAvailable: true },
+  live("role-management", "Role Management", ["roles"], [], [], ["/api/v1/discord/roles", "/api/v1/discord/resources/roles"], "/discord?tab=role-management", ["discord.roles.manage"], ["DiscordRoleAuditEvent", "RoleManagementDependencyRepository"], true, true),
   live("role-menus", "Role Menus", ["role-menu"], ["role-menu buttons", "select menus", "reactions"], ["messageReactionAdd", "messageReactionRemove"], ["/api/v1/discord/role-menus"], "/discord?tab=roles", ["discord.role-menus.manage"], ["RoleMenu", "RoleMenuOption", "PrismaRoleMenuRepository"], true, true),
   live("welcome-goodbye", "Welcome and Goodbye", ["welcome", "goodbye"], [], ["guildMemberAdd", "guildMemberRemove"], ["/api/v1/discord/welcome", "/api/v1/discord/goodbye"], "/discord?tab=welcome", ["discord.welcome.manage"], ["WelcomeGoodbyeConfig"], true, true),
   live("autoroles", "Autoroles", ["autorole"], [], ["guildMemberAdd"], ["/api/v1/discord/autoroles"], "/discord?tab=autoroles", ["discord.autoroles.manage"], ["AutoroleConfig", "AutoroleRule"], true, true),

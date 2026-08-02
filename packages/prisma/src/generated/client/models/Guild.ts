@@ -210,6 +210,7 @@ export type GuildWhereInput = {
   suggestions?: Prisma.SuggestionListRelationFilter
   starboards?: Prisma.StarboardConfigListRelationFilter
   starboardEntries?: Prisma.StarboardEntryListRelationFilter
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventListRelationFilter
 }
 
 export type GuildOrderByWithRelationInput = {
@@ -236,6 +237,7 @@ export type GuildOrderByWithRelationInput = {
   suggestions?: Prisma.SuggestionOrderByRelationAggregateInput
   starboards?: Prisma.StarboardConfigOrderByRelationAggregateInput
   starboardEntries?: Prisma.StarboardEntryOrderByRelationAggregateInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventOrderByRelationAggregateInput
 }
 
 export type GuildWhereUniqueInput = Prisma.AtLeast<{
@@ -265,6 +267,7 @@ export type GuildWhereUniqueInput = Prisma.AtLeast<{
   suggestions?: Prisma.SuggestionListRelationFilter
   starboards?: Prisma.StarboardConfigListRelationFilter
   starboardEntries?: Prisma.StarboardEntryListRelationFilter
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventListRelationFilter
 }, "id" | "discordGuildId">
 
 export type GuildOrderByWithAggregationInput = {
@@ -317,6 +320,7 @@ export type GuildCreateInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateInput = {
@@ -343,6 +347,7 @@ export type GuildUncheckedCreateInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUpdateInput = {
@@ -369,6 +374,7 @@ export type GuildUpdateInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateInput = {
@@ -395,6 +401,7 @@ export type GuildUncheckedUpdateInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateManyInput = {
@@ -549,6 +556,20 @@ export type GuildUpdateOneRequiredWithoutRulesConfigsNestedInput = {
   upsert?: Prisma.GuildUpsertWithoutRulesConfigsInput
   connect?: Prisma.GuildWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutRulesConfigsInput, Prisma.GuildUpdateWithoutRulesConfigsInput>, Prisma.GuildUncheckedUpdateWithoutRulesConfigsInput>
+}
+
+export type GuildCreateNestedOneWithoutRoleAuditEventsInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedCreateWithoutRoleAuditEventsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutRoleAuditEventsInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutRoleAuditEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedCreateWithoutRoleAuditEventsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutRoleAuditEventsInput
+  upsert?: Prisma.GuildUpsertWithoutRoleAuditEventsInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutRoleAuditEventsInput, Prisma.GuildUpdateWithoutRoleAuditEventsInput>, Prisma.GuildUncheckedUpdateWithoutRoleAuditEventsInput>
 }
 
 export type GuildCreateNestedOneWithoutCountersInput = {
@@ -732,6 +753,7 @@ export type GuildCreateWithoutRoleMenusInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutRoleMenusInput = {
@@ -757,6 +779,7 @@ export type GuildUncheckedCreateWithoutRoleMenusInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutRoleMenusInput = {
@@ -798,6 +821,7 @@ export type GuildUpdateWithoutRoleMenusInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutRoleMenusInput = {
@@ -823,6 +847,7 @@ export type GuildUncheckedUpdateWithoutRoleMenusInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutWelcomeGoodbyeInput = {
@@ -848,6 +873,7 @@ export type GuildCreateWithoutWelcomeGoodbyeInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutWelcomeGoodbyeInput = {
@@ -873,6 +899,7 @@ export type GuildUncheckedCreateWithoutWelcomeGoodbyeInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutWelcomeGoodbyeInput = {
@@ -914,6 +941,7 @@ export type GuildUpdateWithoutWelcomeGoodbyeInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutWelcomeGoodbyeInput = {
@@ -939,6 +967,7 @@ export type GuildUncheckedUpdateWithoutWelcomeGoodbyeInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAutoroleConfigsInput = {
@@ -964,6 +993,7 @@ export type GuildCreateWithoutAutoroleConfigsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAutoroleConfigsInput = {
@@ -989,6 +1019,7 @@ export type GuildUncheckedCreateWithoutAutoroleConfigsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAutoroleConfigsInput = {
@@ -1030,6 +1061,7 @@ export type GuildUpdateWithoutAutoroleConfigsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAutoroleConfigsInput = {
@@ -1055,6 +1087,7 @@ export type GuildUncheckedUpdateWithoutAutoroleConfigsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAutoroleRulesInput = {
@@ -1080,6 +1113,7 @@ export type GuildCreateWithoutAutoroleRulesInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAutoroleRulesInput = {
@@ -1105,6 +1139,7 @@ export type GuildUncheckedCreateWithoutAutoroleRulesInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAutoroleRulesInput = {
@@ -1146,6 +1181,7 @@ export type GuildUpdateWithoutAutoroleRulesInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAutoroleRulesInput = {
@@ -1171,6 +1207,7 @@ export type GuildUncheckedUpdateWithoutAutoroleRulesInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutRulesConfigsInput = {
@@ -1196,6 +1233,7 @@ export type GuildCreateWithoutRulesConfigsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutRulesConfigsInput = {
@@ -1221,6 +1259,7 @@ export type GuildUncheckedCreateWithoutRulesConfigsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutRulesConfigsInput = {
@@ -1262,6 +1301,7 @@ export type GuildUpdateWithoutRulesConfigsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutRulesConfigsInput = {
@@ -1280,6 +1320,127 @@ export type GuildUncheckedUpdateWithoutRulesConfigsInput = {
   welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
   autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
   autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutRoleAuditEventsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+}
+
+export type GuildUncheckedCreateWithoutRoleAuditEventsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+}
+
+export type GuildCreateOrConnectWithoutRoleAuditEventsInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedCreateWithoutRoleAuditEventsInput>
+}
+
+export type GuildUpsertWithoutRoleAuditEventsInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedUpdateWithoutRoleAuditEventsInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedCreateWithoutRoleAuditEventsInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutRoleAuditEventsInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutRoleAuditEventsInput, Prisma.GuildUncheckedUpdateWithoutRoleAuditEventsInput>
+}
+
+export type GuildUpdateWithoutRoleAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutRoleAuditEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
   counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
   logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
   embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
@@ -1312,6 +1473,7 @@ export type GuildCreateWithoutCountersInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutCountersInput = {
@@ -1337,6 +1499,7 @@ export type GuildUncheckedCreateWithoutCountersInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutCountersInput = {
@@ -1378,6 +1541,7 @@ export type GuildUpdateWithoutCountersInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutCountersInput = {
@@ -1403,6 +1567,7 @@ export type GuildUncheckedUpdateWithoutCountersInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutLogConfigsInput = {
@@ -1428,6 +1593,7 @@ export type GuildCreateWithoutLogConfigsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutLogConfigsInput = {
@@ -1453,6 +1619,7 @@ export type GuildUncheckedCreateWithoutLogConfigsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutLogConfigsInput = {
@@ -1494,6 +1661,7 @@ export type GuildUpdateWithoutLogConfigsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutLogConfigsInput = {
@@ -1519,6 +1687,7 @@ export type GuildUncheckedUpdateWithoutLogConfigsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutEmbedTemplatesInput = {
@@ -1544,6 +1713,7 @@ export type GuildCreateWithoutEmbedTemplatesInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutEmbedTemplatesInput = {
@@ -1569,6 +1739,7 @@ export type GuildUncheckedCreateWithoutEmbedTemplatesInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutEmbedTemplatesInput = {
@@ -1610,6 +1781,7 @@ export type GuildUpdateWithoutEmbedTemplatesInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutEmbedTemplatesInput = {
@@ -1635,6 +1807,7 @@ export type GuildUncheckedUpdateWithoutEmbedTemplatesInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutCustomCommandsInput = {
@@ -1660,6 +1833,7 @@ export type GuildCreateWithoutCustomCommandsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutCustomCommandsInput = {
@@ -1685,6 +1859,7 @@ export type GuildUncheckedCreateWithoutCustomCommandsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutCustomCommandsInput = {
@@ -1726,6 +1901,7 @@ export type GuildUpdateWithoutCustomCommandsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutCustomCommandsInput = {
@@ -1751,6 +1927,7 @@ export type GuildUncheckedUpdateWithoutCustomCommandsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutSuggestionsInput = {
@@ -1776,6 +1953,7 @@ export type GuildCreateWithoutSuggestionsInput = {
   customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutSuggestionsInput = {
@@ -1801,6 +1979,7 @@ export type GuildUncheckedCreateWithoutSuggestionsInput = {
   customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutSuggestionsInput = {
@@ -1842,6 +2021,7 @@ export type GuildUpdateWithoutSuggestionsInput = {
   customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutSuggestionsInput = {
@@ -1867,6 +2047,7 @@ export type GuildUncheckedUpdateWithoutSuggestionsInput = {
   customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutStarboardsInput = {
@@ -1892,6 +2073,7 @@ export type GuildCreateWithoutStarboardsInput = {
   customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutStarboardsInput = {
@@ -1917,6 +2099,7 @@ export type GuildUncheckedCreateWithoutStarboardsInput = {
   customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutStarboardsInput = {
@@ -1958,6 +2141,7 @@ export type GuildUpdateWithoutStarboardsInput = {
   customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutStarboardsInput = {
@@ -1983,6 +2167,7 @@ export type GuildUncheckedUpdateWithoutStarboardsInput = {
   customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutStarboardEntriesInput = {
@@ -2008,6 +2193,7 @@ export type GuildCreateWithoutStarboardEntriesInput = {
   customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutStarboardEntriesInput = {
@@ -2033,6 +2219,7 @@ export type GuildUncheckedCreateWithoutStarboardEntriesInput = {
   customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutStarboardEntriesInput = {
@@ -2074,6 +2261,7 @@ export type GuildUpdateWithoutStarboardEntriesInput = {
   customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutStarboardEntriesInput = {
@@ -2099,6 +2287,7 @@ export type GuildUncheckedUpdateWithoutStarboardEntriesInput = {
   customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutPrincipalsInput = {
@@ -2124,6 +2313,7 @@ export type GuildCreateWithoutPrincipalsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutPrincipalsInput = {
@@ -2149,6 +2339,7 @@ export type GuildUncheckedCreateWithoutPrincipalsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutPrincipalsInput = {
@@ -2190,6 +2381,7 @@ export type GuildUpdateWithoutPrincipalsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutPrincipalsInput = {
@@ -2215,6 +2407,7 @@ export type GuildUncheckedUpdateWithoutPrincipalsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAssignmentsInput = {
@@ -2240,6 +2433,7 @@ export type GuildCreateWithoutAssignmentsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAssignmentsInput = {
@@ -2265,6 +2459,7 @@ export type GuildUncheckedCreateWithoutAssignmentsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAssignmentsInput = {
@@ -2306,6 +2501,7 @@ export type GuildUpdateWithoutAssignmentsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAssignmentsInput = {
@@ -2331,6 +2527,7 @@ export type GuildUncheckedUpdateWithoutAssignmentsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAuditScopeEventsInput = {
@@ -2356,6 +2553,7 @@ export type GuildCreateWithoutAuditScopeEventsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAuditScopeEventsInput = {
@@ -2381,6 +2579,7 @@ export type GuildUncheckedCreateWithoutAuditScopeEventsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAuditScopeEventsInput = {
@@ -2422,6 +2621,7 @@ export type GuildUpdateWithoutAuditScopeEventsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAuditScopeEventsInput = {
@@ -2447,6 +2647,7 @@ export type GuildUncheckedUpdateWithoutAuditScopeEventsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildCreateWithoutAuthMembershipsInput = {
@@ -2472,6 +2673,7 @@ export type GuildCreateWithoutAuthMembershipsInput = {
   suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
 }
 
 export type GuildUncheckedCreateWithoutAuthMembershipsInput = {
@@ -2497,6 +2699,7 @@ export type GuildUncheckedCreateWithoutAuthMembershipsInput = {
   suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
   starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
   starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
 }
 
 export type GuildCreateOrConnectWithoutAuthMembershipsInput = {
@@ -2538,6 +2741,7 @@ export type GuildUpdateWithoutAuthMembershipsInput = {
   suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
 }
 
 export type GuildUncheckedUpdateWithoutAuthMembershipsInput = {
@@ -2563,6 +2767,7 @@ export type GuildUncheckedUpdateWithoutAuthMembershipsInput = {
   suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
   starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
   starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 
@@ -2587,6 +2792,7 @@ export type GuildCountOutputType = {
   suggestions: number
   starboards: number
   starboardEntries: number
+  roleAuditEvents: number
 }
 
 export type GuildCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2606,6 +2812,7 @@ export type GuildCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   suggestions?: boolean | GuildCountOutputTypeCountSuggestionsArgs
   starboards?: boolean | GuildCountOutputTypeCountStarboardsArgs
   starboardEntries?: boolean | GuildCountOutputTypeCountStarboardEntriesArgs
+  roleAuditEvents?: boolean | GuildCountOutputTypeCountRoleAuditEventsArgs
 }
 
 /**
@@ -2730,6 +2937,13 @@ export type GuildCountOutputTypeCountStarboardEntriesArgs<ExtArgs extends runtim
   where?: Prisma.StarboardEntryWhereInput
 }
 
+/**
+ * GuildCountOutputType without action
+ */
+export type GuildCountOutputTypeCountRoleAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DiscordRoleAuditEventWhereInput
+}
+
 
 export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2755,6 +2969,7 @@ export type GuildSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   suggestions?: boolean | Prisma.Guild$suggestionsArgs<ExtArgs>
   starboards?: boolean | Prisma.Guild$starboardsArgs<ExtArgs>
   starboardEntries?: boolean | Prisma.Guild$starboardEntriesArgs<ExtArgs>
+  roleAuditEvents?: boolean | Prisma.Guild$roleAuditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.GuildCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guild"]>
 
@@ -2806,6 +3021,7 @@ export type GuildInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   suggestions?: boolean | Prisma.Guild$suggestionsArgs<ExtArgs>
   starboards?: boolean | Prisma.Guild$starboardsArgs<ExtArgs>
   starboardEntries?: boolean | Prisma.Guild$starboardEntriesArgs<ExtArgs>
+  roleAuditEvents?: boolean | Prisma.Guild$roleAuditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.GuildCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuildIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2830,6 +3046,7 @@ export type $GuildPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     suggestions: Prisma.$SuggestionPayload<ExtArgs>[]
     starboards: Prisma.$StarboardConfigPayload<ExtArgs>[]
     starboardEntries: Prisma.$StarboardEntryPayload<ExtArgs>[]
+    roleAuditEvents: Prisma.$DiscordRoleAuditEventPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3249,6 +3466,7 @@ export interface Prisma__GuildClient<T, Null = never, ExtArgs extends runtime.Ty
   suggestions<T extends Prisma.Guild$suggestionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$suggestionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SuggestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   starboards<T extends Prisma.Guild$starboardsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$starboardsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   starboardEntries<T extends Prisma.Guild$starboardEntriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$starboardEntriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarboardEntryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roleAuditEvents<T extends Prisma.Guild$roleAuditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guild$roleAuditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordRoleAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4059,6 +4277,30 @@ export type Guild$starboardEntriesArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.StarboardEntryScalarFieldEnum | Prisma.StarboardEntryScalarFieldEnum[]
+}
+
+/**
+ * Guild.roleAuditEvents
+ */
+export type Guild$roleAuditEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DiscordRoleAuditEvent
+   */
+  select?: Prisma.DiscordRoleAuditEventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DiscordRoleAuditEvent
+   */
+  omit?: Prisma.DiscordRoleAuditEventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DiscordRoleAuditEventInclude<ExtArgs> | null
+  where?: Prisma.DiscordRoleAuditEventWhereInput
+  orderBy?: Prisma.DiscordRoleAuditEventOrderByWithRelationInput | Prisma.DiscordRoleAuditEventOrderByWithRelationInput[]
+  cursor?: Prisma.DiscordRoleAuditEventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DiscordRoleAuditEventScalarFieldEnum | Prisma.DiscordRoleAuditEventScalarFieldEnum[]
 }
 
 /**

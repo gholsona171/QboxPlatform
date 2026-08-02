@@ -6,8 +6,8 @@
   --surface-3: rgba(28, 45, 72, .88);
   --border: rgba(148, 174, 213, .18);
   --text: #edf4ff;
-  --muted: #9fb0c8;
-  --subtle: #71839e;
+  --muted: #bdcbe0;
+  --subtle: #9aaac0;
   --accent: #7c8cff;
   --accent-2: #26d9a5;
   --warning: #ffcf5a;
@@ -296,6 +296,7 @@ p { line-height: 1.55; }
 .grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .grid.main-detail { grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); align-items: start; }
+.role-management-grid { grid-template-columns: minmax(0, 1.2fr) minmax(360px, .8fr); }
 
 .card {
   border: 1px solid var(--border);
@@ -334,6 +335,14 @@ p { line-height: 1.55; }
   width: 100%;
 }
 
+.form-grid input:focus-visible, .form-grid select:focus-visible, .form-grid textarea:focus-visible {
+  border-color: rgba(124, 140, 255, .72);
+}
+
+.readable-form {
+  max-width: 980px;
+}
+
 .toolbar input { max-width: 300px; }
 .toolbar select { max-width: 210px; }
 textarea { resize: vertical; min-height: 94px; }
@@ -352,6 +361,7 @@ textarea { resize: vertical; min-height: 94px; }
 .button.danger { color: #ffd8df; border-color: rgba(255, 107, 134, .3); }
 .button.compact { padding: 8px 11px; font-size: 13px; }
 .button.ghost { background: transparent; }
+.button:disabled { cursor: not-allowed; opacity: .58; }
 
 .discord-tabs {
   display: flex;
@@ -401,6 +411,39 @@ tr.clickable:hover td { background: rgba(124, 140, 255, .08); }
 
 .form-grid .full { grid-column: 1 / -1; }
 label { display: grid; gap: 6px; color: var(--muted); font-weight: 800; font-size: 13px; }
+
+.sticky-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  border: 1px solid rgba(148, 174, 213, .16);
+  border-radius: 14px;
+  background: rgba(7, 17, 31, .94);
+  padding: 10px;
+}
+
+.role-chip {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--role-color, #94a3b8);
+  border: 1px solid rgba(255, 255, 255, .45);
+  margin-right: 8px;
+  vertical-align: -1px;
+}
+
+.validation-error {
+  color: #ffd0da;
+  border: 1px solid rgba(255, 107, 134, .3);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 107, 134, .08);
+}
 
 .timeline, .list {
   display: grid;

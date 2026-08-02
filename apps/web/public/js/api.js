@@ -24,6 +24,50 @@ export async function listRoleMenus() {
   return requestJson("/api/v1/discord/role-menus");
 }
 
+export async function listDiscordRoles() {
+  return requestJson("/api/v1/discord/roles");
+}
+
+export async function inspectDiscordRole(roleId) {
+  return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}`);
+}
+
+export async function createDiscordRole(input) {
+  return requestJson("/api/v1/discord/roles", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function editDiscordRole(roleId, input) {
+  return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}`, {
+    method: "PATCH",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
+export async function deleteDiscordRole(roleId, confirmation) {
+  return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}`, {
+    method: "DELETE",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ confirmation }),
+  });
+}
+
+export async function moveDiscordRole(roleId, position) {
+  return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}/move`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ position }),
+  });
+}
+
+export async function listDiscordRoleDependencies(roleId) {
+  return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}/dependencies`);
+}
+
 export async function createRoleMenu(input) {
   return requestJson("/api/v1/discord/role-menus", {
     method: "POST",

@@ -20,8 +20,18 @@ export type RoleMenuModel = runtime.Types.Result.DefaultSelection<Prisma.$RoleMe
 
 export type AggregateRoleMenu = {
   _count: RoleMenuCountAggregateOutputType | null
+  _avg: RoleMenuAvgAggregateOutputType | null
+  _sum: RoleMenuSumAggregateOutputType | null
   _min: RoleMenuMinAggregateOutputType | null
   _max: RoleMenuMaxAggregateOutputType | null
+}
+
+export type RoleMenuAvgAggregateOutputType = {
+  revision: number | null
+}
+
+export type RoleMenuSumAggregateOutputType = {
+  revision: number | null
 }
 
 export type RoleMenuMinAggregateOutputType = {
@@ -34,6 +44,7 @@ export type RoleMenuMinAggregateOutputType = {
   presentationType: $Enums.RoleMenuPresentationType | null
   assignmentMode: $Enums.RoleMenuAssignmentMode | null
   status: $Enums.RoleMenuStatus | null
+  revision: number | null
   createdByDiscordUserId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +60,7 @@ export type RoleMenuMaxAggregateOutputType = {
   presentationType: $Enums.RoleMenuPresentationType | null
   assignmentMode: $Enums.RoleMenuAssignmentMode | null
   status: $Enums.RoleMenuStatus | null
+  revision: number | null
   createdByDiscordUserId: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,12 +76,21 @@ export type RoleMenuCountAggregateOutputType = {
   presentationType: number
   assignmentMode: number
   status: number
+  revision: number
   createdByDiscordUserId: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type RoleMenuAvgAggregateInputType = {
+  revision?: true
+}
+
+export type RoleMenuSumAggregateInputType = {
+  revision?: true
+}
 
 export type RoleMenuMinAggregateInputType = {
   id?: true
@@ -81,6 +102,7 @@ export type RoleMenuMinAggregateInputType = {
   presentationType?: true
   assignmentMode?: true
   status?: true
+  revision?: true
   createdByDiscordUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -96,6 +118,7 @@ export type RoleMenuMaxAggregateInputType = {
   presentationType?: true
   assignmentMode?: true
   status?: true
+  revision?: true
   createdByDiscordUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -111,6 +134,7 @@ export type RoleMenuCountAggregateInputType = {
   presentationType?: true
   assignmentMode?: true
   status?: true
+  revision?: true
   createdByDiscordUserId?: true
   createdAt?: true
   updatedAt?: true
@@ -155,6 +179,18 @@ export type RoleMenuAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
+   * Select which fields to average
+  **/
+  _avg?: RoleMenuAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
+   * Select which fields to sum
+  **/
+  _sum?: RoleMenuSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   *
    * Select which fields to find the minimum value
   **/
   _min?: RoleMenuMinAggregateInputType
@@ -185,6 +221,8 @@ export type RoleMenuGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: RoleMenuCountAggregateInputType | true
+  _avg?: RoleMenuAvgAggregateInputType
+  _sum?: RoleMenuSumAggregateInputType
   _min?: RoleMenuMinAggregateInputType
   _max?: RoleMenuMaxAggregateInputType
 }
@@ -199,10 +237,13 @@ export type RoleMenuGroupByOutputType = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status: $Enums.RoleMenuStatus
+  revision: number
   createdByDiscordUserId: string
   createdAt: Date
   updatedAt: Date
   _count: RoleMenuCountAggregateOutputType | null
+  _avg: RoleMenuAvgAggregateOutputType | null
+  _sum: RoleMenuSumAggregateOutputType | null
   _min: RoleMenuMinAggregateOutputType | null
   _max: RoleMenuMaxAggregateOutputType | null
 }
@@ -235,6 +276,7 @@ export type RoleMenuWhereInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFilter<"RoleMenu"> | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFilter<"RoleMenu"> | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFilter<"RoleMenu"> | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFilter<"RoleMenu"> | number
   createdByDiscordUserId?: Prisma.StringFilter<"RoleMenu"> | string
   createdAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
@@ -252,6 +294,7 @@ export type RoleMenuOrderByWithRelationInput = {
   presentationType?: Prisma.SortOrder
   assignmentMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdByDiscordUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -272,6 +315,7 @@ export type RoleMenuWhereUniqueInput = Prisma.AtLeast<{
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFilter<"RoleMenu"> | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFilter<"RoleMenu"> | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFilter<"RoleMenu"> | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFilter<"RoleMenu"> | number
   createdByDiscordUserId?: Prisma.StringFilter<"RoleMenu"> | string
   createdAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
@@ -289,12 +333,15 @@ export type RoleMenuOrderByWithAggregationInput = {
   presentationType?: Prisma.SortOrder
   assignmentMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdByDiscordUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.RoleMenuCountOrderByAggregateInput
+  _avg?: Prisma.RoleMenuAvgOrderByAggregateInput
   _max?: Prisma.RoleMenuMaxOrderByAggregateInput
   _min?: Prisma.RoleMenuMinOrderByAggregateInput
+  _sum?: Prisma.RoleMenuSumOrderByAggregateInput
 }
 
 export type RoleMenuScalarWhereWithAggregatesInput = {
@@ -310,6 +357,7 @@ export type RoleMenuScalarWhereWithAggregatesInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeWithAggregatesFilter<"RoleMenu"> | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeWithAggregatesFilter<"RoleMenu"> | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusWithAggregatesFilter<"RoleMenu"> | $Enums.RoleMenuStatus
+  revision?: Prisma.IntWithAggregatesFilter<"RoleMenu"> | number
   createdByDiscordUserId?: Prisma.StringWithAggregatesFilter<"RoleMenu"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RoleMenu"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RoleMenu"> | Date | string
@@ -324,6 +372,7 @@ export type RoleMenuCreateInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -341,6 +390,7 @@ export type RoleMenuUncheckedCreateInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -356,6 +406,7 @@ export type RoleMenuUpdateInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -373,6 +424,7 @@ export type RoleMenuUncheckedUpdateInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -389,6 +441,7 @@ export type RoleMenuCreateManyInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -403,6 +456,7 @@ export type RoleMenuUpdateManyMutationInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -418,6 +472,7 @@ export type RoleMenuUncheckedUpdateManyInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -443,9 +498,14 @@ export type RoleMenuCountOrderByAggregateInput = {
   presentationType?: Prisma.SortOrder
   assignmentMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdByDiscordUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RoleMenuAvgOrderByAggregateInput = {
+  revision?: Prisma.SortOrder
 }
 
 export type RoleMenuMaxOrderByAggregateInput = {
@@ -458,6 +518,7 @@ export type RoleMenuMaxOrderByAggregateInput = {
   presentationType?: Prisma.SortOrder
   assignmentMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdByDiscordUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -473,9 +534,14 @@ export type RoleMenuMinOrderByAggregateInput = {
   presentationType?: Prisma.SortOrder
   assignmentMode?: Prisma.SortOrder
   status?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdByDiscordUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type RoleMenuSumOrderByAggregateInput = {
+  revision?: Prisma.SortOrder
 }
 
 export type RoleMenuScalarRelationFilter = {
@@ -541,6 +607,14 @@ export type EnumRoleMenuStatusFieldUpdateOperationsInput = {
   set?: $Enums.RoleMenuStatus
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type RoleMenuCreateNestedOneWithoutOptionsInput = {
   create?: Prisma.XOR<Prisma.RoleMenuCreateWithoutOptionsInput, Prisma.RoleMenuUncheckedCreateWithoutOptionsInput>
   connectOrCreate?: Prisma.RoleMenuCreateOrConnectWithoutOptionsInput
@@ -564,6 +638,7 @@ export type RoleMenuCreateWithoutGuildInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -579,6 +654,7 @@ export type RoleMenuUncheckedCreateWithoutGuildInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -624,6 +700,7 @@ export type RoleMenuScalarWhereInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFilter<"RoleMenu"> | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFilter<"RoleMenu"> | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFilter<"RoleMenu"> | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFilter<"RoleMenu"> | number
   createdByDiscordUserId?: Prisma.StringFilter<"RoleMenu"> | string
   createdAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"RoleMenu"> | Date | string
@@ -638,6 +715,7 @@ export type RoleMenuCreateWithoutOptionsInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -654,6 +732,7 @@ export type RoleMenuUncheckedCreateWithoutOptionsInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -684,6 +763,7 @@ export type RoleMenuUpdateWithoutOptionsInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -700,6 +780,7 @@ export type RoleMenuUncheckedUpdateWithoutOptionsInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,6 +795,7 @@ export type RoleMenuCreateManyGuildInput = {
   presentationType: $Enums.RoleMenuPresentationType
   assignmentMode: $Enums.RoleMenuAssignmentMode
   status?: $Enums.RoleMenuStatus
+  revision?: number
   createdByDiscordUserId: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -728,6 +810,7 @@ export type RoleMenuUpdateWithoutGuildInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -743,6 +826,7 @@ export type RoleMenuUncheckedUpdateWithoutGuildInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -758,6 +842,7 @@ export type RoleMenuUncheckedUpdateManyWithoutGuildInput = {
   presentationType?: Prisma.EnumRoleMenuPresentationTypeFieldUpdateOperationsInput | $Enums.RoleMenuPresentationType
   assignmentMode?: Prisma.EnumRoleMenuAssignmentModeFieldUpdateOperationsInput | $Enums.RoleMenuAssignmentMode
   status?: Prisma.EnumRoleMenuStatusFieldUpdateOperationsInput | $Enums.RoleMenuStatus
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdByDiscordUserId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -804,6 +889,7 @@ export type RoleMenuSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   presentationType?: boolean
   assignmentMode?: boolean
   status?: boolean
+  revision?: boolean
   createdByDiscordUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -822,6 +908,7 @@ export type RoleMenuSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   presentationType?: boolean
   assignmentMode?: boolean
   status?: boolean
+  revision?: boolean
   createdByDiscordUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -838,6 +925,7 @@ export type RoleMenuSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   presentationType?: boolean
   assignmentMode?: boolean
   status?: boolean
+  revision?: boolean
   createdByDiscordUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -854,12 +942,13 @@ export type RoleMenuSelectScalar = {
   presentationType?: boolean
   assignmentMode?: boolean
   status?: boolean
+  revision?: boolean
   createdByDiscordUserId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type RoleMenuOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "channelId" | "messageId" | "title" | "description" | "presentationType" | "assignmentMode" | "status" | "createdByDiscordUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["roleMenu"]>
+export type RoleMenuOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "channelId" | "messageId" | "title" | "description" | "presentationType" | "assignmentMode" | "status" | "revision" | "createdByDiscordUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["roleMenu"]>
 export type RoleMenuInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   options?: boolean | Prisma.RoleMenu$optionsArgs<ExtArgs>
@@ -888,6 +977,7 @@ export type $RoleMenuPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     presentationType: $Enums.RoleMenuPresentationType
     assignmentMode: $Enums.RoleMenuAssignmentMode
     status: $Enums.RoleMenuStatus
+    revision: number
     createdByDiscordUserId: string
     createdAt: Date
     updatedAt: Date
@@ -1325,6 +1415,7 @@ export interface RoleMenuFieldRefs {
   readonly presentationType: Prisma.FieldRef<"RoleMenu", 'RoleMenuPresentationType'>
   readonly assignmentMode: Prisma.FieldRef<"RoleMenu", 'RoleMenuAssignmentMode'>
   readonly status: Prisma.FieldRef<"RoleMenu", 'RoleMenuStatus'>
+  readonly revision: Prisma.FieldRef<"RoleMenu", 'Int'>
   readonly createdByDiscordUserId: Prisma.FieldRef<"RoleMenu", 'String'>
   readonly createdAt: Prisma.FieldRef<"RoleMenu", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"RoleMenu", 'DateTime'>

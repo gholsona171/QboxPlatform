@@ -18,6 +18,7 @@ import {
 import { logger } from "@qbox/logger";
 import { RoleMenuService } from "@qbox/role-menus";
 import { DiscordCommunityService } from "@qbox/discord-community";
+import { RoleManagementService } from "@qbox/discord-roles";
 import {
   InMemoryPermissionCache,
   PersistentPermissionService,
@@ -30,6 +31,7 @@ import { createApiServer } from "../createApiServer.js";
 import { ApiAuthenticationConfiguration, type ApiAuthenticationConfigurationInput } from "../auth/ApiAuthenticationConfiguration.js";
 import { NativeDiscordOAuthProvider } from "../auth/DiscordOAuthProvider.js";
 import { registerBrowserAuthenticationRoutes } from "../auth/BrowserAuthenticationRoutes.js";
+import { DiscordRestRoleGateway } from "../discord/DiscordRestRoleGateway.js";
 import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersistenceModule.js";
@@ -39,6 +41,10 @@ export interface ApiApplicationInput {
   readonly api: ApiConfigurationInput;
   readonly authentication: ApiAuthenticationConfigurationInput;
   readonly databaseUrl: string | undefined;
+  readonly discord?: {
+    readonly token?: string | undefined;
+    readonly applicationId?: string | undefined;
+  } | undefined;
 }
 
 /** Process-owned API application with idempotent bounded cleanup. */
@@ -117,6 +123,12 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
   );
   const roleMenus = new RoleMenuService(persistence.repositories.roleMenus);
   const community = new DiscordCommunityService(persistence.repositories.discordCommunity);
+  const roles = new RoleManagementService(
+    persistence.repositories.discordRoles,
+    input.discord?.token
+      ? new DiscordRestRoleGateway(input.discord.token, input.discord.applicationId)
+      : undefined,
+  );
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -180,6 +192,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         authorizer,
         roleMenus,
         community,
+        roles,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       }),

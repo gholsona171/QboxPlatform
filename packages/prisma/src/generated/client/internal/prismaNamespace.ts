@@ -404,6 +404,7 @@ export const ModelName = {
   AutoroleConfig: 'AutoroleConfig',
   AutoroleRule: 'AutoroleRule',
   RulesConfig: 'RulesConfig',
+  DiscordRoleAuditEvent: 'DiscordRoleAuditEvent',
   CommunityCounter: 'CommunityCounter',
   ServerLogConfig: 'ServerLogConfig',
   EmbedTemplate: 'EmbedTemplate',
@@ -439,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent"
+    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -958,6 +959,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.RulesConfigCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.RulesConfigCountAggregateOutputType> | number
+        }
+      }
+    }
+    DiscordRoleAuditEvent: {
+      payload: Prisma.$DiscordRoleAuditEventPayload<ExtArgs>
+      fields: Prisma.DiscordRoleAuditEventFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DiscordRoleAuditEventFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DiscordRoleAuditEventFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        findFirst: {
+          args: Prisma.DiscordRoleAuditEventFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DiscordRoleAuditEventFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        findMany: {
+          args: Prisma.DiscordRoleAuditEventFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>[]
+        }
+        create: {
+          args: Prisma.DiscordRoleAuditEventCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        createMany: {
+          args: Prisma.DiscordRoleAuditEventCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DiscordRoleAuditEventCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>[]
+        }
+        delete: {
+          args: Prisma.DiscordRoleAuditEventDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        update: {
+          args: Prisma.DiscordRoleAuditEventUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        deleteMany: {
+          args: Prisma.DiscordRoleAuditEventDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DiscordRoleAuditEventUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DiscordRoleAuditEventUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>[]
+        }
+        upsert: {
+          args: Prisma.DiscordRoleAuditEventUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DiscordRoleAuditEventPayload>
+        }
+        aggregate: {
+          args: Prisma.DiscordRoleAuditEventAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDiscordRoleAuditEvent>
+        }
+        groupBy: {
+          args: Prisma.DiscordRoleAuditEventGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordRoleAuditEventGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DiscordRoleAuditEventCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DiscordRoleAuditEventCountAggregateOutputType> | number
         }
       }
     }
@@ -2503,6 +2578,7 @@ export const RoleMenuScalarFieldEnum = {
   presentationType: 'presentationType',
   assignmentMode: 'assignmentMode',
   status: 'status',
+  revision: 'revision',
   createdByDiscordUserId: 'createdByDiscordUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2519,6 +2595,7 @@ export const RoleMenuOptionScalarFieldEnum = {
   description: 'description',
   emoji: 'emoji',
   position: 'position',
+  revision: 'revision',
   createdAt: 'createdAt'
 } as const
 
@@ -2554,6 +2631,7 @@ export const AutoroleConfigScalarFieldEnum = {
   enabled: 'enabled',
   delaySeconds: 'delaySeconds',
   includeBots: 'includeBots',
+  revision: 'revision',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2581,11 +2659,30 @@ export const RulesConfigScalarFieldEnum = {
   acceptedRoleId: 'acceptedRoleId',
   pendingRoleId: 'pendingRoleId',
   messageId: 'messageId',
+  revision: 'revision',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type RulesConfigScalarFieldEnum = (typeof RulesConfigScalarFieldEnum)[keyof typeof RulesConfigScalarFieldEnum]
+
+
+export const DiscordRoleAuditEventScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  roleId: 'roleId',
+  feature: 'feature',
+  operation: 'operation',
+  source: 'source',
+  actorType: 'actorType',
+  actorId: 'actorId',
+  summary: 'summary',
+  result: 'result',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordRoleAuditEventScalarFieldEnum = (typeof DiscordRoleAuditEventScalarFieldEnum)[keyof typeof DiscordRoleAuditEventScalarFieldEnum]
 
 
 export const CommunityCounterScalarFieldEnum = {
@@ -3735,6 +3832,7 @@ export type GlobalOmitConfig = {
   autoroleConfig?: Prisma.AutoroleConfigOmit
   autoroleRule?: Prisma.AutoroleRuleOmit
   rulesConfig?: Prisma.RulesConfigOmit
+  discordRoleAuditEvent?: Prisma.DiscordRoleAuditEventOmit
   communityCounter?: Prisma.CommunityCounterOmit
   serverLogConfig?: Prisma.ServerLogConfigOmit
   embedTemplate?: Prisma.EmbedTemplateOmit

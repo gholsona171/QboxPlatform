@@ -114,6 +114,7 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
         enabled: input.enabled,
         delaySeconds: input.delaySeconds,
         includeBots: input.includeBots,
+        revision: { increment: 1 },
       },
     });
     const rules = await this.client.autoroleRule.findMany({ where: { guildId: guild.id }, orderBy: { position: "asc" } });
@@ -141,7 +142,7 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
     const row = await this.client.rulesConfig.upsert({
       where: { guildId: guild.id },
       create: rulesData(guild.id, input),
-      update: rulesData(guild.id, input),
+      update: { ...rulesData(guild.id, input), revision: { increment: 1 } },
     });
     return mapRules(input.guildId, row);
   }
@@ -416,6 +417,7 @@ function mapAutoroles(guildId: string, config: Prisma.AutoroleConfigGetPayload<o
     enabled: config?.enabled ?? false,
     delaySeconds: config?.delaySeconds ?? 0,
     includeBots: config?.includeBots ?? false,
+    revision: config?.revision ?? 1,
     roles: rules.map((row) => ({ guildId, roleId: row.roleId, position: row.position })),
   };
 }
@@ -430,6 +432,7 @@ function mapRules(guildId: string, row: Prisma.RulesConfigGetPayload<object>): R
     acceptedRoleId: row.acceptedRoleId,
     ...(row.pendingRoleId ? { pendingRoleId: row.pendingRoleId } : {}),
     ...(row.messageId ? { messageId: row.messageId } : {}),
+    revision: row.revision,
   };
 }
 

@@ -58,6 +58,7 @@ export const ModelName = {
   AutoroleConfig: 'AutoroleConfig',
   AutoroleRule: 'AutoroleRule',
   RulesConfig: 'RulesConfig',
+  DiscordRoleAuditEvent: 'DiscordRoleAuditEvent',
   CommunityCounter: 'CommunityCounter',
   ServerLogConfig: 'ServerLogConfig',
   EmbedTemplate: 'EmbedTemplate',
@@ -119,6 +120,7 @@ export const RoleMenuScalarFieldEnum = {
   presentationType: 'presentationType',
   assignmentMode: 'assignmentMode',
   status: 'status',
+  revision: 'revision',
   createdByDiscordUserId: 'createdByDiscordUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -135,6 +137,7 @@ export const RoleMenuOptionScalarFieldEnum = {
   description: 'description',
   emoji: 'emoji',
   position: 'position',
+  revision: 'revision',
   createdAt: 'createdAt'
 } as const
 
@@ -170,6 +173,7 @@ export const AutoroleConfigScalarFieldEnum = {
   enabled: 'enabled',
   delaySeconds: 'delaySeconds',
   includeBots: 'includeBots',
+  revision: 'revision',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -197,11 +201,30 @@ export const RulesConfigScalarFieldEnum = {
   acceptedRoleId: 'acceptedRoleId',
   pendingRoleId: 'pendingRoleId',
   messageId: 'messageId',
+  revision: 'revision',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type RulesConfigScalarFieldEnum = (typeof RulesConfigScalarFieldEnum)[keyof typeof RulesConfigScalarFieldEnum]
+
+
+export const DiscordRoleAuditEventScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  roleId: 'roleId',
+  feature: 'feature',
+  operation: 'operation',
+  source: 'source',
+  actorType: 'actorType',
+  actorId: 'actorId',
+  summary: 'summary',
+  result: 'result',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
+} as const
+
+export type DiscordRoleAuditEventScalarFieldEnum = (typeof DiscordRoleAuditEventScalarFieldEnum)[keyof typeof DiscordRoleAuditEventScalarFieldEnum]
 
 
 export const CommunityCounterScalarFieldEnum = {

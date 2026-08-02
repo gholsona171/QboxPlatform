@@ -7,7 +7,7 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Feature | Status | Discord commands | Components/interactions | Automatic handlers | API routes | Portal route | Permissions | Persistence | Fallback |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Command Center | LIVE | ping, adminping |  |  |  | /discord?tab=overview |  |  | Discord yes / Portal yes |
-| Role Management | PARTIAL | roles |  |  | /api/v1/discord/roles, /api/v1/discord/resources/roles | /discord?tab=role-management | discord.roles.manage | DiscordRoleAuditEvent, RoleManagementDependencyRepository | Discord yes / Portal yes |
+| Role Management | LIVE | roles |  |  | /api/v1/discord/roles, /api/v1/discord/resources/roles | /discord?tab=role-management | discord.roles.manage | DiscordRoleAuditEvent, RoleManagementDependencyRepository | Discord yes / Portal yes |
 | Role Menus | LIVE | role-menu | role-menu buttons, select menus, reactions | messageReactionAdd, messageReactionRemove | /api/v1/discord/role-menus | /discord?tab=roles | discord.role-menus.manage | RoleMenu, RoleMenuOption, PrismaRoleMenuRepository | Discord yes / Portal yes |
 | Welcome and Goodbye | LIVE | welcome, goodbye |  | guildMemberAdd, guildMemberRemove | /api/v1/discord/welcome, /api/v1/discord/goodbye | /discord?tab=welcome | discord.welcome.manage | WelcomeGoodbyeConfig | Discord yes / Portal yes |
 | Autoroles | LIVE | autorole |  | guildMemberAdd | /api/v1/discord/autoroles | /discord?tab=autoroles | discord.autoroles.manage | AutoroleConfig, AutoroleRule | Discord yes / Portal yes |

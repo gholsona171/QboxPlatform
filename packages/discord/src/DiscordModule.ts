@@ -4,6 +4,7 @@ import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
 import type { RoleMenuRepository } from "@qbox/role-menus";
 import type { CommunityRepository } from "@qbox/discord-community";
+import type { RoleDependencyRepository } from "@qbox/discord-roles";
 import { env } from "@qbox/shared";
 
 import { RoleMenuCommand } from "./commands/RoleMenu.command.js";
@@ -18,6 +19,7 @@ import { AnnounceCommand } from "./commands/Announce.command.js";
 import { CustomCommand } from "./commands/Custom.command.js";
 import { SuggestCommand } from "./commands/Suggest.command.js";
 import { StarboardCommand } from "./commands/Starboard.command.js";
+import { RolesCommand } from "./commands/Roles.command.js";
 import { DiscordService } from "./DiscordService.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
 import { CommandLoadError, CommandLoader } from "./loaders/CommandLoader.js";
@@ -41,10 +43,11 @@ export class DiscordModule implements PlatformModule {
       readonly commandLoader?: CommandLoader;
       readonly roleMenuRepository?: RoleMenuRepository;
       readonly communityRepository?: CommunityRepository;
+      readonly roleDependencyRepository?: RoleDependencyRepository;
     } = {},
   ) {
     this.discordService =
-      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository);
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository);
     this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
   }
 
@@ -161,6 +164,7 @@ export class DiscordModule implements PlatformModule {
       case "custom": return new CustomCommand(this.discordService.community);
       case "suggest": return new SuggestCommand(this.discordService.community);
       case "starboard": return new StarboardCommand(this.discordService.community);
+      case "roles": return new RolesCommand(this.discordService.roles);
       default: return command;
     }
   }

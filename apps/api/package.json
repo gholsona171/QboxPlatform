@@ -15,6 +15,7 @@
   "dependencies": {
     "@fastify/cookie": "^11.1.2",
     "@qbox/discord-community": "workspace:*",
+    "@qbox/discord-roles": "workspace:*",
     "@qbox/authentication": "workspace:*",
     "@qbox/core": "workspace:*",
     "@qbox/database": "workspace:*",
@@ -22,6 +23,7 @@
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/shared": "workspace:*",
+    "discord.js": "^14",
     "fastify": "^5.11.0",
     "zod": "^4.4.3"
   }

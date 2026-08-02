@@ -6,6 +6,7 @@ import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
 import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
 import { DiscordCommunityService, type CommunityRepository } from "@qbox/discord-community";
+import { RoleManagementService, type RoleDependencyRepository } from "@qbox/discord-roles";
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
@@ -14,6 +15,7 @@ import { DiscordRoleMenuGateway } from "./roleMenus/DiscordRoleMenuGateway.js";
 import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuInteractionHandler.js";
 import { DiscordCommunityGatewayAdapter } from "./community/DiscordCommunityGateway.js";
 import { DiscordCommunityEventHandler } from "./community/DiscordCommunityEventHandler.js";
+import { DiscordRoleManagementGateway } from "./roles/DiscordRoleManagementGateway.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -59,6 +61,7 @@ export class DiscordService {
   public readonly commands: CommandRegistry;
   public readonly roleMenus: RoleMenuService | undefined;
   public readonly community: DiscordCommunityService | undefined;
+  public readonly roles: RoleManagementService | undefined;
   private readonly interactions: DiscordInteractionHandler;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly communityEvents: DiscordCommunityEventHandler | undefined;
@@ -90,6 +93,7 @@ export class DiscordService {
     permissionAuthorizer: PermissionAuthorizer,
     roleMenuRepository?: RoleMenuRepository,
     communityRepository?: CommunityRepository,
+    roleDependencyRepository?: RoleDependencyRepository,
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
     if (roleMenuRepository) {
@@ -107,6 +111,12 @@ export class DiscordService {
         new DiscordCommunityGatewayAdapter(this.client),
       );
       this.communityEvents = new DiscordCommunityEventHandler(this.community);
+    }
+    if (roleDependencyRepository) {
+      this.roles = new RoleManagementService(
+        roleDependencyRepository,
+        new DiscordRoleManagementGateway(this.client),
+      );
     }
     this.interactions = new DiscordInteractionHandler(this.commands, {
       executionTimeoutMs: readExecutionTimeout(),

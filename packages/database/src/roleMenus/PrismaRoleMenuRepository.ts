@@ -55,6 +55,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
         ...(input.presentationType === undefined ? {} : { presentationType: input.presentationType }),
         ...(input.assignmentMode === undefined ? {} : { assignmentMode: input.assignmentMode }),
         status: "DRAFT",
+        revision: { increment: 1 },
       },
       include: roleMenuInclude,
     });
@@ -76,7 +77,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
           position,
         },
       });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT" } });
+      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
@@ -92,7 +93,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
         ...(input.position === undefined ? {} : { position: input.position }),
       },
     });
-    await this.client.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT" } });
+    await this.client.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
     return mapMenu(await requireMenu(this.client, roleMenuId));
   }
 
@@ -102,7 +103,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
       const options = await tx.roleMenuOption.findMany({ where: { roleMenuId }, orderBy: { position: "asc" } });
       for (const [position, option] of options.entries())
         await tx.roleMenuOption.update({ where: { id: option.id }, data: { position } });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT" } });
+      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
@@ -111,7 +112,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
     return this.client.$transaction(async (tx) => {
       for (const [position, id] of optionIds.entries())
         await tx.roleMenuOption.update({ where: { id, roleMenuId }, data: { position } });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT" } });
+      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
@@ -119,7 +120,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
   public async setPublished(roleMenuId: string, messageId: string): Promise<RoleMenu> {
     const row = await this.client.roleMenu.update({
       where: { id: roleMenuId },
-      data: { messageId, status: "PUBLISHED" },
+      data: { messageId, status: "PUBLISHED", revision: { increment: 1 } },
       include: roleMenuInclude,
     });
     return mapMenu(row);
@@ -128,7 +129,7 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
   public async setStatus(roleMenuId: string, status: RoleMenuStatus): Promise<RoleMenu> {
     const row = await this.client.roleMenu.update({
       where: { id: roleMenuId },
-      data: { status },
+      data: { status, revision: { increment: 1 } },
       include: roleMenuInclude,
     });
     return mapMenu(row);
@@ -188,6 +189,7 @@ function mapMenu(row: RoleMenuWithOptions): RoleMenu {
     assignmentMode: row.assignmentMode,
     status: row.status,
     createdByDiscordUserId: row.createdByDiscordUserId,
+    revision: row.revision,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     options: row.options.map(mapOption),
@@ -203,6 +205,7 @@ function mapOption(row: RoleMenuOptionRow): RoleMenuOption {
     ...(row.description ? { description: row.description } : {}),
     ...(row.emoji ? { emoji: row.emoji } : {}),
     position: row.position,
+    revision: row.revision,
     createdAt: row.createdAt,
   });
 }

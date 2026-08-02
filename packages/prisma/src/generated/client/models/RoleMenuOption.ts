@@ -28,10 +28,12 @@ export type AggregateRoleMenuOption = {
 
 export type RoleMenuOptionAvgAggregateOutputType = {
   position: number | null
+  revision: number | null
 }
 
 export type RoleMenuOptionSumAggregateOutputType = {
   position: number | null
+  revision: number | null
 }
 
 export type RoleMenuOptionMinAggregateOutputType = {
@@ -42,6 +44,7 @@ export type RoleMenuOptionMinAggregateOutputType = {
   description: string | null
   emoji: string | null
   position: number | null
+  revision: number | null
   createdAt: Date | null
 }
 
@@ -53,6 +56,7 @@ export type RoleMenuOptionMaxAggregateOutputType = {
   description: string | null
   emoji: string | null
   position: number | null
+  revision: number | null
   createdAt: Date | null
 }
 
@@ -64,6 +68,7 @@ export type RoleMenuOptionCountAggregateOutputType = {
   description: number
   emoji: number
   position: number
+  revision: number
   createdAt: number
   _all: number
 }
@@ -71,10 +76,12 @@ export type RoleMenuOptionCountAggregateOutputType = {
 
 export type RoleMenuOptionAvgAggregateInputType = {
   position?: true
+  revision?: true
 }
 
 export type RoleMenuOptionSumAggregateInputType = {
   position?: true
+  revision?: true
 }
 
 export type RoleMenuOptionMinAggregateInputType = {
@@ -85,6 +92,7 @@ export type RoleMenuOptionMinAggregateInputType = {
   description?: true
   emoji?: true
   position?: true
+  revision?: true
   createdAt?: true
 }
 
@@ -96,6 +104,7 @@ export type RoleMenuOptionMaxAggregateInputType = {
   description?: true
   emoji?: true
   position?: true
+  revision?: true
   createdAt?: true
 }
 
@@ -107,6 +116,7 @@ export type RoleMenuOptionCountAggregateInputType = {
   description?: true
   emoji?: true
   position?: true
+  revision?: true
   createdAt?: true
   _all?: true
 }
@@ -205,6 +215,7 @@ export type RoleMenuOptionGroupByOutputType = {
   description: string | null
   emoji: string | null
   position: number
+  revision: number
   createdAt: Date
   _count: RoleMenuOptionCountAggregateOutputType | null
   _avg: RoleMenuOptionAvgAggregateOutputType | null
@@ -239,6 +250,7 @@ export type RoleMenuOptionWhereInput = {
   description?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   emoji?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   position?: Prisma.IntFilter<"RoleMenuOption"> | number
+  revision?: Prisma.IntFilter<"RoleMenuOption"> | number
   createdAt?: Prisma.DateTimeFilter<"RoleMenuOption"> | Date | string
   roleMenu?: Prisma.XOR<Prisma.RoleMenuScalarRelationFilter, Prisma.RoleMenuWhereInput>
 }
@@ -251,6 +263,7 @@ export type RoleMenuOptionOrderByWithRelationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   roleMenu?: Prisma.RoleMenuOrderByWithRelationInput
 }
@@ -268,6 +281,7 @@ export type RoleMenuOptionWhereUniqueInput = Prisma.AtLeast<{
   description?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   emoji?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   position?: Prisma.IntFilter<"RoleMenuOption"> | number
+  revision?: Prisma.IntFilter<"RoleMenuOption"> | number
   createdAt?: Prisma.DateTimeFilter<"RoleMenuOption"> | Date | string
   roleMenu?: Prisma.XOR<Prisma.RoleMenuScalarRelationFilter, Prisma.RoleMenuWhereInput>
 }, "id" | "roleMenuId_position" | "roleMenuId_roleId">
@@ -280,6 +294,7 @@ export type RoleMenuOptionOrderByWithAggregationInput = {
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   emoji?: Prisma.SortOrderInput | Prisma.SortOrder
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.RoleMenuOptionCountOrderByAggregateInput
   _avg?: Prisma.RoleMenuOptionAvgOrderByAggregateInput
@@ -299,6 +314,7 @@ export type RoleMenuOptionScalarWhereWithAggregatesInput = {
   description?: Prisma.StringNullableWithAggregatesFilter<"RoleMenuOption"> | string | null
   emoji?: Prisma.StringNullableWithAggregatesFilter<"RoleMenuOption"> | string | null
   position?: Prisma.IntWithAggregatesFilter<"RoleMenuOption"> | number
+  revision?: Prisma.IntWithAggregatesFilter<"RoleMenuOption"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"RoleMenuOption"> | Date | string
 }
 
@@ -309,6 +325,7 @@ export type RoleMenuOptionCreateInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
   roleMenu: Prisma.RoleMenuCreateNestedOneWithoutOptionsInput
 }
@@ -321,6 +338,7 @@ export type RoleMenuOptionUncheckedCreateInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
 }
 
@@ -331,6 +349,7 @@ export type RoleMenuOptionUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   roleMenu?: Prisma.RoleMenuUpdateOneRequiredWithoutOptionsNestedInput
 }
@@ -343,6 +362,7 @@ export type RoleMenuOptionUncheckedUpdateInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -354,6 +374,7 @@ export type RoleMenuOptionCreateManyInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
 }
 
@@ -364,6 +385,7 @@ export type RoleMenuOptionUpdateManyMutationInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -375,6 +397,7 @@ export type RoleMenuOptionUncheckedUpdateManyInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -406,11 +429,13 @@ export type RoleMenuOptionCountOrderByAggregateInput = {
   description?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type RoleMenuOptionAvgOrderByAggregateInput = {
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
 }
 
 export type RoleMenuOptionMaxOrderByAggregateInput = {
@@ -421,6 +446,7 @@ export type RoleMenuOptionMaxOrderByAggregateInput = {
   description?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -432,11 +458,13 @@ export type RoleMenuOptionMinOrderByAggregateInput = {
   description?: Prisma.SortOrder
   emoji?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
 export type RoleMenuOptionSumOrderByAggregateInput = {
   position?: Prisma.SortOrder
+  revision?: Prisma.SortOrder
 }
 
 export type RoleMenuOptionCreateNestedManyWithoutRoleMenuInput = {
@@ -481,14 +509,6 @@ export type RoleMenuOptionUncheckedUpdateManyWithoutRoleMenuNestedInput = {
   deleteMany?: Prisma.RoleMenuOptionScalarWhereInput | Prisma.RoleMenuOptionScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type RoleMenuOptionCreateWithoutRoleMenuInput = {
   id?: string
   roleId: string
@@ -496,6 +516,7 @@ export type RoleMenuOptionCreateWithoutRoleMenuInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
 }
 
@@ -506,6 +527,7 @@ export type RoleMenuOptionUncheckedCreateWithoutRoleMenuInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
 }
 
@@ -546,6 +568,7 @@ export type RoleMenuOptionScalarWhereInput = {
   description?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   emoji?: Prisma.StringNullableFilter<"RoleMenuOption"> | string | null
   position?: Prisma.IntFilter<"RoleMenuOption"> | number
+  revision?: Prisma.IntFilter<"RoleMenuOption"> | number
   createdAt?: Prisma.DateTimeFilter<"RoleMenuOption"> | Date | string
 }
 
@@ -556,6 +579,7 @@ export type RoleMenuOptionCreateManyRoleMenuInput = {
   description?: string | null
   emoji?: string | null
   position: number
+  revision?: number
   createdAt?: Date | string
 }
 
@@ -566,6 +590,7 @@ export type RoleMenuOptionUpdateWithoutRoleMenuInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -576,6 +601,7 @@ export type RoleMenuOptionUncheckedUpdateWithoutRoleMenuInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -586,6 +612,7 @@ export type RoleMenuOptionUncheckedUpdateManyWithoutRoleMenuInput = {
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   emoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  revision?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -599,6 +626,7 @@ export type RoleMenuOptionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   description?: boolean
   emoji?: boolean
   position?: boolean
+  revision?: boolean
   createdAt?: boolean
   roleMenu?: boolean | Prisma.RoleMenuDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roleMenuOption"]>
@@ -611,6 +639,7 @@ export type RoleMenuOptionSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   description?: boolean
   emoji?: boolean
   position?: boolean
+  revision?: boolean
   createdAt?: boolean
   roleMenu?: boolean | Prisma.RoleMenuDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roleMenuOption"]>
@@ -623,6 +652,7 @@ export type RoleMenuOptionSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   description?: boolean
   emoji?: boolean
   position?: boolean
+  revision?: boolean
   createdAt?: boolean
   roleMenu?: boolean | Prisma.RoleMenuDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["roleMenuOption"]>
@@ -635,10 +665,11 @@ export type RoleMenuOptionSelectScalar = {
   description?: boolean
   emoji?: boolean
   position?: boolean
+  revision?: boolean
   createdAt?: boolean
 }
 
-export type RoleMenuOptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roleMenuId" | "roleId" | "label" | "description" | "emoji" | "position" | "createdAt", ExtArgs["result"]["roleMenuOption"]>
+export type RoleMenuOptionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roleMenuId" | "roleId" | "label" | "description" | "emoji" | "position" | "revision" | "createdAt", ExtArgs["result"]["roleMenuOption"]>
 export type RoleMenuOptionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   roleMenu?: boolean | Prisma.RoleMenuDefaultArgs<ExtArgs>
 }
@@ -662,6 +693,7 @@ export type $RoleMenuOptionPayload<ExtArgs extends runtime.Types.Extensions.Inte
     description: string | null
     emoji: string | null
     position: number
+    revision: number
     createdAt: Date
   }, ExtArgs["result"]["roleMenuOption"]>
   composites: {}
@@ -1094,6 +1126,7 @@ export interface RoleMenuOptionFieldRefs {
   readonly description: Prisma.FieldRef<"RoleMenuOption", 'String'>
   readonly emoji: Prisma.FieldRef<"RoleMenuOption", 'String'>
   readonly position: Prisma.FieldRef<"RoleMenuOption", 'Int'>
+  readonly revision: Prisma.FieldRef<"RoleMenuOption", 'Int'>
   readonly createdAt: Prisma.FieldRef<"RoleMenuOption", 'DateTime'>
 }
 
