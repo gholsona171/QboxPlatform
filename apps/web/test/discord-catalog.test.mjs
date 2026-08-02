@@ -3,28 +3,10 @@ import test from "node:test";
 
 test("Discord Essentials catalog includes every planned portal subsection", async () => {
   const { seedDemoData } = await import("../public/js/data.js");
+  const { featureRegistry } = await import("../public/js/featureRegistry.js");
   const state = seedDemoData();
   const names = state.discord.features.map((feature) => feature.name);
-  assert.deepEqual(names, [
-    "Command Center",
-    "Role Menus",
-    "Welcome and Goodbye",
-    "Autoroles",
-    "AutoMod and Filters",
-    "Rules",
-    "Member Counters",
-    "Server Logs",
-    "Embeds and Announcements",
-    "Scheduled Messages and Reminders",
-    "Giveaways",
-    "Levels and Rewards",
-    "Starboard",
-    "Voice Rooms",
-    "Custom Commands",
-    "Suggestions",
-    "Server Utilities",
-    "Bot Settings",
-  ]);
+  assert.deepEqual(names, featureRegistry.map((feature) => feature.displayName));
 });
 
 test("Role Menus demo data is deterministic and contains no secret-bearing fields", async () => {

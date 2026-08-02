@@ -1,4 +1,6 @@
-export const appVersion = "0.3.0-discord-essentials";
+import { featureRegistry } from "./featureRegistry.js";
+
+export const appVersion = "0.4.0-role-parity";
 
 export const navItems = [
   ["overview", "OV", "Overview"],
@@ -66,26 +68,7 @@ export function seedDemoData() {
       article("KB-702", "Staff Review Checklist", "Internal review draft for applications", "Draft", ["staff"]),
     ],
     discord: {
-      features: [
-        discordFeature("Command Center", "LIVE", ["Discord command", "portal", "API"], "Command deployment, validation, and diagnostics are implemented."),
-        discordFeature("Role Menus", "LIVE", ["Discord command", "Discord component", "automatic event", "portal", "API"], "Persistent role menus and reaction roles are the first live Discord feature."),
-        discordFeature("Welcome and Goodbye", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Persistent join and leave messages with safe previews."),
-        discordFeature("Autoroles", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Persistent ordered role assignment on member join."),
-        discordFeature("AutoMod and Filters", "DEMO", ["automatic event", "portal", "API"], "Filter-rule concept. No live moderation action is sent."),
-        discordFeature("Rules", "LIVE", ["Discord command", "Discord component", "portal", "API"], "Persistent rules panel with Accept Rules button."),
-        discordFeature("Member Counters", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Persistent in-process counters refreshed by events and timer."),
-        discordFeature("Server Logs", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Configurable Discord audit delivery with safe content handling."),
-        discordFeature("Embeds and Announcements", "LIVE", ["Discord command", "portal", "API"], "Persistent embed template builder and announcement previews."),
-        discordFeature("Scheduled Messages and Reminders", "PLANNED", ["automatic event", "portal", "API"], "Blocked by scheduler execution."),
-        discordFeature("Giveaways", "PLANNED", ["Discord component", "automatic event", "portal", "API"], "Blocked by scheduler and persistence workflow."),
-        discordFeature("Levels and Rewards", "PLANNED", ["automatic event", "portal"], "Blocked by activity/event ingestion."),
-        discordFeature("Starboard", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Persistent reaction threshold tracking and deduplication."),
-        discordFeature("Voice Rooms", "PLANNED", ["Discord component", "automatic event", "portal"], "Blocked by voice state workflow."),
-        discordFeature("Custom Commands", "LIVE", ["Discord command", "automatic event", "portal", "API"], "Persistent grouped slash responses with optional message triggers."),
-        discordFeature("Suggestions", "LIVE", ["Discord command", "portal", "API"], "Persistent suggestion workflow and review queue."),
-        discordFeature("Server Utilities", "DEMO", ["Discord command", "portal"], "Operational utility concept."),
-        discordFeature("Bot Settings", "DEMO", ["portal", "API"], "Configuration preview."),
-      ],
+      features: featureRegistry.map(featureFromRegistry),
       roleMenus: [
         roleMenu("RM-100", "Community Roles", "PUBLISHED", "1257928923048837201", "1262656532902842423", "BUTTONS", "TOGGLE", [
           roleOption("RM-OPT-1", "1262656532902842423", "Staff Alerts", "Bell"),
@@ -139,6 +122,22 @@ function event(id, title, area, time) {
 
 function history(action) {
   return [{ at: "Seeded demo data", action }];
+}
+
+function featureFromRegistry(feature) {
+  const surfaces = [
+    feature.discordCommands.length ? "Discord command" : "",
+    feature.discordInteractions.length ? "Discord component" : "",
+    feature.automaticHandlers.length ? "automatic event" : "",
+    feature.apiRoutes.length ? "API" : "",
+    feature.portalAvailable ? "portal" : "",
+  ].filter(Boolean);
+  return discordFeature(
+    feature.displayName,
+    feature.status,
+    surfaces,
+    `${feature.discordFallbackAvailable ? "Discord fallback available." : "Discord fallback unavailable."} ${feature.portalAvailable ? "Portal surface available." : "Portal surface unavailable."}`,
+  );
 }
 
 function application(id, applicant, type, status, reviewer, notes) {

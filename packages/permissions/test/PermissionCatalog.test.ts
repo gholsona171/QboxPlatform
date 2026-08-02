@@ -15,6 +15,7 @@ describe("permission catalog", () => {
   it.each([
     "platform.owner",
     "moderation.warn",
+    "discord.roles.manage",
     "discord.role-menus.manage",
     "discord.custom-commands.manage",
     "tickets.close",

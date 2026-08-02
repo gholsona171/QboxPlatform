@@ -171,6 +171,12 @@ importers:
         specifier: ^14
         version: 14.27.0
 
+  packages/feature-registry:
+    dependencies:
+      '@qbox/permissions':
+        specifier: workspace:*
+        version: link:../permissions
+
   packages/logger:
     dependencies:
       pino:
