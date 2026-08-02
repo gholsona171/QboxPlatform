@@ -16,6 +16,7 @@ export interface ApiProcessEnvironment {
   readonly API_KEEP_ALIVE_TIMEOUT_MS?: string | undefined;
   readonly API_SHUTDOWN_TIMEOUT_MS?: string | undefined;
   readonly API_TRUST_PROXY?: string | undefined;
+  readonly API_ALLOWED_HOSTS?: string | undefined;
   readonly API_PUBLIC_BASE_URL?: string | undefined;
   readonly LOG_LEVEL?: string | undefined;
   readonly QBOX_BUILD_VERSION?: string | undefined;
@@ -47,6 +48,7 @@ export function apiConfigurationFromEnvironment(
     keepAliveTimeoutMs: optionalNumber(environment.API_KEEP_ALIVE_TIMEOUT_MS),
     shutdownTimeoutMs: optionalNumber(environment.API_SHUTDOWN_TIMEOUT_MS),
     trustProxy: parseTrustProxy(environment.API_TRUST_PROXY),
+    allowedHosts: parseOptionalCsv(environment.API_ALLOWED_HOSTS),
     publicBaseUrl: environment.API_PUBLIC_BASE_URL,
     logLevel: environment.LOG_LEVEL,
     buildVersion: environment.QBOX_BUILD_VERSION,
@@ -108,4 +110,9 @@ function parseTrustProxy(value: string | undefined): false | readonly string[] |
   if (value === undefined) return undefined;
   if (value === "false") return false;
   return value.split(",").map((address) => address.trim());
+}
+
+function parseOptionalCsv(value: string | undefined): readonly string[] | undefined {
+  if (value === undefined || value.trim() === "") return undefined;
+  return value.split(",").map((item) => item.trim()).filter(Boolean);
 }

@@ -448,8 +448,9 @@ function isAllowedHost(
     return false;
   const expected = new URL(diagnostics.publicBaseUrl);
   if (parsed.host.toLowerCase() === expected.host.toLowerCase()) return true;
+  if (diagnostics.allowedHosts.includes(parsed.host.toLowerCase())) return true;
   if (diagnostics.environment === "production") return false;
-  return isLoopbackHostname(parsed.hostname) && isLoopbackHostname(expected.hostname);
+  return isLoopbackHostname(parsed.hostname);
 }
 
 function isLoopbackHostname(hostname: string): boolean {

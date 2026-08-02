@@ -26,6 +26,7 @@ export interface ApiConfigurationInput {
   readonly keepAliveTimeoutMs?: number | undefined;
   readonly shutdownTimeoutMs?: number | undefined;
   readonly trustProxy?: false | readonly string[] | undefined;
+  readonly allowedHosts?: readonly string[] | undefined;
   readonly corsPolicy?: ApiCorsPolicy | undefined;
   readonly rateLimitPolicy?: ApiRateLimitPolicy | undefined;
   readonly publicBaseUrl?: string | undefined;
@@ -45,6 +46,7 @@ export interface ApiConfigurationDiagnostics {
   readonly keepAliveTimeoutMs: number;
   readonly shutdownTimeoutMs: number;
   readonly trustProxy: ApiTrustedProxyPolicy;
+  readonly allowedHosts: readonly string[];
   readonly corsPolicy: ApiCorsPolicy;
   readonly rateLimitPolicy: ApiRateLimitPolicy;
   readonly publicBaseUrl: string;
@@ -75,6 +77,7 @@ const inputSchema = z.strictObject({
   keepAliveTimeoutMs: z.number().int().min(100).max(300_000).default(5_000),
   shutdownTimeoutMs: z.number().int().min(100).max(300_000).default(10_000),
   trustProxy: z.union([z.literal(false), z.array(z.string().trim().min(1)).min(1)]).default(false),
+  allowedHosts: z.array(z.string().trim().min(1)).default([]),
   corsPolicy: z.discriminatedUnion("mode", [
     z.strictObject({ mode: z.literal("disabled") }),
     z.strictObject({
@@ -128,11 +131,13 @@ export class ApiConfiguration {
       parsed.data.environment,
     );
     const trustProxy = parseTrustProxy(parsed.data.trustProxy);
+    const allowedHosts = parseAllowedHosts(parsed.data.allowedHosts);
 
     return new ApiConfiguration({
       ...parsed.data,
       publicBaseUrl,
       trustProxy,
+      allowedHosts,
       corsPolicy: parsed.data.corsPolicy,
       rateLimitPolicy: parsed.data.rateLimitPolicy,
     });
@@ -183,12 +188,31 @@ function validateProxyAddress(address: string): string {
   return address;
 }
 
+function parseAllowedHosts(values: readonly string[]): readonly string[] {
+  const hosts = new Set<string>();
+  for (const value of values) {
+    if (value.length > 255 || value.includes(","))
+      throw new ApiConfigurationError("Invalid API allowedHosts.");
+    let parsed: URL;
+    try {
+      parsed = new URL(`http://${value}`);
+    } catch {
+      throw new ApiConfigurationError("Invalid API allowedHosts.");
+    }
+    if (parsed.username || parsed.password || parsed.pathname !== "/" || parsed.search || parsed.hash)
+      throw new ApiConfigurationError("Invalid API allowedHosts.");
+    hosts.add(parsed.host.toLowerCase());
+  }
+  return [...hosts];
+}
+
 function deepFreezeDiagnostics(
   diagnostics: ApiConfigurationDiagnostics,
 ): ApiConfigurationDiagnostics {
   if (diagnostics.trustProxy.mode === "allowlist")
     Object.freeze(diagnostics.trustProxy.addresses);
   Object.freeze(diagnostics.trustProxy);
+  Object.freeze(diagnostics.allowedHosts);
   if (diagnostics.corsPolicy.mode === "allowlist")
     Object.freeze(diagnostics.corsPolicy.origins);
   Object.freeze(diagnostics.corsPolicy);

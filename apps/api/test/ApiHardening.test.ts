@@ -108,6 +108,38 @@ describe("API transport hardening", () => {
     await server.close();
   });
 
+  it("accepts configured public API hosts separate from the browser public base URL", async () => {
+    const server = createApiServer({
+      configuration: configuration({
+        publicBaseUrl: "https://qbox-platform.vercel.app",
+        allowedHosts: ["qbox-vps.tailnet.ts.net"],
+      }),
+    });
+    const response = await server.inject({
+      method: "GET",
+      url: "/health/live",
+      headers: { host: "qbox-vps.tailnet.ts.net" },
+    });
+    expect(response.statusCode).toBe(200);
+    await server.close();
+  });
+
+  it("accepts loopback health checks in development even when the browser base is public", async () => {
+    const server = createApiServer({
+      configuration: configuration({
+        environment: "development",
+        publicBaseUrl: "https://qbox-platform.vercel.app",
+      }),
+    });
+    const response = await server.inject({
+      method: "GET",
+      url: "/health/live",
+      headers: { host: "127.0.0.1:3000" },
+    });
+    expect(response.statusCode).toBe(200);
+    await server.close();
+  });
+
   it("rejects malformed metadata from trusted proxies and malformed origins", async () => {
     const logger = new CapturingLogger();
     const server = createApiServer({
