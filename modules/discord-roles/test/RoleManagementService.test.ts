@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   RoleManagementError,
   RoleManagementService,
+  type DiscordChannelResource,
   type DiscordRoleResource,
   type RoleDependencyRepository,
   type RoleManagementGateway,
@@ -44,12 +45,29 @@ function repository(dependencies = []) {
 function gateway(current = role()): RoleManagementGateway {
   return {
     listRoles: async () => [current],
+    listChannels: async () => [channel()],
     getRole: async (_guildId, requestedRoleId) => requestedRoleId === current.id ? current : undefined,
     createRole: async (input) => role({ id: "1262656532902842424", name: input.name }),
     editRole: async (input) => role({ ...current, name: input.name ?? current.name }),
     deleteRole: async () => undefined,
     moveRole: async (input) => role({ ...current, position: input.position }),
     capabilities: async () => ({ guildId, connected: true, botHighestRolePosition: 10, canManageRoles: true }),
+  };
+}
+
+function channel(overrides: Partial<DiscordChannelResource> = {}): DiscordChannelResource {
+  return {
+    id: "1262656532902842425",
+    guildId,
+    name: "role-menus",
+    type: "TEXT",
+    position: 1,
+    nsfw: false,
+    canView: true,
+    canSendMessages: true,
+    canEmbedLinks: true,
+    canManage: false,
+    ...overrides,
   };
 }
 
@@ -77,5 +95,17 @@ describe("RoleManagementService", () => {
     const service = new RoleManagementService(repo, gateway());
     await service.createRole({ guildId, name: "Member", actor: { type: "platform-user", id: "user-1" }, source: "WEB" });
     expect(repo.audits).toHaveLength(1);
+  });
+
+  it("returns Discord channel resources from the live gateway", async () => {
+    const service = new RoleManagementService(repository(), gateway());
+    await expect(service.listChannels(guildId)).resolves.toMatchObject([
+      { id: "1262656532902842425", name: "role-menus", canSendMessages: true },
+    ]);
+  });
+
+  it("does not fake an empty channel list when Discord is unavailable", async () => {
+    const service = new RoleManagementService(repository());
+    await expect(service.listChannels(guildId)).rejects.toMatchObject({ code: "DISCORD_UNAVAILABLE" });
   });
 });

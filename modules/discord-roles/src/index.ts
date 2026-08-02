@@ -24,6 +24,29 @@ export interface DiscordRoleResource {
   readonly dependencyCount: number;
 }
 
+export type DiscordChannelResourceType =
+  | "TEXT"
+  | "ANNOUNCEMENT"
+  | "FORUM"
+  | "MEDIA"
+  | "VOICE"
+  | "CATEGORY"
+  | "OTHER";
+
+export interface DiscordChannelResource {
+  readonly id: string;
+  readonly guildId: string;
+  readonly name: string;
+  readonly type: DiscordChannelResourceType;
+  readonly parentId?: string | undefined;
+  readonly position: number;
+  readonly nsfw: boolean;
+  readonly canView: boolean;
+  readonly canSendMessages: boolean;
+  readonly canEmbedLinks: boolean;
+  readonly canManage: boolean;
+}
+
 export interface RoleCapabilities {
   readonly guildId: string;
   readonly connected: boolean;
@@ -97,6 +120,7 @@ export interface RoleAuditInput {
 
 export interface RoleManagementGateway {
   listRoles(guildId: string): Promise<readonly DiscordRoleResource[]>;
+  listChannels(guildId: string): Promise<readonly DiscordChannelResource[]>;
   getRole(guildId: string, roleId: string): Promise<DiscordRoleResource | undefined>;
   createRole(input: RoleCreateInput): Promise<DiscordRoleResource>;
   editRole(input: RoleEditInput): Promise<DiscordRoleResource>;
@@ -143,6 +167,11 @@ export class RoleManagementService {
       ...role,
       dependencyCount: dependencies.filter((dependency) => dependency.roleId === role.id).length,
     }));
+  }
+
+  public async listChannels(guildId: string): Promise<readonly DiscordChannelResource[]> {
+    requireSnowflake("guildId", guildId);
+    return this.requireGateway().listChannels(guildId);
   }
 
   public async inspectRole(guildId: string, roleId: string): Promise<DiscordRoleResource> {

@@ -28,11 +28,12 @@ import type {
   PermissionPrincipal,
 } from "@qbox/permissions";
 import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
-import type { CounterType, DiscordCommunityService, SuggestionStatus } from "@qbox/discord-community";
+import { CommunityFeatureError, type CounterType, type DiscordCommunityService, type SuggestionStatus } from "@qbox/discord-community";
 import { RoleManagementError, type RoleManagementService } from "@qbox/discord-roles";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
+  ConflictApiError,
   DependencyUnavailableApiError,
   ValidationApiError,
 } from "../errors/ApiError.js";
@@ -317,6 +318,8 @@ export async function registerBrowserAuthenticationRoutes(
           ...(description === undefined ? {} : { description }),
           ...(presentationType === undefined ? {} : { presentationType }),
           ...(assignmentMode === undefined ? {} : { assignmentMode }),
+          expectedRevision: integerField(body, "expectedRevision"),
+          source: "WEB",
         }),
       ),
     };
@@ -340,6 +343,8 @@ export async function registerBrowserAuthenticationRoutes(
           label: stringField(body, "label"),
           ...(description === undefined ? {} : { description }),
           ...(emoji === undefined ? {} : { emoji }),
+          expectedRevision: integerField(body, "expectedRevision"),
+          source: "WEB",
         }),
       ),
     };
@@ -359,6 +364,8 @@ export async function registerBrowserAuthenticationRoutes(
           ...(label === undefined ? {} : { label }),
           ...(description === undefined ? {} : { description }),
           ...(emoji === undefined ? {} : { emoji }),
+          expectedRevision: integerField(body, "expectedRevision"),
+          source: "WEB",
         }),
       ),
     };
@@ -366,23 +373,35 @@ export async function registerBrowserAuthenticationRoutes(
 
   server.delete("/api/v1/discord/role-menus/:id/options/:optionId", async (request) => {
     await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
     return {
-      data: await dependencies.roleMenus.removeOption(param(request, "id"), param(request, "optionId")),
+      data: await dependencies.roleMenus.removeOption(param(request, "id"), param(request, "optionId"), {
+        expectedRevision: integerField(body, "expectedRevision"),
+        source: "WEB",
+      }),
     };
   });
 
   server.post("/api/v1/discord/role-menus/:id/publish", async (request) => {
     await requireRoleMenuManager(request, dependencies);
+    const body = objectBody(request);
     return {
       data: await safeRoleMenuCall(() =>
-        dependencies.roleMenus.publish(param(request, "id"), stringField(objectBody(request), "messageId")),
+        dependencies.roleMenus.publish(param(request, "id"), stringField(body, "messageId"), {
+          expectedRevision: integerField(body, "expectedRevision"),
+          source: "WEB",
+        }),
       ),
     };
   });
 
   server.post("/api/v1/discord/role-menus/:id/disable", async (request) => {
     await requireRoleMenuManager(request, dependencies);
-    return { data: await dependencies.roleMenus.disable(param(request, "id")) };
+    const body = objectBody(request);
+    return { data: await dependencies.roleMenus.disable(param(request, "id"), {
+      expectedRevision: integerField(body, "expectedRevision"),
+      source: "WEB",
+    }) };
   });
 
   server.get("/api/v1/discord/roles", async (request, reply) => {
@@ -523,9 +542,10 @@ export async function registerBrowserAuthenticationRoutes(
     return { data: await safeRoleCall(() => dependencies.roles.capabilities(diagnostics.discordGuildId)) };
   });
 
-  server.get("/api/v1/discord/resources/channels", async (_request, reply) => {
+  server.get("/api/v1/discord/resources/channels", async (request, reply) => {
     reply.header("cache-control", "no-store");
-    return { data: [], discord: { connected: false, reason: "Channel lookup is not yet exposed by the Discord role adapter." } };
+    await requireDiscordManager(request, dependencies, "discord.roles.manage");
+    return { data: await safeRoleCall(() => dependencies.roles.listChannels(diagnostics.discordGuildId)) };
   });
 
   const communityRoutes = [
@@ -564,7 +584,7 @@ export async function registerBrowserAuthenticationRoutes(
     await requireDiscordManager(request, dependencies, "discord.autoroles.manage");
     const settings = await dependencies.community.settings(diagnostics.discordGuildId);
     const body = objectBody(request);
-    return { data: await dependencies.community.saveAutoroles({ ...settings.autoroles, enabled: booleanField(body, "enabled"), delaySeconds: optionalIntegerField(body, "delaySeconds") ?? settings.autoroles.delaySeconds, includeBots: optionalBooleanField(body, "includeBots") ?? settings.autoroles.includeBots }) };
+    return { data: await safeCommunityCall(() => dependencies.community.saveAutoroles({ ...settings.autoroles, enabled: booleanField(body, "enabled"), delaySeconds: optionalIntegerField(body, "delaySeconds") ?? settings.autoroles.delaySeconds, includeBots: optionalBooleanField(body, "includeBots") ?? settings.autoroles.includeBots, expectedRevision: integerField(body, "expectedRevision"), source: "WEB" })) };
   });
 
   server.post("/api/v1/discord/autoroles/roles", async (request) => {
@@ -575,7 +595,7 @@ export async function registerBrowserAuthenticationRoutes(
   server.put("/api/v1/discord/rules", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.rules.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveRules({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), buttonLabel: optionalStringField(body, "buttonLabel") ?? "Accept Rules", acceptedRoleId: stringField(body, "acceptedRoleId"), ...(optionalStringField(body, "pendingRoleId") ? { pendingRoleId: optionalStringField(body, "pendingRoleId") } : {}) }) };
+    return { data: await safeCommunityCall(() => dependencies.community.saveRules({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), buttonLabel: optionalStringField(body, "buttonLabel") ?? "Accept Rules", acceptedRoleId: stringField(body, "acceptedRoleId"), ...(optionalStringField(body, "pendingRoleId") ? { pendingRoleId: optionalStringField(body, "pendingRoleId") } : {}), expectedRevision: integerField(body, "expectedRevision"), source: "WEB" })) };
   });
 
   server.post("/api/v1/discord/counters", async (request) => {
@@ -717,8 +737,24 @@ async function safeRoleMenuCall<T>(operation: () => Promise<T>): Promise<T> {
     return await operation();
   } catch (error) {
     if (error instanceof RoleMenuError) {
+      if (error.code === "CONFLICT") throw new ConflictApiError();
       throw new ValidationApiError([
         { path: ["roleMenu"], code: error.code, message: error.message },
+      ]);
+    }
+    throw error;
+  }
+}
+
+async function safeCommunityCall<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (error instanceof CommunityFeatureError) {
+      if (error.code === "CONFLICT") throw new ConflictApiError();
+      if (error.code === "DEPENDENCY_UNAVAILABLE") throw new DependencyUnavailableApiError();
+      throw new ValidationApiError([
+        { path: ["community"], code: error.code, message: error.message },
       ]);
     }
     throw error;

@@ -2,6 +2,12 @@ export type RoleMenuPresentationType = "BUTTONS" | "SELECT_MENU" | "REACTIONS";
 export type RoleMenuAssignmentMode = "TOGGLE" | "ADD_ONLY" | "REMOVE_ONLY" | "EXCLUSIVE";
 export type RoleMenuStatus = "DRAFT" | "PUBLISHED" | "DISABLED";
 export type RoleMenuInteractionSurface = "BUTTON" | "SELECT_MENU" | "REACTION";
+export type RoleMenuOperationSource = "DISCORD" | "WEB" | "SYSTEM";
+
+export interface RoleMenuConcurrencyInput {
+  readonly expectedRevision?: number | undefined;
+  readonly source?: RoleMenuOperationSource | undefined;
+}
 
 export interface RoleMenu {
   readonly id: string;
@@ -15,6 +21,7 @@ export interface RoleMenu {
   readonly status: RoleMenuStatus;
   readonly createdByDiscordUserId: string;
   readonly revision: number;
+  readonly lastOperationSource: RoleMenuOperationSource;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly options: readonly RoleMenuOption[];
@@ -29,6 +36,7 @@ export interface RoleMenuOption {
   readonly emoji?: string;
   readonly position: number;
   readonly revision: number;
+  readonly lastOperationSource: RoleMenuOperationSource;
   readonly createdAt: Date;
 }
 
@@ -52,13 +60,13 @@ export interface RoleMenuOptionInput {
 
 export interface RoleMenuRepository {
   create(input: RoleMenuDraftInput): Promise<RoleMenu>;
-  update(id: string, input: Partial<Omit<RoleMenuDraftInput, "guildId" | "createdByDiscordUserId">>): Promise<RoleMenu>;
-  addOption(roleMenuId: string, input: RoleMenuOptionInput): Promise<RoleMenu>;
-  updateOption(roleMenuId: string, optionId: string, input: Partial<RoleMenuOptionInput>): Promise<RoleMenu>;
-  removeOption(roleMenuId: string, optionId: string): Promise<RoleMenu>;
-  reorderOptions(roleMenuId: string, optionIds: readonly string[]): Promise<RoleMenu>;
-  setPublished(roleMenuId: string, messageId: string): Promise<RoleMenu>;
-  setStatus(roleMenuId: string, status: RoleMenuStatus): Promise<RoleMenu>;
+  update(id: string, input: Partial<Omit<RoleMenuDraftInput, "guildId" | "createdByDiscordUserId">> & RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  addOption(roleMenuId: string, input: RoleMenuOptionInput & RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  updateOption(roleMenuId: string, optionId: string, input: Partial<RoleMenuOptionInput> & RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  removeOption(roleMenuId: string, optionId: string, input?: RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  reorderOptions(roleMenuId: string, optionIds: readonly string[], input?: RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  setPublished(roleMenuId: string, messageId: string, input?: RoleMenuConcurrencyInput): Promise<RoleMenu>;
+  setStatus(roleMenuId: string, status: RoleMenuStatus, input?: RoleMenuConcurrencyInput): Promise<RoleMenu>;
   delete(roleMenuId: string): Promise<void>;
   findById(roleMenuId: string): Promise<RoleMenu | undefined>;
   findByPublishedMessage(guildId: string, channelId: string, messageId: string): Promise<RoleMenu | undefined>;
@@ -116,7 +124,8 @@ export class RoleMenuError extends Error {
       | "DISABLED"
       | "NOT_PUBLISHED"
       | "OPTION_NOT_FOUND"
-      | "ROLE_NOT_ASSIGNABLE",
+      | "ROLE_NOT_ASSIGNABLE"
+      | "CONFLICT",
     message: string,
   ) {
     super(message);
@@ -138,44 +147,44 @@ export class RoleMenuService {
     return this.repository.create(input);
   }
 
-  public updateDraft(id: string, input: Partial<Omit<RoleMenuDraftInput, "guildId" | "createdByDiscordUserId">>): Promise<RoleMenu> {
+  public updateDraft(id: string, input: Partial<Omit<RoleMenuDraftInput, "guildId" | "createdByDiscordUserId">> & RoleMenuConcurrencyInput): Promise<RoleMenu> {
     if (input.channelId !== undefined && !snowflake.test(input.channelId)) throw invalid("channelId must be a Discord snowflake.");
     if (input.title !== undefined) validateText("title", input.title, 1, 100);
     if (input.description !== undefined) validateText("description", input.description, 0, 1000);
     return this.repository.update(id, input);
   }
 
-  public addOption(roleMenuId: string, input: RoleMenuOptionInput): Promise<RoleMenu> {
+  public addOption(roleMenuId: string, input: RoleMenuOptionInput & RoleMenuConcurrencyInput): Promise<RoleMenu> {
     validateOption(input);
     return this.repository.addOption(roleMenuId, input);
   }
 
-  public updateOption(roleMenuId: string, optionId: string, input: Partial<RoleMenuOptionInput>): Promise<RoleMenu> {
+  public updateOption(roleMenuId: string, optionId: string, input: Partial<RoleMenuOptionInput> & RoleMenuConcurrencyInput): Promise<RoleMenu> {
     if (input.roleId !== undefined && !snowflake.test(input.roleId)) throw invalid("roleId must be a Discord snowflake.");
     if (input.label !== undefined) validateText("label", input.label, 1, 80);
     if (input.description !== undefined) validateText("description", input.description, 0, 100);
     return this.repository.updateOption(roleMenuId, optionId, input);
   }
 
-  public removeOption(roleMenuId: string, optionId: string): Promise<RoleMenu> {
-    return this.repository.removeOption(roleMenuId, optionId);
+  public removeOption(roleMenuId: string, optionId: string, input?: RoleMenuConcurrencyInput): Promise<RoleMenu> {
+    return this.repository.removeOption(roleMenuId, optionId, input);
   }
 
-  public reorderOptions(roleMenuId: string, optionIds: readonly string[]): Promise<RoleMenu> {
+  public reorderOptions(roleMenuId: string, optionIds: readonly string[], input?: RoleMenuConcurrencyInput): Promise<RoleMenu> {
     if (new Set(optionIds).size !== optionIds.length) throw invalid("Option order contains duplicates.");
-    return this.repository.reorderOptions(roleMenuId, optionIds);
+    return this.repository.reorderOptions(roleMenuId, optionIds, input);
   }
 
-  public async publish(roleMenuId: string, messageId: string): Promise<RoleMenu> {
+  public async publish(roleMenuId: string, messageId: string, input?: RoleMenuConcurrencyInput): Promise<RoleMenu> {
     if (!snowflake.test(messageId)) throw invalid("messageId must be a Discord snowflake.");
     const menu = await this.requireMenu(roleMenuId);
     if (menu.options.length === 0) throw invalid("A role menu requires at least one option before publishing.");
     if (menu.options.length > maxOptions) throw invalid("A role menu cannot contain more than 25 options.");
-    return this.repository.setPublished(roleMenuId, messageId);
+    return this.repository.setPublished(roleMenuId, messageId, input);
   }
 
-  public disable(roleMenuId: string): Promise<RoleMenu> {
-    return this.repository.setStatus(roleMenuId, "DISABLED");
+  public disable(roleMenuId: string, input?: RoleMenuConcurrencyInput): Promise<RoleMenu> {
+    return this.repository.setStatus(roleMenuId, "DISABLED", input);
   }
 
   public delete(roleMenuId: string): Promise<void> {

@@ -304,6 +304,7 @@ model RoleMenu {
   assignmentMode         RoleMenuAssignmentMode   @map("assignment_mode")
   status                 RoleMenuStatus           @default(DRAFT)
   revision               Int                      @default(1)
+  lastOperationSource    String                   @default("SYSTEM") @map("last_operation_source")
   createdByDiscordUserId String                   @map("created_by_discord_user_id")
   createdAt              DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -317,15 +318,16 @@ model RoleMenu {
 }
 
 model RoleMenuOption {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  roleMenuId  String   @map("role_menu_id") @db.Uuid
-  roleId      String   @map("role_id")
-  label       String
-  description String?
-  emoji       String?
-  position    Int
-  revision    Int      @default(1)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  roleMenuId          String   @map("role_menu_id") @db.Uuid
+  roleId              String   @map("role_id")
+  label               String
+  description         String?
+  emoji               String?
+  position            Int
+  revision            Int      @default(1)
+  lastOperationSource String   @default("SYSTEM") @map("last_operation_source")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   roleMenu RoleMenu @relation(fields: [roleMenuId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
@@ -362,13 +364,14 @@ model WelcomeGoodbyeConfig {
 }
 
 model AutoroleConfig {
-  guildId      String   @id @map("guild_id") @db.Uuid
-  enabled      Boolean  @default(false)
-  delaySeconds Int      @default(0) @map("delay_seconds")
-  includeBots  Boolean  @default(false) @map("include_bots")
-  revision     Int      @default(1)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  guildId             String   @id @map("guild_id") @db.Uuid
+  enabled             Boolean  @default(false)
+  delaySeconds        Int      @default(0) @map("delay_seconds")
+  includeBots         Boolean  @default(false) @map("include_bots")
+  revision            Int      @default(1)
+  lastOperationSource String   @default("SYSTEM") @map("last_operation_source")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
@@ -390,17 +393,18 @@ model AutoroleRule {
 }
 
 model RulesConfig {
-  guildId        String   @id @map("guild_id") @db.Uuid
-  enabled        Boolean  @default(false)
-  channelId      String   @map("channel_id")
-  messageText    String   @map("message_text")
-  buttonLabel    String   @map("button_label")
-  acceptedRoleId String   @map("accepted_role_id")
-  pendingRoleId  String?  @map("pending_role_id")
-  messageId      String?  @map("message_id")
-  revision       Int      @default(1)
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  guildId             String   @id @map("guild_id") @db.Uuid
+  enabled             Boolean  @default(false)
+  channelId           String   @map("channel_id")
+  messageText         String   @map("message_text")
+  buttonLabel         String   @map("button_label")
+  acceptedRoleId      String   @map("accepted_role_id")
+  pendingRoleId       String?  @map("pending_role_id")
+  messageId           String?  @map("message_id")
+  revision            Int      @default(1)
+  lastOperationSource String   @default("SYSTEM") @map("last_operation_source")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 

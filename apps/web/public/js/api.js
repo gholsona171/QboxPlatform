@@ -28,6 +28,10 @@ export async function listDiscordRoles() {
   return requestJson("/api/v1/discord/roles");
 }
 
+export async function listDiscordChannels() {
+  return requestJson("/api/v1/discord/resources/channels");
+}
+
 export async function inspectDiscordRole(roleId) {
   return requestJson(`/api/v1/discord/roles/${encodeURIComponent(roleId)}`);
 }
@@ -84,17 +88,19 @@ export async function addRoleMenuOption(menuId, input) {
   });
 }
 
-export async function publishRoleMenu(menuId, messageId) {
+export async function publishRoleMenu(menuId, messageId, expectedRevision) {
   return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}/publish`, {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ messageId }),
+    body: JSON.stringify({ messageId, expectedRevision }),
   });
 }
 
-export async function disableRoleMenu(menuId) {
+export async function disableRoleMenu(menuId, expectedRevision) {
   return requestJson(`/api/v1/discord/role-menus/${encodeURIComponent(menuId)}/disable`, {
     method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ expectedRevision }),
   });
 }
 
@@ -162,6 +168,7 @@ function userMessage(code, fallback) {
     DISCORD_GUILD_MEMBERSHIP_PENDING: "Membership screening is still pending.",
     OAUTH_STATE_INVALID: "OAuth state expired. Start Discord login again.",
     DEPENDENCY_UNAVAILABLE: "Live services are not connected yet.",
+    RESOURCE_CONFLICT: "This configuration changed in Discord or another browser while you were editing.",
   };
   return messages[code] || fallback || "Live services are not connected yet.";
 }

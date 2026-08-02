@@ -1,3 +1,7 @@
+import {
+  CommunityFeatureError,
+  type CommunityOperationSource,
+} from "@qbox/discord-community";
 import type {
   AutoroleConfig,
   AutoroleRule,
@@ -102,19 +106,19 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
 
   public async saveAutoroles(input: AutoroleConfig): Promise<AutoroleConfig> {
     const guild = await this.ensureGuild(input.guildId);
-    const row = await this.client.autoroleConfig.upsert({
-      where: { guildId: guild.id },
-      create: {
+    const existing = await this.client.autoroleConfig.findUnique({ where: { guildId: guild.id } });
+    const data = {
+      enabled: input.enabled,
+      delaySeconds: input.delaySeconds,
+      includeBots: input.includeBots,
+      lastOperationSource: source(input.source),
+    };
+    const row = existing
+      ? await this.updateAutoroles(guild.id, input, data)
+      : await this.client.autoroleConfig.create({
+        data: {
         guildId: guild.id,
-        enabled: input.enabled,
-        delaySeconds: input.delaySeconds,
-        includeBots: input.includeBots,
-      },
-      update: {
-        enabled: input.enabled,
-        delaySeconds: input.delaySeconds,
-        includeBots: input.includeBots,
-        revision: { increment: 1 },
+        ...data,
       },
     });
     const rules = await this.client.autoroleRule.findMany({ where: { guildId: guild.id }, orderBy: { position: "asc" } });
@@ -139,11 +143,11 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
 
   public async saveRules(input: RulesConfig): Promise<RulesConfig> {
     const guild = await this.ensureGuild(input.guildId);
-    const row = await this.client.rulesConfig.upsert({
-      where: { guildId: guild.id },
-      create: rulesData(guild.id, input),
-      update: { ...rulesData(guild.id, input), revision: { increment: 1 } },
-    });
+    const existing = await this.client.rulesConfig.findUnique({ where: { guildId: guild.id } });
+    const data = rulesData(guild.id, input);
+    const row = existing
+      ? await this.updateRules(guild.id, input, data)
+      : await this.client.rulesConfig.create({ data });
     return mapRules(input.guildId, row);
   }
 
@@ -265,6 +269,44 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
       update: {},
     });
   }
+
+  private async updateAutoroles(
+    guildId: string,
+    input: AutoroleConfig,
+    data: Prisma.AutoroleConfigUpdateManyMutationInput,
+  ) {
+    const result = await this.client.autoroleConfig.updateMany({
+      where: {
+        guildId,
+        ...(input.expectedRevision === undefined ? {} : { revision: input.expectedRevision }),
+      },
+      data: {
+        ...data,
+        revision: { increment: 1 },
+      },
+    });
+    if (result.count === 0) throw new CommunityFeatureError("CONFLICT", "Autorole configuration was changed by another operation.");
+    return this.client.autoroleConfig.findUniqueOrThrow({ where: { guildId } });
+  }
+
+  private async updateRules(
+    guildId: string,
+    input: RulesConfig,
+    data: Prisma.RulesConfigUpdateManyMutationInput,
+  ) {
+    const result = await this.client.rulesConfig.updateMany({
+      where: {
+        guildId,
+        ...(input.expectedRevision === undefined ? {} : { revision: input.expectedRevision }),
+      },
+      data: {
+        ...data,
+        revision: { increment: 1 },
+      },
+    });
+    if (result.count === 0) throw new CommunityFeatureError("CONFLICT", "Rules configuration was changed by another operation.");
+    return this.client.rulesConfig.findUniqueOrThrow({ where: { guildId } });
+  }
 }
 
 function welcomeGoodbyeData(guildId: string, input: WelcomeGoodbyeConfig) {
@@ -297,6 +339,7 @@ function rulesData(guildId: string, input: RulesConfig) {
     acceptedRoleId: input.acceptedRoleId,
     pendingRoleId: input.pendingRoleId ?? null,
     messageId: input.messageId ?? null,
+    lastOperationSource: source(input.source),
   };
 }
 
@@ -418,6 +461,7 @@ function mapAutoroles(guildId: string, config: Prisma.AutoroleConfigGetPayload<o
     delaySeconds: config?.delaySeconds ?? 0,
     includeBots: config?.includeBots ?? false,
     revision: config?.revision ?? 1,
+    lastOperationSource: source(config?.lastOperationSource),
     roles: rules.map((row) => ({ guildId, roleId: row.roleId, position: row.position })),
   };
 }
@@ -433,7 +477,12 @@ function mapRules(guildId: string, row: Prisma.RulesConfigGetPayload<object>): R
     ...(row.pendingRoleId ? { pendingRoleId: row.pendingRoleId } : {}),
     ...(row.messageId ? { messageId: row.messageId } : {}),
     revision: row.revision,
+    lastOperationSource: source(row.lastOperationSource),
   };
+}
+
+function source(value: string | undefined): CommunityOperationSource {
+  return value === "DISCORD" || value === "WEB" || value === "SYSTEM" ? value : "SYSTEM";
 }
 
 function mapCounter(guildId: string, row: Prisma.CommunityCounterGetPayload<object>): CounterConfig {

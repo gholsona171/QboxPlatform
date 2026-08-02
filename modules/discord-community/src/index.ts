@@ -14,6 +14,7 @@ export type WelcomeGoodbyeKind = "WELCOME" | "GOODBYE";
 export type CounterType = "TOTAL_MEMBERS" | "HUMANS" | "BOTS" | "ONLINE" | "ROLE";
 export type SuggestionStatus = "SUBMITTED" | "UNDER_REVIEW" | "APPROVED" | "DENIED" | "IMPLEMENTED";
 export type TriggerMode = "SLASH_ONLY" | "EXACT" | "STARTS_WITH" | "CONTAINS";
+export type CommunityOperationSource = "DISCORD" | "WEB" | "SYSTEM";
 
 export interface CommunityRepository {
   getSettings(guildId: string): Promise<CommunitySettings>;
@@ -94,6 +95,9 @@ export interface AutoroleConfig {
   readonly delaySeconds: number;
   readonly includeBots: boolean;
   readonly revision?: number | undefined;
+  readonly expectedRevision?: number | undefined;
+  readonly lastOperationSource?: CommunityOperationSource | undefined;
+  readonly source?: CommunityOperationSource | undefined;
   readonly roles: readonly AutoroleRule[];
 }
 
@@ -117,6 +121,9 @@ export interface RulesConfig {
   readonly pendingRoleId?: string | undefined;
   readonly messageId?: string | undefined;
   readonly revision?: number | undefined;
+  readonly expectedRevision?: number | undefined;
+  readonly lastOperationSource?: CommunityOperationSource | undefined;
+  readonly source?: CommunityOperationSource | undefined;
 }
 
 export interface CounterInput {
@@ -315,7 +322,7 @@ export interface ChannelRenameInput {
 
 export class CommunityFeatureError extends Error {
   public constructor(
-    public readonly code: "INVALID_INPUT" | "NOT_FOUND" | "DISABLED" | "FORBIDDEN" | "DEPENDENCY_UNAVAILABLE",
+    public readonly code: "INVALID_INPUT" | "NOT_FOUND" | "DISABLED" | "FORBIDDEN" | "DEPENDENCY_UNAVAILABLE" | "CONFLICT",
     message: string,
   ) {
     super(message);

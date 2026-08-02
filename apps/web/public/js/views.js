@@ -1,5 +1,5 @@
 import { appVersion } from "./data.js";
-import { addRoleMenuOption, adminCheck, createDiscordRole, createRoleMenu, deleteDiscordRole, deleteRoleMenu, disableRoleMenu, editDiscordRole, inspectDiscordRole, listDiscordRoleDependencies, listDiscordRoles, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, moveDiscordRole, publishRoleMenu, saveDiscordFeature } from "./api.js";
+import { addRoleMenuOption, adminCheck, createDiscordRole, createRoleMenu, deleteDiscordRole, deleteRoleMenu, disableRoleMenu, editDiscordRole, inspectDiscordRole, listDiscordChannels, listDiscordRoleDependencies, listDiscordRoles, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, moveDiscordRole, publishRoleMenu, saveDiscordFeature } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
 import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
 
@@ -200,8 +200,8 @@ function communityFeatureState(state, tab) {
       title: "Welcome and Goodbye",
       path: "welcome",
       summary: "Configure persistent join and leave messaging. Discord commands remain available.",
-      rows: [["Welcome", badge(discord.welcomeGoodbye.welcome.enabled ? "LIVE" : "DISABLED")], ["Goodbye", badge(discord.welcomeGoodbye.goodbye.enabled ? "LIVE" : "DISABLED")], ["Welcome channel", `<code>${escapeHtml(discord.welcomeGoodbye.welcome.channelId)}</code>`]],
-      form: `${input("channelId", "Welcome channel ID", discord.welcomeGoodbye.welcome.channelId)}${textarea("messageText", "Welcome message", discord.welcomeGoodbye.welcome.messageText)}${select("enabled", "Enabled", ["true", "false"], String(discord.welcomeGoodbye.welcome.enabled))}`,
+      rows: [["Welcome", badge(discord.welcomeGoodbye.welcome.enabled ? "LIVE" : "DISABLED")], ["Goodbye", badge(discord.welcomeGoodbye.goodbye.enabled ? "LIVE" : "DISABLED")], ["Welcome channel", escapeHtml(channelLabel(state, discord.welcomeGoodbye.welcome.channelId))]],
+      form: `${channelSelect(state, "channelId", "Welcome channel", discord.welcomeGoodbye.welcome.channelId)}${textarea("messageText", "Welcome message", discord.welcomeGoodbye.welcome.messageText)}${select("enabled", "Enabled", ["true", "false"], String(discord.welcomeGoodbye.welcome.enabled))}`,
       preview: "Use /welcome preview or /goodbye preview in Discord for an ephemeral live preview.",
     },
     autoroles: {
@@ -212,8 +212,8 @@ function communityFeatureState(state, tab) {
     },
     rules: {
       title: "Rules", path: "rules", summary: "Publish a durable Accept Rules button panel.",
-      rows: [["Status", badge(discord.rules.enabled ? "LIVE" : "DISABLED")], ["Channel", `<code>${escapeHtml(discord.rules.channelId)}</code>`], ["Accepted role", `<code>${escapeHtml(discord.rules.acceptedRoleId)}</code>`]],
-      form: `${input("channelId", "Channel ID", discord.rules.channelId)}${textarea("messageText", "Rules text", discord.rules.messageText)}${input("acceptedRoleId", "Accepted role ID", discord.rules.acceptedRoleId)}${input("buttonLabel", "Button label", discord.rules.buttonLabel)}${select("enabled", "Enabled", ["true", "false"], String(discord.rules.enabled))}`,
+      rows: [["Status", badge(discord.rules.enabled ? "LIVE" : "DISABLED")], ["Channel", escapeHtml(channelLabel(state, discord.rules.channelId))], ["Accepted role", escapeHtml(roleLabel(state, discord.rules.acceptedRoleId))]],
+      form: `${channelSelect(state, "channelId", "Rules channel", discord.rules.channelId)}${textarea("messageText", "Rules text", discord.rules.messageText)}${roleSelect(state, "acceptedRoleId", "Accepted role", discord.rules.acceptedRoleId)}${input("buttonLabel", "Button label", discord.rules.buttonLabel)}${select("enabled", "Enabled", ["true", "false"], String(discord.rules.enabled))}`,
       preview: "Use /rules inspect before /rules publish.",
     },
     counters: featureList("Member Counters", "counters", "Automatically rename configured counter channels.", discord.counters),
@@ -280,11 +280,12 @@ function discordRoleMenusPage(state) {
         <p class="microcopy">Buttons and select menus are preferred. Reaction roles remain available for compatibility. Demo changes stay in this browser unless live API calls are authorized.</p>
         <div class="toolbar">
           <button class="button compact" data-action="load-live-role-menus">Load live menus</button>
+          <button class="button compact" data-action="load-live-discord-channels">Load live channels</button>
         </div>
         ${table(["Menu", "Status", "Channel", "Presentation", "Mode", "Options"], state.discord.roleMenus.map((menu) => row([
           ["Menu", `<strong>${escapeHtml(menu.title)}</strong><small>${escapeHtml(menu.id)}</small>`],
           ["Status", badge(menu.status)],
-          ["Channel", `<code>${escapeHtml(menu.channelId)}</code>`],
+          ["Channel", channelLabel(state, menu.channelId)],
           ["Presentation", escapeHtml(menu.presentationType)],
           ["Mode", escapeHtml(menu.assignmentMode)],
           ["Options", String(menu.options.length)],
@@ -296,7 +297,7 @@ function discordRoleMenusPage(state) {
       <h2>Create role menu</h2>
       <form class="form-grid" data-action="create-role-menu">
         ${input("title", "Title", "Notification Roles")}
-        ${input("channelId", "Discord channel ID", "1262656532902842423")}
+        ${channelSelect(state, "channelId", "Discord channel", "1262656532902842423")}
         ${select("presentationType", "Presentation", ["BUTTONS", "SELECT_MENU", "REACTIONS"])}
         ${select("assignmentMode", "Assignment mode", ["TOGGLE", "ADD_ONLY", "REMOVE_ONLY", "EXCLUSIVE"])}
         ${textarea("description", "Description", "Choose the Discord roles you want.")}
@@ -312,14 +313,14 @@ function roleMenuDetail(menu) {
     <div class="detail-stack" data-detail-id="${menu.id}">
       <div class="split-line"><h2>${escapeHtml(menu.title)}</h2>${badge(menu.status)}</div>
       ${detail("Guild", menu.guildId)}
-      ${detail("Channel", menu.channelId)}
+      ${detail("Channel", channelLabel(loadDemoState(), menu.channelId))}
       ${detail("Message", menu.messageId ? `https://discord.com/channels/${menu.guildId}/${menu.channelId}/${menu.messageId}` : "Not published")}
       ${detail("Presentation", menu.presentationType)}
       ${detail("Mode", menu.assignmentMode)}
       <h3>Options</h3>
       <ul class="list">${menu.options.map((option) => `<li><strong>${escapeHtml(option.label)}</strong><small>${escapeHtml(option.emoji || "No emoji")} - role ${escapeHtml(option.roleId)}</small></li>`).join("") || "<li>No options yet.</li>"}</ul>
       <form class="form-grid" data-action="add-role-menu-option">
-        ${input("roleId", "Role ID", "1262656532902842429")}
+        ${roleSelect(loadDemoState(), "roleId", "Role", "1262656532902842429")}
         ${input("label", "Label", "Announcements")}
         ${input("emoji", "Emoji", "Bell")}
         <button class="button full">Add option</button>
@@ -576,6 +577,9 @@ function selectDetail(page, id) {
 async function handleForm(event, action) {
   event.preventDefault();
   const data = formData(event.currentTarget);
+  if (action === "save-discord-feature") {
+    return saveDiscordFeatureForm(event.currentTarget.dataset.feature, data);
+  }
   const state = mutateDemoState((draft) => {
     if (action === "create-application") {
       draft.applications.unshift({ id: `APP-${1000 + draft.applications.length + 1}`, applicant: data.applicant, type: data.type, status: "Submitted", reviewer: data.reviewer, notes: data.notes, submitted: "Today", history: [{ at: "Just now", action: "Submitted in Demo Mode" }] });
@@ -602,7 +606,7 @@ async function handleForm(event, action) {
       recordActivity(draft, `Article created: ${data.title}`, "Knowledge Base");
     }
     if (action === "create-role-menu") {
-      draft.discord.roleMenus.unshift({ id: `RM-${200 + draft.discord.roleMenus.length}`, title: data.title, description: data.description, status: "DRAFT", guildId: "1257928923048837201", channelId: data.channelId, messageId: "", presentationType: data.presentationType, assignmentMode: data.assignmentMode, options: [], history: [{ at: "Just now", action: "Role-menu draft created in Demo Mode" }] });
+      draft.discord.roleMenus.unshift({ id: `RM-${200 + draft.discord.roleMenus.length}`, title: data.title, description: data.description, status: "DRAFT", guildId: "1257928923048837201", channelId: data.channelId, messageId: "", presentationType: data.presentationType, assignmentMode: data.assignmentMode, revision: 1, lastOperationSource: "WEB", options: [], history: [{ at: "Just now", action: "Role-menu draft created in Demo Mode" }] });
       recordActivity(draft, `Role menu created: ${data.title}`, "Discord Bot");
     }
     if (action === "create-discord-role") {
@@ -632,7 +636,7 @@ async function handleForm(event, action) {
         menu.status = "DRAFT";
         menu.history.unshift({ at: "Just now", action: `Option added for role ${data.roleId}` });
         recordActivity(draft, `Role-menu option added to ${menu.title}`, "Discord Bot");
-        if (account) void addRoleMenuOption(menu.id, { roleId: data.roleId, label: data.label, emoji: data.emoji }).catch((error) => notify(error.message || "Live option add unavailable. Demo state updated only.", "warning"));
+        if (account) void addRoleMenuOption(menu.id, { roleId: data.roleId, label: data.label, emoji: data.emoji, expectedRevision: menu.revision }).catch((error) => notify(error.message || "Live option add unavailable. Demo state updated only.", "warning"));
       }
     }
     if (action === "save-settings") {
@@ -643,6 +647,43 @@ async function handleForm(event, action) {
   notify("Demo changes saved in this browser.");
   renderPage(currentPage());
   return state;
+}
+
+async function saveDiscordFeatureForm(feature, data) {
+  const state = loadDemoState();
+  const payload = discordFeaturePayload(state.discord, feature, data);
+  if (!payload) return notify("This form remains in Demo Mode until its live editor is connected.", "warning");
+  if (!account) return notify("Login with Discord to save this configuration through the live API.", "warning");
+  try {
+    const result = await saveDiscordFeature(feature, payload);
+    mutateDemoState((draft) => applyCommunitySettings(draft.discord, result.data));
+    notify("Live Discord configuration saved.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Live save failed.", "warning");
+  }
+}
+
+function discordFeaturePayload(discord, feature, data) {
+  if (feature === "autoroles") {
+    return {
+      enabled: data.enabled === "true",
+      delaySeconds: Number(data.delaySeconds),
+      includeBots: data.includeBots === "true",
+      expectedRevision: discord.autoroles.revision ?? 1,
+    };
+  }
+  if (feature === "rules") {
+    return {
+      enabled: data.enabled === "true",
+      channelId: data.channelId,
+      messageText: data.messageText,
+      buttonLabel: data.buttonLabel,
+      acceptedRoleId: data.acceptedRoleId,
+      expectedRevision: discord.rules.revision ?? 1,
+    };
+  }
+  return undefined;
 }
 
 async function handleAction(action, element) {
@@ -663,6 +704,7 @@ async function handleAction(action, element) {
   if (action === "send-announcement") return mutateAndRender((s) => { s.fivem.announcements.unshift(value("[data-action='fivem-announcement']")); recordActivity(s, "FiveM announcement preview saved", "FiveM"); });
   if (action === "load-live-role-menus") return loadLiveRoleMenus();
   if (action === "load-live-discord-roles") return loadLiveDiscordRoles();
+  if (action === "load-live-discord-channels") return loadLiveDiscordChannels();
   if (action === "inspect-role-dependencies") return loadRoleDependencies(id);
   if (action === "move-discord-role") return moveRoleFromForm(id);
   if (action === "delete-discord-role") return deleteRoleFromDetail(id);
@@ -717,6 +759,8 @@ async function loadLiveRoleMenus() {
         presentationType: menu.presentationType,
         assignmentMode: menu.assignmentMode,
         options: menu.options,
+        revision: menu.revision,
+        lastOperationSource: menu.lastOperationSource,
         history: [{ at: "Live API", action: "Loaded from persistent role-menu service" }],
       }));
       recordActivity(draft, "Live role menus loaded from API", "Discord Bot");
@@ -754,6 +798,32 @@ async function loadLiveDiscordRoles() {
     renderPage("discord");
   } catch (error) {
     notify(error.message || "Live role catalog unavailable. Demo Mode remains usable.", "warning");
+  }
+}
+
+async function loadLiveDiscordChannels() {
+  try {
+    const result = await listDiscordChannels();
+    mutateDemoState((draft) => {
+      draft.discord.channels = result.data.map((channel) => ({
+        id: channel.id,
+        guildId: channel.guildId,
+        name: channel.name,
+        type: channel.type,
+        parentId: channel.parentId || "",
+        position: channel.position,
+        nsfw: channel.nsfw,
+        canView: channel.canView,
+        canSendMessages: channel.canSendMessages,
+        canEmbedLinks: channel.canEmbedLinks,
+        canManage: channel.canManage,
+      }));
+      recordActivity(draft, "Live Discord channels loaded from API", "Discord Bot");
+    });
+    notify("Live Discord channels loaded.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Live channel lookup unavailable. Demo Mode remains usable.", "warning");
   }
 }
 
@@ -818,12 +888,12 @@ function updateRoleMenu(action, id) {
       menu.status = "PUBLISHED";
       menu.messageId = menu.messageId || "1432100000000000001";
       menu.history.unshift({ at: "Just now", action: "Publish preview recorded in Demo Mode" });
-      if (account) void publishRoleMenu(menu.id, menu.messageId).catch((error) => notify(error.message || "Live publish unavailable. Demo state updated only.", "warning"));
+      if (account) void publishRoleMenu(menu.id, menu.messageId, menu.revision).catch((error) => notify(error.message || "Live publish unavailable. Demo state updated only.", "warning"));
     }
     if (action === "disable-role-menu") {
       menu.status = "DISABLED";
       menu.history.unshift({ at: "Just now", action: "Disabled in Demo Mode" });
-      if (account) void disableRoleMenu(menu.id).catch((error) => notify(error.message || "Live disable unavailable. Demo state updated only.", "warning"));
+      if (account) void disableRoleMenu(menu.id, menu.revision).catch((error) => notify(error.message || "Live disable unavailable. Demo state updated only.", "warning"));
     }
     recordActivity(s, `Role menu ${menu.title} changed to ${menu.status}`, "Discord Bot");
   });
@@ -903,6 +973,28 @@ function textarea(name, labelText, valueText) {
 
 function select(name, labelText, values, selected = values[0]) {
   return `<label>${escapeHtml(labelText)}<select name="${escapeHtml(name)}">${values.map((v) => option(v, selected)).join("")}</select></label>`;
+}
+
+function roleSelect(state, name, labelText, selected) {
+  const roles = state.discord.roles || [];
+  if (roles.length === 0) return input(name, labelText, selected);
+  return `<label>${escapeHtml(labelText)}<select name="${escapeHtml(name)}">${roles.map((role) => `<option value="${escapeHtml(role.id)}" ${role.id === selected ? "selected" : ""}>${escapeHtml(role.name)} (${escapeHtml(role.id)})</option>`).join("")}</select></label>`;
+}
+
+function channelSelect(state, name, labelText, selected) {
+  const channels = state.discord.channels || [];
+  if (channels.length === 0) return input(name, labelText, selected);
+  return `<label>${escapeHtml(labelText)}<select name="${escapeHtml(name)}">${channels.map((channel) => `<option value="${escapeHtml(channel.id)}" ${channel.id === selected ? "selected" : ""}>#${escapeHtml(channel.name)} - ${escapeHtml(channel.type)} (${escapeHtml(channel.id)})</option>`).join("")}</select></label>`;
+}
+
+function channelLabel(state, channelId) {
+  const channel = (state.discord.channels || []).find((candidate) => candidate.id === channelId);
+  return channel ? `#${channel.name} (${channel.type}) ${channel.id}` : channelId;
+}
+
+function roleLabel(state, roleId) {
+  const role = (state.discord.roles || []).find((candidate) => candidate.id === roleId);
+  return role ? `${role.name} ${role.id}` : roleId;
 }
 
 function option(valueText, selected) {

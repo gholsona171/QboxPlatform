@@ -1,10 +1,13 @@
 import {
+  ChannelType,
   PermissionsBitField,
   type Client,
+  type GuildBasedChannel,
   type Guild,
   type Role,
 } from "discord.js";
 import type {
+  DiscordChannelResource,
   DiscordRoleResource,
   RoleCapabilities,
   RoleCreateInput,
@@ -23,6 +26,16 @@ export class DiscordRoleManagementGateway implements RoleManagementGateway {
     return [...guild.roles.cache.values()]
       .sort((left, right) => right.position - left.position)
       .map((role) => mapRole(guild.id, role, botPosition));
+  }
+
+  public async listChannels(guildId: string): Promise<readonly DiscordChannelResource[]> {
+    const guild = await this.guild(guildId);
+    await guild.channels.fetch();
+    const member = await guild.members.fetchMe();
+    return [...guild.channels.cache.values()]
+      .filter((channel): channel is GuildBasedChannel => channel !== null)
+      .sort((left, right) => channelPosition(left) - channelPosition(right))
+      .map((channel) => mapChannel(guild.id, channel, channel.permissionsFor(member)));
   }
 
   public async getRole(guildId: string, roleId: string): Promise<DiscordRoleResource | undefined> {
@@ -127,6 +140,50 @@ function mapRole(guildId: string, role: Role, botHighestPosition: number): Disco
     ...(unavailableReason === undefined ? {} : { unavailableReason }),
     dependencyCount: 0,
   };
+}
+
+function mapChannel(
+  guildId: string,
+  channel: GuildBasedChannel,
+  permissions: Readonly<PermissionsBitField> | null,
+): DiscordChannelResource {
+  const canView = permissions?.has(PermissionsBitField.Flags.ViewChannel) ?? false;
+  return {
+    id: channel.id,
+    guildId,
+    name: channel.name,
+    type: mapChannelType(channel.type),
+    ...(channel.parentId === null ? {} : { parentId: channel.parentId }),
+    position: channelPosition(channel),
+    nsfw: "nsfw" in channel && channel.nsfw === true,
+    canView,
+    canSendMessages: canView && (permissions?.has(PermissionsBitField.Flags.SendMessages) ?? false),
+    canEmbedLinks: canView && (permissions?.has(PermissionsBitField.Flags.EmbedLinks) ?? false),
+    canManage: canView && (permissions?.has(PermissionsBitField.Flags.ManageChannels) ?? false),
+  };
+}
+
+function channelPosition(channel: GuildBasedChannel): number {
+  return "position" in channel && typeof channel.position === "number" ? channel.position : 0;
+}
+
+function mapChannelType(type: ChannelType): DiscordChannelResource["type"] {
+  switch (type) {
+    case ChannelType.GuildText:
+      return "TEXT";
+    case ChannelType.GuildAnnouncement:
+      return "ANNOUNCEMENT";
+    case ChannelType.GuildForum:
+      return "FORUM";
+    case ChannelType.GuildMedia:
+      return "MEDIA";
+    case ChannelType.GuildVoice:
+      return "VOICE";
+    case ChannelType.GuildCategory:
+      return "CATEGORY";
+    default:
+      return "OTHER";
+  }
 }
 
 function normalizeColor(color: string): number {

@@ -121,6 +121,7 @@ export const RoleMenuScalarFieldEnum = {
   assignmentMode: 'assignmentMode',
   status: 'status',
   revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
   createdByDiscordUserId: 'createdByDiscordUserId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -138,6 +139,7 @@ export const RoleMenuOptionScalarFieldEnum = {
   emoji: 'emoji',
   position: 'position',
   revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
   createdAt: 'createdAt'
 } as const
 
@@ -174,6 +176,7 @@ export const AutoroleConfigScalarFieldEnum = {
   delaySeconds: 'delaySeconds',
   includeBots: 'includeBots',
   revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -202,6 +205,7 @@ export const RulesConfigScalarFieldEnum = {
   pendingRoleId: 'pendingRoleId',
   messageId: 'messageId',
   revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

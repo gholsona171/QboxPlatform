@@ -44,6 +44,14 @@ describe("RoleMenuService", () => {
     expect(reordered.options.map((option) => option.label)).toEqual(["Announcements", "Events"]);
   });
 
+  it("rejects stale expected revisions", async () => {
+    const service = new RoleMenuService(new InMemoryRoleMenuRepository());
+    const menu = await createMenu(service);
+    await service.updateDraft(menu.id, { title: "Updated", expectedRevision: 1, source: "WEB" });
+    await expect(service.updateDraft(menu.id, { title: "Stale", expectedRevision: 1, source: "DISCORD" }))
+      .rejects.toMatchObject({ code: "CONFLICT" });
+  });
+
   it("requires at least one option before publishing", async () => {
     const service = new RoleMenuService(new InMemoryRoleMenuRepository());
     const menu = await createMenu(service);
@@ -182,6 +190,8 @@ class InMemoryRoleMenuRepository implements RoleMenuRepository {
       assignmentMode: input.assignmentMode,
       status: "DRAFT",
       createdByDiscordUserId: input.createdByDiscordUserId,
+      revision: 1,
+      lastOperationSource: "SYSTEM",
       createdAt: now,
       updatedAt: now,
       options: [],
@@ -192,7 +202,8 @@ class InMemoryRoleMenuRepository implements RoleMenuRepository {
 
   public async update(id: string, input: Parameters<RoleMenuRepository["update"]>[1]): Promise<RoleMenu> {
     const menu = this.require(id);
-    return this.replace({ ...menu, ...input, status: "DRAFT", updatedAt: new Date("2026-08-02T12:01:00.000Z") });
+    this.assertRevision(menu, input.expectedRevision);
+    return this.replace({ ...menu, ...input, revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM", status: "DRAFT", updatedAt: new Date("2026-08-02T12:01:00.000Z") });
   }
 
   public async addOption(roleMenuId: string, input: Parameters<RoleMenuRepository["addOption"]>[1]): Promise<RoleMenu> {
@@ -205,37 +216,49 @@ class InMemoryRoleMenuRepository implements RoleMenuRepository {
       ...(input.description === undefined ? {} : { description: input.description }),
       ...(input.emoji === undefined ? {} : { emoji: input.emoji }),
       position: input.position ?? menu.options.length,
+      revision: 1,
+      lastOperationSource: input.source ?? "SYSTEM",
       createdAt: new Date("2026-08-02T12:02:00.000Z"),
     });
-    return this.replace({ ...menu, status: "DRAFT", options: [...menu.options, option].sort(byPosition) });
+    this.assertRevision(menu, input.expectedRevision);
+    return this.replace({ ...menu, revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM", status: "DRAFT", options: [...menu.options, option].sort(byPosition) });
   }
 
   public async updateOption(roleMenuId: string, optionId: string, input: Parameters<RoleMenuRepository["updateOption"]>[2]): Promise<RoleMenu> {
     const menu = this.require(roleMenuId);
+    this.assertRevision(menu, input.expectedRevision);
     return this.replace({
       ...menu,
+      revision: menu.revision + 1,
+      lastOperationSource: input.source ?? "SYSTEM",
       status: "DRAFT",
-      options: menu.options.map((option) => option.id === optionId ? { ...option, ...input } : option).sort(byPosition),
+      options: menu.options.map((option) => option.id === optionId ? { ...option, ...input, revision: option.revision + 1, lastOperationSource: input.source ?? "SYSTEM" } : option).sort(byPosition),
     });
   }
 
-  public async removeOption(roleMenuId: string, optionId: string): Promise<RoleMenu> {
+  public async removeOption(roleMenuId: string, optionId: string, input: Parameters<RoleMenuRepository["removeOption"]>[2] = {}): Promise<RoleMenu> {
     const menu = this.require(roleMenuId);
-    return this.replace({ ...menu, status: "DRAFT", options: menu.options.filter((option) => option.id !== optionId).map((option, position) => ({ ...option, position })) });
+    this.assertRevision(menu, input.expectedRevision);
+    return this.replace({ ...menu, revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM", status: "DRAFT", options: menu.options.filter((option) => option.id !== optionId).map((option, position) => ({ ...option, position })) });
   }
 
-  public async reorderOptions(roleMenuId: string, optionIds: readonly string[]): Promise<RoleMenu> {
+  public async reorderOptions(roleMenuId: string, optionIds: readonly string[], input: Parameters<RoleMenuRepository["reorderOptions"]>[2] = {}): Promise<RoleMenu> {
     const menu = this.require(roleMenuId);
+    this.assertRevision(menu, input.expectedRevision);
     const byId = new Map(menu.options.map((option) => [option.id, option]));
-    return this.replace({ ...menu, status: "DRAFT", options: optionIds.map((id, position) => ({ ...byId.get(id)!, position })) });
+    return this.replace({ ...menu, revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM", status: "DRAFT", options: optionIds.map((id, position) => ({ ...byId.get(id)!, position })) });
   }
 
-  public async setPublished(roleMenuId: string, messageIdValue: string): Promise<RoleMenu> {
-    return this.replace({ ...this.require(roleMenuId), messageId: messageIdValue, status: "PUBLISHED" });
+  public async setPublished(roleMenuId: string, messageIdValue: string, input: Parameters<RoleMenuRepository["setPublished"]>[2] = {}): Promise<RoleMenu> {
+    const menu = this.require(roleMenuId);
+    this.assertRevision(menu, input.expectedRevision);
+    return this.replace({ ...menu, messageId: messageIdValue, status: "PUBLISHED", revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM" });
   }
 
-  public async setStatus(roleMenuId: string, status: RoleMenuStatus): Promise<RoleMenu> {
-    return this.replace({ ...this.require(roleMenuId), status });
+  public async setStatus(roleMenuId: string, status: RoleMenuStatus, input: Parameters<RoleMenuRepository["setStatus"]>[2] = {}): Promise<RoleMenu> {
+    const menu = this.require(roleMenuId);
+    this.assertRevision(menu, input.expectedRevision);
+    return this.replace({ ...menu, status, revision: menu.revision + 1, lastOperationSource: input.source ?? "SYSTEM" });
   }
 
   public async delete(roleMenuId: string): Promise<void> {
@@ -264,6 +287,11 @@ class InMemoryRoleMenuRepository implements RoleMenuRepository {
     const next = Object.freeze({ ...menu, options: Object.freeze([...menu.options].sort(byPosition)) });
     this.menus.set(next.id, next);
     return next;
+  }
+
+  private assertRevision(menu: RoleMenu, expectedRevision: number | undefined): void {
+    if (expectedRevision !== undefined && menu.revision !== expectedRevision)
+      throw new RoleMenuError("CONFLICT", "Role menu was changed by another operation.");
   }
 }
 

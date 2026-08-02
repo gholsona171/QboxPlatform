@@ -10,6 +10,7 @@
     "test": "pnpm -r test",
     "test:database": "pnpm --filter @qbox/prisma test:integration && pnpm --filter @qbox/database test:integration",
     "bot:update": "powershell -ExecutionPolicy Bypass -File scripts/update-local-bot.ps1",
+    "api:update": "powershell -ExecutionPolicy Bypass -File scripts/update-local-api.ps1",
     "prisma:generate": "pnpm --filter @qbox/prisma prisma:generate",
     "clean": "pnpm -r clean"
   },

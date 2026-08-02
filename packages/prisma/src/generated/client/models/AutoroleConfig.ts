@@ -42,6 +42,7 @@ export type AutoroleConfigMinAggregateOutputType = {
   delaySeconds: number | null
   includeBots: boolean | null
   revision: number | null
+  lastOperationSource: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -52,6 +53,7 @@ export type AutoroleConfigMaxAggregateOutputType = {
   delaySeconds: number | null
   includeBots: boolean | null
   revision: number | null
+  lastOperationSource: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -62,6 +64,7 @@ export type AutoroleConfigCountAggregateOutputType = {
   delaySeconds: number
   includeBots: number
   revision: number
+  lastOperationSource: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -84,6 +87,7 @@ export type AutoroleConfigMinAggregateInputType = {
   delaySeconds?: true
   includeBots?: true
   revision?: true
+  lastOperationSource?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -94,6 +98,7 @@ export type AutoroleConfigMaxAggregateInputType = {
   delaySeconds?: true
   includeBots?: true
   revision?: true
+  lastOperationSource?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -104,6 +109,7 @@ export type AutoroleConfigCountAggregateInputType = {
   delaySeconds?: true
   includeBots?: true
   revision?: true
+  lastOperationSource?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -201,6 +207,7 @@ export type AutoroleConfigGroupByOutputType = {
   delaySeconds: number
   includeBots: boolean
   revision: number
+  lastOperationSource: string
   createdAt: Date
   updatedAt: Date
   _count: AutoroleConfigCountAggregateOutputType | null
@@ -234,6 +241,7 @@ export type AutoroleConfigWhereInput = {
   delaySeconds?: Prisma.IntFilter<"AutoroleConfig"> | number
   includeBots?: Prisma.BoolFilter<"AutoroleConfig"> | boolean
   revision?: Prisma.IntFilter<"AutoroleConfig"> | number
+  lastOperationSource?: Prisma.StringFilter<"AutoroleConfig"> | string
   createdAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -245,6 +253,7 @@ export type AutoroleConfigOrderByWithRelationInput = {
   delaySeconds?: Prisma.SortOrder
   includeBots?: Prisma.SortOrder
   revision?: Prisma.SortOrder
+  lastOperationSource?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guild?: Prisma.GuildOrderByWithRelationInput
@@ -259,6 +268,7 @@ export type AutoroleConfigWhereUniqueInput = Prisma.AtLeast<{
   delaySeconds?: Prisma.IntFilter<"AutoroleConfig"> | number
   includeBots?: Prisma.BoolFilter<"AutoroleConfig"> | boolean
   revision?: Prisma.IntFilter<"AutoroleConfig"> | number
+  lastOperationSource?: Prisma.StringFilter<"AutoroleConfig"> | string
   createdAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -270,6 +280,7 @@ export type AutoroleConfigOrderByWithAggregationInput = {
   delaySeconds?: Prisma.SortOrder
   includeBots?: Prisma.SortOrder
   revision?: Prisma.SortOrder
+  lastOperationSource?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AutoroleConfigCountOrderByAggregateInput
@@ -288,6 +299,7 @@ export type AutoroleConfigScalarWhereWithAggregatesInput = {
   delaySeconds?: Prisma.IntWithAggregatesFilter<"AutoroleConfig"> | number
   includeBots?: Prisma.BoolWithAggregatesFilter<"AutoroleConfig"> | boolean
   revision?: Prisma.IntWithAggregatesFilter<"AutoroleConfig"> | number
+  lastOperationSource?: Prisma.StringWithAggregatesFilter<"AutoroleConfig"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AutoroleConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AutoroleConfig"> | Date | string
 }
@@ -297,6 +309,7 @@ export type AutoroleConfigCreateInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutAutoroleConfigsInput
@@ -308,6 +321,7 @@ export type AutoroleConfigUncheckedCreateInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -317,6 +331,7 @@ export type AutoroleConfigUpdateInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutAutoroleConfigsNestedInput
@@ -328,6 +343,7 @@ export type AutoroleConfigUncheckedUpdateInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -338,6 +354,7 @@ export type AutoroleConfigCreateManyInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -347,6 +364,7 @@ export type AutoroleConfigUpdateManyMutationInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,6 +375,7 @@ export type AutoroleConfigUncheckedUpdateManyInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -377,6 +396,7 @@ export type AutoroleConfigCountOrderByAggregateInput = {
   delaySeconds?: Prisma.SortOrder
   includeBots?: Prisma.SortOrder
   revision?: Prisma.SortOrder
+  lastOperationSource?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -392,6 +412,7 @@ export type AutoroleConfigMaxOrderByAggregateInput = {
   delaySeconds?: Prisma.SortOrder
   includeBots?: Prisma.SortOrder
   revision?: Prisma.SortOrder
+  lastOperationSource?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -402,6 +423,7 @@ export type AutoroleConfigMinOrderByAggregateInput = {
   delaySeconds?: Prisma.SortOrder
   includeBots?: Prisma.SortOrder
   revision?: Prisma.SortOrder
+  lastOperationSource?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -458,6 +480,7 @@ export type AutoroleConfigCreateWithoutGuildInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -467,6 +490,7 @@ export type AutoroleConfigUncheckedCreateWithoutGuildInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -506,6 +530,7 @@ export type AutoroleConfigScalarWhereInput = {
   delaySeconds?: Prisma.IntFilter<"AutoroleConfig"> | number
   includeBots?: Prisma.BoolFilter<"AutoroleConfig"> | boolean
   revision?: Prisma.IntFilter<"AutoroleConfig"> | number
+  lastOperationSource?: Prisma.StringFilter<"AutoroleConfig"> | string
   createdAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AutoroleConfig"> | Date | string
 }
@@ -515,6 +540,7 @@ export type AutoroleConfigCreateManyGuildInput = {
   delaySeconds?: number
   includeBots?: boolean
   revision?: number
+  lastOperationSource?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -524,6 +550,7 @@ export type AutoroleConfigUpdateWithoutGuildInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -533,6 +560,7 @@ export type AutoroleConfigUncheckedUpdateWithoutGuildInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -542,6 +570,7 @@ export type AutoroleConfigUncheckedUpdateManyWithoutGuildInput = {
   delaySeconds?: Prisma.IntFieldUpdateOperationsInput | number
   includeBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
   revision?: Prisma.IntFieldUpdateOperationsInput | number
+  lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -554,6 +583,7 @@ export type AutoroleConfigSelect<ExtArgs extends runtime.Types.Extensions.Intern
   delaySeconds?: boolean
   includeBots?: boolean
   revision?: boolean
+  lastOperationSource?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -565,6 +595,7 @@ export type AutoroleConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   delaySeconds?: boolean
   includeBots?: boolean
   revision?: boolean
+  lastOperationSource?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -576,6 +607,7 @@ export type AutoroleConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   delaySeconds?: boolean
   includeBots?: boolean
   revision?: boolean
+  lastOperationSource?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -587,11 +619,12 @@ export type AutoroleConfigSelectScalar = {
   delaySeconds?: boolean
   includeBots?: boolean
   revision?: boolean
+  lastOperationSource?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AutoroleConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "delaySeconds" | "includeBots" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["autoroleConfig"]>
+export type AutoroleConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "delaySeconds" | "includeBots" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["autoroleConfig"]>
 export type AutoroleConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -613,6 +646,7 @@ export type $AutoroleConfigPayload<ExtArgs extends runtime.Types.Extensions.Inte
     delaySeconds: number
     includeBots: boolean
     revision: number
+    lastOperationSource: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["autoroleConfig"]>
@@ -1044,6 +1078,7 @@ export interface AutoroleConfigFieldRefs {
   readonly delaySeconds: Prisma.FieldRef<"AutoroleConfig", 'Int'>
   readonly includeBots: Prisma.FieldRef<"AutoroleConfig", 'Boolean'>
   readonly revision: Prisma.FieldRef<"AutoroleConfig", 'Int'>
+  readonly lastOperationSource: Prisma.FieldRef<"AutoroleConfig", 'String'>
   readonly createdAt: Prisma.FieldRef<"AutoroleConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"AutoroleConfig", 'DateTime'>
 }

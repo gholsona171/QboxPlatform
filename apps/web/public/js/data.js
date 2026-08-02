@@ -75,6 +75,12 @@ export function seedDemoData() {
         discordRole("1262656532902842424", "Member", "#22c55e", 4, false, false, false, 2390, true, true, 1),
         discordRole("1262656532902842425", "Pending Rules", "#94a3b8", 2, false, false, false, 28, true, true, 1),
       ],
+      channels: [
+        discordChannel("1262656532902842423", "admin", "TEXT", true, true, true, false),
+        discordChannel("1262656532902842424", "rules", "TEXT", true, true, true, false),
+        discordChannel("1262656532902842425", "role-menus", "TEXT", true, true, true, false),
+        discordChannel("1262656532902842426", "member-count", "VOICE", true, false, false, true),
+      ],
       roleMenus: [
         roleMenu("RM-100", "Community Roles", "PUBLISHED", "1257928923048837201", "1262656532902842423", "BUTTONS", "TOGGLE", [
           roleOption("RM-OPT-1", "1262656532902842423", "Staff Alerts", "Bell"),
@@ -238,6 +244,8 @@ function roleMenu(id, title, status, guildId, channelId, presentationType, assig
     presentationType,
     assignmentMode,
     options,
+    revision: 1,
+    lastOperationSource: "SYSTEM",
     history: history(`${title} ${status.toLowerCase()}`),
   };
 }
@@ -248,4 +256,8 @@ function roleOption(id, roleId, label, emoji) {
 
 function discordRole(id, name, color, position, hoisted, mentionable, managed, memberCount, assignable, editable, dependencyCount, unavailableReason = "") {
   return { id, guildId: "1257928923048837201", name, color, position, hoisted, mentionable, managed, memberCount, assignable, editable, deletable: editable, dependencyCount, unavailableReason };
+}
+
+function discordChannel(id, name, type, canView, canSendMessages, canEmbedLinks, canManage) {
+  return { id, guildId: "1257928923048837201", name, type, parentId: "", position: 0, nsfw: false, canView, canSendMessages, canEmbedLinks, canManage };
 }

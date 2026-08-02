@@ -4,6 +4,7 @@ import type {
   RoleMenuDraftInput,
   RoleMenuOption,
   RoleMenuOptionInput,
+  RoleMenuOperationSource,
   RoleMenuPresentationType,
   RoleMenuRepository,
   RoleMenuStatus,
@@ -45,24 +46,19 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
     return mapMenu(row);
   }
 
-  public async update(id: string, input: Partial<Omit<RoleMenuDraftInput, "guildId" | "createdByDiscordUserId">>): Promise<RoleMenu> {
-    const row = await this.client.roleMenu.update({
-      where: { id },
-      data: {
+  public async update(id: string, input: Parameters<RoleMenuRepository["update"]>[1]): Promise<RoleMenu> {
+    await updateMenuRevision(this.client, id, input, {
         ...(input.channelId === undefined ? {} : { channelId: input.channelId }),
         ...(input.title === undefined ? {} : { title: input.title }),
         ...(input.description === undefined ? {} : { description: input.description }),
         ...(input.presentationType === undefined ? {} : { presentationType: input.presentationType }),
         ...(input.assignmentMode === undefined ? {} : { assignmentMode: input.assignmentMode }),
         status: "DRAFT",
-        revision: { increment: 1 },
-      },
-      include: roleMenuInclude,
     });
-    return mapMenu(row);
+    return mapMenu(await requireMenu(this.client, id));
   }
 
-  public async addOption(roleMenuId: string, input: RoleMenuOptionInput): Promise<RoleMenu> {
+  public async addOption(roleMenuId: string, input: RoleMenuOptionInput & Parameters<RoleMenuRepository["addOption"]>[1]): Promise<RoleMenu> {
     return this.client.$transaction(async (tx) => {
       const count = await tx.roleMenuOption.count({ where: { roleMenuId } });
       const position = input.position ?? count;
@@ -75,14 +71,15 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
           ...(input.description === undefined ? {} : { description: input.description }),
           ...(input.emoji === undefined ? {} : { emoji: input.emoji }),
           position,
+          lastOperationSource: source(input.source),
         },
       });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
+      await updateMenuRevision(tx, roleMenuId, input, { status: "DRAFT" });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
 
-  public async updateOption(roleMenuId: string, optionId: string, input: Partial<RoleMenuOptionInput>): Promise<RoleMenu> {
+  public async updateOption(roleMenuId: string, optionId: string, input: Parameters<RoleMenuRepository["updateOption"]>[2]): Promise<RoleMenu> {
     await this.client.roleMenuOption.update({
       where: { id: optionId, roleMenuId },
       data: {
@@ -91,48 +88,41 @@ export class PrismaRoleMenuRepository implements RoleMenuRepository {
         ...(input.description === undefined ? {} : { description: input.description }),
         ...(input.emoji === undefined ? {} : { emoji: input.emoji }),
         ...(input.position === undefined ? {} : { position: input.position }),
+        lastOperationSource: source(input.source),
       },
     });
-    await this.client.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
+    await updateMenuRevision(this.client, roleMenuId, input, { status: "DRAFT" });
     return mapMenu(await requireMenu(this.client, roleMenuId));
   }
 
-  public async removeOption(roleMenuId: string, optionId: string): Promise<RoleMenu> {
+  public async removeOption(roleMenuId: string, optionId: string, input: Parameters<RoleMenuRepository["removeOption"]>[2] = {}): Promise<RoleMenu> {
     return this.client.$transaction(async (tx) => {
       await tx.roleMenuOption.delete({ where: { id: optionId, roleMenuId } });
       const options = await tx.roleMenuOption.findMany({ where: { roleMenuId }, orderBy: { position: "asc" } });
       for (const [position, option] of options.entries())
         await tx.roleMenuOption.update({ where: { id: option.id }, data: { position } });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
+      await updateMenuRevision(tx, roleMenuId, input, { status: "DRAFT" });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
 
-  public async reorderOptions(roleMenuId: string, optionIds: readonly string[]): Promise<RoleMenu> {
+  public async reorderOptions(roleMenuId: string, optionIds: readonly string[], input: Parameters<RoleMenuRepository["reorderOptions"]>[2] = {}): Promise<RoleMenu> {
     return this.client.$transaction(async (tx) => {
       for (const [position, id] of optionIds.entries())
-        await tx.roleMenuOption.update({ where: { id, roleMenuId }, data: { position } });
-      await tx.roleMenu.update({ where: { id: roleMenuId }, data: { status: "DRAFT", revision: { increment: 1 } } });
+        await tx.roleMenuOption.update({ where: { id, roleMenuId }, data: { position, lastOperationSource: source(input.source) } });
+      await updateMenuRevision(tx, roleMenuId, input, { status: "DRAFT" });
       return mapMenu(await requireMenu(tx, roleMenuId));
     });
   }
 
-  public async setPublished(roleMenuId: string, messageId: string): Promise<RoleMenu> {
-    const row = await this.client.roleMenu.update({
-      where: { id: roleMenuId },
-      data: { messageId, status: "PUBLISHED", revision: { increment: 1 } },
-      include: roleMenuInclude,
-    });
-    return mapMenu(row);
+  public async setPublished(roleMenuId: string, messageId: string, input: Parameters<RoleMenuRepository["setPublished"]>[2] = {}): Promise<RoleMenu> {
+    await updateMenuRevision(this.client, roleMenuId, input, { messageId, status: "PUBLISHED" });
+    return mapMenu(await requireMenu(this.client, roleMenuId));
   }
 
-  public async setStatus(roleMenuId: string, status: RoleMenuStatus): Promise<RoleMenu> {
-    const row = await this.client.roleMenu.update({
-      where: { id: roleMenuId },
-      data: { status, revision: { increment: 1 } },
-      include: roleMenuInclude,
-    });
-    return mapMenu(row);
+  public async setStatus(roleMenuId: string, status: RoleMenuStatus, input: Parameters<RoleMenuRepository["setStatus"]>[2] = {}): Promise<RoleMenu> {
+    await updateMenuRevision(this.client, roleMenuId, input, { status });
+    return mapMenu(await requireMenu(this.client, roleMenuId));
   }
 
   public async delete(roleMenuId: string): Promise<void> {
@@ -190,6 +180,7 @@ function mapMenu(row: RoleMenuWithOptions): RoleMenu {
     status: row.status,
     createdByDiscordUserId: row.createdByDiscordUserId,
     revision: row.revision,
+    lastOperationSource: source(row.lastOperationSource),
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     options: row.options.map(mapOption),
@@ -206,6 +197,36 @@ function mapOption(row: RoleMenuOptionRow): RoleMenuOption {
     ...(row.emoji ? { emoji: row.emoji } : {}),
     position: row.position,
     revision: row.revision,
+    lastOperationSource: source(row.lastOperationSource),
     createdAt: row.createdAt,
   });
+}
+
+async function updateMenuRevision(
+  client: RoleMenuAccessor | RoleMenuTransactionAccessor,
+  roleMenuId: string,
+  input: { readonly expectedRevision?: number | undefined; readonly source?: RoleMenuOperationSource | undefined },
+  data: Prisma.RoleMenuUpdateManyMutationInput,
+): Promise<void> {
+  const result = await client.roleMenu.updateMany({
+    where: {
+      id: roleMenuId,
+      ...(input.expectedRevision === undefined ? {} : { revision: input.expectedRevision }),
+    },
+    data: {
+      ...data,
+      revision: { increment: 1 },
+      lastOperationSource: source(input.source),
+    },
+  });
+  if (result.count === 0) {
+    const existing = await client.roleMenu.findUnique({ where: { id: roleMenuId }, select: { id: true } });
+    throw existing
+      ? new RoleMenuError("CONFLICT", "Role menu was changed by another operation.")
+      : new RoleMenuError("NOT_FOUND", "Role menu was not found.");
+  }
+}
+
+function source(value: string | undefined): RoleMenuOperationSource {
+  return value === "DISCORD" || value === "WEB" || value === "SYSTEM" ? value : "SYSTEM";
 }

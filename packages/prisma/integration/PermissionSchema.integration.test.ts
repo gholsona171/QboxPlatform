@@ -61,6 +61,7 @@ describe("permission foundation migration", () => {
       "20260802093000_permission_hyphenated_segments",
       "20260802180000_discord_community_essentials",
       "20260802193000_role_management_parity",
+      "20260802203000_role_management_conflict_metadata",
     ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",
