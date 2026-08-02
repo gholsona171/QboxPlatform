@@ -273,3 +273,5 @@ function safeRoleMenuMessage(error: unknown): string {
   if (error instanceof RoleMenuError) return error.message;
   return "Role-menu operation failed. Check the menu ID, bot permissions, and role hierarchy.";
 }
+
+export const command = new RoleMenuCommand();

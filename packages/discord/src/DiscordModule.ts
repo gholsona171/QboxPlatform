@@ -63,7 +63,9 @@ export class DiscordModule implements PlatformModule {
     let registered: number;
 
     try {
-      const commands = [...loadResult.commands, new RoleMenuCommand(this.discordService.roleMenus)];
+      const commands = loadResult.commands.map((command) =>
+        command.data.name === "role-menu" ? new RoleMenuCommand(this.discordService.roleMenus) : command,
+      );
       registered = this.discordService.registerCommands(commands);
     } catch (error) {
       logger.error(
