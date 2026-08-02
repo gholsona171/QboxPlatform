@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node -e \"console.log('Qbox web uses static assets; no build required.')\"",
     "test": "node -e \"console.log('No web unit tests yet.')\""
   }
 }
