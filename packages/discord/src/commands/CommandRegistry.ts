@@ -165,6 +165,10 @@ export class CommandRegistry {
       return true;
     }
 
+    if (command.bypassAuthorization?.(context)) {
+      return true;
+    }
+
     if (!inGuild) {
       await context.reply({
         content: "This command requires server permissions.",

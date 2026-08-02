@@ -915,14 +915,6 @@ export type NullableEnumBrowserSessionRevocationReasonFieldUpdateOperationsInput
   set?: $Enums.BrowserSessionRevocationReason | null
 }
 
-export type NullableIntFieldUpdateOperationsInput = {
-  set?: number | null
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type BrowserSessionUpdateOneWithoutRotatedToNestedInput = {
   create?: Prisma.XOR<Prisma.BrowserSessionCreateWithoutRotatedToInput, Prisma.BrowserSessionUncheckedCreateWithoutRotatedToInput>
   connectOrCreate?: Prisma.BrowserSessionCreateOrConnectWithoutRotatedToInput

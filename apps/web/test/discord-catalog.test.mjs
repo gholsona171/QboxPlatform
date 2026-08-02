@@ -11,6 +11,8 @@ test("Discord Essentials catalog includes every planned portal subsection", asyn
     "Welcome and Goodbye",
     "Autoroles",
     "AutoMod and Filters",
+    "Rules",
+    "Member Counters",
     "Server Logs",
     "Embeds and Announcements",
     "Scheduled Messages and Reminders",
@@ -19,6 +21,7 @@ test("Discord Essentials catalog includes every planned portal subsection", asyn
     "Starboard",
     "Voice Rooms",
     "Custom Commands",
+    "Suggestions",
     "Server Utilities",
     "Bot Settings",
   ]);

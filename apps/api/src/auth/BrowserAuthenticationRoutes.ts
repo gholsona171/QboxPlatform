@@ -28,6 +28,7 @@ import type {
   PermissionPrincipal,
 } from "@qbox/permissions";
 import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
+import type { CounterType, DiscordCommunityService, SuggestionStatus } from "@qbox/discord-community";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
@@ -49,6 +50,7 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly guilds: Pick<GuildRepository, "findByDiscordId" | "create">;
   readonly authorizer: PermissionAuthorizer;
   readonly roleMenus: RoleMenuService;
+  readonly community: DiscordCommunityService;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -381,6 +383,91 @@ export async function registerBrowserAuthenticationRoutes(
     return { data: await dependencies.roleMenus.disable(param(request, "id")) };
   });
 
+  const communityRoutes = [
+    ["welcome", "discord.welcome.manage"],
+    ["goodbye", "discord.welcome.manage"],
+    ["autoroles", "discord.autoroles.manage"],
+    ["rules", "discord.rules.manage"],
+    ["counters", "discord.counters.manage"],
+    ["logs", "discord.logs.manage"],
+    ["embeds", "discord.embeds.manage"],
+    ["custom-commands", "discord.custom-commands.manage"],
+    ["suggestions", "discord.suggestions.manage"],
+    ["starboard", "discord.starboard.manage"],
+  ] as const;
+
+  for (const [route, permission] of communityRoutes) {
+    server.get(`/api/v1/discord/${route}`, async (request) => {
+      await requireDiscordManager(request, dependencies, permission);
+      return { data: await dependencies.community.settings(diagnostics.discordGuildId) };
+    });
+  }
+
+  server.put("/api/v1/discord/welcome", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.welcome.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: diagnostics.discordGuildId, kind: "WELCOME", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, ...(optionalStringField(body, "embedTitle") ? { embedTitle: optionalStringField(body, "embedTitle") } : {}), ...(optionalStringField(body, "embedDescription") ? { embedDescription: optionalStringField(body, "embedDescription") } : {}), ...(optionalStringField(body, "embedColor") ? { embedColor: optionalStringField(body, "embedColor") } : {}), thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: optionalBooleanField(body, "directMessageEnabled") ?? false }) };
+  });
+
+  server.put("/api/v1/discord/goodbye", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.welcome.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: diagnostics.discordGuildId, kind: "GOODBYE", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: false }) };
+  });
+
+  server.put("/api/v1/discord/autoroles", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.autoroles.manage");
+    const settings = await dependencies.community.settings(diagnostics.discordGuildId);
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveAutoroles({ ...settings.autoroles, enabled: booleanField(body, "enabled"), delaySeconds: optionalIntegerField(body, "delaySeconds") ?? settings.autoroles.delaySeconds, includeBots: optionalBooleanField(body, "includeBots") ?? settings.autoroles.includeBots }) };
+  });
+
+  server.post("/api/v1/discord/autoroles/roles", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.autoroles.manage");
+    return { data: await dependencies.community.addAutorole({ guildId: diagnostics.discordGuildId, roleId: stringField(objectBody(request), "roleId") }) };
+  });
+
+  server.put("/api/v1/discord/rules", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.rules.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveRules({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), buttonLabel: optionalStringField(body, "buttonLabel") ?? "Accept Rules", acceptedRoleId: stringField(body, "acceptedRoleId"), ...(optionalStringField(body, "pendingRoleId") ? { pendingRoleId: optionalStringField(body, "pendingRoleId") } : {}) }) };
+  });
+
+  server.post("/api/v1/discord/counters", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.counters.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveCounter({ guildId: diagnostics.discordGuildId, enabled: optionalBooleanField(body, "enabled") ?? true, channelId: stringField(body, "channelId"), labelTemplate: stringField(body, "labelTemplate"), type: counterTypeField(body, "type"), ...(optionalStringField(body, "roleId") ? { roleId: optionalStringField(body, "roleId") } : {}), intervalSeconds: optionalIntegerField(body, "intervalSeconds") ?? 300 }) };
+  });
+
+  server.put("/api/v1/discord/logs", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.logs.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveLogs({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), events: stringArrayField(body, "events"), destinations: recordField(body, "destinations"), ignoredChannels: stringArrayField(body, "ignoredChannels"), ignoredRoles: stringArrayField(body, "ignoredRoles"), ignoredUsers: stringArrayField(body, "ignoredUsers"), includeBots: optionalBooleanField(body, "includeBots") ?? false, contentMode: "REDACTED", colors: recordField(body, "colors") }) };
+  });
+
+  server.post("/api/v1/discord/embeds", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.embeds.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveEmbedTemplate({ guildId: diagnostics.discordGuildId, name: stringField(body, "name"), ...(optionalStringField(body, "title") ? { title: optionalStringField(body, "title") } : {}), ...(optionalStringField(body, "description") ? { description: optionalStringField(body, "description") } : {}), timestamp: optionalBooleanField(body, "timestamp") ?? false, fields: [], allowedRoleMentions: stringArrayField(body, "allowedRoleMentions") }) };
+  });
+
+  server.post("/api/v1/discord/custom-commands", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.custom-commands.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveCustomCommand({ guildId: diagnostics.discordGuildId, name: stringField(body, "name"), description: optionalStringField(body, "description") ?? "Custom response.", responseText: stringField(body, "responseText"), enabled: optionalBooleanField(body, "enabled") ?? true, allowedChannels: stringArrayField(body, "allowedChannels"), deniedChannels: stringArrayField(body, "deniedChannels"), requiredRoles: stringArrayField(body, "requiredRoles"), cooldownSeconds: optionalIntegerField(body, "cooldownSeconds") ?? 0, triggerMode: "SLASH_ONLY", deleteTriggeringMessage: false }) };
+  });
+
+  server.post("/api/v1/discord/suggestions/:id/status", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.suggestions.manage");
+    return { data: await dependencies.community.updateSuggestion({ guildId: diagnostics.discordGuildId, id: param(request, "id"), status: suggestionStatusField(objectBody(request), "status") }) };
+  });
+
+  server.put("/api/v1/discord/starboard", async (request) => {
+    await requireDiscordManager(request, dependencies, "discord.starboard.manage");
+    const body = objectBody(request);
+    return { data: await dependencies.community.saveStarboard({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), destinationChannelId: stringField(body, "destinationChannelId"), emoji: optionalStringField(body, "emoji") ?? "\u2b50", threshold: optionalIntegerField(body, "threshold") ?? 3, allowSelfStar: optionalBooleanField(body, "allowSelfStar") ?? false, includeBotMessages: optionalBooleanField(body, "includeBotMessages") ?? false, nsfw: "BLOCK", mode: "DENYLIST", channels: stringArrayField(body, "channels"), ignoredRoles: stringArrayField(body, "ignoredRoles") }) };
+  });
+
   server.post("/auth/logout", async (request, reply) => {
     validateSameOrigin(request, diagnostics.dashboardUrl);
     const sessionSecret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
@@ -431,6 +518,14 @@ async function requireRoleMenuManager(
   request: FastifyRequest,
   dependencies: BrowserAuthenticationRouteDependencies,
 ) {
+  return requireDiscordManager(request, dependencies, "discord.role-menus.manage");
+}
+
+async function requireDiscordManager(
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+  permission: Permission,
+) {
   const verified = await requireSession(request, dependencies);
   const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
   const guild = await dependencies.guilds.findByDiscordId(
@@ -464,7 +559,7 @@ async function requireRoleMenuManager(
       type: "discord-guild",
       guildId: dependencies.configuration.diagnostics().discordGuildId,
     },
-    required: ["discord.role-menus.manage" satisfies Permission],
+    required: [permission],
     mode: "all",
     administratorOverride: true,
   });
@@ -513,6 +608,57 @@ function optionalStringField(body: Record<string, unknown>, name: string): strin
   if (typeof value !== "string")
     throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be a string.` }]);
   return value;
+}
+
+function booleanField(body: Record<string, unknown>, name: string): boolean {
+  const value = body[name];
+  if (typeof value !== "boolean")
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} is required.` }]);
+  return value;
+}
+
+function optionalBooleanField(body: Record<string, unknown>, name: string): boolean | undefined {
+  const value = body[name];
+  if (value === undefined) return undefined;
+  if (typeof value !== "boolean")
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be boolean.` }]);
+  return value;
+}
+
+function optionalIntegerField(body: Record<string, unknown>, name: string): number | undefined {
+  const value = body[name];
+  if (value === undefined) return undefined;
+  if (!Number.isInteger(value))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be integer.` }]);
+  return value as number;
+}
+
+function stringArrayField(body: Record<string, unknown>, name: string): string[] {
+  const value = body[name];
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.some((entry) => typeof entry !== "string"))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be a string array.` }]);
+  return value;
+}
+
+function recordField(body: Record<string, unknown>, name: string): Record<string, string> {
+  const value = body[name];
+  if (value === undefined) return {};
+  if (typeof value !== "object" || value === null || Array.isArray(value))
+    throw new ValidationApiError([{ path: ["body", name], code: "invalid_type", message: `${name} must be an object.` }]);
+  return Object.fromEntries(Object.entries(value).filter(([, entry]) => typeof entry === "string")) as Record<string, string>;
+}
+
+function counterTypeField(body: Record<string, unknown>, name: string): CounterType {
+  const normalized = stringField(body, name).toUpperCase().replaceAll("-", "_");
+  if (normalized === "TOTAL_MEMBERS" || normalized === "HUMANS" || normalized === "BOTS" || normalized === "ONLINE" || normalized === "ROLE") return normalized;
+  throw new ValidationApiError([{ path: ["body", name], code: "invalid_enum", message: `${name} must be a supported counter type.` }]);
+}
+
+function suggestionStatusField(body: Record<string, unknown>, name: string): SuggestionStatus {
+  const normalized = stringField(body, name).toUpperCase().replaceAll("-", "_");
+  if (normalized === "SUBMITTED" || normalized === "UNDER_REVIEW" || normalized === "APPROVED" || normalized === "DENIED" || normalized === "IMPLEMENTED") return normalized;
+  throw new ValidationApiError([{ path: ["body", name], code: "invalid_enum", message: `${name} must be a supported suggestion status.` }]);
 }
 
 function enumField<const T extends readonly string[]>(

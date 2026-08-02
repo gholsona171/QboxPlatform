@@ -7,7 +7,7 @@ export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:0892995171df7728888ad7f24dda2c20b6560afa92f2d5d0dccd1d60bcd8d5de" as const;
+  "sha256:1e8f16a6cb2d8e4aa36485d2274a0a16463aead4f0dc12f7b279b1b31fc9aafa" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -26,6 +26,15 @@ export const PERMISSIONS = [
   "staff.manage",
   "knowledge.manage",
   "discord.role-menus.manage",
+  "discord.welcome.manage",
+  "discord.autoroles.manage",
+  "discord.rules.manage",
+  "discord.counters.manage",
+  "discord.logs.manage",
+  "discord.embeds.manage",
+  "discord.custom-commands.manage",
+  "discord.suggestions.manage",
+  "discord.starboard.manage",
 ] as const;
 
 /** An exact identifier present in the compiled permission catalog. */

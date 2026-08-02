@@ -1,5 +1,5 @@
 import { appVersion } from "./data.js";
-import { addRoleMenuOption, adminCheck, createRoleMenu, deleteRoleMenu, disableRoleMenu, listRoleMenus, loadHealth, loadMe, loginUrl, logout, publishRoleMenu } from "./api.js";
+import { addRoleMenuOption, adminCheck, createRoleMenu, deleteRoleMenu, disableRoleMenu, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, publishRoleMenu, saveDiscordFeature } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
 import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
 
@@ -80,25 +80,99 @@ function discordPage(state) {
     ["roles", "Role Menus"],
     ["welcome", "Welcome and Goodbye"],
     ["autoroles", "Autoroles"],
-    ["automod", "AutoMod and Filters"],
+    ["rules", "Rules"],
+    ["counters", "Member Counters"],
     ["logs", "Server Logs"],
     ["announcements", "Embeds and Announcements"],
-    ["scheduled", "Scheduled Messages and Reminders"],
-    ["giveaways", "Giveaways"],
-    ["levels", "Levels and Rewards"],
-    ["starboard", "Starboard"],
-    ["voice", "Voice Rooms"],
     ["custom", "Custom Commands"],
-    ["utilities", "Server Utilities"],
-    ["settings", "Bot Settings"],
+    ["suggestions", "Suggestions"],
+    ["starboard", "Starboard"],
   ];
   return `
     ${shellIntro("Discord Bot", "Discord remains fully usable without the portal. The portal configures and manages the same underlying features. Demo sections are browser-only until their backend is implemented.")}
     <section class="discord-tabs" aria-label="Discord Bot sections">
       ${tabs.map(([id, label]) => `<a class="button compact ${tab === id ? "primary" : "ghost"}" href="/discord?tab=${id}" data-route="discord" data-tab="${id}">${escapeHtml(label)}</a>`).join("")}
     </section>
-    ${tab === "roles" ? discordRoleMenusPage(state) : discordCatalogPage(state, tab)}
+    ${tab === "roles" ? discordRoleMenusPage(state) : discordCommunityFeaturePage(state, tab)}
   `;
+}
+
+function discordCommunityFeaturePage(state, tab) {
+  if (tab === "overview") return discordCatalogPage(state, tab);
+  const feature = communityFeatureState(state, tab);
+  return `
+    <section class="grid main-detail">
+      <div class="card">
+        <div class="split-line"><h2>${escapeHtml(feature.title)}</h2>${badge(account ? "LIVE API when authorized" : "DEMO")}</div>
+        <p class="microcopy">${escapeHtml(feature.summary)}</p>
+        <div class="toolbar">
+          <button class="button compact" data-action="load-live-discord-feature" data-feature="${escapeHtml(feature.path)}">Load live settings</button>
+        </div>
+        ${table(["Setting", "Value"], feature.rows.map(([label, value]) => row([["Setting", escapeHtml(label)], ["Value", value]])))}
+      </div>
+      <div class="card">
+        <h2>Manage</h2>
+        <form class="form-grid" data-action="save-discord-feature" data-feature="${escapeHtml(feature.path)}">
+          ${feature.form}
+          <button class="button primary full">Save ${escapeHtml(feature.title)}</button>
+        </form>
+        <h2>Live preview</h2>
+        <p class="microcopy">${escapeHtml(feature.preview)}</p>
+      </div>
+    </section>
+  `;
+}
+
+function communityFeatureState(state, tab) {
+  const discord = state.discord;
+  const maps = {
+    welcome: {
+      title: "Welcome and Goodbye",
+      path: "welcome",
+      summary: "Configure persistent join and leave messaging. Discord commands remain available.",
+      rows: [["Welcome", badge(discord.welcomeGoodbye.welcome.enabled ? "LIVE" : "DISABLED")], ["Goodbye", badge(discord.welcomeGoodbye.goodbye.enabled ? "LIVE" : "DISABLED")], ["Welcome channel", `<code>${escapeHtml(discord.welcomeGoodbye.welcome.channelId)}</code>`]],
+      form: `${input("channelId", "Welcome channel ID", discord.welcomeGoodbye.welcome.channelId)}${textarea("messageText", "Welcome message", discord.welcomeGoodbye.welcome.messageText)}${select("enabled", "Enabled", ["true", "false"], String(discord.welcomeGoodbye.welcome.enabled))}`,
+      preview: "Use /welcome preview or /goodbye preview in Discord for an ephemeral live preview.",
+    },
+    autoroles: {
+      title: "Autoroles", path: "autoroles", summary: "Assign configured roles when members join.",
+      rows: [["Status", badge(discord.autoroles.enabled ? "LIVE" : "DISABLED")], ["Delay", `${discord.autoroles.delaySeconds}s`], ["Roles", String(discord.autoroles.roles.length)]],
+      form: `${select("enabled", "Enabled", ["true", "false"], String(discord.autoroles.enabled))}${input("delaySeconds", "Delay seconds", String(discord.autoroles.delaySeconds))}${select("includeBots", "Include bots", ["false", "true"], String(discord.autoroles.includeBots))}`,
+      preview: "Use /autorole test in Discord to validate hierarchy without assigning unrelated members.",
+    },
+    rules: {
+      title: "Rules", path: "rules", summary: "Publish a durable Accept Rules button panel.",
+      rows: [["Status", badge(discord.rules.enabled ? "LIVE" : "DISABLED")], ["Channel", `<code>${escapeHtml(discord.rules.channelId)}</code>`], ["Accepted role", `<code>${escapeHtml(discord.rules.acceptedRoleId)}</code>`]],
+      form: `${input("channelId", "Channel ID", discord.rules.channelId)}${textarea("messageText", "Rules text", discord.rules.messageText)}${input("acceptedRoleId", "Accepted role ID", discord.rules.acceptedRoleId)}${input("buttonLabel", "Button label", discord.rules.buttonLabel)}${select("enabled", "Enabled", ["true", "false"], String(discord.rules.enabled))}`,
+      preview: "Use /rules inspect before /rules publish.",
+    },
+    counters: featureList("Member Counters", "counters", "Automatically rename configured counter channels.", discord.counters),
+    logs: {
+      title: "Server Logs", path: "logs", summary: "Route configured audit events to Discord channels.",
+      rows: [["Status", badge(discord.logs.enabled ? "LIVE" : "DISABLED")], ["Events", discord.logs.events.join(", ") || "none"], ["Destinations", Object.keys(discord.logs.destinations).join(", ") || "none"]],
+      form: `${select("enabled", "Enabled", ["true", "false"], String(discord.logs.enabled))}${input("events", "Events comma list", discord.logs.events.join(","))}${textarea("destinations", "Destinations JSON", JSON.stringify(discord.logs.destinations))}`,
+      preview: "Use /logs test for a safe Discord-side test.",
+    },
+    announcements: featureList("Embeds and Announcements", "embeds", "Build reusable embed templates and preview announcements.", discord.embeds),
+    custom: featureList("Custom Commands", "custom-commands", "Manage persistent grouped slash responses.", discord.customCommands),
+    suggestions: featureList("Suggestions", "suggestions", "Review persistent community suggestions.", discord.suggestions),
+    starboard: {
+      title: "Starboard", path: "starboard", summary: "Track reaction thresholds with one entry per source message.",
+      rows: [["Status", badge(discord.starboard.enabled ? "LIVE" : "DISABLED")], ["Destination", `<code>${escapeHtml(discord.starboard.destinationChannelId)}</code>`], ["Threshold", String(discord.starboard.threshold)]],
+      form: `${input("destinationChannelId", "Destination channel ID", discord.starboard.destinationChannelId)}${input("emoji", "Emoji", discord.starboard.emoji)}${input("threshold", "Threshold", String(discord.starboard.threshold))}${select("enabled", "Enabled", ["true", "false"], String(discord.starboard.enabled))}`,
+      preview: "Use /starboard inspect for a safe live check.",
+    },
+  };
+  return maps[tab] ?? maps.welcome;
+}
+
+function featureList(title, path, summary, items) {
+  return {
+    title, path, summary,
+    rows: [["Items", String(items.length)], ["Mode", items.length ? "Configured" : "Empty"]],
+    form: `${input("name", "Name", `${title} Demo`)}${textarea("description", "Description", summary)}${select("enabled", "Enabled", ["true", "false"], "true")}`,
+    preview: `Use /${path.split("-")[0]} inspect or list in Discord for safe live state.`,
+  };
 }
 
 function discordCatalogPage(state, tab) {
@@ -496,6 +570,7 @@ async function handleAction(action, element) {
   if (action === "restart-server") return confirmThen("Demo Restart", "This records a demo activity item only. No FiveM server command is sent.", () => mutateAndRender((s) => recordActivity(s, "FiveM restart demo action previewed", "FiveM")));
   if (action === "send-announcement") return mutateAndRender((s) => { s.fivem.announcements.unshift(value("[data-action='fivem-announcement']")); recordActivity(s, "FiveM announcement preview saved", "FiveM"); });
   if (action === "load-live-role-menus") return loadLiveRoleMenus();
+  if (action === "load-live-discord-feature") return loadLiveDiscordFeature(element.dataset.feature);
   if (action === "publish-role-menu") return updateRoleMenu(action, id);
   if (action === "disable-role-menu") return updateRoleMenu(action, id);
   if (action === "delete-role-menu") return updateRoleMenu(action, id);
@@ -506,6 +581,29 @@ async function handleAction(action, element) {
   if (["save-application", "delete-application"].includes(action)) return updateApplication(action, id);
   if (["save-ticket", "reopen-ticket"].includes(action)) return updateTicket(action, id);
   if (action === "save-article") return mutateAndRender((s) => { const item = s.articles.find((i) => i.id === id); item.status = value("[data-action='article-status']"); item.body = value("[data-action='article-body']"); item.edited = "Just now"; recordActivity(s, `Article updated: ${item.title}`, "Knowledge Base"); });
+}
+
+async function loadLiveDiscordFeature(feature) {
+  try {
+    const result = await loadDiscordFeature(feature);
+    mutateDemoState((draft) => applyCommunitySettings(draft.discord, result.data));
+    notify("Live Discord feature settings loaded.", "success");
+    renderPage("discord");
+  } catch (error) {
+    notify(error.message || "Live feature settings unavailable. Demo Mode remains usable.", "warning");
+  }
+}
+
+function applyCommunitySettings(discord, settings) {
+  if (settings.welcome || settings.goodbye) discord.welcomeGoodbye = { welcome: settings.welcome || discord.welcomeGoodbye.welcome, goodbye: settings.goodbye || discord.welcomeGoodbye.goodbye };
+  if (settings.autoroles) discord.autoroles = settings.autoroles;
+  if (settings.rules) discord.rules = settings.rules;
+  if (settings.counters) discord.counters = settings.counters;
+  if (settings.logs) discord.logs = settings.logs;
+  if (settings.embedTemplates) discord.embeds = settings.embedTemplates;
+  if (settings.customCommands) discord.customCommands = settings.customCommands;
+  if (settings.suggestions) discord.suggestions = settings.suggestions;
+  if (settings.starboard) discord.starboard = settings.starboard;
 }
 
 async function loadLiveRoleMenus() {

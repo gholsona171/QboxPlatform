@@ -57,6 +57,61 @@ export type RoleMenu = Prisma.RoleMenuModel
  */
 export type RoleMenuOption = Prisma.RoleMenuOptionModel
 /**
+ * Model WelcomeGoodbyeConfig
+ *
+ */
+export type WelcomeGoodbyeConfig = Prisma.WelcomeGoodbyeConfigModel
+/**
+ * Model AutoroleConfig
+ *
+ */
+export type AutoroleConfig = Prisma.AutoroleConfigModel
+/**
+ * Model AutoroleRule
+ *
+ */
+export type AutoroleRule = Prisma.AutoroleRuleModel
+/**
+ * Model RulesConfig
+ *
+ */
+export type RulesConfig = Prisma.RulesConfigModel
+/**
+ * Model CommunityCounter
+ *
+ */
+export type CommunityCounter = Prisma.CommunityCounterModel
+/**
+ * Model ServerLogConfig
+ *
+ */
+export type ServerLogConfig = Prisma.ServerLogConfigModel
+/**
+ * Model EmbedTemplate
+ *
+ */
+export type EmbedTemplate = Prisma.EmbedTemplateModel
+/**
+ * Model CustomCommand
+ *
+ */
+export type CustomCommand = Prisma.CustomCommandModel
+/**
+ * Model Suggestion
+ *
+ */
+export type Suggestion = Prisma.SuggestionModel
+/**
+ * Model StarboardConfig
+ *
+ */
+export type StarboardConfig = Prisma.StarboardConfigModel
+/**
+ * Model StarboardEntry
+ *
+ */
+export type StarboardEntry = Prisma.StarboardEntryModel
+/**
  * Model PermissionPrincipal
  *
  */

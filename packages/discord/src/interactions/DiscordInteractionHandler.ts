@@ -6,6 +6,7 @@ import type {
 } from "discord.js";
 
 import { logger } from "@qbox/logger";
+import type { DiscordCommunityService } from "@qbox/discord-community";
 
 import type { CommandRegistry } from "../commands/CommandRegistry.js";
 import type {
@@ -32,6 +33,7 @@ export interface DiscordInteractionHandlerOptions {
   readonly acknowledgementTimeoutMs?: number;
   readonly log?: InteractionLogger;
   readonly roleMenuInteractions?: DiscordRoleMenuInteractionHandler;
+  readonly community?: DiscordCommunityService;
 }
 
 export class CommandExecutionTimeoutError extends Error {
@@ -63,6 +65,7 @@ export class DiscordInteractionHandler {
   private readonly acknowledgementTimeoutMs: number;
   private readonly log: InteractionLogger;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
+  private readonly community: DiscordCommunityService | undefined;
   private readonly activeExecutions = new Set<Promise<void>>();
   private readonly activeControllers = new Set<AbortController>();
   private acceptingExecutions = true;
@@ -81,9 +84,18 @@ export class DiscordInteractionHandler {
     );
     this.log = options.log ?? logger;
     this.roleMenuInteractions = options.roleMenuInteractions;
+    this.community = options.community;
   }
 
   public async handle(interaction: Interaction): Promise<void> {
+    if (typeof interaction.isButton === "function" && interaction.isButton() && interaction.customId.startsWith("qbox:rules:")) {
+      if (!this.community || !interaction.guildId || !interaction.member || !("user" in interaction.member)) return;
+      await interaction.deferReply({ ephemeral: true });
+      const result = await this.community.acceptRules(interaction.guildId, interaction.user.id);
+      await interaction.editReply({ content: result.every((item) => !item.changed) ? "Rules were already accepted." : "Rules accepted." });
+      return;
+    }
+
     const isRoleMenuComponent =
       (typeof interaction.isButton === "function" && interaction.isButton()) ||
       (typeof interaction.isStringSelectMenu === "function" && interaction.isStringSelectMenu());

@@ -229,6 +229,70 @@ export const RoleMenuStatus = {
 export type RoleMenuStatus = (typeof RoleMenuStatus)[keyof typeof RoleMenuStatus]
 
 
+export const WelcomeGoodbyeKind = {
+  WELCOME: 'WELCOME',
+  GOODBYE: 'GOODBYE'
+} as const
+
+export type WelcomeGoodbyeKind = (typeof WelcomeGoodbyeKind)[keyof typeof WelcomeGoodbyeKind]
+
+
+export const CommunityCounterType = {
+  TOTAL_MEMBERS: 'TOTAL_MEMBERS',
+  HUMANS: 'HUMANS',
+  BOTS: 'BOTS',
+  ONLINE: 'ONLINE',
+  ROLE: 'ROLE'
+} as const
+
+export type CommunityCounterType = (typeof CommunityCounterType)[keyof typeof CommunityCounterType]
+
+
+export const CommunityContentMode = {
+  REDACTED: 'REDACTED',
+  WHEN_AVAILABLE: 'WHEN_AVAILABLE'
+} as const
+
+export type CommunityContentMode = (typeof CommunityContentMode)[keyof typeof CommunityContentMode]
+
+
+export const CustomCommandTriggerMode = {
+  SLASH_ONLY: 'SLASH_ONLY',
+  EXACT: 'EXACT',
+  STARTS_WITH: 'STARTS_WITH',
+  CONTAINS: 'CONTAINS'
+} as const
+
+export type CustomCommandTriggerMode = (typeof CustomCommandTriggerMode)[keyof typeof CustomCommandTriggerMode]
+
+
+export const SuggestionStatus = {
+  SUBMITTED: 'SUBMITTED',
+  UNDER_REVIEW: 'UNDER_REVIEW',
+  APPROVED: 'APPROVED',
+  DENIED: 'DENIED',
+  IMPLEMENTED: 'IMPLEMENTED'
+} as const
+
+export type SuggestionStatus = (typeof SuggestionStatus)[keyof typeof SuggestionStatus]
+
+
+export const StarboardChannelMode = {
+  ALLOWLIST: 'ALLOWLIST',
+  DENYLIST: 'DENYLIST'
+} as const
+
+export type StarboardChannelMode = (typeof StarboardChannelMode)[keyof typeof StarboardChannelMode]
+
+
+export const StarboardNsfwMode = {
+  ALLOW: 'ALLOW',
+  BLOCK: 'BLOCK'
+} as const
+
+export type StarboardNsfwMode = (typeof StarboardNsfwMode)[keyof typeof StarboardNsfwMode]
+
+
 export const AuthenticationAuditAction = {
   LOGIN_START: 'LOGIN_START',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',

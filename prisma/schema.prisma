@@ -167,6 +167,49 @@ enum RoleMenuStatus {
   DISABLED  @map("disabled")
 }
 
+enum WelcomeGoodbyeKind {
+  WELCOME @map("welcome")
+  GOODBYE @map("goodbye")
+}
+
+enum CommunityCounterType {
+  TOTAL_MEMBERS @map("total-members")
+  HUMANS        @map("humans")
+  BOTS          @map("bots")
+  ONLINE        @map("online")
+  ROLE          @map("role")
+}
+
+enum CommunityContentMode {
+  REDACTED       @map("redacted")
+  WHEN_AVAILABLE @map("when-available")
+}
+
+enum CustomCommandTriggerMode {
+  SLASH_ONLY  @map("slash-only")
+  EXACT       @map("exact")
+  STARTS_WITH @map("starts-with")
+  CONTAINS    @map("contains")
+}
+
+enum SuggestionStatus {
+  SUBMITTED    @map("submitted")
+  UNDER_REVIEW @map("under-review")
+  APPROVED     @map("approved")
+  DENIED       @map("denied")
+  IMPLEMENTED  @map("implemented")
+}
+
+enum StarboardChannelMode {
+  ALLOWLIST @map("allowlist")
+  DENYLIST  @map("denylist")
+}
+
+enum StarboardNsfwMode {
+  ALLOW @map("allow")
+  BLOCK @map("block")
+}
+
 enum AuthenticationAuditAction {
   LOGIN_START           @map("login-start")
   LOGIN_SUCCESS         @map("login-success")
@@ -234,6 +277,17 @@ model Guild {
   auditScopeEvents PermissionAuditEvent[]   @relation("AuditScopeGuild")
   authMemberships  DiscordGuildMembership[]
   roleMenus        RoleMenu[]
+  welcomeGoodbye   WelcomeGoodbyeConfig[]
+  autoroleConfigs  AutoroleConfig[]
+  autoroleRules    AutoroleRule[]
+  rulesConfigs     RulesConfig[]
+  counters         CommunityCounter[]
+  logConfigs       ServerLogConfig[]
+  embedTemplates   EmbedTemplate[]
+  customCommands   CustomCommand[]
+  suggestions      Suggestion[]
+  starboards       StarboardConfig[]
+  starboardEntries StarboardEntry[]
 
   @@map("guilds")
 }
@@ -276,6 +330,223 @@ model RoleMenuOption {
   @@unique([roleMenuId, roleId], map: "role_menu_options_role_key")
   @@index([roleId], map: "role_menu_options_role_idx")
   @@map("role_menu_options")
+}
+
+model WelcomeGoodbyeConfig {
+  id                   String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId              String             @map("guild_id") @db.Uuid
+  kind                 WelcomeGoodbyeKind
+  enabled              Boolean            @default(false)
+  channelId            String             @map("channel_id")
+  messageText          String             @map("message_text")
+  embedEnabled         Boolean            @default(false) @map("embed_enabled")
+  embedTitle           String?            @map("embed_title")
+  embedDescription     String?            @map("embed_description")
+  embedColor           String?            @map("embed_color")
+  thumbnailAvatar      Boolean            @default(true) @map("thumbnail_avatar")
+  footer               String?
+  directMessageEnabled Boolean            @default(false) @map("direct_message_enabled")
+  imageUrl             String?            @map("image_url")
+  roleMentionId        String?            @map("role_mention_id")
+  deleteAfterSeconds   Int?               @map("delete_after_seconds")
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, kind], map: "welcome_goodbye_configs_guild_kind_key")
+  @@map("welcome_goodbye_configs")
+}
+
+model AutoroleConfig {
+  guildId      String   @id @map("guild_id") @db.Uuid
+  enabled      Boolean  @default(false)
+  delaySeconds Int      @default(0) @map("delay_seconds")
+  includeBots  Boolean  @default(false) @map("include_bots")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@map("autorole_configs")
+}
+
+model AutoroleRule {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String   @map("guild_id") @db.Uuid
+  roleId    String   @map("role_id")
+  position  Int
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, roleId], map: "autorole_rules_guild_role_key")
+  @@unique([guildId, position], map: "autorole_rules_guild_position_key")
+  @@map("autorole_rules")
+}
+
+model RulesConfig {
+  guildId        String   @id @map("guild_id") @db.Uuid
+  enabled        Boolean  @default(false)
+  channelId      String   @map("channel_id")
+  messageText    String   @map("message_text")
+  buttonLabel    String   @map("button_label")
+  acceptedRoleId String   @map("accepted_role_id")
+  pendingRoleId  String?  @map("pending_role_id")
+  messageId      String?  @map("message_id")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@map("rules_configs")
+}
+
+model CommunityCounter {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String               @map("guild_id") @db.Uuid
+  enabled         Boolean              @default(true)
+  channelId       String               @map("channel_id")
+  labelTemplate   String               @map("label_template")
+  type            CommunityCounterType
+  roleId          String?              @map("role_id")
+  intervalSeconds Int                  @map("interval_seconds")
+  lastValue       Int?                 @map("last_value")
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([guildId, enabled], map: "community_counters_guild_enabled_idx")
+  @@map("community_counters")
+}
+
+model ServerLogConfig {
+  guildId         String               @id @map("guild_id") @db.Uuid
+  enabled         Boolean              @default(false)
+  events          String[]
+  destinations    Json                 @default("{}") @db.JsonB
+  ignoredChannels String[]             @map("ignored_channels")
+  ignoredRoles    String[]             @map("ignored_roles")
+  ignoredUsers    String[]             @map("ignored_users")
+  includeBots     Boolean              @default(false) @map("include_bots")
+  contentMode     CommunityContentMode @default(REDACTED) @map("content_mode")
+  colors          Json                 @default("{}") @db.JsonB
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@map("server_log_configs")
+}
+
+model EmbedTemplate {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId             String   @map("guild_id") @db.Uuid
+  name                String
+  content             String?
+  title               String?
+  description         String?
+  color               String?
+  author              String?
+  thumbnailUrl        String?  @map("thumbnail_url")
+  imageUrl            String?  @map("image_url")
+  footer              String?
+  timestamp           Boolean  @default(false)
+  fields              Json     @default("[]") @db.JsonB
+  allowedRoleMentions String[] @map("allowed_role_mentions")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, name], map: "embed_templates_guild_name_key")
+  @@map("embed_templates")
+}
+
+model CustomCommand {
+  id                      String                   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId                 String                   @map("guild_id") @db.Uuid
+  name                    String
+  description             String
+  responseText            String                   @map("response_text")
+  embedTemplateId         String?                  @map("embed_template_id") @db.Uuid
+  enabled                 Boolean                  @default(true)
+  allowedChannels         String[]                 @map("allowed_channels")
+  deniedChannels          String[]                 @map("denied_channels")
+  requiredRoles           String[]                 @map("required_roles")
+  cooldownSeconds         Int                      @map("cooldown_seconds")
+  triggerMode             CustomCommandTriggerMode @map("trigger_mode")
+  triggerPhrase           String?                  @map("trigger_phrase")
+  deleteTriggeringMessage Boolean                  @default(false) @map("delete_triggering_message")
+  createdAt               DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt               DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, name], map: "custom_commands_guild_name_key")
+  @@map("custom_commands")
+}
+
+model Suggestion {
+  id                  String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId             String           @map("guild_id") @db.Uuid
+  submitterId         String           @map("submitter_id")
+  content             String
+  status              SuggestionStatus @default(SUBMITTED)
+  submissionMessageId String?          @map("submission_message_id")
+  reviewMessageId     String?          @map("review_message_id")
+  resultMessageId     String?          @map("result_message_id")
+  reviewerId          String?          @map("reviewer_id")
+  staffNote           String?          @map("staff_note")
+  upvotes             Int              @default(0)
+  downvotes           Int              @default(0)
+  createdAt           DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([guildId, status, createdAt], map: "suggestions_guild_status_idx")
+  @@map("suggestions")
+}
+
+model StarboardConfig {
+  guildId              String               @id @map("guild_id") @db.Uuid
+  enabled              Boolean              @default(false)
+  destinationChannelId String               @map("destination_channel_id")
+  emoji                String
+  threshold            Int
+  allowSelfStar        Boolean              @default(false) @map("allow_self_star")
+  includeBotMessages   Boolean              @default(false) @map("include_bot_messages")
+  nsfw                 StarboardNsfwMode    @default(BLOCK)
+  mode                 StarboardChannelMode @default(DENYLIST)
+  channels             String[]
+  ignoredRoles         String[]             @map("ignored_roles")
+  createdAt            DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@map("starboard_configs")
+}
+
+model StarboardEntry {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId              String   @map("guild_id") @db.Uuid
+  sourceChannelId      String   @map("source_channel_id")
+  sourceMessageId      String   @map("source_message_id")
+  destinationMessageId String?  @map("destination_message_id")
+  authorId             String   @map("author_id")
+  starCount            Int      @map("star_count")
+  deleted              Boolean  @default(false)
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, sourceMessageId], map: "starboard_entries_source_key")
+  @@index([guildId, deleted], map: "starboard_entries_guild_deleted_idx")
+  @@map("starboard_entries")
 }
 
 model PermissionPrincipal {

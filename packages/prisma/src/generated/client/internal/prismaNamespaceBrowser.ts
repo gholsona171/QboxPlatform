@@ -54,6 +54,17 @@ export const ModelName = {
   Guild: 'Guild',
   RoleMenu: 'RoleMenu',
   RoleMenuOption: 'RoleMenuOption',
+  WelcomeGoodbyeConfig: 'WelcomeGoodbyeConfig',
+  AutoroleConfig: 'AutoroleConfig',
+  AutoroleRule: 'AutoroleRule',
+  RulesConfig: 'RulesConfig',
+  CommunityCounter: 'CommunityCounter',
+  ServerLogConfig: 'ServerLogConfig',
+  EmbedTemplate: 'EmbedTemplate',
+  CustomCommand: 'CustomCommand',
+  Suggestion: 'Suggestion',
+  StarboardConfig: 'StarboardConfig',
+  StarboardEntry: 'StarboardEntry',
   PermissionPrincipal: 'PermissionPrincipal',
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
@@ -128,6 +139,203 @@ export const RoleMenuOptionScalarFieldEnum = {
 } as const
 
 export type RoleMenuOptionScalarFieldEnum = (typeof RoleMenuOptionScalarFieldEnum)[keyof typeof RoleMenuOptionScalarFieldEnum]
+
+
+export const WelcomeGoodbyeConfigScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  kind: 'kind',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  messageText: 'messageText',
+  embedEnabled: 'embedEnabled',
+  embedTitle: 'embedTitle',
+  embedDescription: 'embedDescription',
+  embedColor: 'embedColor',
+  thumbnailAvatar: 'thumbnailAvatar',
+  footer: 'footer',
+  directMessageEnabled: 'directMessageEnabled',
+  imageUrl: 'imageUrl',
+  roleMentionId: 'roleMentionId',
+  deleteAfterSeconds: 'deleteAfterSeconds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WelcomeGoodbyeConfigScalarFieldEnum = (typeof WelcomeGoodbyeConfigScalarFieldEnum)[keyof typeof WelcomeGoodbyeConfigScalarFieldEnum]
+
+
+export const AutoroleConfigScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  delaySeconds: 'delaySeconds',
+  includeBots: 'includeBots',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AutoroleConfigScalarFieldEnum = (typeof AutoroleConfigScalarFieldEnum)[keyof typeof AutoroleConfigScalarFieldEnum]
+
+
+export const AutoroleRuleScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  roleId: 'roleId',
+  position: 'position',
+  createdAt: 'createdAt'
+} as const
+
+export type AutoroleRuleScalarFieldEnum = (typeof AutoroleRuleScalarFieldEnum)[keyof typeof AutoroleRuleScalarFieldEnum]
+
+
+export const RulesConfigScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  messageText: 'messageText',
+  buttonLabel: 'buttonLabel',
+  acceptedRoleId: 'acceptedRoleId',
+  pendingRoleId: 'pendingRoleId',
+  messageId: 'messageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RulesConfigScalarFieldEnum = (typeof RulesConfigScalarFieldEnum)[keyof typeof RulesConfigScalarFieldEnum]
+
+
+export const CommunityCounterScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  labelTemplate: 'labelTemplate',
+  type: 'type',
+  roleId: 'roleId',
+  intervalSeconds: 'intervalSeconds',
+  lastValue: 'lastValue',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommunityCounterScalarFieldEnum = (typeof CommunityCounterScalarFieldEnum)[keyof typeof CommunityCounterScalarFieldEnum]
+
+
+export const ServerLogConfigScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  events: 'events',
+  destinations: 'destinations',
+  ignoredChannels: 'ignoredChannels',
+  ignoredRoles: 'ignoredRoles',
+  ignoredUsers: 'ignoredUsers',
+  includeBots: 'includeBots',
+  contentMode: 'contentMode',
+  colors: 'colors',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ServerLogConfigScalarFieldEnum = (typeof ServerLogConfigScalarFieldEnum)[keyof typeof ServerLogConfigScalarFieldEnum]
+
+
+export const EmbedTemplateScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  content: 'content',
+  title: 'title',
+  description: 'description',
+  color: 'color',
+  author: 'author',
+  thumbnailUrl: 'thumbnailUrl',
+  imageUrl: 'imageUrl',
+  footer: 'footer',
+  timestamp: 'timestamp',
+  fields: 'fields',
+  allowedRoleMentions: 'allowedRoleMentions',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EmbedTemplateScalarFieldEnum = (typeof EmbedTemplateScalarFieldEnum)[keyof typeof EmbedTemplateScalarFieldEnum]
+
+
+export const CustomCommandScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  responseText: 'responseText',
+  embedTemplateId: 'embedTemplateId',
+  enabled: 'enabled',
+  allowedChannels: 'allowedChannels',
+  deniedChannels: 'deniedChannels',
+  requiredRoles: 'requiredRoles',
+  cooldownSeconds: 'cooldownSeconds',
+  triggerMode: 'triggerMode',
+  triggerPhrase: 'triggerPhrase',
+  deleteTriggeringMessage: 'deleteTriggeringMessage',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CustomCommandScalarFieldEnum = (typeof CustomCommandScalarFieldEnum)[keyof typeof CustomCommandScalarFieldEnum]
+
+
+export const SuggestionScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  submitterId: 'submitterId',
+  content: 'content',
+  status: 'status',
+  submissionMessageId: 'submissionMessageId',
+  reviewMessageId: 'reviewMessageId',
+  resultMessageId: 'resultMessageId',
+  reviewerId: 'reviewerId',
+  staffNote: 'staffNote',
+  upvotes: 'upvotes',
+  downvotes: 'downvotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SuggestionScalarFieldEnum = (typeof SuggestionScalarFieldEnum)[keyof typeof SuggestionScalarFieldEnum]
+
+
+export const StarboardConfigScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  destinationChannelId: 'destinationChannelId',
+  emoji: 'emoji',
+  threshold: 'threshold',
+  allowSelfStar: 'allowSelfStar',
+  includeBotMessages: 'includeBotMessages',
+  nsfw: 'nsfw',
+  mode: 'mode',
+  channels: 'channels',
+  ignoredRoles: 'ignoredRoles',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StarboardConfigScalarFieldEnum = (typeof StarboardConfigScalarFieldEnum)[keyof typeof StarboardConfigScalarFieldEnum]
+
+
+export const StarboardEntryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  sourceChannelId: 'sourceChannelId',
+  sourceMessageId: 'sourceMessageId',
+  destinationMessageId: 'destinationMessageId',
+  authorId: 'authorId',
+  starCount: 'starCount',
+  deleted: 'deleted',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StarboardEntryScalarFieldEnum = (typeof StarboardEntryScalarFieldEnum)[keyof typeof StarboardEntryScalarFieldEnum]
 
 
 export const PermissionPrincipalScalarFieldEnum = {

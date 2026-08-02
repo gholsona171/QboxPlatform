@@ -10,3 +10,4 @@ export * from "./authentication/PrismaAuthenticationPersistence.js";
 export * from "./authentication/PrismaAuthenticationRepositories.js";
 export * from "./authentication/PrismaOwnerAccessProtectionService.js";
 export * from "./roleMenus/PrismaRoleMenuRepository.js";
+export * from "./discordCommunity/PrismaDiscordCommunityRepository.js";

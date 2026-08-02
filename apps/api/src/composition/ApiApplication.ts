@@ -17,6 +17,7 @@ import {
 } from "@qbox/database";
 import { logger } from "@qbox/logger";
 import { RoleMenuService } from "@qbox/role-menus";
+import { DiscordCommunityService } from "@qbox/discord-community";
 import {
   InMemoryPermissionCache,
   PersistentPermissionService,
@@ -115,6 +116,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     cache,
   );
   const roleMenus = new RoleMenuService(persistence.repositories.roleMenus);
+  const community = new DiscordCommunityService(persistence.repositories.discordCommunity);
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -177,6 +179,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         guilds: persistence.repositories.guilds,
         authorizer,
         roleMenus,
+        community,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       }),

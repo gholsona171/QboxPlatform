@@ -16,6 +16,7 @@ describe("permission catalog", () => {
     "platform.owner",
     "moderation.warn",
     "discord.role-menus.manage",
+    "discord.custom-commands.manage",
     "tickets.close",
     "knowledge.publish",
   ])("accepts lowercase dot-separated syntax for %s", (permission) =>

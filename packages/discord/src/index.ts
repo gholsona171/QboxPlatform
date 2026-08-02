@@ -13,3 +13,5 @@ export * from "./validation/CommandValidator.js";
 export * from "./interactions/DiscordInteractionHandler.js";
 export * from "./roleMenus/DiscordRoleMenuGateway.js";
 export * from "./roleMenus/DiscordRoleMenuInteractionHandler.js";
+export * from "./community/DiscordCommunityGateway.js";
+export * from "./community/DiscordCommunityEventHandler.js";

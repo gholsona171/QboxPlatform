@@ -60,6 +60,18 @@ export async function deleteRoleMenu(menuId) {
   });
 }
 
+export async function loadDiscordFeature(path) {
+  return requestJson(`/api/v1/discord/${path}`);
+}
+
+export async function saveDiscordFeature(path, input, method = "PUT") {
+  return requestJson(`/api/v1/discord/${path}`, {
+    method,
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input),
+  });
+}
+
 export async function logout() {
   const csrf = cookieValue(csrfCookieName);
   if (!csrf) throw Object.assign(new Error("Session expired."), { code: "AUTHENTICATION_REQUIRED" });

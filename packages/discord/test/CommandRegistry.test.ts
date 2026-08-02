@@ -134,6 +134,26 @@ describe("CommandRegistry authorization policy", () => {
     expect(anyExecute).toHaveBeenCalledOnce();
   });
 
+  it("allows command-defined public subcommands to bypass permission checks", async () => {
+    const execute = vi.fn(async () => undefined);
+    const command = createCommand("secure", {
+      policy: protectedPolicy(),
+      execute,
+    }) as DiscordCommand;
+    const publicCommand: DiscordCommand = {
+      ...command,
+      bypassAuthorization: () => true,
+    };
+    const registry = new CommandRegistry(createTestAuthorizer());
+    const { context, reply } = createContext();
+    registry.register(publicCommand);
+
+    await registry.execute(context);
+
+    expect(execute).toHaveBeenCalledTimes(1);
+    expect(reply).not.toHaveBeenCalled();
+  });
+
   it("allows an administrator override only when enabled", async () => {
     const registry = new CommandRegistry(
       createTestAuthorizer(grant("admin", ["platform.admin"])),

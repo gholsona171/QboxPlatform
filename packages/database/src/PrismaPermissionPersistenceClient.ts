@@ -9,6 +9,7 @@ import type { DatabaseConfiguration } from "./config/DatabaseConfiguration.js";
 import type { DatabaseClient } from "./contracts/DatabaseContracts.js";
 import { PrismaAuthenticationPersistence } from "./authentication/PrismaAuthenticationPersistence.js";
 import { PrismaRoleMenuRepository } from "./roleMenus/PrismaRoleMenuRepository.js";
+import { PrismaDiscordCommunityRepository } from "./discordCommunity/PrismaDiscordCommunityRepository.js";
 import {
   PrismaGuildRepository,
   PrismaPermissionAuditRepository,
@@ -27,6 +28,7 @@ export interface PermissionPersistenceRepositories {
   readonly audits: PrismaPermissionAuditRepository;
   readonly catalog: PrismaPermissionCatalogRepository;
   readonly roleMenus: PrismaRoleMenuRepository;
+  readonly discordCommunity: PrismaDiscordCommunityRepository;
 }
 
 /**
@@ -78,6 +80,7 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
       audits: new PrismaPermissionAuditRepository(this.client),
       catalog: new PrismaPermissionCatalogRepository(this.client),
       roleMenus: new PrismaRoleMenuRepository(this.client),
+      discordCommunity: new PrismaDiscordCommunityRepository(this.client),
     };
   }
 

@@ -59,6 +59,7 @@ describe("permission foundation migration", () => {
       "20260801030000_oauth_pkce_mode",
       "20260802090000_role_menus",
       "20260802093000_permission_hyphenated_segments",
+      "20260802180000_discord_community_essentials",
     ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@qbox/core": "workspace:*",
+    "@qbox/discord-community": "workspace:*",
     "@qbox/logger": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",

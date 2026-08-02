@@ -63,6 +63,9 @@ importers:
       '@qbox/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@qbox/discord-community':
+        specifier: workspace:*
+        version: link:../../modules/discord-community
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -93,6 +96,9 @@ importers:
       '@qbox/discord':
         specifier: workspace:*
         version: link:../../packages/discord
+      '@qbox/discord-community':
+        specifier: workspace:*
+        version: link:../../modules/discord-community
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -111,6 +117,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  modules/discord-community: {}
+
   modules/role-menus: {}
 
   packages/authentication: {}
@@ -126,6 +134,9 @@ importers:
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../authentication
+      '@qbox/discord-community':
+        specifier: workspace:*
+        version: link:../../modules/discord-community
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
@@ -141,6 +152,9 @@ importers:
       '@qbox/core':
         specifier: workspace:*
         version: link:../core
+      '@qbox/discord-community':
+        specifier: workspace:*
+        version: link:../../modules/discord-community
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger

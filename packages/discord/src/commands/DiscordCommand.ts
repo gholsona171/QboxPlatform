@@ -62,5 +62,6 @@ export interface DiscordCommand {
   readonly data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
   readonly aliases?: readonly string[];
   readonly policy: CommandExecutionPolicy;
+  bypassAuthorization?(context: CommandExecutionContext): boolean;
   execute(context: CommandExecutionContext): Promise<void>;
 }

@@ -5,12 +5,15 @@ import { env } from "@qbox/shared";
 import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
 import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
+import { DiscordCommunityService, type CommunityRepository } from "@qbox/discord-community";
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
 import { DiscordInteractionHandler } from "./interactions/DiscordInteractionHandler.js";
 import { DiscordRoleMenuGateway } from "./roleMenus/DiscordRoleMenuGateway.js";
 import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuInteractionHandler.js";
+import { DiscordCommunityGatewayAdapter } from "./community/DiscordCommunityGateway.js";
+import { DiscordCommunityEventHandler } from "./community/DiscordCommunityEventHandler.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -48,14 +51,17 @@ export class DiscordService {
       GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildVoiceStates,
     ],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   });
 
   public readonly commands: CommandRegistry;
   public readonly roleMenus: RoleMenuService | undefined;
+  public readonly community: DiscordCommunityService | undefined;
   private readonly interactions: DiscordInteractionHandler;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
+  private readonly communityEvents: DiscordCommunityEventHandler | undefined;
   private readonly interactionListener = (interaction: Interaction): void => {
     void this.interactions.handle(interaction).catch((error: unknown) => {
       logger.error(
@@ -83,6 +89,7 @@ export class DiscordService {
   public constructor(
     permissionAuthorizer: PermissionAuthorizer,
     roleMenuRepository?: RoleMenuRepository,
+    communityRepository?: CommunityRepository,
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
     if (roleMenuRepository) {
@@ -94,9 +101,17 @@ export class DiscordService {
         this.roleMenus,
       );
     }
+    if (communityRepository) {
+      this.community = new DiscordCommunityService(
+        communityRepository,
+        new DiscordCommunityGatewayAdapter(this.client),
+      );
+      this.communityEvents = new DiscordCommunityEventHandler(this.community);
+    }
     this.interactions = new DiscordInteractionHandler(this.commands, {
       executionTimeoutMs: readExecutionTimeout(),
       ...(this.roleMenuInteractions ? { roleMenuInteractions: this.roleMenuInteractions } : {}),
+      ...(this.community ? { community: this.community } : {}),
     });
   }
 
@@ -116,6 +131,7 @@ export class DiscordService {
     this.client.on(Events.InteractionCreate, this.interactionListener);
     this.client.on(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.on(Events.MessageReactionRemove, this.reactionRemoveListener);
+    this.communityEvents?.attach(this.client);
 
     logger.info(
       {
@@ -130,6 +146,7 @@ export class DiscordService {
       this.client.off(Events.InteractionCreate, this.interactionListener);
       this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
       this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
+      this.communityEvents?.detach();
       this.client.destroy();
       throw error;
     }
@@ -237,6 +254,7 @@ export class DiscordService {
     this.client.off(Events.InteractionCreate, this.interactionListener);
     this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
+    this.communityEvents?.detach();
     this.client.destroy();
   }
 }
