@@ -12,6 +12,10 @@
     "bot:update": "powershell -ExecutionPolicy Bypass -File scripts/update-local-bot.ps1",
     "api:update": "powershell -ExecutionPolicy Bypass -File scripts/update-local-api.ps1",
     "prisma:generate": "pnpm --filter @qbox/prisma prisma:generate",
+    "db:start": "bash scripts/dev-database.sh start",
+    "db:stop": "bash scripts/dev-database.sh stop",
+    "db:save": "bash scripts/dev-database.sh save",
+    "db:reset": "bash scripts/dev-database.sh reset",
     "clean": "pnpm -r clean"
   },
   "keywords": [
