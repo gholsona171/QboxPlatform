@@ -14,3 +14,4 @@ export * from "./discordCommunity/PrismaDiscordCommunityRepository.js";
 export * from "./discordRoles/PrismaDiscordRoleDependencyRepository.js";
 export * from "./tickets/PrismaTicketRepository.js";
 export * from "./moderation/PrismaModerationRepository.js";
+export * from "./applications/PrismaApplicationRepository.js";

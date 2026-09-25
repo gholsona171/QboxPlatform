@@ -54,6 +54,9 @@ importers:
       '@fastify/cookie':
         specifier: ^11.1.2
         version: 11.1.2
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../../packages/authentication
@@ -129,6 +132,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  modules/applications:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/discord-community: {}
 
   modules/discord-roles: {}
@@ -157,6 +166,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../authentication
@@ -184,6 +196,9 @@ importers:
 
   packages/discord:
     dependencies:
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
       '@qbox/core':
         specifier: workspace:*
         version: link:../core
