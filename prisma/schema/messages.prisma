@@ -1,0 +1,42 @@
+// Look & Messages: server-wide embed look and per-key message templates (see docs/Messages.md).
+// guildId is the Discord guild snowflake.
+
+enum MessagesLookMode {
+  FILL     @map("fill")
+  OVERRIDE @map("override")
+
+  @@map("messages_look_mode")
+}
+
+model MessagesLook {
+  guildId       String           @id @map("guild_id")
+  enabled       Boolean          @default(true)
+  accentColor   String?          @map("accent_color")
+  footerText    String?          @map("footer_text")
+  footerIconUrl String?          @map("footer_icon_url")
+  authorName    String?          @map("author_name")
+  authorIconUrl String?          @map("author_icon_url")
+  thumbnailUrl  String?          @map("thumbnail_url")
+  showTimestamp Boolean          @default(false) @map("show_timestamp")
+  mode          MessagesLookMode @default(FILL)
+  revision      Int              @default(1)
+  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("messages_looks")
+}
+
+model MessagesTemplate {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String   @map("guild_id")
+  key       String
+  enabled   Boolean  @default(true)
+  content   String?
+  embeds    Json     @default("[]") @db.JsonB
+  updatedBy String?  @map("updated_by")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, key], map: "messages_templates_guild_key_key")
+  @@map("messages_templates")
+}

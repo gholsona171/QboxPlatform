@@ -13,9 +13,11 @@ import {
   DatabaseService,
   InMemoryPermissionInvalidationBus,
   NodeAuthenticationIdGenerator,
+  PrismaMessagesRepository,
   PrismaPermissionPersistenceClient,
 } from "@qbox/database";
 import { logger } from "@qbox/logger";
+import { DiscordRestMessagesGateway, MessageTemplateService, guildResolver, installThemedRequests } from "@qbox/messages";
 import { RoleMenuService } from "@qbox/role-menus";
 import { DiscordCommunityService } from "@qbox/discord-community";
 import { RoleManagementService } from "@qbox/discord-roles";
@@ -138,7 +140,10 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       : undefined,
   );
   const discordRest = input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined;
-  const features = apiFeatures({ persistence, discordRest });
+  const templates = new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma), { gateway: discordRest ? new DiscordRestMessagesGateway(discordRest) : undefined });
+  // Every embed the API posts gets the server's look (see docs/Messages.md).
+  if (discordRest) installThemedRequests(discordRest, guildResolver(discordRest), templates);
+  const features = apiFeatures({ persistence, discordRest, templates });
   const guildAuthority = discordRest
     ? new DiscordRestGuildAuthority(discordRest, {
         onError: (error, guildId) => logger.warn({ err: error, guildId }, "Could not read server owner and roles from Discord."),

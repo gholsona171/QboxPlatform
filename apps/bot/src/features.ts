@@ -1,5 +1,6 @@
-import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, builderFeature, guildOnboardingFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
+import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, builderFeature, guildOnboardingFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, messagesFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
+import { MessageTemplateService } from "@qbox/messages";
 import type { PersistentPermissionService } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
@@ -8,6 +9,8 @@ import { env } from "@qbox/shared";
  * repositories share the persistence client's Prisma connection.
  */
 export function botFeatures(persistence: PrismaPermissionPersistenceClient, authorizer: PersistentPermissionService): readonly DiscordFeatureFactory[] {
+  /** Custom messages and the server-wide look; pass it to services that take `templates`. */
+  const templates = new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma));
   const bootstrap = new PermissionBootstrapService(
     persistence.repositories.guilds,
     persistence.repositories.principals,
@@ -15,6 +18,7 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
     authorizer,
   );
   return [
+    messagesFeature(templates),
     guildOnboardingFeature({
       ensureOwner: async (guildId, ownerId) => ({ created: (await bootstrap.applyOwner(guildId, ownerId)).createdAssignments > 0 }),
     }),

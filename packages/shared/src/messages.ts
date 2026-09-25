@@ -106,5 +106,89 @@ export function renderMessage(template: OutgoingMessage, values: TemplateValues)
  * customizable message appends its keys here; the portal lists them from
  * this catalog. Keep entries sorted by feature, then by key.
  */
-export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [];
+const USER: MessagePlaceholder = { name: "user", description: "Mentions the member (@name)." };
+const USERNAME: MessagePlaceholder = { name: "username", description: "The member's name as plain text." };
+const SERVER: MessagePlaceholder = { name: "server", description: "Your server's name." };
+
+export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [
+  {
+    key: "birthdays.announcement",
+    feature: "birthdays",
+    name: "Birthday announcement",
+    description: "Posted in the birthday channel on a member's birthday.",
+    placeholders: [USER, USERNAME, SERVER, { name: "age", description: "The age they turn, when they chose to show it." }, { name: "date", description: "The birthday date, for example September 25." }],
+  },
+  {
+    key: "community.goodbye",
+    feature: "community",
+    name: "Goodbye message",
+    description: "Posted when a member leaves.",
+    placeholders: [USER, USERNAME, SERVER, { name: "memberCount", description: "How many members the server has now." }],
+  },
+  {
+    key: "community.welcome",
+    feature: "community",
+    name: "Welcome message",
+    description: "Posted when a new member joins.",
+    placeholders: [USER, USERNAME, SERVER, { name: "memberCount", description: "How many members the server has now." }],
+  },
+  {
+    key: "giveaways.ended",
+    feature: "giveaways",
+    name: "Giveaway ended",
+    description: "Posted when a giveaway ends and winners are drawn.",
+    placeholders: [SERVER, { name: "prize", description: "What was given away." }, { name: "winners", description: "Mentions of the winners." }, { name: "host", description: "Mentions the member who started the giveaway." }],
+  },
+  {
+    key: "giveaways.started",
+    feature: "giveaways",
+    name: "Giveaway started",
+    description: "The giveaway message members enter from.",
+    placeholders: [SERVER, { name: "prize", description: "What is being given away." }, { name: "winners", description: "How many winners will be drawn." }, { name: "host", description: "Mentions the member who started the giveaway." }, { name: "endsAt", description: "When the giveaway ends, shown in each member's time zone." }],
+  },
+  {
+    key: "levels.level-up",
+    feature: "levels",
+    name: "Level up",
+    description: "Posted when a member reaches a new level.",
+    placeholders: [USER, USERNAME, SERVER, { name: "level", description: "The new level." }, { name: "xp", description: "Their total XP." }, { name: "rank", description: "Their place on the leaderboard." }],
+  },
+  {
+    key: "moderation.case-log",
+    feature: "moderation",
+    name: "Case log entry",
+    description: "Posted in the moderation log channel for every case.",
+    placeholders: [USER, USERNAME, SERVER, { name: "moderator", description: "Mentions the moderator." }, { name: "caseNumber", description: "The case number." }, { name: "action", description: "What happened: Warning, Timeout, Kick, Ban ..." }, { name: "reason", description: "The reason the moderator gave." }, { name: "duration", description: "How long a timeout or ban lasts, when it is temporary." }, { name: "rule", description: "The automod rule that triggered, when automod acted." }],
+  },
+  {
+    key: "moderation.warn-dm",
+    feature: "moderation",
+    name: "Warning direct message",
+    description: "Sent to a member when they are warned.",
+    placeholders: [USER, USERNAME, SERVER, { name: "moderator", description: "Mentions the moderator." }, { name: "caseNumber", description: "The case number." }, { name: "reason", description: "The reason the moderator gave." }],
+    directMessage: true,
+  },
+  {
+    key: "tickets.closed-dm",
+    feature: "tickets",
+    name: "Ticket closed direct message",
+    description: "Sent to the member who opened a ticket when it is closed.",
+    placeholders: [USER, USERNAME, SERVER, { name: "number", description: "The ticket number." }, { name: "reason", description: "Why the ticket was closed, when a reason was given." }, { name: "subject", description: "What the ticket was about." }],
+    directMessage: true,
+  },
+  {
+    key: "tickets.opened",
+    feature: "tickets",
+    name: "Ticket opened",
+    description: "The first message in a new ticket channel.",
+    placeholders: [USER, USERNAME, SERVER, { name: "number", description: "The ticket number." }, { name: "reason", description: "The ticket reason (category) the member picked." }, { name: "reasonNumber", description: "The ticket's number within that reason." }, { name: "subject", description: "What the member wrote when opening the ticket." }],
+  },
+  {
+    key: "verification.welcome",
+    feature: "verification",
+    name: "Verified welcome",
+    description: "Posted in the welcome channel after a member verifies.",
+    placeholders: [USER, USERNAME, SERVER],
+  },
+];
 

@@ -1,8 +1,9 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
+import { DiscordRestMessagesGateway, MessageTemplateService } from "@qbox/messages";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
 import { DiscordRestGiveawayGateway, GiveawayService } from "@qbox/giveaways";
@@ -24,6 +25,7 @@ import { directoryApiFeature } from "./directory/DirectoryRoutes.js";
 import type { ApiFeature } from "./features/ApiFeature.js";
 import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
 import { levelsApiFeature } from "./levels/LevelRoutes.js";
+import { messagesApiFeature } from "./messages/MessagesRoutes.js";
 import { fivemApiFeature } from "./fivem/FivemRoutes.js";
 import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
@@ -38,10 +40,14 @@ export interface ApiFeatureDependencies {
   readonly persistence: PrismaPermissionPersistenceClient;
   /** Discord REST client when a bot token is configured. */
   readonly discordRest: REST | undefined;
+  /** Custom messages and the server-wide look; created here when the composition root does not pass one. */
+  readonly templates?: MessageTemplateService | undefined;
 }
 
 /** Every pluggable API feature. Add one line per feature. */
-export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies): readonly ApiFeature[] {
+export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFeatureDependencies): readonly ApiFeature[] {
+  /** Custom messages and the server-wide look; pass it to services that take `templates`. */
+  const templates = dependencies.templates ?? new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma), { gateway: discordRest ? new DiscordRestMessagesGateway(discordRest) : undefined });
   const tickets = new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined);
   const moderation = new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined);
   const verification = new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined);
@@ -68,6 +74,7 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     voiceRoomsApiFeature(voice),
     knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
     fivemApiFeature(fivem),
+    messagesApiFeature(templates),
     builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
   ];
 }
