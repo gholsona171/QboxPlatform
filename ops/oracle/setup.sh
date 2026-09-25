@@ -89,13 +89,38 @@ else
   say "Keeping the existing .env"
 fi
 
-say "Building Qbox (a few minutes)"
 cd "$REPO_DIR"
-pnpm install --frozen-lockfile
-pnpm build
+BUILT_COMMIT_FILE="$REPO_DIR/.qbox-built-commit"
+BUILT_COMMIT="$(cat "$BUILT_COMMIT_FILE" 2>/dev/null || true)"
+code_changed() {
+  [ -z "$BUILT_COMMIT" ] && return 0
+  git cat-file -e "${BUILT_COMMIT}^{commit}" 2>/dev/null || return 0
+  git diff --name-only "$BUILT_COMMIT" HEAD | grep -qvE '^(ops/|docs/|\.gitignore$|[^/]*\.md$)'
+}
+if ! code_changed; then
+  say "Already built for this version, skipping the build"
+else
+  say "Building Qbox (10-15 minutes on a small server)"
+  pnpm install --frozen-lockfile
+  pnpm build
+  git rev-parse HEAD > "$BUILT_COMMIT_FILE"
+fi
 
 say "Registering slash commands in your server"
-(cd apps/bot && node dist/deployCommands.js guild)
+if ! (cd apps/bot && node dist/deployCommands.js guild >/dev/null 2>&1); then
+  GUILD_ID="$(sed -n 's/^DISCORD_GUILD_ID=//p' "$REPO_DIR/.env")"
+  APP_ID="$(sed -n 's/^DISCORD_APPLICATION_ID=//p' "$REPO_DIR/.env")"
+  cat >&2 <<HINT
+
+The bot could not register its commands in server ${GUILD_ID}.
+Usually the bot has not been invited yet. Open this link, pick the server, and authorize:
+
+  https://discord.com/oauth2/authorize?client_id=${APP_ID}&scope=bot%20applications.commands&permissions=8
+
+Then run this setup again; it skips the build.
+HINT
+  exit 1
+fi
 
 say "Creating services"
 NODE_BIN="$(command -v node)"

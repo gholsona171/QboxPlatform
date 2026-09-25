@@ -13,6 +13,7 @@ if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
   if [ "$CHANGED" != "ops/discord-server-id" ]; then
     pnpm install --frozen-lockfile
     pnpm build
+    git rev-parse HEAD > .qbox-built-commit
   fi
 fi
 
