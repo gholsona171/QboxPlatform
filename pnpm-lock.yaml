@@ -129,6 +129,8 @@ importers:
 
   modules/role-menus: {}
 
+  modules/tickets: {}
+
   packages/authentication: {}
 
   packages/core:
@@ -157,6 +159,9 @@ importers:
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/tickets':
+        specifier: workspace:*
+        version: link:../../modules/tickets
 
   packages/discord:
     dependencies:

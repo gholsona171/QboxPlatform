@@ -11,7 +11,8 @@
     "@qbox/discord-roles": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/prisma": "workspace:*",
-    "@qbox/role-menus": "workspace:*"
+    "@qbox/role-menus": "workspace:*",
+    "@qbox/tickets": "workspace:*"
   },
   "scripts": {
     "build": "tsc",

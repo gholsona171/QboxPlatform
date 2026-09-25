@@ -66,6 +66,12 @@ export const ModelName = {
   Suggestion: 'Suggestion',
   StarboardConfig: 'StarboardConfig',
   StarboardEntry: 'StarboardEntry',
+  TicketSettings: 'TicketSettings',
+  TicketCategory: 'TicketCategory',
+  TicketPanel: 'TicketPanel',
+  Ticket: 'Ticket',
+  TicketMessage: 'TicketMessage',
+  TicketEvent: 'TicketEvent',
   PermissionPrincipal: 'PermissionPrincipal',
   PermissionDefinition: 'PermissionDefinition',
   PermissionAssignment: 'PermissionAssignment',
@@ -363,6 +369,152 @@ export const StarboardEntryScalarFieldEnum = {
 } as const
 
 export type StarboardEntryScalarFieldEnum = (typeof StarboardEntryScalarFieldEnum)[keyof typeof StarboardEntryScalarFieldEnum]
+
+
+export const TicketSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  mode: 'mode',
+  openCategoryChannelId: 'openCategoryChannelId',
+  closedCategoryChannelId: 'closedCategoryChannelId',
+  threadParentChannelId: 'threadParentChannelId',
+  transcriptChannelId: 'transcriptChannelId',
+  logChannelId: 'logChannelId',
+  supportRoleIds: 'supportRoleIds',
+  pingSupportOnOpen: 'pingSupportOnOpen',
+  maxOpenPerUser: 'maxOpenPerUser',
+  nameTemplate: 'nameTemplate',
+  openMessage: 'openMessage',
+  embedColor: 'embedColor',
+  allowUserClose: 'allowUserClose',
+  requireCloseReason: 'requireCloseReason',
+  closeConfirmation: 'closeConfirmation',
+  closeAction: 'closeAction',
+  deleteDelaySeconds: 'deleteDelaySeconds',
+  claimEnabled: 'claimEnabled',
+  claimRestrictsReplies: 'claimRestrictsReplies',
+  transcriptsEnabled: 'transcriptsEnabled',
+  transcriptDmUser: 'transcriptDmUser',
+  feedbackEnabled: 'feedbackEnabled',
+  autoCloseHours: 'autoCloseHours',
+  autoCloseWarningHours: 'autoCloseWarningHours',
+  autoCloseExcludeClaimed: 'autoCloseExcludeClaimed',
+  blockedUserIds: 'blockedUserIds',
+  blockedRoleIds: 'blockedRoleIds',
+  nextNumber: 'nextNumber',
+  revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketSettingsScalarFieldEnum = (typeof TicketSettingsScalarFieldEnum)[keyof typeof TicketSettingsScalarFieldEnum]
+
+
+export const TicketCategoryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  emoji: 'emoji',
+  buttonStyle: 'buttonStyle',
+  enabled: 'enabled',
+  position: 'position',
+  supportRoleIds: 'supportRoleIds',
+  parentChannelId: 'parentChannelId',
+  nameTemplate: 'nameTemplate',
+  openMessage: 'openMessage',
+  defaultPriority: 'defaultPriority',
+  questions: 'questions',
+  requiredRoleIds: 'requiredRoleIds',
+  maxOpenPerUser: 'maxOpenPerUser',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketCategoryScalarFieldEnum = (typeof TicketCategoryScalarFieldEnum)[keyof typeof TicketCategoryScalarFieldEnum]
+
+
+export const TicketPanelScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  color: 'color',
+  style: 'style',
+  placeholder: 'placeholder',
+  imageUrl: 'imageUrl',
+  footer: 'footer',
+  categoryIds: 'categoryIds',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketPanelScalarFieldEnum = (typeof TicketPanelScalarFieldEnum)[keyof typeof TicketPanelScalarFieldEnum]
+
+
+export const TicketScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  categoryId: 'categoryId',
+  openerId: 'openerId',
+  openerName: 'openerName',
+  channelId: 'channelId',
+  subject: 'subject',
+  answers: 'answers',
+  status: 'status',
+  priority: 'priority',
+  claimedById: 'claimedById',
+  participantIds: 'participantIds',
+  tags: 'tags',
+  closedById: 'closedById',
+  closeReason: 'closeReason',
+  rating: 'rating',
+  feedback: 'feedback',
+  transcriptMessageId: 'transcriptMessageId',
+  autoCloseWarnedAt: 'autoCloseWarnedAt',
+  firstResponseAt: 'firstResponseAt',
+  lastActivityAt: 'lastActivityAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
+
+
+export const TicketMessageScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  discordMessageId: 'discordMessageId',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  content: 'content',
+  attachments: 'attachments',
+  source: 'source',
+  internal: 'internal',
+  createdAt: 'createdAt'
+} as const
+
+export type TicketMessageScalarFieldEnum = (typeof TicketMessageScalarFieldEnum)[keyof typeof TicketMessageScalarFieldEnum]
+
+
+export const TicketEventScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  action: 'action',
+  actorId: 'actorId',
+  source: 'source',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type TicketEventScalarFieldEnum = (typeof TicketEventScalarFieldEnum)[keyof typeof TicketEventScalarFieldEnum]
 
 
 export const PermissionPrincipalScalarFieldEnum = {
