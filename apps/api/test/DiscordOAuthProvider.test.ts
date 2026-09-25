@@ -19,21 +19,28 @@ const base = Object.freeze({
   clientId: "1432071570645455029",
   clientSecret: "test-client-secret",
   redirectUri: "http://127.0.0.1:3000/auth/discord/callback",
-  guildId: "1257928923048837201",
+  defaultGuildId: "1257928923048837201",
 });
 
 describe("DiscordOAuthConfiguration", () => {
   it("validates exact provider policy and redacts secrets from diagnostics", () => {
     const configuration = DiscordOAuthConfiguration.from(base);
-    expect(configuration.scopes).toEqual(["guilds.members.read", "identify"]);
+    expect(configuration.scopes).toEqual(["guilds", "guilds.members.read", "identify"]);
     expect(configuration.diagnostics()).toMatchObject({
       clientId: base.clientId,
       redirectOrigin: "http://127.0.0.1:3000",
       redirectPath: "/auth/discord/callback",
       pkceCapability: "DISABLED_UNVERIFIED",
-      guildId: base.guildId,
+      defaultGuildId: base.defaultGuildId,
     });
     expect(JSON.stringify(configuration.diagnostics())).not.toContain(base.clientSecret);
+  });
+
+  it("works without a default server for multi-server deployments", () => {
+    const { defaultGuildId: _omitted, ...withoutDefault } = base;
+    const configuration = DiscordOAuthConfiguration.from(withoutDefault);
+    expect(configuration.defaultGuildId).toBeUndefined();
+    expect(configuration.diagnostics().defaultGuildId).toBeUndefined();
   });
 
   it("requires HTTPS redirects in production and loopback for HTTP test redirects", () => {
@@ -61,7 +68,7 @@ describe("NativeDiscordOAuthProvider", () => {
     expect(url.origin).toBe("https://discord.com");
     expect(url.searchParams.get("response_type")).toBe("code");
     expect(url.searchParams.get("client_id")).toBe(base.clientId);
-    expect(url.searchParams.get("scope")).toBe("guilds.members.read identify");
+    expect(url.searchParams.get("scope")).toBe("guilds guilds.members.read identify");
     expect(url.searchParams.get("state")).toBe("state-" + "x".repeat(32));
     expect(url.searchParams.has("code_challenge")).toBe(false);
   });
@@ -98,7 +105,7 @@ describe("NativeDiscordOAuthProvider", () => {
           refresh_token: "refresh-" + "x".repeat(32),
           token_type: "Bearer",
           expires_in: 3600,
-          scope: "identify guilds.members.read",
+          scope: "identify guilds guilds.members.read",
         });
       },
     );
@@ -108,7 +115,7 @@ describe("NativeDiscordOAuthProvider", () => {
         redirectUri: new URL(base.redirectUri),
         signal: new AbortController().signal,
       }),
-    ).resolves.toMatchObject({ scopes: ["guilds.members.read", "identify"] });
+    ).resolves.toMatchObject({ scopes: ["guilds", "guilds.members.read", "identify"] });
     expect(String(requests[0]?.body)).toContain("grant_type=authorization_code");
     expect(requests[0]?.headers).toMatchObject({
       "content-type": "application/x-www-form-urlencoded",
@@ -125,7 +132,7 @@ describe("NativeDiscordOAuthProvider", () => {
           refresh_token: "D43f5y0ahjqew82jZ4NViEr2YafMKh",
           token_type: "Bearer",
           expires_in: 604800,
-          scope: "identify guilds.members.read",
+          scope: "identify guilds guilds.members.read",
         }),
     );
     const tokens = await provider.exchangeCode({
@@ -151,7 +158,7 @@ describe("NativeDiscordOAuthProvider", () => {
           refresh_token: "refresh-" + "x".repeat(32),
           token_type: "Bearer",
           expires_in: 3600,
-          scope: "identify",
+          scope: "identify guilds.members.read",
         }),
       ).refreshToken({
         refreshToken: opaqueAuthenticationSecret("refresh-" + "x".repeat(32)),
@@ -188,6 +195,44 @@ describe("NativeDiscordOAuthProvider", () => {
       status: "PRESENT",
       roleIds: ["1262656532902842423"],
     });
+  });
+
+  it("verifies membership in whichever server is asked for, not only the default", async () => {
+    const routes: string[] = [];
+    const provider = new NativeDiscordOAuthProvider(DiscordOAuthConfiguration.from(base), async (url) => {
+      routes.push(String(url));
+      return json({ user: { id: "804859666655739996" }, roles: [] });
+    });
+    const result = await provider.verify({
+      identity: { userId: "804859666655739996" as DiscordUserId },
+      accessToken: opaqueAuthenticationSecret("access-" + "x".repeat(32)),
+      guildId: discordGuildId("1300000000000000002"),
+      signal: new AbortController().signal,
+    });
+    expect(result).toMatchObject({ status: "PRESENT", guildId: "1300000000000000002" });
+    expect(routes[0]).toContain("/users/@me/guilds/1300000000000000002/member");
+  });
+
+  it("lists the user's servers with owner and permission bits", async () => {
+    const provider = new NativeDiscordOAuthProvider(DiscordOAuthConfiguration.from(base), async (url, init) => {
+      expect(String(url)).toContain("/users/@me/guilds?limit=200");
+      expect(init.headers).toMatchObject({ authorization: "Bearer access-" + "x".repeat(32) });
+      return json([
+        { id: "1300000000000000001", name: "Alpha", icon: "abc", owner: true, permissions: "2147483647", features: ["COMMUNITY"] },
+        { id: "1300000000000000002", name: "Beta", icon: null, owner: false, permissions: "1024" },
+      ]);
+    });
+    const guilds = await provider.fetchGuilds(opaqueAuthenticationSecret("access-" + "x".repeat(32)), new AbortController().signal);
+    expect(guilds).toEqual([
+      { id: "1300000000000000001", name: "Alpha", icon: "abc", owner: true, permissions: "2147483647" },
+      { id: "1300000000000000002", name: "Beta", icon: null, owner: false, permissions: "1024" },
+    ]);
+    const revoked = new NativeDiscordOAuthProvider(DiscordOAuthConfiguration.from(base), async () =>
+      new Response("{}", { status: 401, headers: { "content-type": "application/json" } }),
+    );
+    await expect(
+      revoked.fetchGuilds(opaqueAuthenticationSecret("access-" + "x".repeat(32)), new AbortController().signal),
+    ).rejects.toMatchObject({ code: "EXPIRED_OR_REVOKED_PROVIDER_TOKEN" });
   });
 
   it("maps not-member and pending membership without fabricating authorization", async () => {

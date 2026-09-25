@@ -75,6 +75,7 @@ Stable codes currently reserved by the foundation are:
 - `REQUEST_TIMEOUT`
 - `RATE_LIMITED`
 - `DEPENDENCY_UNAVAILABLE`
+- `GUILD_REQUIRED` (409: the browser has not picked a server and no default is configured; see `docs/MultiServer.md`)
 - `INTERNAL_ERROR`
 
 Validation details contain safe field paths and issue codes, not rejected values. Internal messages and stack traces never appear in client responses.

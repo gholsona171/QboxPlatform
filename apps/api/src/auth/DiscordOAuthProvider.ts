@@ -22,6 +22,7 @@ import {
 } from "@qbox/authentication";
 
 import type { DiscordOAuthConfiguration } from "./DiscordOAuthConfiguration.js";
+import type { DiscordUserGuild, DiscordUserGuildSource } from "./GuildDirectory.js";
 
 /** Minimal fetch boundary used by the Discord OAuth adapter. */
 export type DiscordOAuthFetch = (
@@ -35,6 +36,10 @@ const TOKEN_ENDPOINT = new URL("/api/v10/oauth2/token", DISCORD_ORIGIN);
 const REVOCATION_ENDPOINT = new URL("/api/v10/oauth2/token/revoke", DISCORD_ORIGIN);
 const AUTHORIZATION_INFO_ENDPOINT = new URL("/api/v10/oauth2/@me", DISCORD_ORIGIN);
 const CURRENT_USER_ENDPOINT = new URL("/api/v10/users/@me", DISCORD_ORIGIN);
+const CURRENT_USER_GUILDS_ENDPOINT = new URL("/api/v10/users/@me/guilds", DISCORD_ORIGIN);
+/** Discord returns at most 200 guilds per page; each carries a feature list, so the page is large. */
+const USER_GUILDS_MAXIMUM_RESPONSE_BYTES = 1_024 * 1_024;
+const USER_GUILDS_LIMIT = 200;
 
 const tokenResponseSchema = z.object({
   access_token: z.string().min(1).max(4096),
@@ -58,6 +63,16 @@ const userSchema = z.object({
   avatar: z.string().min(1).max(512).nullable().optional(),
 }).passthrough();
 
+const userGuildSchema = z.object({
+  id: z.string().regex(/^[1-9][0-9]{16,19}$/),
+  name: z.string().min(1).max(200),
+  icon: z.string().min(1).max(512).nullable().optional(),
+  owner: z.boolean().optional(),
+  permissions: z.string().regex(/^[0-9]{1,30}$/).optional(),
+}).passthrough();
+
+const userGuildsSchema = z.array(userGuildSchema).max(USER_GUILDS_LIMIT);
+
 const guildMemberSchema = z.object({
   user: z.object({ id: z.string().regex(/^[1-9][0-9]{16,19}$/) }).passthrough().optional(),
   roles: z.array(z.string().regex(/^[1-9][0-9]{16,19}$/)).max(250),
@@ -72,7 +87,7 @@ const guildMemberSchema = z.object({
  * provider failures into bounded safe categories.
  */
 export class NativeDiscordOAuthProvider
-  implements DiscordOAuthProvider, DiscordGuildMembershipVerifier {
+  implements DiscordOAuthProvider, DiscordGuildMembershipVerifier, DiscordUserGuildSource {
   /** Constructs a provider over fixed official Discord endpoints. */
   public constructor(
     private readonly configuration: DiscordOAuthConfiguration,
@@ -206,16 +221,40 @@ export class NativeDiscordOAuthProvider
     });
   }
 
-  /** Verifies current-user membership in the configured Discord guild. */
+  /** Lists the servers the signed-in user belongs to (`guilds` scope). */
+  public async fetchGuilds(
+    accessToken: OpaqueAuthenticationSecret,
+    signal: AbortSignal,
+  ): Promise<readonly DiscordUserGuild[]> {
+    const endpoint = new URL(CURRENT_USER_GUILDS_ENDPOINT);
+    endpoint.searchParams.set("limit", String(USER_GUILDS_LIMIT));
+    const json = await this.#json(endpoint, "guilds.fetch", accessToken, signal, USER_GUILDS_MAXIMUM_RESPONSE_BYTES);
+    const parsed = userGuildsSchema.safeParse(json);
+    if (!parsed.success)
+      throw providerError("MALFORMED_PROVIDER_RESPONSE", "guilds.fetch", false);
+    return Object.freeze(
+      parsed.data.map((guild) =>
+        Object.freeze({
+          id: guild.id,
+          name: guild.name,
+          icon: guild.icon ?? null,
+          owner: guild.owner === true,
+          permissions: guild.permissions ?? "0",
+        }),
+      ),
+    );
+  }
+
+  /** Verifies current-user membership in the requested Discord guild. */
   public async verify(
     request: DiscordGuildMembershipVerificationRequest,
   ): Promise<DiscordGuildMembershipVerification> {
+    if (!/^[1-9][0-9]{16,19}$/.test(request.guildId))
+      throw providerError("MALFORMED_PROVIDER_RESPONSE", "membership.fetch", false);
     const endpoint = new URL(
-      `/api/v10/users/@me/guilds/${this.configuration.guildId}/member`,
+      `/api/v10/users/@me/guilds/${request.guildId}/member`,
       DISCORD_ORIGIN,
     );
-    if (request.guildId !== this.configuration.guildId)
-      throw providerError("APPLICATION_MISMATCH", "membership.fetch", false);
     const response = await this.#request(endpoint, {
       method: "GET",
       headers: {
@@ -304,6 +343,7 @@ export class NativeDiscordOAuthProvider
     operation: string,
     accessToken: OpaqueAuthenticationSecret,
     signal: AbortSignal,
+    maximumResponseBytes: number = this.configuration.maximumResponseBytes,
   ): Promise<unknown> {
     const response = await this.#request(endpoint, {
       method: "GET",
@@ -317,7 +357,7 @@ export class NativeDiscordOAuthProvider
       throw providerError("EXPIRED_OR_REVOKED_PROVIDER_TOKEN", operation, false, "4xx");
     if (response.status < 200 || response.status >= 300)
       throw statusFailure(response.status, operation);
-    return readJsonResponse(response, this.configuration.maximumResponseBytes, operation);
+    return readJsonResponse(response, maximumResponseBytes, operation);
   }
 
   async #request(endpoint: URL, init: RequestInit): Promise<Response> {

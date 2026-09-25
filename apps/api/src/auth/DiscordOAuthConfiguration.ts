@@ -16,7 +16,8 @@ export interface DiscordOAuthConfigurationInput {
   readonly clientId: string;
   readonly clientSecret: string;
   readonly redirectUri: string;
-  readonly guildId: string;
+  /** Server used when a browser has not picked one; optional in multi-server deployments. */
+  readonly defaultGuildId?: string | undefined;
   readonly requestTimeoutMs?: number;
   readonly maximumResponseBytes?: number;
   readonly pkceCapability?: DiscordOAuthPkceCapability;
@@ -34,19 +35,19 @@ export interface DiscordOAuthConfigurationDiagnostics {
   readonly requestTimeoutMs: number;
   readonly maximumResponseBytes: number;
   readonly apiVersion: number;
-  readonly guildId: string;
+  readonly defaultGuildId: string | undefined;
   readonly pkceCapability: DiscordOAuthPkceCapability;
   readonly prompt: DiscordOAuthPromptPolicy;
   readonly tokenRefreshSkewMs: number;
 }
 
-const APPROVED_SCOPES = Object.freeze(["guilds.members.read", "identify"]);
+const APPROVED_SCOPES = Object.freeze(["guilds", "guilds.members.read", "identify"]);
 const INPUT = z.object({
   environment: z.enum(["development", "test", "production"]),
   clientId: z.string().regex(/^[1-9][0-9]{16,19}$/),
   clientSecret: z.string().min(1).max(512).refine((value) => !/[\u0000-\u001f\u007f]/.test(value)),
   redirectUri: z.string().url(),
-  guildId: z.string().regex(/^[1-9][0-9]{16,19}$/),
+  defaultGuildId: z.string().regex(/^[1-9][0-9]{16,19}$/).optional(),
   requestTimeoutMs: z.number().int().min(500).max(15_000).default(5_000),
   maximumResponseBytes: z.number().int().min(1_024).max(128 * 1_024).default(32 * 1_024),
   pkceCapability: z.enum(["DISABLED_UNVERIFIED", "S256_VERIFIED"]).default("DISABLED_UNVERIFIED"),
@@ -68,8 +69,8 @@ export class DiscordOAuthConfiguration {
   public readonly clientId: string;
   /** Exact configured redirect URI. */
   public readonly redirectUri: URL;
-  /** Configured Discord guild used for membership verification. */
-  public readonly guildId: ReturnType<typeof discordGuildId>;
+  /** Default Discord guild for browsers that have not picked a server, when configured. */
+  public readonly defaultGuildId: ReturnType<typeof discordGuildId> | undefined;
   /** Bounded provider request timeout. */
   public readonly requestTimeoutMs: number;
   /** Maximum accepted provider response size. */
@@ -91,7 +92,7 @@ export class DiscordOAuthConfiguration {
     this.clientId = parsed.clientId;
     this.#clientSecret = parsed.clientSecret;
     this.redirectUri = redirectUri;
-    this.guildId = discordGuildId(parsed.guildId);
+    this.defaultGuildId = parsed.defaultGuildId === undefined ? undefined : discordGuildId(parsed.defaultGuildId);
     this.requestTimeoutMs = parsed.requestTimeoutMs;
     this.maximumResponseBytes = parsed.maximumResponseBytes;
     this.pkceCapability = parsed.pkceCapability;
@@ -121,7 +122,7 @@ export class DiscordOAuthConfiguration {
       requestTimeoutMs: this.requestTimeoutMs,
       maximumResponseBytes: this.maximumResponseBytes,
       apiVersion: this.apiVersion,
-      guildId: this.guildId,
+      defaultGuildId: this.defaultGuildId,
       pkceCapability: this.pkceCapability,
       prompt: this.prompt,
       tokenRefreshSkewMs: this.tokenRefreshSkewMs,

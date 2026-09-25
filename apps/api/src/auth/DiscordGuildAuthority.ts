@@ -14,6 +14,12 @@ export interface DiscordGuildAuthority {
 const MANAGER_BITS = DISCORD_PERMISSION.administrator | DISCORD_PERMISSION.manageGuild;
 const DEFAULT_TTL_MS = 60_000;
 
+/** Whether a Discord permission bit string includes Administrator or Manage Server. */
+export function hasDiscordManagerPermissions(permissions: string): boolean {
+  if (!/^[0-9]{1,30}$/.test(permissions)) return false;
+  return (BigInt(permissions) & MANAGER_BITS) !== 0n;
+}
+
 interface GuildFacts {
   readonly ownerId: string;
   readonly managerRoleIds: ReadonlySet<string>;

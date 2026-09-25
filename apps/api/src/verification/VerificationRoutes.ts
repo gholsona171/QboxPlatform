@@ -54,7 +54,7 @@ export function verificationApiFeature(verification: VerificationService): ApiFe
 }
 
 function registerVerificationRoutes(server: FastifyInstance, context: ApiFeatureContext, verification: VerificationService): void {
-  const { guildId, guard } = context;
+  const { guard } = context;
   const staff = (identity: ApiIdentity): VerificationStaff => ({ userId: identity.userId, displayName: identity.displayName, source: "WEB" });
   const userIdOf = (params: unknown) => parse(snowflake, Reflect.get(params as object, "userId"));
   const allowed = (request: Parameters<typeof guard>[0], permission: "verification.manage" | "verification.members") =>
@@ -64,8 +64,8 @@ function registerVerificationRoutes(server: FastifyInstance, context: ApiFeature
     reply.header("cache-control", "no-store");
     await guard(request, ["verification.manage", "verification.members"], { mutation: false });
     const [settings, stats, manage, members] = await Promise.all([
-      verification.settings(guildId),
-      verification.stats(guildId),
+      verification.settings(context.guildId),
+      verification.stats(context.guildId),
       allowed(request, "verification.manage"),
       allowed(request, "verification.members"),
     ]);
@@ -79,7 +79,7 @@ function registerVerificationRoutes(server: FastifyInstance, context: ApiFeature
     const results = query.result?.split(",").filter((result): result is VerificationResult => (VERIFICATION_RESULTS as readonly string[]).includes(result));
     return {
       data: await safe(() => verification.attempts({
-        guildId,
+        guildId: context.guildId,
         ...(results?.length ? { results } : {}),
         ...(query.userId ? { userId: query.userId } : {}),
         ...(query.search ? { search: query.search } : {}),
@@ -92,31 +92,31 @@ function registerVerificationRoutes(server: FastifyInstance, context: ApiFeature
     reply.header("cache-control", "no-store");
     await guard(request, "verification.members", { mutation: false });
     const userId = userIdOf(request.params);
-    return { data: await safe(() => verification.status(guildId, userId)) };
+    return { data: await safe(() => verification.status(context.guildId, userId)) };
   });
 
   server.post("/api/v1/verification/members/:userId/verify", async (request) => {
     const identity = await guard(request, "verification.members", { mutation: true });
     const userId = userIdOf(request.params);
     const body = parse(reasonSchema, request.body ?? {});
-    return { data: await safe(() => verification.manualVerify(guildId, userId, staff(identity), body.reason)) };
+    return { data: await safe(() => verification.manualVerify(context.guildId, userId, staff(identity), body.reason)) };
   });
 
   server.post("/api/v1/verification/members/:userId/unverify", async (request) => {
     const identity = await guard(request, "verification.members", { mutation: true });
     const userId = userIdOf(request.params);
     const body = parse(reasonSchema, request.body ?? {});
-    return { data: await safe(() => verification.unverify(guildId, userId, staff(identity), body.reason)) };
+    return { data: await safe(() => verification.unverify(context.guildId, userId, staff(identity), body.reason)) };
   });
 
   server.put("/api/v1/verification/settings", async (request) => {
     await guard(request, "verification.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => verification.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => verification.saveSettings({ ...body, guildId: context.guildId })) };
   });
 
   server.post("/api/v1/verification/panel", async (request) => {
     await guard(request, "verification.manage", { mutation: true });
-    return { data: await safe(() => verification.publishPanel(guildId)) };
+    return { data: await safe(() => verification.publishPanel(context.guildId)) };
   });
 }

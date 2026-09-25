@@ -35,13 +35,13 @@ export function giveawaysApiFeature(giveaways: GiveawayService): ApiFeature {
 }
 
 function registerGiveawayRoutes(server: FastifyInstance, context: ApiFeatureContext, giveaways: GiveawayService): void {
-  const { guildId, guard } = context;
+  const { guard } = context;
   const actor = (identity: ApiIdentity): GiveawayActor => ({ userId: identity.userId, displayName: identity.displayName });
 
   server.get("/api/v1/giveaways/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "giveaways.manage", { mutation: false });
-    const [active, ended] = await Promise.all([giveaways.list(guildId, "active", 100), giveaways.list(guildId, "ended", 100)]);
+    const [active, ended] = await Promise.all([giveaways.list(context.guildId, "active", 100), giveaways.list(context.guildId, "ended", 100)]);
     return { data: { active, ended, maxWinners: MAX_GIVEAWAY_WINNERS } };
   });
 
@@ -49,45 +49,45 @@ function registerGiveawayRoutes(server: FastifyInstance, context: ApiFeatureCont
     reply.header("cache-control", "no-store");
     await guard(request, "giveaways.manage", { mutation: false });
     const query = parse(listSchema, request.query ?? {});
-    return { data: await safe(() => giveaways.list(guildId, query.state, query.limit)) };
+    return { data: await safe(() => giveaways.list(context.guildId, query.state, query.limit)) };
   });
 
   server.get("/api/v1/giveaways/:id", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "giveaways.manage", { mutation: false });
-    return { data: await safe(() => giveaways.detail(guildId, routeParam(request, "id"))) };
+    return { data: await safe(() => giveaways.detail(context.guildId, routeParam(request, "id"))) };
   });
 
   server.post("/api/v1/giveaways", async (request) => {
     const identity = await guard(request, "giveaways.manage", { mutation: true });
     const { endsAt, ...rest } = parse(startSchema, request.body);
-    return { data: await safe(() => giveaways.start({ ...rest, guildId, ...(endsAt ? { endsAt: new Date(endsAt) } : {}) }, actor(identity))) };
+    return { data: await safe(() => giveaways.start({ ...rest, guildId: context.guildId, ...(endsAt ? { endsAt: new Date(endsAt) } : {}) }, actor(identity))) };
   });
 
   server.post("/api/v1/giveaways/:id/end", async (request) => {
     const identity = await guard(request, "giveaways.manage", { mutation: true });
-    return { data: await safe(() => giveaways.end(guildId, routeParam(request, "id"), actor(identity))) };
+    return { data: await safe(() => giveaways.end(context.guildId, routeParam(request, "id"), actor(identity))) };
   });
 
   server.post("/api/v1/giveaways/:id/reroll", async (request) => {
     await guard(request, "giveaways.manage", { mutation: true });
     const body = parse(z.strictObject({ winners: z.number().int().min(1).max(MAX_GIVEAWAY_WINNERS).optional() }), request.body ?? {});
-    return { data: await safe(() => giveaways.reroll(guildId, routeParam(request, "id"), body.winners)) };
+    return { data: await safe(() => giveaways.reroll(context.guildId, routeParam(request, "id"), body.winners)) };
   });
 
   server.post("/api/v1/giveaways/:id/cancel", async (request) => {
     const identity = await guard(request, "giveaways.manage", { mutation: true });
-    return { data: await safe(() => giveaways.cancel(guildId, routeParam(request, "id"), actor(identity))) };
+    return { data: await safe(() => giveaways.cancel(context.guildId, routeParam(request, "id"), actor(identity))) };
   });
 
   server.post("/api/v1/giveaways/:id/pause", async (request) => {
     await guard(request, "giveaways.manage", { mutation: true });
-    return { data: await safe(() => giveaways.pause(guildId, routeParam(request, "id"))) };
+    return { data: await safe(() => giveaways.pause(context.guildId, routeParam(request, "id"))) };
   });
 
   server.post("/api/v1/giveaways/:id/resume", async (request) => {
     await guard(request, "giveaways.manage", { mutation: true });
-    return { data: await safe(() => giveaways.resume(guildId, routeParam(request, "id"))) };
+    return { data: await safe(() => giveaways.resume(context.guildId, routeParam(request, "id"))) };
   });
 }
 

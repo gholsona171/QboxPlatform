@@ -15,6 +15,8 @@ import { registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenti
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
 import { createApiServer } from "../src/createApiServer.js";
 import { registerPortalStaticRoutes } from "../src/portal/PortalStaticRoutes.js";
+import type { ApiFeature } from "../src/features/ApiFeature.js";
+import type { GuildListing } from "../src/auth/GuildDirectory.js";
 import type { ApiLogger } from "../src/logging/ApiLogger.js";
 
 const logger: ApiLogger = {
@@ -22,6 +24,24 @@ const logger: ApiLogger = {
   info: () => undefined,
   warn: () => undefined,
   error: () => undefined,
+};
+
+const DEFAULT_GUILD = "1257928923048837201";
+const OTHER_GUILD = "1300000000000000002";
+const session = { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" };
+const csrf = {
+  ...session,
+  cookie: `${session.cookie}; qbox_csrf=csrf-secret-value-000000000000000000000`,
+  origin: "http://127.0.0.1:3000",
+  "x-csrf-token": "csrf-secret-value-000000000000000000000",
+  "content-type": "application/json",
+};
+const sharedGuilds: GuildListing = {
+  guilds: [
+    { id: OTHER_GUILD, name: "Other Server", icon: null, owner: false, canManage: true },
+    { id: DEFAULT_GUILD, name: "Qbox HQ", icon: "icon", owner: true, canManage: true },
+  ],
+  reauthRequired: false,
 };
 
 describe("browser authentication routes", () => {
@@ -56,16 +76,152 @@ describe("browser authentication routes", () => {
 
   it("returns safe /me data for a verified browser session", async () => {
     const server = serverWithRoutes();
-    const response = await server.inject({
-      method: "GET",
-      url: "/api/v1/me",
-      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
-    });
+    const response = await server.inject({ method: "GET", url: "/api/v1/me", headers: session });
     expect(response.statusCode).toBe(200);
     const body = response.json();
     expect(body.account.discordUserId).toBe("804859666655739996");
     expect(body.membership.roleIds).toEqual(["1262656532902842423"]);
+    expect(body.membership.guildId).toBe(DEFAULT_GUILD);
+    expect(body.guild).toEqual({ id: DEFAULT_GUILD, name: "Qbox HQ", icon: "icon", canManage: true });
+    expect(body.guilds).toEqual(sharedGuilds.guilds);
+    expect(body.inviteUrl).toBe("https://discord.com/oauth2/authorize?client_id=1432071570645455029&scope=bot%20applications.commands&permissions=8");
+    expect(body.reauthRequired).toBe(false);
     expect(JSON.stringify(body)).not.toContain("session-secret-value");
+    await server.close();
+  });
+
+  it("reports no current server and asks for a new sign-in when the stored grant is too old", async () => {
+    const server = serverWithRoutes({ defaultGuild: false, listing: { guilds: [], reauthRequired: true } });
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers: session });
+    expect(me.statusCode).toBe(200);
+    expect(me.json()).toMatchObject({ guild: null, guilds: [], reauthRequired: true, membership: { guildId: null, status: "UNKNOWN" } });
+    expect(me.json().permissions.platformAdmin.reason).toBe("missing-guild-context");
+    await server.close();
+  });
+
+  it("answers GUILD_REQUIRED when no server is selected and none is configured", async () => {
+    const server = serverWithRoutes({ defaultGuild: false });
+    const response = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(response.statusCode).toBe(409);
+    expect(response.headers["content-type"]).toContain("application/problem+json");
+    expect(response.json()).toMatchObject({
+      type: "https://qbox.invalid/problems/guild-required",
+      title: "Server selection required",
+      status: 409,
+      code: "GUILD_REQUIRED",
+    });
+    const feature = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
+    expect(feature.statusCode).toBe(409);
+    expect(feature.json().code).toBe("GUILD_REQUIRED");
+    await server.close();
+  });
+
+  it("lists shared servers and re-reads Discord on refresh", async () => {
+    const refreshes: boolean[] = [];
+    const server = serverWithRoutes({ onList: (refresh) => refreshes.push(refresh) });
+    const cached = await server.inject({ method: "GET", url: "/api/v1/guilds", headers: session });
+    expect(cached.statusCode).toBe(200);
+    expect(cached.json()).toEqual({ data: sharedGuilds.guilds, reauthRequired: false });
+    const fresh = await server.inject({ method: "GET", url: "/api/v1/guilds?refresh=1", headers: session });
+    expect(fresh.statusCode).toBe(200);
+    expect(refreshes).toContain(true);
+    const anonymous = await server.inject({ method: "GET", url: "/api/v1/guilds", headers: { host: "127.0.0.1:3000" } });
+    expect(anonymous.statusCode).toBe(401);
+    await server.close();
+  });
+
+  it("selects a shared server into an httpOnly cookie after verifying membership there", async () => {
+    const verified: string[] = [];
+    const server = serverWithRoutes({ onVerify: (guildId) => verified.push(guildId) });
+    const selected = await server.inject({ method: "POST", url: "/api/v1/guilds/select", headers: csrf, payload: { guildId: OTHER_GUILD } });
+    expect(selected.statusCode).toBe(200);
+    expect(selected.json().data).toEqual(sharedGuilds.guilds[0]);
+    expect(verified).toEqual([OTHER_GUILD]);
+    const cookie = String(selected.headers["set-cookie"]);
+    expect(cookie).toContain(`qbox_guild=${OTHER_GUILD}`);
+    expect(cookie).toContain("HttpOnly");
+    expect(cookie).toContain("SameSite=Lax");
+    expect(cookie).toContain("Path=/");
+    expect(cookie).toContain("Max-Age=2592000");
+    await server.close();
+  });
+
+  it("refuses to select a server the member and the bot do not share, and requires CSRF", async () => {
+    const server = serverWithRoutes();
+    const outside = await server.inject({ method: "POST", url: "/api/v1/guilds/select", headers: csrf, payload: { guildId: "1300000000000000099" } });
+    expect(outside.statusCode).toBe(403);
+    const malformed = await server.inject({ method: "POST", url: "/api/v1/guilds/select", headers: csrf, payload: { guildId: "nope" } });
+    expect(malformed.statusCode).toBe(400);
+    const noCsrf = await server.inject({
+      method: "POST",
+      url: "/api/v1/guilds/select",
+      headers: { ...session, "content-type": "application/json" },
+      payload: { guildId: OTHER_GUILD },
+    });
+    expect(noCsrf.statusCode).toBe(401);
+    await server.close();
+  });
+
+  it("clears the selected server", async () => {
+    const server = serverWithRoutes();
+    const cleared = await server.inject({ method: "POST", url: "/api/v1/guilds/clear", headers: { ...csrf, cookie: `${csrf.cookie}; qbox_guild=${OTHER_GUILD}` }, payload: {} });
+    expect(cleared.statusCode).toBe(200);
+    expect(cleared.json()).toEqual({ success: true });
+    expect(String(cleared.headers["set-cookie"])).toMatch(/qbox_guild=;.*(Max-Age=0|Expires=)/u);
+    await server.close();
+  });
+
+  it("applies the cookie's server to every route, falling back to the default", async () => {
+    const listed: string[] = [];
+    const server = serverWithRoutes({ onListByGuild: (guildId) => listed.push(guildId) });
+    const chosen = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: { ...session, cookie: `${session.cookie}; qbox_guild=${OTHER_GUILD}` } });
+    expect(chosen.statusCode).toBe(200);
+    const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: { ...session, cookie: `${session.cookie}; qbox_guild=${OTHER_GUILD}` } });
+    expect(echoed.json()).toEqual({ guildId: OTHER_GUILD });
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers: { ...session, cookie: `${session.cookie}; qbox_guild=${OTHER_GUILD}` } });
+    expect(me.json().guild).toMatchObject({ id: OTHER_GUILD, name: "Other Server" });
+    const fallback = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(fallback.statusCode).toBe(200);
+    expect(listed).toEqual([OTHER_GUILD, DEFAULT_GUILD]);
+    await server.close();
+  });
+
+  it("ignores and clears a cookie for a server the member no longer shares", async () => {
+    const listed: string[] = [];
+    const server = serverWithRoutes({ onListByGuild: (guildId) => listed.push(guildId) });
+    const response = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: { ...session, cookie: `${session.cookie}; qbox_guild=1300000000000000099` } });
+    expect(response.statusCode).toBe(200);
+    expect(listed).toEqual([DEFAULT_GUILD]);
+    expect(String(response.headers["set-cookie"])).toContain("qbox_guild=;");
+    const none = serverWithRoutes({ defaultGuild: false });
+    const rejected = await none.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: { ...session, cookie: `${session.cookie}; qbox_guild=1300000000000000099` } });
+    expect(rejected.statusCode).toBe(409);
+    await server.close();
+    await none.close();
+  });
+
+  it("keeps the cookie's server when Discord is down but the stored membership is present", async () => {
+    const server = serverWithRoutes({
+      listing: () => {
+        throw Object.freeze({ code: "PROVIDER_UNAVAILABLE", retryable: true });
+      },
+    });
+    const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: { ...session, cookie: `${session.cookie}; qbox_guild=${OTHER_GUILD}` } });
+    expect(echoed.statusCode).toBe(200);
+    expect(echoed.json()).toEqual({ guildId: OTHER_GUILD });
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers: session });
+    expect(me.statusCode).toBe(503);
+    await server.close();
+  });
+
+  it("keeps concurrent requests on their own servers", async () => {
+    const server = serverWithRoutes();
+    const [slow, fast] = await Promise.all([
+      server.inject({ method: "GET", url: "/api/v1/echo-guild?delay=40", headers: { ...session, cookie: `${session.cookie}; qbox_guild=${OTHER_GUILD}` } }),
+      server.inject({ method: "GET", url: "/api/v1/echo-guild?delay=5", headers: session }),
+    ]);
+    expect(slow.json()).toEqual({ guildId: OTHER_GUILD });
+    expect(fast.json()).toEqual({ guildId: DEFAULT_GUILD });
     await server.close();
   });
 
@@ -147,8 +303,34 @@ describe("browser authentication routes", () => {
   });
 });
 
-function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean; readonly portalDirectory?: string; readonly discordManager?: boolean } = {}) {
-  const auth = authenticationConfiguration();
+interface ServerOptions {
+  readonly adminAllowed?: boolean;
+  readonly roleMenuAllowed?: boolean;
+  readonly portalDirectory?: string;
+  readonly discordManager?: boolean;
+  /** Configure DISCORD_GUILD_ID (default true). */
+  readonly defaultGuild?: boolean;
+  readonly listing?: GuildListing | (() => GuildListing);
+  readonly onList?: (refresh: boolean) => void;
+  readonly onVerify?: (guildId: string) => void;
+  readonly onListByGuild?: (guildId: string) => void;
+}
+
+/** Test feature that reports the request's current server after an optional delay. */
+const echoGuildFeature: ApiFeature = {
+  name: "echo-guild",
+  register: (server, context) => {
+    server.get("/api/v1/echo-guild", async (request) => {
+      await context.member(request, { mutation: false });
+      const delay = Number(Reflect.get(request.query as object, "delay") ?? 0);
+      if (delay > 0) await new Promise((resolve) => setTimeout(resolve, delay));
+      return { guildId: context.guildId };
+    });
+  },
+};
+
+function serverWithRoutes(options: ServerOptions = {}) {
+  const auth = authenticationConfiguration(options.defaultGuild !== false);
   return createApiServer({
     configuration: ApiConfiguration.from({
       environment: "test",
@@ -163,6 +345,15 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
         ...(options.discordManager === undefined ? {} : { guildAuthority: { isManager: async () => options.discordManager === true } }),
         configuration: auth,
         provider: fakeProvider(),
+        directory: {
+          list: async (_identity, _context, _signal, listOptions) => {
+            options.onList?.(listOptions?.refresh === true);
+            const listing = options.listing ?? sharedGuilds;
+            return typeof listing === "function" ? listing() : listing;
+          },
+          forget: () => undefined,
+        },
+        features: [echoGuildFeature],
         oauthTransactions: {
           createTransaction: async () => ({
             transactionId: "11111111-1111-4111-8111-111111111111",
@@ -211,7 +402,10 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
           revokeCurrentSession: async () => undefined,
         } as never,
         memberships: {
-          verifyCurrentMembership: async () => membership(),
+          verifyCurrentMembership: async (input: { readonly discordGuildId: string }) => {
+            options.onVerify?.(input.discordGuildId);
+            return membership();
+          },
         } as never,
         guilds: {
           findByDiscordId: async () => ({ id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
@@ -239,7 +433,10 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
           } as never),
         },
         roleMenus: {
-          listByGuild: async () => [{ id: "menu-1", title: "Community Roles", status: "PUBLISHED" }],
+          listByGuild: async (guildId: string) => {
+            options.onListByGuild?.(guildId);
+            return [{ id: "menu-1", title: "Community Roles", status: "PUBLISHED" }];
+          },
         } as never,
         logger,
       });
@@ -247,7 +444,7 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
   });
 }
 
-function authenticationConfiguration() {
+function authenticationConfiguration(withDefaultGuild = true) {
   const key = Buffer.alloc(32, 7).toString("base64url");
   return ApiAuthenticationConfiguration.from({
     environment: "test",
@@ -255,7 +452,7 @@ function authenticationConfiguration() {
     discordClientId: "1432071570645455029",
     discordClientSecret: "test-client-secret",
     discordRedirectUri: "http://127.0.0.1:3000/auth/discord/callback",
-    discordGuildId: "1257928923048837201",
+    ...(withDefaultGuild ? { discordGuildId: DEFAULT_GUILD } : {}),
     sessionHmacKey: key,
     csrfHmacKey: key,
     metadataHmacKey: key,
@@ -270,7 +467,7 @@ function fakeProvider() {
     exchangeCode: async () => ({
       accessToken: opaqueAuthenticationSecret("access-secret-value-0000000000000000000"),
       refreshToken: opaqueAuthenticationSecret("refresh-secret-value-000000000000000000"),
-      scopes: ["guilds.members.read", "identify"],
+      scopes: ["guilds", "guilds.members.read", "identify"],
       expiresAt: new Date("2026-08-01T01:00:00.000Z"),
     }),
     refreshToken: async () => {
@@ -279,8 +476,12 @@ function fakeProvider() {
     revokeCredential: async () => ({ attempted: true, succeeded: true }),
     inspectAuthorization: async () => ({
       applicationId: "1432071570645455029",
-      scopes: ["guilds.members.read", "identify"],
+      scopes: ["guilds", "guilds.members.read", "identify"],
     }),
+    fetchGuilds: async () => [
+      { id: DEFAULT_GUILD, name: "Qbox HQ", icon: "icon", owner: true, permissions: "8" },
+      { id: OTHER_GUILD, name: "Other Server", icon: null, owner: false, permissions: "32" },
+    ],
     fetchIdentity: async () => ({
       userId: "804859666655739996",
       username: "qbox",

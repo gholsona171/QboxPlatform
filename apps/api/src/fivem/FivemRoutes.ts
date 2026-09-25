@@ -27,13 +27,13 @@ export function fivemApiFeature(fivem: FivemService): ApiFeature {
 }
 
 function registerFivemRoutes(server: FastifyInstance, context: ApiFeatureContext, fivem: FivemService): void {
-  const { guildId, guard, member } = context;
+  const { guard, member } = context;
 
   server.get("/api/v1/fivem/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await member(request, { mutation: false });
     const manage = await guard(request, "fivem.manage", { mutation: false }).then(() => true, () => false);
-    const { settings, state } = await fivem.config(guildId);
+    const { settings, state } = await fivem.config(context.guildId);
     return {
       data: {
         configured: settings.serverAddress !== undefined,
@@ -51,20 +51,20 @@ function registerFivemRoutes(server: FastifyInstance, context: ApiFeatureContext
   server.get("/api/v1/fivem/status", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await member(request, { mutation: false });
-    return { data: await safe(() => fivem.status(guildId)) };
+    return { data: await safe(() => fivem.status(context.guildId)) };
   });
 
   server.get("/api/v1/fivem/history", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await member(request, { mutation: false });
     const query = parse(z.object({ range: z.enum(["24h", "7d"]).optional() }), request.query ?? {});
-    return { data: await safe(() => fivem.history(guildId, query.range ?? "24h")) };
+    return { data: await safe(() => fivem.history(context.guildId, query.range ?? "24h")) };
   });
 
   server.put("/api/v1/fivem/settings", async (request) => {
     await guard(request, "fivem.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => fivem.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => fivem.saveSettings({ ...body, guildId: context.guildId })) };
   });
 
   server.post("/api/v1/fivem/test", async (request) => {

@@ -25,7 +25,10 @@ Not implemented:
 Approved scopes:
 
 - `identify`
+- `guilds` (the servers the user is in, for the portal's server picker)
 - `guilds.members.read`
+
+Grants stored before `guilds` was added fail the exact-scope check on refresh; the API reports `reauthRequired: true` from `/api/v1/me` instead of failing, and the member signs in again. See `docs/MultiServer.md`.
 
 The implementation deliberately does not request `email`, `connections`, `guilds.join`, `bot`, or `applications.commands`.
 
