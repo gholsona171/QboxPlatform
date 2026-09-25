@@ -1,6 +1,6 @@
 # Guildhall (code name Qbox)
 
-Guildhall runs your Discord community from one place. Invite the bot, sign in to the portal with Discord, and manage tickets, moderation, verification, staff, levels, giveaways and more for any server you run. It works for any number of Discord servers at once, the way MEE6 or Dyno do. If you run a FiveM server, you can connect it as an optional integration.
+Guildhall runs your Discord community from one place. Invite the bot, sign in to the portal with Discord, and manage tickets, moderation, verification, staff, levels, giveaways and more for any server you run. It works for any number of Discord servers at once, the way MEE6 or Dyno do.
 
 "Qbox" is the code name. It stays in package names (`@qbox/*`), environment variables (`QBOX_*`), service names (`qbox-api`, `qbox-bot`), and the repository name. The name people see comes from `packages/shared/src/brand.ts` and `apps/web/public/js/brand.js`.
 
@@ -12,7 +12,7 @@ Everything below works from both the web portal and Discord:
 - **Safety:** moderation (cases, automod, automatic punishments), verification
 - **Team:** staff roster, ranks, strikes, leave, and shifts
 - **Community:** levels and rewards, giveaways, polls, birthdays, voice rooms, scheduled messages
-- **Server:** Server Builder (plans and creates roles and channels), and the optional FiveM integration (status, players, alerts, and restart warnings)
+- **Server:** Server Builder (plans and creates roles and channels), and game server integrations (FiveM today: status, players, alerts, and restart warnings)
 - **Discord bot basics:** role management, role menus, welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard
 
 Each feature has its own guide in `docs/` (for example `docs/Tickets.md`). `docs/DiscordFeatureParity.md` lists every command, route, and permission. To add a feature, follow `docs/FeatureDevelopment.md`.

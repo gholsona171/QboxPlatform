@@ -19,13 +19,13 @@ export async function renderOverviewPage(container) {
 
   if (!signedIn()) {
     container.innerHTML = `${signInCard(loginUrl(), staticHosting(), liveUrl())}
-      <section class="card"><h2>What you can manage</h2><p class="microcopy">${BRAND.tagline} Connect a FiveM server if you run one.</p><div class="feature-grid">${featureCards}</div></section>`;
+      <section class="card"><h2>What you can manage</h2><p class="microcopy">${BRAND.tagline}</p><div class="feature-grid">${featureCards}</div></section>`;
     return;
   }
 
   container.innerHTML = `
     <section class="grid cols-4" id="overviewMetrics">${metrics()}</section>
-    <section class="card"><h2>Features</h2><p class="microcopy">${BRAND.tagline} Connect a FiveM server if you run one.</p><div class="feature-grid">${featureCards}</div></section>`;
+    <section class="card"><h2>Features</h2><p class="microcopy">${BRAND.tagline}</p><div class="feature-grid">${featureCards}</div></section>`;
 
   try {
     const { stats } = (await ticketsOverview()).data;
