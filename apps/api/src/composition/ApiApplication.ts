@@ -205,6 +205,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         community,
         roles,
         features,
+        serveDashboard: input.portalDirectory === undefined,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       });

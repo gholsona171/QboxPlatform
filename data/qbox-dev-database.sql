@@ -56,6 +56,7 @@ ALTER TABLE IF EXISTS ONLY "public"."discord_guild_memberships" DROP CONSTRAINT 
 ALTER TABLE IF EXISTS ONLY "public"."discord_guild_membership_roles" DROP CONSTRAINT IF EXISTS "discord_guild_membership_roles_membership_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."custom_commands" DROP CONSTRAINT IF EXISTS "custom_commands_guild_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."community_counters" DROP CONSTRAINT IF EXISTS "community_counters_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."builder_run_items" DROP CONSTRAINT IF EXISTS "builder_run_items_run_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_rotated_from_session_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_platform_user_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_login_identity_id_fkey";
@@ -189,6 +190,9 @@ DROP INDEX IF EXISTS "public"."discord_guild_memberships_guild_status_idx";
 DROP INDEX IF EXISTS "public"."discord_guild_membership_roles_role_idx";
 DROP INDEX IF EXISTS "public"."custom_commands_guild_name_key";
 DROP INDEX IF EXISTS "public"."community_counters_guild_enabled_idx";
+DROP INDEX IF EXISTS "public"."builder_runs_status_idx";
+DROP INDEX IF EXISTS "public"."builder_runs_guild_created_idx";
+DROP INDEX IF EXISTS "public"."builder_run_items_run_sequence_idx";
 DROP INDEX IF EXISTS "public"."browser_sessions_user_status_idx";
 DROP INDEX IF EXISTS "public"."browser_sessions_token_digest_key";
 DROP INDEX IF EXISTS "public"."browser_sessions_rotated_from_key";
@@ -273,6 +277,9 @@ ALTER TABLE IF EXISTS ONLY "public"."discord_guild_memberships" DROP CONSTRAINT 
 ALTER TABLE IF EXISTS ONLY "public"."discord_guild_membership_roles" DROP CONSTRAINT IF EXISTS "discord_guild_membership_roles_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."custom_commands" DROP CONSTRAINT IF EXISTS "custom_commands_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."community_counters" DROP CONSTRAINT IF EXISTS "community_counters_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."builder_runs" DROP CONSTRAINT IF EXISTS "builder_runs_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."builder_run_items" DROP CONSTRAINT IF EXISTS "builder_run_items_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."builder_drafts" DROP CONSTRAINT IF EXISTS "builder_drafts_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."birthdays" DROP CONSTRAINT IF EXISTS "birthdays_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."birthday_settings" DROP CONSTRAINT IF EXISTS "birthday_settings_pkey";
@@ -286,6 +293,7 @@ ALTER TABLE IF EXISTS ONLY "public"."application_notes" DROP CONSTRAINT IF EXIST
 ALTER TABLE IF EXISTS ONLY "public"."application_forms" DROP CONSTRAINT IF EXISTS "application_forms_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."application_counters" DROP CONSTRAINT IF EXISTS "application_counters_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."_prisma_migrations" DROP CONSTRAINT IF EXISTS "_prisma_migrations_pkey";
+ALTER TABLE IF EXISTS "public"."builder_run_items" ALTER COLUMN "sequence" DROP DEFAULT;
 DROP TABLE IF EXISTS "public"."welcome_goodbye_configs";
 DROP TABLE IF EXISTS "public"."voice_settings";
 DROP TABLE IF EXISTS "public"."voice_rooms";
@@ -346,6 +354,10 @@ DROP TABLE IF EXISTS "public"."discord_guild_memberships";
 DROP TABLE IF EXISTS "public"."discord_guild_membership_roles";
 DROP TABLE IF EXISTS "public"."custom_commands";
 DROP TABLE IF EXISTS "public"."community_counters";
+DROP TABLE IF EXISTS "public"."builder_runs";
+DROP SEQUENCE IF EXISTS "public"."builder_run_items_sequence_seq";
+DROP TABLE IF EXISTS "public"."builder_run_items";
+DROP TABLE IF EXISTS "public"."builder_drafts";
 DROP TABLE IF EXISTS "public"."browser_sessions";
 DROP TABLE IF EXISTS "public"."birthdays";
 DROP TABLE IF EXISTS "public"."birthday_settings";
@@ -419,6 +431,10 @@ DROP TYPE IF EXISTS "public"."DiscordGuildMembershipSource";
 DROP TYPE IF EXISTS "public"."CustomCommandTriggerMode";
 DROP TYPE IF EXISTS "public"."CommunityCounterType";
 DROP TYPE IF EXISTS "public"."CommunityContentMode";
+DROP TYPE IF EXISTS "public"."BuilderRunStatus";
+DROP TYPE IF EXISTS "public"."BuilderRunMode";
+DROP TYPE IF EXISTS "public"."BuilderItemStatus";
+DROP TYPE IF EXISTS "public"."BuilderItemKind";
 DROP TYPE IF EXISTS "public"."BrowserSessionStatus";
 DROP TYPE IF EXISTS "public"."BrowserSessionRevocationReason";
 DROP TYPE IF EXISTS "public"."AuthenticationProvider";
@@ -590,6 +606,54 @@ CREATE TYPE "public"."BrowserSessionStatus" AS ENUM (
     'revoked',
     'expired',
     'rotated'
+);
+
+
+--
+-- Name: BuilderItemKind; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."BuilderItemKind" AS ENUM (
+    'role',
+    'category',
+    'channel',
+    'link'
+);
+
+
+--
+-- Name: BuilderItemStatus; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."BuilderItemStatus" AS ENUM (
+    'created',
+    'skipped',
+    'failed',
+    'deleted'
+);
+
+
+--
+-- Name: BuilderRunMode; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."BuilderRunMode" AS ENUM (
+    'add',
+    'fresh'
+);
+
+
+--
+-- Name: BuilderRunStatus; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."BuilderRunStatus" AS ENUM (
+    'queued',
+    'running',
+    'succeeded',
+    'failed',
+    'partial',
+    'undone'
 );
 
 
@@ -1693,6 +1757,87 @@ CREATE TABLE "public"."browser_sessions" (
     CONSTRAINT "browser_sessions_revocation_state_check" CHECK (((("status" = 'active'::"public"."BrowserSessionStatus") AND ("revoked_at" IS NULL) AND ("revocation_reason" IS NULL)) OR (("status" <> 'active'::"public"."BrowserSessionStatus") AND ("revoked_at" IS NOT NULL) AND ("revoked_at" >= "created_at") AND ("revocation_reason" IS NOT NULL)))),
     CONSTRAINT "browser_sessions_rotation_self_check" CHECK ((("rotated_from_session_id" IS NULL) OR ("rotated_from_session_id" <> "id"))),
     CONSTRAINT "browser_sessions_terminal_reason_check" CHECK (((("status" <> 'rotated'::"public"."BrowserSessionStatus") OR ("revocation_reason" = 'rotated'::"public"."BrowserSessionRevocationReason")) AND (("status" <> 'expired'::"public"."BrowserSessionStatus") OR ("revocation_reason" = 'expired'::"public"."BrowserSessionRevocationReason"))))
+);
+
+
+--
+-- Name: builder_drafts; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."builder_drafts" (
+    "guild_id" "text" NOT NULL,
+    "answers" "jsonb" NOT NULL,
+    "blueprint" "jsonb" NOT NULL,
+    "updated_by_id" "text",
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: builder_run_items; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."builder_run_items" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "run_id" "uuid" NOT NULL,
+    "sequence" integer NOT NULL,
+    "kind" "public"."BuilderItemKind" NOT NULL,
+    "key" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "discord_id" "text",
+    "status" "public"."BuilderItemStatus" NOT NULL,
+    "error" "text",
+    "note" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: builder_run_items_sequence_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE "public"."builder_run_items_sequence_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: builder_run_items_sequence_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE "public"."builder_run_items_sequence_seq" OWNED BY "public"."builder_run_items"."sequence";
+
+
+--
+-- Name: builder_runs; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."builder_runs" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "status" "public"."BuilderRunStatus" DEFAULT 'queued'::"public"."BuilderRunStatus" NOT NULL,
+    "mode" "public"."BuilderRunMode" NOT NULL,
+    "links" "text"[],
+    "planned" integer DEFAULT 0 NOT NULL,
+    "done" integer DEFAULT 0 NOT NULL,
+    "skipped" integer DEFAULT 0 NOT NULL,
+    "failed" integer DEFAULT 0 NOT NULL,
+    "started_by_id" "text" NOT NULL,
+    "started_by_name" "text" NOT NULL,
+    "warnings" "text"[],
+    "error" "text",
+    "started_at" timestamp(3) with time zone,
+    "finished_at" timestamp(3) with time zone,
+    "undone_at" timestamp(3) with time zone,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
 );
 
 
@@ -3015,6 +3160,13 @@ CREATE TABLE "public"."welcome_goodbye_configs" (
 
 
 --
+-- Name: builder_run_items sequence; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_run_items" ALTER COLUMN "sequence" SET DEFAULT "nextval"('"public"."builder_run_items_sequence_seq"'::"regclass");
+
+
+--
 -- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3044,6 +3196,7 @@ f91c97f0-865b-4829-b57c-69f4e96365d0	455372482d8b81715b4ea5c0d609fff873a84dbbed3
 9fe8cf79-532f-4ca5-b62b-c4952a1c283e	00f4cce54802da9352ef607578e84450fd476d6397b852ffa1d694bb602c9f52	2026-09-25 07:42:04.658922+00	20260925165000_birthdays	\N	\N	2026-09-25 07:42:04.647941+00	1
 1e804714-dc58-43a6-8d41-c4a7c187986c	3eba4a12e252d7ffd258c4b79f13a9fcb5575421c1c589b87ed4312883a44fd0	2026-09-25 07:42:04.71291+00	20260925169000_knowledge_base	\N	\N	2026-09-25 07:42:04.698097+00	1
 51247960-fd61-4055-aa9f-95e96be6c45f	307a135d5b688fd524951a4f5541f9fee6d8a4ee929a1f1890aa7241ac8cae63	2026-09-25 07:42:04.722688+00	20260925170000_fivem	\N	\N	2026-09-25 07:42:04.713943+00	1
+41dc8833-4765-450f-9552-198e68947c00	9e39f3479ce16199453aa68b3a54bd306959b87b5bc2b3333ec48767db69ff91	2026-09-25 20:10:28.93473+00	20260925180000_server_builder	\N	\N	2026-09-25 20:10:28.905477+00	1
 \.
 
 
@@ -3100,6 +3253,7 @@ COPY "public"."applications" ("id", "guild_id", "number", "form_id", "form_name"
 --
 
 COPY "public"."authentication_audit_events" ("id", "action", "outcome", "reason_code", "request_id", "correlation_id", "actor_type", "actor_platform_user_id", "actor_service_identity_id", "target_platform_user_id", "target_external_identity_id", "target_browser_session_id", "target_oauth_transaction_id", "target_oauth_credential_id", "target_guild_membership_id", "provider", "purpose", "metadata", "ip_hmac", "user_agent_hmac", "device_hmac", "metadata_key_version", "occurred_at", "created_at") FROM stdin;
+08e63f51-3813-4ce5-b1b5-2533ac6048cf	login-start	success	requested	2e7e44c5-1d3e-4459-8843-963f75a3efef	4383e257-a9ce-43f0-9541-911ae217d765	\N	\N	\N	\N	\N	\N	ed5cd573-44dd-4753-9f98-0465355005f2	\N	\N	discord	login	{"route": "/auth/discord/start"}	\N	\N	\N	\N	2026-09-25 20:10:08.855+00	2026-09-25 20:10:08.855+00
 \.
 
 
@@ -3132,6 +3286,30 @@ COPY "public"."birthday_settings" ("guild_id", "enabled", "channel_id", "message
 --
 
 COPY "public"."birthdays" ("id", "guild_id", "user_id", "display_name", "month", "day", "year", "show_age", "time_zone", "last_announced_year", "granted_role_id", "role_remove_at", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: builder_drafts; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."builder_drafts" ("guild_id", "answers", "blueprint", "updated_by_id", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: builder_run_items; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."builder_run_items" ("id", "run_id", "sequence", "kind", "key", "name", "discord_id", "status", "error", "note", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: builder_runs; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."builder_runs" ("id", "guild_id", "status", "mode", "links", "planned", "done", "skipped", "failed", "started_by_id", "started_by_name", "warnings", "error", "started_at", "finished_at", "undone_at", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -3316,6 +3494,7 @@ COPY "public"."permission_audit_events" ("id", "action", "actor_type", "actor_pr
 --
 
 COPY "public"."permission_catalog_state" ("id", "version", "checksum", "synced_at", "created_at", "updated_at") FROM stdin;
+compiled-permission-catalog	1.0.0	sha256:25ed86a3d782176b251cc8ac3b54cf507ca9ba245cb7d6ef3a7be6d296cb0613	2026-09-25 20:09:51.763+00	2026-09-25 20:08:20.478+00	2026-09-25 20:09:51.838+00
 \.
 
 
@@ -3324,6 +3503,46 @@ COPY "public"."permission_catalog_state" ("id", "version", "checksum", "synced_a
 --
 
 COPY "public"."permission_definitions" ("id", "key", "description", "category", "enabled", "disabled_at", "created_at", "updated_at") FROM stdin;
+0ca43aaf-ddb0-4b85-b6d1-d90542443de2	platform.owner	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+f62440bd-9804-417b-acd1-e97978297873	platform.admin	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+acfa6b80-082d-45c6-a003-bae74221834b	moderation.warn	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+04e01126-8b82-4153-b091-d4121c268603	moderation.kick	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+4526432f-49b0-4896-9ec1-6206b8391b16	moderation.ban	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+08579e2b-ca2c-48ee-8ac5-41976b5aea44	moderation.timeout	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+cba84937-6b18-40c0-9035-c2bd13d3476d	moderation.messages	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+d5e6f128-dac6-4edb-9dab-6949a75cfae0	moderation.view	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+5a700cdc-b3b3-4f0c-adc9-6f2538e81e5b	moderation.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+f50c6195-b136-49ff-b376-aeaaddbf9a50	tickets.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+dcd21558-9656-473b-8ce5-639bab7f2425	tickets.handle	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+9dc50695-b62b-4b5a-ad4e-ff6309ce534a	applications.review	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+a04f6a5d-7021-4b17-8262-67ff5b899171	applications.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+f43c3a88-5eb0-43f4-8ca7-8de9e2071d99	staff.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+963edeed-1d2c-4077-a478-cd0718d2417e	staff.view	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+f2b52c15-675a-424f-8f39-4bf1a966ae53	staff.shifts	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+db08deda-19e4-4680-bef0-f62adf46b48f	knowledge.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+1643ad9f-a281-4b1d-9daf-62c0707b4147	fivem.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+34c9b7eb-241d-4813-a310-980529fc3f95	discord.roles.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+13311220-6dd3-41d6-bf85-01fbbd32778b	discord.roles.administrator	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+6d94ff93-8db9-4177-9551-4c29233d45fd	discord.role-menus.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+6615d20a-466a-4a7c-bec9-a5fb3b4936bd	discord.welcome.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+918f703c-d3c2-46b3-9ea0-2034691fb693	discord.autoroles.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+d02889ca-096c-4d68-902b-017d30fcdea1	discord.rules.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+0aafd8b8-f218-44e3-9865-5b24182c4547	discord.counters.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+693f09d9-9b8c-40b9-b3ff-8c177eeea9cf	discord.logs.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+569ed55e-9d2b-4a68-8a93-d70525f3c58a	discord.embeds.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+8b0695c9-3082-4b7b-b32b-46c07167673d	discord.custom-commands.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+d789a9b7-8bd8-4e32-a4d4-689347bf9939	discord.suggestions.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+7eb74a9e-d899-4c3c-9764-bb95574697c1	discord.starboard.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+ffc685e0-ef72-4250-aa80-47d640a16c93	verification.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+b39273f0-2e2a-4e14-89d1-1bf99b8c1e94	verification.members	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+a740d63e-7ac4-498f-bdc1-6dd09a1568a9	polls.create	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+d663a0ea-5043-494f-9b7d-a65869f03d11	polls.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+a312d253-ec94-4505-8aa0-23d78ff314be	giveaways.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+6e8f45f0-64de-4ad1-b1f1-095f0ef889b3	birthdays.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+7b6f76b9-37a0-4ccc-8ca8-4ce24a40616d	scheduled.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+02f7c17d-26e3-49e3-855a-72f263364d77	levels.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+8c7751f0-d3ea-4e83-8486-8994c3be0ffa	voice.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
+3c62d0e3-16d9-416f-b74c-a2bd198bdfbd	builder.manage	\N	\N	t	\N	2026-09-25 20:08:20.455+00	2026-09-25 20:08:20.455+00
 \.
 
 
@@ -3600,6 +3819,13 @@ COPY "public"."welcome_goodbye_configs" ("id", "guild_id", "kind", "enabled", "c
 
 
 --
+-- Name: builder_run_items_sequence_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('"public"."builder_run_items_sequence_seq"', 1, false);
+
+
+--
 -- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -3701,6 +3927,30 @@ ALTER TABLE ONLY "public"."birthdays"
 
 ALTER TABLE ONLY "public"."browser_sessions"
     ADD CONSTRAINT "browser_sessions_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: builder_drafts builder_drafts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_drafts"
+    ADD CONSTRAINT "builder_drafts_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: builder_run_items builder_run_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_run_items"
+    ADD CONSTRAINT "builder_run_items_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: builder_runs builder_runs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_runs"
+    ADD CONSTRAINT "builder_runs_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -4349,6 +4599,27 @@ CREATE UNIQUE INDEX "browser_sessions_token_digest_key" ON "public"."browser_ses
 --
 
 CREATE INDEX "browser_sessions_user_status_idx" ON "public"."browser_sessions" USING "btree" ("platform_user_id", "status");
+
+
+--
+-- Name: builder_run_items_run_sequence_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "builder_run_items_run_sequence_idx" ON "public"."builder_run_items" USING "btree" ("run_id", "sequence");
+
+
+--
+-- Name: builder_runs_guild_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "builder_runs_guild_created_idx" ON "public"."builder_runs" USING "btree" ("guild_id", "created_at");
+
+
+--
+-- Name: builder_runs_status_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "builder_runs_status_idx" ON "public"."builder_runs" USING "btree" ("status");
 
 
 --
@@ -5295,6 +5566,14 @@ ALTER TABLE ONLY "public"."browser_sessions"
 
 ALTER TABLE ONLY "public"."browser_sessions"
     ADD CONSTRAINT "browser_sessions_rotated_from_session_id_fkey" FOREIGN KEY ("rotated_from_session_id") REFERENCES "public"."browser_sessions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: builder_run_items builder_run_items_run_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_run_items"
+    ADD CONSTRAINT "builder_run_items_run_id_fkey" FOREIGN KEY ("run_id") REFERENCES "public"."builder_runs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

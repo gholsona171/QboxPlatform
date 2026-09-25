@@ -57,6 +57,8 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly roles: RoleManagementService;
   /** Pluggable features that register their own routes. */
   readonly features?: readonly ApiFeature[];
+  /** Serve the built-in dashboard at `/`. Off when the portal owns `/`. */
+  readonly serveDashboard?: boolean;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -73,9 +75,10 @@ export async function registerBrowserAuthenticationRoutes(
   const diagnostics = dependencies.configuration.diagnostics();
   await server.register(cookie);
 
-  server.get("/", async (_request, reply) =>
-    reply.type("text/html; charset=utf-8").send(dashboardHtml()),
-  );
+  if (dependencies.serveDashboard !== false)
+    server.get("/", async (_request, reply) =>
+      reply.type("text/html; charset=utf-8").send(dashboardHtml()),
+    );
 
   server.get("/auth/discord/start", async (request, reply) => {
     const context = operationContext(request);
