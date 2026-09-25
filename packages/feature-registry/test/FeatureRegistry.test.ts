@@ -29,6 +29,8 @@ const commandNames = [
   "ticket",
   "tickets",
   "mod",
+  "birthday",
+  "schedule",
 ];
 
 describe("featureRegistry", () => {

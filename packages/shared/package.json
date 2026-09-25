@@ -19,6 +19,10 @@
     "./discord-rest": {
       "types": "./dist/discordRest.d.ts",
       "import": "./dist/discordRest.js"
+    },
+    "./time-zones": {
+      "types": "./dist/timeZones.d.ts",
+      "import": "./dist/timeZones.js"
     }
   }
 }

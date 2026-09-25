@@ -24,10 +24,10 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Moderation | LIVE | mod | automod message checks | messageCreate, guildBanAdd, guildBanRemove, guildMemberRemove, expired ban timer | /api/v1/moderation/overview, /api/v1/moderation/cases, /api/v1/moderation/actions, /api/v1/moderation/settings | /moderation | moderation.view, moderation.warn, moderation.timeout, moderation.kick, moderation.ban, moderation.messages, moderation.manage | ModerationSettings, ModerationCase | Discord yes / Portal yes |
 | Verification | PLANNED |  |  |  |  | /verification |  |  | Discord no / Portal no |
 | Polls | PLANNED |  |  |  |  | /polls |  |  | Discord no / Portal no |
-| Birthdays | PLANNED |  |  |  |  | /birthdays |  |  | Discord no / Portal no |
+| Birthdays | LIVE | birthday | birthday confirmation buttons | birthday timer | /api/v1/birthdays, /api/v1/birthdays/overview, /api/v1/birthdays/me, /api/v1/birthdays/members, /api/v1/birthdays/settings | /birthdays | birthdays.manage | BirthdaySettings, Birthday | Discord yes / Portal yes |
 | Knowledge Base | PLANNED |  |  |  |  | /knowledge |  |  | Discord no / Portal no |
 | FiveM Server | PLANNED |  |  |  |  | /fivem |  |  | Discord no / Portal no |
-| Scheduled Messages | PLANNED |  |  |  |  | /discord?tab=scheduled |  |  | Discord no / Portal no |
+| Scheduled Messages | LIVE | schedule |  | scheduled message timer | /api/v1/scheduled-messages, /api/v1/scheduled-messages/runs | /scheduled | scheduled.manage | ScheduledMessage, ScheduledMessageRun | Discord yes / Portal yes |
 | Giveaways | PLANNED |  |  |  |  | /discord?tab=giveaways |  |  | Discord no / Portal no |
 | Levels and Rewards | PLANNED |  |  |  |  | /discord?tab=levels |  |  | Discord no / Portal no |
 | Voice Rooms | PLANNED |  |  |  |  | /discord?tab=voice |  |  | Discord no / Portal no |

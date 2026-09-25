@@ -21,3 +21,5 @@ export * from "./features/DiscordFeature.js";
 export { ticketsFeature } from "./tickets/TicketsFeature.js";
 export * from "./features/featureAuthorization.js";
 export { moderationFeature } from "./moderation/ModerationFeature.js";
+export { birthdaysFeature } from "./birthdays/BirthdaysFeature.js";
+export { scheduledMessagesFeature } from "./scheduledMessages/ScheduledMessagesFeature.js";

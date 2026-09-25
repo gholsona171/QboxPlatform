@@ -15,6 +15,7 @@
   "dependencies": {
     "@fastify/cookie": "^11.1.2",
     "@qbox/authentication": "workspace:*",
+    "@qbox/birthdays": "workspace:*",
     "@qbox/core": "workspace:*",
     "@qbox/database": "workspace:*",
     "@qbox/discord-community": "workspace:*",
@@ -23,6 +24,7 @@
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
+    "@qbox/scheduled-messages": "workspace:*",
     "@qbox/shared": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "discord.js": "^14",

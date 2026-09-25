@@ -1,0 +1,42 @@
+// Birthdays (see docs/Birthdays.md). guildId is the Discord guild snowflake.
+
+model BirthdaySettings {
+  guildId             String   @id @map("guild_id")
+  enabled             Boolean  @default(false)
+  channelId           String?  @map("channel_id")
+  message             String
+  embedColor          String   @default("#F47FFF") @map("embed_color")
+  roleId              String?  @map("role_id")
+  announceHour        Int      @default(9) @map("announce_hour")
+  pingRoleId          String?  @map("ping_role_id")
+  allowYear           Boolean  @default(true) @map("allow_year")
+  requireConfirmation Boolean  @default(false) @map("require_confirmation")
+  revision            Int      @default(1)
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([enabled], map: "birthday_settings_enabled_idx")
+  @@map("birthday_settings")
+}
+
+model Birthday {
+  id                String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId           String    @map("guild_id")
+  userId            String    @map("user_id")
+  displayName       String    @map("display_name")
+  month             Int
+  day               Int
+  year              Int?
+  showAge           Boolean   @default(false) @map("show_age")
+  timeZone          String    @default("UTC") @map("time_zone")
+  lastAnnouncedYear Int?      @map("last_announced_year")
+  grantedRoleId     String?   @map("granted_role_id")
+  roleRemoveAt      DateTime? @map("role_remove_at") @db.Timestamptz(3)
+  createdAt         DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, userId], map: "birthdays_guild_user_key")
+  @@index([guildId, month, day], map: "birthdays_guild_date_idx")
+  @@index([roleRemoveAt], map: "birthdays_role_remove_idx")
+  @@map("birthdays")
+}
