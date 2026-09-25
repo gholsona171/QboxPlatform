@@ -38,3 +38,20 @@ test("portal mutations send the CSRF header", async () => {
   assert.match(api, /"x-csrf-token": csrf/);
   assert.doesNotMatch(api, /method: "(POST|PUT|PATCH|DELETE)"/);
 });
+
+test("portal has a server picker that follows the guilds API contract", async () => {
+  const html = await readFile(new URL("index.html", publicDirectory), "utf8");
+  const api = await readFile(new URL("js/api.js", publicDirectory), "utf8");
+  const guilds = await readFile(new URL("js/guilds.js", publicDirectory), "utf8");
+  const app = await readFile(new URL("js/app.js", publicDirectory), "utf8");
+  assert.ok(html.includes('id="serverHeader"'), "the sidebar has a server header");
+  assert.ok(html.includes('id="guildPickerBackdrop"'), "the picker dialog is in the page shell");
+  assert.match(api, /\/api\/v1\/guilds\$\{refresh \? "\?refresh=1" : ""\}/);
+  assert.match(api, /mutateJson\("\/api\/v1\/guilds\/select", "POST", \{ guildId \}\)/);
+  assert.match(api, /mutateJson\("\/api\/v1\/guilds\/clear", "POST"/);
+  assert.match(api, /problem\.code === "GUILD_REQUIRED"/);
+  assert.match(guilds, /cdn\.discordapp\.com\/icons\//);
+  assert.match(guilds, /rel="noopener noreferrer"/);
+  assert.match(app, /qbox:guild-required/);
+  assert.match(app, /chooseServerView\(\)/);
+});
