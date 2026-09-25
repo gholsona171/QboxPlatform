@@ -45,6 +45,7 @@ const commandNames = [
   "kb",
   "ask",
   "fivem",
+  "builder",
 ];
 
 describe("featureRegistry", () => {

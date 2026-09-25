@@ -433,6 +433,9 @@ export const ModelName = {
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
   BirthdaySettings: 'BirthdaySettings',
   Birthday: 'Birthday',
+  BuilderDraft: 'BuilderDraft',
+  BuilderRun: 'BuilderRun',
+  BuilderRunItem: 'BuilderRunItem',
   FivemSettings: 'FivemSettings',
   FivemStatusSnapshot: 'FivemStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
@@ -484,7 +487,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "builderDraft" | "builderRun" | "builderRunItem" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3149,6 +3152,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BirthdayCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BirthdayCountAggregateOutputType> | number
+        }
+      }
+    }
+    BuilderDraft: {
+      payload: Prisma.$BuilderDraftPayload<ExtArgs>
+      fields: Prisma.BuilderDraftFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BuilderDraftFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BuilderDraftFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        findFirst: {
+          args: Prisma.BuilderDraftFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BuilderDraftFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        findMany: {
+          args: Prisma.BuilderDraftFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>[]
+        }
+        create: {
+          args: Prisma.BuilderDraftCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        createMany: {
+          args: Prisma.BuilderDraftCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BuilderDraftCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>[]
+        }
+        delete: {
+          args: Prisma.BuilderDraftDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        update: {
+          args: Prisma.BuilderDraftUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        deleteMany: {
+          args: Prisma.BuilderDraftDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BuilderDraftUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BuilderDraftUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>[]
+        }
+        upsert: {
+          args: Prisma.BuilderDraftUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderDraftPayload>
+        }
+        aggregate: {
+          args: Prisma.BuilderDraftAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBuilderDraft>
+        }
+        groupBy: {
+          args: Prisma.BuilderDraftGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderDraftGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BuilderDraftCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderDraftCountAggregateOutputType> | number
+        }
+      }
+    }
+    BuilderRun: {
+      payload: Prisma.$BuilderRunPayload<ExtArgs>
+      fields: Prisma.BuilderRunFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BuilderRunFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BuilderRunFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        findFirst: {
+          args: Prisma.BuilderRunFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BuilderRunFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        findMany: {
+          args: Prisma.BuilderRunFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>[]
+        }
+        create: {
+          args: Prisma.BuilderRunCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        createMany: {
+          args: Prisma.BuilderRunCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BuilderRunCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>[]
+        }
+        delete: {
+          args: Prisma.BuilderRunDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        update: {
+          args: Prisma.BuilderRunUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        deleteMany: {
+          args: Prisma.BuilderRunDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BuilderRunUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BuilderRunUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>[]
+        }
+        upsert: {
+          args: Prisma.BuilderRunUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunPayload>
+        }
+        aggregate: {
+          args: Prisma.BuilderRunAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBuilderRun>
+        }
+        groupBy: {
+          args: Prisma.BuilderRunGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderRunGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BuilderRunCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderRunCountAggregateOutputType> | number
+        }
+      }
+    }
+    BuilderRunItem: {
+      payload: Prisma.$BuilderRunItemPayload<ExtArgs>
+      fields: Prisma.BuilderRunItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BuilderRunItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BuilderRunItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        findFirst: {
+          args: Prisma.BuilderRunItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BuilderRunItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        findMany: {
+          args: Prisma.BuilderRunItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>[]
+        }
+        create: {
+          args: Prisma.BuilderRunItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        createMany: {
+          args: Prisma.BuilderRunItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BuilderRunItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>[]
+        }
+        delete: {
+          args: Prisma.BuilderRunItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        update: {
+          args: Prisma.BuilderRunItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.BuilderRunItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BuilderRunItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BuilderRunItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.BuilderRunItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BuilderRunItemPayload>
+        }
+        aggregate: {
+          args: Prisma.BuilderRunItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBuilderRunItem>
+        }
+        groupBy: {
+          args: Prisma.BuilderRunItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderRunItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BuilderRunItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BuilderRunItemCountAggregateOutputType> | number
         }
       }
     }
@@ -6531,6 +6756,61 @@ export const BirthdayScalarFieldEnum = {
 export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
 
 
+export const BuilderDraftScalarFieldEnum = {
+  guildId: 'guildId',
+  answers: 'answers',
+  blueprint: 'blueprint',
+  updatedById: 'updatedById',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderDraftScalarFieldEnum = (typeof BuilderDraftScalarFieldEnum)[keyof typeof BuilderDraftScalarFieldEnum]
+
+
+export const BuilderRunScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  status: 'status',
+  mode: 'mode',
+  links: 'links',
+  planned: 'planned',
+  done: 'done',
+  skipped: 'skipped',
+  failed: 'failed',
+  startedById: 'startedById',
+  startedByName: 'startedByName',
+  warnings: 'warnings',
+  error: 'error',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  undoneAt: 'undoneAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderRunScalarFieldEnum = (typeof BuilderRunScalarFieldEnum)[keyof typeof BuilderRunScalarFieldEnum]
+
+
+export const BuilderRunItemScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  sequence: 'sequence',
+  kind: 'kind',
+  key: 'key',
+  name: 'name',
+  discordId: 'discordId',
+  status: 'status',
+  error: 'error',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderRunItemScalarFieldEnum = (typeof BuilderRunItemScalarFieldEnum)[keyof typeof BuilderRunItemScalarFieldEnum]
+
+
 export const FivemSettingsScalarFieldEnum = {
   guildId: 'guildId',
   serverAddress: 'serverAddress',
@@ -7868,6 +8148,62 @@ export type ListEnumAuthenticationAuditActorTypeFieldRefInput<$PrismaModel> = Fi
 
 
 /**
+ * Reference to a field of type 'BuilderRunStatus'
+ */
+export type EnumBuilderRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderRunStatus'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderRunStatus[]'
+ */
+export type ListEnumBuilderRunStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderRunStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderRunMode'
+ */
+export type EnumBuilderRunModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderRunMode'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderRunMode[]'
+ */
+export type ListEnumBuilderRunModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderRunMode[]'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderItemKind'
+ */
+export type EnumBuilderItemKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderItemKind'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderItemKind[]'
+ */
+export type ListEnumBuilderItemKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderItemKind[]'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderItemStatus'
+ */
+export type EnumBuilderItemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderItemStatus'>
+
+
+
+/**
+ * Reference to a field of type 'BuilderItemStatus[]'
+ */
+export type ListEnumBuilderItemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BuilderItemStatus[]'>
+
+
+
+/**
  * Reference to a field of type 'GiveawayStatus'
  */
 export type EnumGiveawayStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GiveawayStatus'>
@@ -8361,6 +8697,9 @@ export type GlobalOmitConfig = {
   authenticationAuditEvent?: Prisma.AuthenticationAuditEventOmit
   birthdaySettings?: Prisma.BirthdaySettingsOmit
   birthday?: Prisma.BirthdayOmit
+  builderDraft?: Prisma.BuilderDraftOmit
+  builderRun?: Prisma.BuilderRunOmit
+  builderRunItem?: Prisma.BuilderRunItemOmit
   fivemSettings?: Prisma.FivemSettingsOmit
   fivemStatusSnapshot?: Prisma.FivemStatusSnapshotOmit
   giveawayCounter?: Prisma.GiveawayCounterOmit

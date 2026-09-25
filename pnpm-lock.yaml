@@ -105,6 +105,9 @@ importers:
       '@qbox/scheduled-messages':
         specifier: workspace:*
         version: link:../../modules/scheduled-messages
+      '@qbox/server-builder':
+        specifier: workspace:*
+        version: link:../../modules/server-builder
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -222,6 +225,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/server-builder:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/staff:
     dependencies:
       '@qbox/shared':
@@ -301,6 +310,9 @@ importers:
       '@qbox/scheduled-messages':
         specifier: workspace:*
         version: link:../../modules/scheduled-messages
+      '@qbox/server-builder':
+        specifier: workspace:*
+        version: link:../../modules/server-builder
       '@qbox/staff':
         specifier: workspace:*
         version: link:../../modules/staff
@@ -361,6 +373,9 @@ importers:
       '@qbox/scheduled-messages':
         specifier: workspace:*
         version: link:../../modules/scheduled-messages
+      '@qbox/server-builder':
+        specifier: workspace:*
+        version: link:../../modules/server-builder
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared

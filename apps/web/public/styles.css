@@ -371,3 +371,14 @@ td small { color: var(--muted); }
 .player-chart .chart-axis { stroke: var(--border-strong); }
 .player-chart .chart-down { fill: var(--danger); }
 @media (max-width: 720px) { .category-row { grid-template-columns: 70px minmax(0, 1fr); } }
+button.feature-tile { font: inherit; text-align: left; cursor: pointer; }
+.builder-channels { list-style: none; margin: 10px 0; padding: 0; display: grid; gap: 6px; }
+.builder-channel { display: grid; grid-template-columns: 24px minmax(120px, 1fr) auto auto; gap: 4px 8px; align-items: center; }
+.builder-channel small { grid-column: 2 / -1; grid-row: 2; }
+.builder-type { text-align: center; color: var(--muted); }
+.inline-name { min-height: 30px; padding: 4px 8px; }
+.inline-name.strong { font-weight: 650; max-width: 320px; }
+td .inline-name { width: 150px; display: inline-block; margin-left: 6px; }
+.builder-progress { width: 100%; height: 10px; accent-color: var(--accent); }
+.builder-log { max-height: 420px; overflow-y: auto; }
+@media (max-width: 720px) { .builder-channel { grid-template-columns: 24px minmax(0, 1fr) auto; } .builder-channel > span:nth-child(3) { display: none; } }

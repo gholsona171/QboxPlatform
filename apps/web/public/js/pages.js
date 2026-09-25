@@ -1,5 +1,6 @@
 import { renderApplicationsPage } from "./applications.js";
 import { renderBirthdaysPage } from "./birthdays.js";
+import { renderBuilderPage } from "./builder.js";
 import { renderDiscordPage } from "./discord.js";
 import { renderGiveawaysPage } from "./giveaways.js";
 import { renderLevelsPage } from "./levels.js";
@@ -34,6 +35,7 @@ export const pages = [
   { id: "birthdays", group: "Community", label: "Birthdays", description: "Birthday messages, roles, and the member calendar.", icon: icon('<path d="M4 21h16"/><path d="M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 5 0"/><path d="M12 12V8"/><path d="M12 5.5c.8-.8.8-1.7 0-2.5-.8.8-.8 1.7 0 2.5Z"/>'), render: renderBirthdaysPage },
   { id: "voice", group: "Community", label: "Voice Rooms", description: "Join-to-create voice channels members control.", icon: icon('<path d="M4 10v4"/><path d="M8 7v10"/><path d="M12 4v16"/><path d="M16 7v10"/><path d="M20 10v4"/>'), render: renderVoicePage },
   { id: "scheduled", group: "Community", label: "Scheduled", description: "Messages that post on a schedule.", icon: icon('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'), render: renderScheduledPage },
+  { id: "builder", group: "Server", label: "Server Builder", description: "Plan your channels and roles, then let Qbox build them.", icon: icon('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/>'), render: renderBuilderPage },
   { id: "fivem", group: "Server", label: "FiveM Server", description: "Live server status, players, alerts, and restarts.", icon: icon('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'), render: renderFivemPage },
   { id: "discord", group: "Server", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
   { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },

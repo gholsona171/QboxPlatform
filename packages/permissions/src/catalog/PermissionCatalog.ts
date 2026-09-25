@@ -7,7 +7,7 @@ export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:2cc6099d081c63f01cd4f1fb061534a8da4d3c7faeba1f53e7bfc5b93d7f1ca9" as const;
+  "sha256:25ed86a3d782176b251cc8ac3b54cf507ca9ba245cb7d6ef3a7be6d296cb0613" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -55,6 +55,7 @@ export const PERMISSIONS = [
   "scheduled.manage",
   "levels.manage",
   "voice.manage",
+  "builder.manage",
 ] as const;
 
 /** An exact identifier present in the compiled permission catalog. */
