@@ -1,6 +1,6 @@
 # Guildhall Web Portal
 
-Static, framework-free portal in `apps/web/public` for Guildhall, the community platform for any Discord server (a FiveM server can be connected as one optional integration). It only shows live data from your Discord server: visitors who are not signed in see a "Sign in with Discord" screen. It is hosted in two ways.
+Static, framework-free portal in `apps/web/public` for Guildhall, the community platform for any Discord server (game servers such as FiveM, Minecraft, or Steam games can be connected as optional integrations). It only shows live data from your Discord server: visitors who are not signed in see a "Sign in with Discord" screen. It is hosted in two ways.
 
 ## Server picker
 

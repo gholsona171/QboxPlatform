@@ -1,5 +1,5 @@
-import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, builderFeature, type DiscordFeatureFactory, fivemFeature, giveawaysFeature, guildOnboardingFeature, knowledgeFeature, levelsFeature, messagesFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, streamsFeature, ticketsFeature, verificationFeature, voiceRoomsFeature } from "@qbox/discord";
+import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, builderFeature, type DiscordFeatureFactory, fivemFeature, gamesFeature, giveawaysFeature, guildOnboardingFeature, knowledgeFeature, levelsFeature, messagesFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, streamsFeature, ticketsFeature, verificationFeature, voiceRoomsFeature } from "@qbox/discord";
 import { MessageTemplateService } from "@qbox/messages";
 import type { PersistentPermissionService } from "@qbox/permissions";
 import { env } from "@qbox/shared";
@@ -39,6 +39,7 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
     knowledgeFeature(new PrismaKnowledgeRepository(persistence.prisma), { openAiApiKey: env.OPENAI_API_KEY, openAiModel: env.OPENAI_MODEL }),
     fivemFeature(new PrismaFivemRepository(persistence.prisma)),
     streamsFeature(new PrismaStreamsRepository(persistence.prisma), { credentials: streamCredentials(), templates }),
+    gamesFeature(new PrismaGamesRepository(persistence.prisma), templates),
     builderFeature(new PrismaBuilderRepository(persistence.prisma)),
   ];
 }

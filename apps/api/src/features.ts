@@ -1,7 +1,8 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
+import { DiscordRestGamesGateway, GamesService, ProtocolQueryClient } from "@qbox/game-servers";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestMessagesGateway, MessageTemplateService } from "@qbox/messages";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
@@ -29,6 +30,7 @@ import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
 import { levelsApiFeature } from "./levels/LevelRoutes.js";
 import { messagesApiFeature } from "./messages/MessagesRoutes.js";
 import { fivemApiFeature } from "./fivem/FivemRoutes.js";
+import { gamesApiFeature } from "./games/GamesRoutes.js";
 import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
 import { staffApiFeature } from "./staff/StaffRoutes.js";
@@ -79,6 +81,7 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
     fivemApiFeature(fivem),
     messagesApiFeature(templates),
     streamsApiFeature(new StreamsService(new PrismaStreamsRepository(persistence.prisma), createStreamPlatformClients(streamCredentials()), discordRest ? new DiscordRestStreamsGateway(discordRest) : undefined, { templates })),
+    gamesApiFeature(new GamesService(new PrismaGamesRepository(persistence.prisma), new ProtocolQueryClient(), discordRest ? new DiscordRestGamesGateway(discordRest) : undefined, templates)),
     builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
   ];
 }

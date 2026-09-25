@@ -78,6 +78,9 @@ importers:
       '@qbox/fivem':
         specifier: workspace:*
         version: link:../../modules/fivem
+      '@qbox/game-servers':
+        specifier: workspace:*
+        version: link:../../modules/game-servers
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
@@ -204,6 +207,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/game-servers:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/giveaways:
     dependencies:
       '@qbox/shared':
@@ -316,6 +325,9 @@ importers:
       '@qbox/fivem':
         specifier: workspace:*
         version: link:../../modules/fivem
+      '@qbox/game-servers':
+        specifier: workspace:*
+        version: link:../../modules/game-servers
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
@@ -385,6 +397,9 @@ importers:
       '@qbox/fivem':
         specifier: workspace:*
         version: link:../../modules/fivem
+      '@qbox/game-servers':
+        specifier: workspace:*
+        version: link:../../modules/game-servers
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways

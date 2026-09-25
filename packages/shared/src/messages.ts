@@ -106,6 +106,21 @@ export function renderMessage(template: OutgoingMessage, values: TemplateValues)
  * customizable message appends its keys here; the portal lists them from
  * this catalog. Keep entries sorted by feature, then by key.
  */
+const GAMES_PLACEHOLDERS: readonly MessagePlaceholder[] = [
+  { name: "name", description: "Name the game server reports (falls back to the name you gave it)" },
+  { name: "server", description: "Name you gave the server in the portal" },
+  { name: "game", description: "Game label, for example Minecraft or Rust" },
+  { name: "address", description: "Server address (host:port)" },
+  { name: "players", description: "Players online" },
+  { name: "maxPlayers", description: "Player slots" },
+  { name: "map", description: "Current map, when the game reports one" },
+  { name: "version", description: "Server version, when the game reports one" },
+  { name: "latency", description: "Query latency in milliseconds" },
+  { name: "playerList", description: "Player names, one per line (up to 20)" },
+  { name: "connectUrl", description: "Connect link, when set" },
+  { name: "downFor", description: "How long the server was down (back-online message only)" },
+];
+
 export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [
   {
     key: "birthdays.announcement",
@@ -144,6 +159,9 @@ export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [
       { name: "memberCount", description: "Members in the server" },
     ],
   },
+  { key: "games.down", feature: "games", name: "Game server down", description: "Posted in the alert channel after three failed checks in a row.", placeholders: GAMES_PLACEHOLDERS },
+  { key: "games.status", feature: "games", name: "Game server status", description: "The auto-updating status message in the status channel.", placeholders: GAMES_PLACEHOLDERS },
+  { key: "games.up", feature: "games", name: "Game server back online", description: "Posted in the alert channel when a server answers again after being down.", placeholders: GAMES_PLACEHOLDERS },
   {
     key: "giveaways.ended",
     feature: "giveaways",

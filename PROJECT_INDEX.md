@@ -143,6 +143,7 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 | `@qbox/applications` | `modules/applications` | Staff and whitelist application forms, review, and votes. See `docs/Applications.md`. |
 | `@qbox/birthdays` | `modules/birthdays` | Birthday announcements and birthday role. See `docs/Birthdays.md`. |
 | `@qbox/fivem` | `modules/fivem` | FiveM server status, player chart, alerts, and restart warnings. See `docs/FiveM.md`. |
+| `@qbox/game-servers` | `modules/game-servers` | Minecraft and Steam-query game server status, player-count channels, alerts, and player chart. See `docs/GameServers.md`. |
 | `@qbox/giveaways` | `modules/giveaways` | Giveaways with requirements, bonus entries, and fair draws. See `docs/Giveaways.md`. |
 | `@qbox/knowledge-base` | `modules/knowledge-base` | Help articles, `/faq`, automatic answers, and optional AI `/ask`. See `docs/KnowledgeBase.md`. |
 | `@qbox/levels` | `modules/levels` | Message and voice XP, leaderboard, and reward roles. See `docs/Levels.md`. |
