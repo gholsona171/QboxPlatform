@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# One-time setup for an Oracle Cloud "Always Free" Ubuntu server.
+# Installs Node.js, pnpm, and Tailscale, writes the private .env, builds
+# Qbox, registers slash commands, and starts the API and bot as services
+# that restart on failure and update themselves from GitHub.
+#
+# Run from the cloned repository:  bash ops/oracle/setup.sh
+set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+RUN_USER="$(id -un)"
+API_PORT=3000
+PNPM_VERSION=10.16.0
+
+say() { printf '\n\033[1;36m==> %s\033[0m\n' "$1"; }
+ask() { local prompt="$1" var; read -r -p "$prompt: " var; printf '%s' "$var"; }
+ask_secret() { local prompt="$1" var; read -r -s -p "$prompt (hidden): " var; echo >&2; printf '%s' "$var"; }
+
+say "Installing system packages"
+sudo apt-get update -y
+sudo apt-get install -y ca-certificates curl git jq
+
+if [ "$(free -m | awk '/^Mem:/ {print $2}')" -lt 2000 ] && [ ! -f /swapfile ]; then
+  say "Adding 2 GB swap (small server)"
+  sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile
+  sudo mkswap /swapfile && sudo swapon /swapfile
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null
+fi
+
+if ! command -v node >/dev/null || [ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]; then
+  say "Installing Node.js 22"
+  curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+fi
+sudo corepack enable
+corepack prepare "pnpm@${PNPM_VERSION}" --activate
+
+if ! command -v tailscale >/dev/null; then
+  say "Installing Tailscale"
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
+if ! tailscale status >/dev/null 2>&1; then
+  say "Sign in to Tailscale: open the link below in your browser"
+  sudo tailscale up --hostname=qbox
+fi
+PUBLIC_HOST="$(tailscale status --json | jq -r '.Self.DNSName' | sed 's/\.$//')"
+PUBLIC_URL="https://${PUBLIC_HOST}"
+say "Your portal address will be ${PUBLIC_URL}"
+
+if [ ! -f "$REPO_DIR/.env" ]; then
+  say "Enter your settings (they stay on this server only)"
+  DISCORD_APPLICATION_ID="$(ask 'Discord Application ID')"
+  DISCORD_TOKEN="$(ask_secret 'Discord bot token')"
+  DISCORD_OAUTH_CLIENT_SECRET="$(ask_secret 'Discord OAuth2 client secret')"
+  DISCORD_GUILD_ID="$(ask 'Discord server ID')"
+  ADMIN_ROLE_IDS="$(ask 'Admin role IDs, comma separated (Enter to skip)')"
+  DATABASE_URL="$(ask_secret 'Supabase DATABASE_URL (same as the GitHub secret)')"
+  MESSAGE_CONTENT="$(ask 'Message Content intent turned on in the Discord portal? (yes/no)')"
+  OPENAI_API_KEY="$(ask_secret 'OpenAI API key for /ask (Enter to skip)')"
+  key() { node -e 'console.log(require("crypto").randomBytes(32).toString("base64url"))'; }
+
+  umask 077
+  cat > "$REPO_DIR/.env" <<ENV
+NODE_ENV=production
+DISCORD_TOKEN=${DISCORD_TOKEN}
+DISCORD_APPLICATION_ID=${DISCORD_APPLICATION_ID}
+DISCORD_GUILD_ID=${DISCORD_GUILD_ID}
+DISCORD_MESSAGE_CONTENT_INTENT=$([ "${MESSAGE_CONTENT,,}" = "yes" ] && echo true || echo false)
+DISCORD_OAUTH_CLIENT_ID=${DISCORD_APPLICATION_ID}
+DISCORD_OAUTH_CLIENT_SECRET=${DISCORD_OAUTH_CLIENT_SECRET}
+DISCORD_OAUTH_REDIRECT_URI=${PUBLIC_URL}/auth/discord/callback
+DATABASE_URL=${DATABASE_URL}
+API_HOST=127.0.0.1
+API_PORT=${API_PORT}
+API_PUBLIC_BASE_URL=${PUBLIC_URL}
+API_TRUST_PROXY=127.0.0.1
+API_ALLOWED_HOSTS=${PUBLIC_HOST}
+AUTH_KEY_VERSION=1
+AUTH_SESSION_HMAC_KEY=$(key)
+AUTH_CSRF_HMAC_KEY=$(key)
+AUTH_METADATA_HMAC_KEY=$(key)
+AUTH_OAUTH_ENCRYPTION_KEY=$(key)
+ADMIN_ROLE_IDS=${ADMIN_ROLE_IDS}
+OPENAI_API_KEY=${OPENAI_API_KEY}
+ENV
+  umask 022
+  say "Saved settings to .env (readable by you only)"
+else
+  say "Keeping the existing .env"
+fi
+
+say "Building Qbox (a few minutes)"
+cd "$REPO_DIR"
+pnpm install --frozen-lockfile
+pnpm build
+
+say "Registering slash commands in your server"
+(cd apps/bot && node dist/deployCommands.js guild)
+
+say "Creating services"
+NODE_BIN="$(command -v node)"
+unit() {
+  local name="$1" dir="$2" entry="$3"
+  sudo tee "/etc/systemd/system/${name}.service" >/dev/null <<UNIT
+[Unit]
+Description=${name}
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=${RUN_USER}
+WorkingDirectory=${REPO_DIR}/${dir}
+ExecStart=${NODE_BIN} ${entry}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+}
+unit qbox-api apps/api dist/run.js
+unit qbox-bot apps/bot dist/index.js
+
+sudo tee /etc/systemd/system/qbox-update.service >/dev/null <<UNIT
+[Unit]
+Description=Update Qbox from GitHub
+
+[Service]
+Type=oneshot
+User=${RUN_USER}
+ExecStart=/usr/bin/env bash ${REPO_DIR}/ops/oracle/update.sh
+UNIT
+sudo tee /etc/systemd/system/qbox-update.timer >/dev/null <<UNIT
+[Unit]
+Description=Check GitHub for Qbox updates every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target
+UNIT
+echo "${RUN_USER} ALL=(root) NOPASSWD: /usr/bin/systemctl restart qbox-api qbox-bot" | sudo tee /etc/sudoers.d/qbox >/dev/null
+sudo chmod 440 /etc/sudoers.d/qbox
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now qbox-api qbox-bot qbox-update.timer
+
+say "Publishing the portal with Tailscale Funnel"
+sudo tailscale funnel --bg "${API_PORT}"
+
+say "Done"
+cat <<DONE
+Portal:  ${PUBLIC_URL}
+
+Last step: in the Discord Developer Portal > your app > OAuth2 > Redirects,
+add exactly:
+  ${PUBLIC_URL}/auth/discord/callback
+
+Useful commands:
+  systemctl status qbox-api qbox-bot     (are they running?)
+  journalctl -u qbox-bot -f              (live bot log, Ctrl+C to exit)
+DONE
