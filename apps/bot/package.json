@@ -11,6 +11,8 @@
     "start": "node dist/index.js",
     "deploy:commands:global": "node dist/deployCommands.js global",
     "deploy:commands:global:dry-run": "node dist/deployCommands.js global --dry-run",
+    "deploy:commands:clear-guild": "node dist/deployCommands.js clear-guild",
+    "deploy:commands:clear-guild:dry-run": "node dist/deployCommands.js clear-guild --dry-run",
     "deploy:commands:dev": "pnpm typecheck && tsx src/deployCommands.ts guild",
     "deploy:commands:dev:dry-run": "pnpm typecheck && tsx src/deployCommands.ts guild --dry-run",
     "deploy:commands:guild": "pnpm run deploy:commands:dev",

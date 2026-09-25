@@ -12,12 +12,12 @@ import type { DeploymentScope } from "./commandDeployment.js";
 function readDeploymentScope(): DeploymentScope {
   const scope = process.argv[2];
 
-  if (scope === "global" || scope === "guild") {
+  if (scope === "global" || scope === "guild" || scope === "clear-guild") {
     return scope;
   }
 
   throw new Error(
-    "Command deployment scope must be either 'global' or 'guild'.",
+    "Command deployment scope must be 'global', 'guild', or 'clear-guild'.",
   );
 }
 

@@ -25,26 +25,27 @@ git clone git@github.com:gholsona171/QboxPlatform.git ~/qbox
 bash ~/qbox/ops/oracle/setup.sh
 ```
 
-The script asks for your Discord values and the Supabase connection string, writes them to `~/qbox/.env` (readable only by you, never committed), builds Qbox, registers slash commands, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
+The script asks for your Discord values and the Supabase connection string (the Discord server ID is optional; press Enter to skip it), writes them to `~/qbox/.env` (readable only by you, never committed), builds Qbox, registers the slash commands globally, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
 
 Finally, add `https://<portal address>/auth/discord/callback` under **Discord Developer Portal > OAuth2 > Redirects**.
 
-Invite the bot with the link the setup prints (or **OAuth2 > URL Generator** with the `bot` and `applications.commands` scopes and Administrator). The server owner and Discord administrators can use the whole portal right away; no permission setup is needed.
+Invite the bot with the link the setup prints (or **OAuth2 > URL Generator** with the `bot` and `applications.commands` scopes and Administrator). The server owner and Discord administrators can use the whole portal right away; no permission setup is needed. See "Adding the bot to more servers" below.
 
 ## Updates
 
-When `main` changes, the **Deploy build** GitHub workflow compiles Qbox and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers slash commands, and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
+When `main` changes, the **Deploy build** GitHub workflow compiles Qbox and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers the global slash commands (Discord can take a few minutes to show changes), and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
 
-## Moving to a different Discord server
+## Adding the bot to more servers
 
-Qbox runs in one Discord server at a time. To move it:
+One Qbox installation serves any number of Discord servers, like MEE6 or Dyno. Nothing on the hosting server changes when a new community joins:
 
-1. Invite the bot to the new server (Discord Developer Portal > OAuth2 > URL Generator, scopes `bot` and `applications.commands`, permission Administrator).
-2. In GitHub, edit `ops/discord-server-id` on `main` and put the new server ID in it. Within 5 minutes the server switches, registers slash commands there, and restarts. No SSH needed.
+1. Open the invite link (the setup prints it; it is `https://discord.com/oauth2/authorize?client_id=<application ID>&scope=bot%20applications.commands&permissions=8`), pick the server, and authorize.
+2. The server owner and every member with **Administrator** or **Manage Server** get full portal access for that server automatically; nobody has to grant permissions first.
+3. Sign in to the portal and pick the server in the server picker. Every page then applies to that server; switch servers from the same picker at any time.
 
-Leave the file empty to keep the server ID chosen during setup. On the server itself, `bash ~/qbox/ops/oracle/switch-server.sh <server ID>` switches immediately (the file in GitHub wins at the next update if it names a different server).
+Slash commands are registered globally once, so they work in every server the bot joins. Discord can take a few minutes to show newly registered global commands.
 
-Settings are stored per Discord server, so the new server starts fresh and the old server's data is kept.
+Settings are stored per Discord server, so each server starts fresh and keeps its own data. `DISCORD_GUILD_ID` in `.env` is optional: when set, it is only the server the portal shows before a member picks one (kept for older single-server setups); leave it empty for a fresh multi-server installation.
 
 ## Checking on it
 

@@ -44,6 +44,6 @@ Repository and cache contracts contain no adapter-specific types. The included i
 
 ## Discord compatibility runtime
 
-Until persistence exists, process composition creates an in-memory repository/cache and a `PersistentPermissionService`. `ADMIN_ROLE_IDS` values become non-persistent, guild-scoped `platform.admin` assignments bound to `DISCORD_GUILD_ID`. Configuring legacy roles without that guild ID fails startup. Persistent deny assignments outrank compatibility grants.
+Until persistence exists, process composition creates an in-memory repository/cache and a `PersistentPermissionService`. `ADMIN_ROLE_IDS` values become non-persistent, guild-scoped `platform.admin` assignments bound to `DISCORD_GUILD_ID`. Without that guild ID (the multi-server default) the legacy roles are ignored and no assignments are created; startup continues. Persistent deny assignments outrank compatibility grants.
 
 Discord translates only the authenticated interaction user, guild, and current member roles into principals. Command options and user-provided content never supply authorization identity. The authorizer is registered in the service container only after Discord startup succeeds; unprotected commands bypass repository access.

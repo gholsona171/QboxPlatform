@@ -282,6 +282,21 @@ export class DiscordService {
     };
   }
 
+  /** Removes every guild-scoped command from one server; global commands stay. */
+  public async clearCommandDefinitions(
+    guildId: string,
+  ): Promise<CommandDeploymentResult> {
+    if (!this.client.application) {
+      throw new Error(
+        "Discord application identity is unavailable for command deployment.",
+      );
+    }
+
+    await this.client.application.commands.set([], guildId);
+
+    return { commandCount: 0, commandNames: [] };
+  }
+
   public async stop(): Promise<void> {
     await this.interactions.shutdown(readShutdownTimeout());
     this.client.off(Events.InteractionCreate, this.interactionListener);

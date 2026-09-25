@@ -12,20 +12,19 @@ export interface LegacyAdministratorCompatibility {
  * Creates guild-bound, non-persistent administrator assignments from legacy roles.
  * The function owns no state or resources and is safe for concurrent composition.
  * Explicit persisted denies retain precedence when these assignments are evaluated.
+ *
+ * Legacy roles only make sense in one server. Without a guild ID (the bot
+ * runs in many servers), the roles are ignored and no assignments are made.
  */
 export function createLegacyAdministratorCompatibility(
   guildId: string,
   roleIds: readonly string[],
   modeEnabled = true,
 ): LegacyAdministratorCompatibility {
-  const uniqueRoleIds = [
-    ...new Set(roleIds.map((roleId) => roleId.trim()).filter(Boolean)),
-  ];
-  if (modeEnabled && uniqueRoleIds.length > 0 && guildId.trim().length === 0) {
-    throw new Error(
-      "DISCORD_GUILD_ID is required when ADMIN_ROLE_IDS compatibility is configured.",
-    );
-  }
+  const boundGuildId = guildId.trim();
+  const uniqueRoleIds = boundGuildId
+    ? [...new Set(roleIds.map((roleId) => roleId.trim()).filter(Boolean))]
+    : [];
   return {
     enabled: modeEnabled,
     ...(uniqueRoleIds.length > 0 ? { guildId } : {}),

@@ -29,10 +29,13 @@ describe("legacy administrator compatibility", () => {
     );
   });
 
-  it("fails clearly when roles are configured without a bootstrap guild", () => {
-    expect(() => createLegacyAdministratorCompatibility("", ["admin"])).toThrow(
-      "DISCORD_GUILD_ID",
-    );
+  it("ignores legacy roles when no bootstrap guild is configured", () => {
+    const compatibility = createLegacyAdministratorCompatibility("", ["admin"]);
+    expect(compatibility).toEqual({
+      enabled: true,
+      roleCount: 0,
+      assignments: [],
+    });
   });
 
   it("allows persistent deny to override a legacy administrator grant", async () => {
