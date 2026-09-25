@@ -24,6 +24,7 @@
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/shared": "workspace:*",
+    "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "discord.js": "^14",
     "fastify": "^5.11.0",

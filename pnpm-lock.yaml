@@ -84,6 +84,9 @@ importers:
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets
@@ -141,6 +144,12 @@ importers:
 
   modules/role-menus: {}
 
+  modules/staff:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/tickets:
     dependencies:
       '@qbox/shared':
@@ -178,6 +187,9 @@ importers:
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets
@@ -208,6 +220,9 @@ importers:
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets
