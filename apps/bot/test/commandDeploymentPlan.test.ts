@@ -25,6 +25,17 @@ describe("createCommandDeploymentPlan", () => {
     expect(plan.removals).toEqual([]);
   });
 
+  it("treats Discord's default install type on global commands as no change", () => {
+    const plan = createCommandDeploymentPlan(
+      target,
+      [{ ...command("ping"), integration_types: [0], contexts: null, dm_permission: true, nsfw: false }],
+      [command("ping")]
+    );
+
+    expect(plan.unchanged.map((change) => change.name)).toEqual(["ping"]);
+    expect(plan.updates).toEqual([]);
+  });
+
   it("reports additions and removals", () => {
     const plan = createCommandDeploymentPlan(
       target,

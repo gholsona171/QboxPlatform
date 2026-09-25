@@ -29,6 +29,9 @@ if [ "$PREBUILT" = 0 ]; then
   git rev-parse HEAD > .qbox-built-commit
 fi
 
+sudo /usr/bin/systemctl restart qbox-api qbox-bot
+echo "Updated and restarted"
+
 # Global commands can take a few minutes to appear in Discord after a change.
 (cd apps/bot && node dist/deployCommands.js global --confirm-global --confirm-global-removals)
 
@@ -40,6 +43,4 @@ if [ -n "$GUILD_ID" ]; then
   (cd apps/bot && node dist/deployCommands.js clear-guild) \
     || echo "Could not clear per-server commands in ${GUILD_ID}; continuing." >&2
 fi
-
-sudo /usr/bin/systemctl restart qbox-api qbox-bot
-echo "Updated and restarted"
+echo "Slash commands registered"

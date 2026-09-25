@@ -107,6 +107,17 @@ function normalizeValue(value: unknown, parentKey?: string): unknown {
         return false;
       }
 
+      // Discord reports the default install type ([0] = server install) on
+      // every global command; definitions that do not set it mean the same.
+      if (
+        key === "integration_types" &&
+        Array.isArray(entryValue) &&
+        entryValue.length === 1 &&
+        entryValue[0] === 0
+      ) {
+        return false;
+      }
+
       return !(
         (key === "required" || key === "autocomplete" || key === "nsfw") &&
         entryValue === false
