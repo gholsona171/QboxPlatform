@@ -14,6 +14,7 @@
     "@qbox/permissions": "workspace:*",
     "@qbox/prisma": "workspace:*",
     "@qbox/role-menus": "workspace:*",
+    "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "@qbox/verification": "workspace:*"
   },

@@ -1,6 +1,7 @@
 import { renderApplicationsPage } from "./applications.js";
 import { renderDiscordPage } from "./discord.js";
 import { renderModerationPage } from "./moderation.js";
+import { renderStaffPage } from "./staff.js";
 import { renderTicketsPage } from "./tickets.js";
 import { renderVerificationPage } from "./verification.js";
 import { renderOverviewPage, renderSettingsPage } from "./views.js";
@@ -17,6 +18,7 @@ export const pages = [
   { id: "moderation", label: "Moderation", description: "Cases, automod, and actions against rule breakers.", icon: icon('<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6Z"/><path d="m9 12 2 2 4-4"/>'), render: renderModerationPage },
   { id: "verification", label: "Verification", description: "How new members prove they are real before joining in.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 12.5-6.6"/><path d="m15 19 2 2 4-4"/>'), render: renderVerificationPage },
   { id: "applications", label: "Applications", description: "Apply for positions, and review and set up application forms.", icon: icon('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/>'), render: renderApplicationsPage },
+  { id: "staff", label: "Staff", description: "Staff roster, ranks, leave, and shifts.", icon: icon('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>'), render: renderStaffPage },
   { id: "discord", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
   { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },
 ];

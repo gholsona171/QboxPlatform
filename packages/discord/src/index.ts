@@ -23,3 +23,4 @@ export * from "./features/featureAuthorization.js";
 export { moderationFeature } from "./moderation/ModerationFeature.js";
 export { verificationFeature } from "./verification/VerificationFeature.js";
 export { applicationsFeature } from "./applications/ApplicationsFeature.js";
+export { staffFeature } from "./staff/StaffFeature.js";

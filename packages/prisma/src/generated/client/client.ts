@@ -222,6 +222,41 @@ export type ModerationSettings = Prisma.ModerationSettingsModel
  */
 export type ModerationCase = Prisma.ModerationCaseModel
 /**
+ * Model StaffSettings
+ *
+ */
+export type StaffSettings = Prisma.StaffSettingsModel
+/**
+ * Model StaffRank
+ *
+ */
+export type StaffRank = Prisma.StaffRankModel
+/**
+ * Model StaffMember
+ *
+ */
+export type StaffMember = Prisma.StaffMemberModel
+/**
+ * Model StaffRecord
+ *
+ */
+export type StaffRecord = Prisma.StaffRecordModel
+/**
+ * Model StaffStrike
+ *
+ */
+export type StaffStrike = Prisma.StaffStrikeModel
+/**
+ * Model StaffLeave
+ *
+ */
+export type StaffLeave = Prisma.StaffLeaveModel
+/**
+ * Model StaffShift
+ *
+ */
+export type StaffShift = Prisma.StaffShiftModel
+/**
  * Model TicketSettings
  *
  */

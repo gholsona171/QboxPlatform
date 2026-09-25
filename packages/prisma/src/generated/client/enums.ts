@@ -418,6 +418,42 @@ export const ModerationCaseSource = {
 export type ModerationCaseSource = (typeof ModerationCaseSource)[keyof typeof ModerationCaseSource]
 
 
+export const StaffMemberStatus = {
+  ACTIVE: 'ACTIVE',
+  LOA: 'LOA',
+  SUSPENDED: 'SUSPENDED',
+  RETIRED: 'RETIRED'
+} as const
+
+export type StaffMemberStatus = (typeof StaffMemberStatus)[keyof typeof StaffMemberStatus]
+
+
+export const StaffRecordType = {
+  HIRE: 'HIRE',
+  PROMOTE: 'PROMOTE',
+  DEMOTE: 'DEMOTE',
+  FIRE: 'FIRE',
+  LOA_START: 'LOA_START',
+  LOA_END: 'LOA_END',
+  NOTE: 'NOTE',
+  STRIKE: 'STRIKE'
+} as const
+
+export type StaffRecordType = (typeof StaffRecordType)[keyof typeof StaffRecordType]
+
+
+export const StaffLeaveStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+  DENIED: 'DENIED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type StaffLeaveStatus = (typeof StaffLeaveStatus)[keyof typeof StaffLeaveStatus]
+
+
 export const TicketMode = {
   CHANNEL: 'CHANNEL',
   THREAD: 'THREAD'

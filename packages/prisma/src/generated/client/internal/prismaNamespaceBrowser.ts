@@ -87,6 +87,13 @@ export const ModelName = {
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
+  StaffSettings: 'StaffSettings',
+  StaffRank: 'StaffRank',
+  StaffMember: 'StaffMember',
+  StaffRecord: 'StaffRecord',
+  StaffStrike: 'StaffStrike',
+  StaffLeave: 'StaffLeave',
+  StaffShift: 'StaffShift',
   TicketSettings: 'TicketSettings',
   TicketCategory: 'TicketCategory',
   TicketPanel: 'TicketPanel',
@@ -799,6 +806,124 @@ export const ModerationCaseScalarFieldEnum = {
 } as const
 
 export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
+export const StaffSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  logChannelId: 'logChannelId',
+  rosterChannelId: 'rosterChannelId',
+  rosterMessageId: 'rosterMessageId',
+  loaRoleId: 'loaRoleId',
+  autoClockOutHours: 'autoClockOutHours',
+  maxLeaveDays: 'maxLeaveDays',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffSettingsScalarFieldEnum = (typeof StaffSettingsScalarFieldEnum)[keyof typeof StaffSettingsScalarFieldEnum]
+
+
+export const StaffRankScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  roleId: 'roleId',
+  color: 'color',
+  description: 'description',
+  position: 'position',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffRankScalarFieldEnum = (typeof StaffRankScalarFieldEnum)[keyof typeof StaffRankScalarFieldEnum]
+
+
+export const StaffMemberScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  rankId: 'rankId',
+  callsign: 'callsign',
+  joinedAt: 'joinedAt',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffMemberScalarFieldEnum = (typeof StaffMemberScalarFieldEnum)[keyof typeof StaffMemberScalarFieldEnum]
+
+
+export const StaffRecordScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  type: 'type',
+  actorId: 'actorId',
+  actorName: 'actorName',
+  reason: 'reason',
+  fromRank: 'fromRank',
+  toRank: 'toRank',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffRecordScalarFieldEnum = (typeof StaffRecordScalarFieldEnum)[keyof typeof StaffRecordScalarFieldEnum]
+
+
+export const StaffStrikeScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  reason: 'reason',
+  actorId: 'actorId',
+  actorName: 'actorName',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffStrikeScalarFieldEnum = (typeof StaffStrikeScalarFieldEnum)[keyof typeof StaffStrikeScalarFieldEnum]
+
+
+export const StaffLeaveScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  reason: 'reason',
+  status: 'status',
+  reviewerId: 'reviewerId',
+  reviewerName: 'reviewerName',
+  reviewNote: 'reviewNote',
+  reviewedAt: 'reviewedAt',
+  messageId: 'messageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffLeaveScalarFieldEnum = (typeof StaffLeaveScalarFieldEnum)[keyof typeof StaffLeaveScalarFieldEnum]
+
+
+export const StaffShiftScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  startedAt: 'startedAt',
+  endedAt: 'endedAt',
+  durationSeconds: 'durationSeconds',
+  autoEnded: 'autoEnded',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffShiftScalarFieldEnum = (typeof StaffShiftScalarFieldEnum)[keyof typeof StaffShiftScalarFieldEnum]
 
 
 export const TicketSettingsScalarFieldEnum = {

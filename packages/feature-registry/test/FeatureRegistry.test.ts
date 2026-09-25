@@ -32,6 +32,7 @@ const commandNames = [
   "verify",
   "apply",
   "applications",
+  "staff",
 ];
 
 describe("featureRegistry", () => {
