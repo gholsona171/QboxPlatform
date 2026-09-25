@@ -3323,6 +3323,7 @@ export const TicketCategoryScalarFieldEnum = {
   enabled: 'enabled',
   position: 'position',
   supportRoleIds: 'supportRoleIds',
+  alertUserIds: 'alertUserIds',
   parentChannelId: 'parentChannelId',
   nameTemplate: 'nameTemplate',
   openMessage: 'openMessage',

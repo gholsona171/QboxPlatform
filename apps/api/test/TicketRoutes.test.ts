@@ -23,6 +23,10 @@ const gateway: TicketDiscordGateway = {
   deletePanelMessage: async () => undefined,
   postTranscript: async () => ({ messageId: "900000000000000001" }),
   directMessage: async () => true,
+  listChannels: async () => [],
+  listRoles: async () => [],
+  searchMembers: async () => [],
+  getMembers: async () => [],
 };
 
 function setup(allowed: readonly string[] = ["tickets.handle", "tickets.manage"]) {

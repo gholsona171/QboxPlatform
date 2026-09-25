@@ -82,6 +82,7 @@ export type TicketCategoryCountAggregateOutputType = {
   enabled: number
   position: number
   supportRoleIds: number
+  alertUserIds: number
   parentChannelId: number
   nameTemplate: number
   openMessage: number
@@ -151,6 +152,7 @@ export type TicketCategoryCountAggregateInputType = {
   enabled?: true
   position?: true
   supportRoleIds?: true
+  alertUserIds?: true
   parentChannelId?: true
   nameTemplate?: true
   openMessage?: true
@@ -259,6 +261,7 @@ export type TicketCategoryGroupByOutputType = {
   enabled: boolean
   position: number
   supportRoleIds: string[]
+  alertUserIds: string[]
   parentChannelId: string | null
   nameTemplate: string | null
   openMessage: string | null
@@ -303,6 +306,7 @@ export type TicketCategoryWhereInput = {
   enabled?: Prisma.BoolFilter<"TicketCategory"> | boolean
   position?: Prisma.IntFilter<"TicketCategory"> | number
   supportRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
+  alertUserIds?: Prisma.StringNullableListFilter<"TicketCategory">
   parentChannelId?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   nameTemplate?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   openMessage?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
@@ -326,6 +330,7 @@ export type TicketCategoryOrderByWithRelationInput = {
   enabled?: Prisma.SortOrder
   position?: Prisma.SortOrder
   supportRoleIds?: Prisma.SortOrder
+  alertUserIds?: Prisma.SortOrder
   parentChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   nameTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   openMessage?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -353,6 +358,7 @@ export type TicketCategoryWhereUniqueInput = Prisma.AtLeast<{
   enabled?: Prisma.BoolFilter<"TicketCategory"> | boolean
   position?: Prisma.IntFilter<"TicketCategory"> | number
   supportRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
+  alertUserIds?: Prisma.StringNullableListFilter<"TicketCategory">
   parentChannelId?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   nameTemplate?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   openMessage?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
@@ -376,6 +382,7 @@ export type TicketCategoryOrderByWithAggregationInput = {
   enabled?: Prisma.SortOrder
   position?: Prisma.SortOrder
   supportRoleIds?: Prisma.SortOrder
+  alertUserIds?: Prisma.SortOrder
   parentChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   nameTemplate?: Prisma.SortOrderInput | Prisma.SortOrder
   openMessage?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -405,6 +412,7 @@ export type TicketCategoryScalarWhereWithAggregatesInput = {
   enabled?: Prisma.BoolWithAggregatesFilter<"TicketCategory"> | boolean
   position?: Prisma.IntWithAggregatesFilter<"TicketCategory"> | number
   supportRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
+  alertUserIds?: Prisma.StringNullableListFilter<"TicketCategory">
   parentChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketCategory"> | string | null
   nameTemplate?: Prisma.StringNullableWithAggregatesFilter<"TicketCategory"> | string | null
   openMessage?: Prisma.StringNullableWithAggregatesFilter<"TicketCategory"> | string | null
@@ -425,6 +433,7 @@ export type TicketCategoryCreateInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -448,6 +457,7 @@ export type TicketCategoryUncheckedCreateInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -469,6 +479,7 @@ export type TicketCategoryUpdateInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -492,6 +503,7 @@ export type TicketCategoryUncheckedUpdateInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -514,6 +526,7 @@ export type TicketCategoryCreateManyInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -534,6 +547,7 @@ export type TicketCategoryUpdateManyMutationInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -555,6 +569,7 @@ export type TicketCategoryUncheckedUpdateManyInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -591,6 +606,7 @@ export type TicketCategoryCountOrderByAggregateInput = {
   enabled?: Prisma.SortOrder
   position?: Prisma.SortOrder
   supportRoleIds?: Prisma.SortOrder
+  alertUserIds?: Prisma.SortOrder
   parentChannelId?: Prisma.SortOrder
   nameTemplate?: Prisma.SortOrder
   openMessage?: Prisma.SortOrder
@@ -699,11 +715,20 @@ export type TicketCategoryCreatesupportRoleIdsInput = {
   set: string[]
 }
 
+export type TicketCategoryCreatealertUserIdsInput = {
+  set: string[]
+}
+
 export type TicketCategoryCreaterequiredRoleIdsInput = {
   set: string[]
 }
 
 export type TicketCategoryUpdatesupportRoleIdsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type TicketCategoryUpdatealertUserIdsInput = {
   set?: string[]
   push?: string | string[]
 }
@@ -742,6 +767,7 @@ export type TicketCategoryCreateWithoutGuildInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -763,6 +789,7 @@ export type TicketCategoryUncheckedCreateWithoutGuildInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -814,6 +841,7 @@ export type TicketCategoryScalarWhereInput = {
   enabled?: Prisma.BoolFilter<"TicketCategory"> | boolean
   position?: Prisma.IntFilter<"TicketCategory"> | number
   supportRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
+  alertUserIds?: Prisma.StringNullableListFilter<"TicketCategory">
   parentChannelId?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   nameTemplate?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
   openMessage?: Prisma.StringNullableFilter<"TicketCategory"> | string | null
@@ -834,6 +862,7 @@ export type TicketCategoryCreateWithoutTicketsInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -856,6 +885,7 @@ export type TicketCategoryUncheckedCreateWithoutTicketsInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -892,6 +922,7 @@ export type TicketCategoryUpdateWithoutTicketsInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -914,6 +945,7 @@ export type TicketCategoryUncheckedUpdateWithoutTicketsInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -934,6 +966,7 @@ export type TicketCategoryCreateManyGuildInput = {
   enabled?: boolean
   position?: number
   supportRoleIds?: Prisma.TicketCategoryCreatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryCreatealertUserIdsInput | string[]
   parentChannelId?: string | null
   nameTemplate?: string | null
   openMessage?: string | null
@@ -954,6 +987,7 @@ export type TicketCategoryUpdateWithoutGuildInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -975,6 +1009,7 @@ export type TicketCategoryUncheckedUpdateWithoutGuildInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -996,6 +1031,7 @@ export type TicketCategoryUncheckedUpdateManyWithoutGuildInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   position?: Prisma.IntFieldUpdateOperationsInput | number
   supportRoleIds?: Prisma.TicketCategoryUpdatesupportRoleIdsInput | string[]
+  alertUserIds?: Prisma.TicketCategoryUpdatealertUserIdsInput | string[]
   parentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nameTemplate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   openMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1048,6 +1084,7 @@ export type TicketCategorySelect<ExtArgs extends runtime.Types.Extensions.Intern
   enabled?: boolean
   position?: boolean
   supportRoleIds?: boolean
+  alertUserIds?: boolean
   parentChannelId?: boolean
   nameTemplate?: boolean
   openMessage?: boolean
@@ -1072,6 +1109,7 @@ export type TicketCategorySelectCreateManyAndReturn<ExtArgs extends runtime.Type
   enabled?: boolean
   position?: boolean
   supportRoleIds?: boolean
+  alertUserIds?: boolean
   parentChannelId?: boolean
   nameTemplate?: boolean
   openMessage?: boolean
@@ -1094,6 +1132,7 @@ export type TicketCategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   enabled?: boolean
   position?: boolean
   supportRoleIds?: boolean
+  alertUserIds?: boolean
   parentChannelId?: boolean
   nameTemplate?: boolean
   openMessage?: boolean
@@ -1116,6 +1155,7 @@ export type TicketCategorySelectScalar = {
   enabled?: boolean
   position?: boolean
   supportRoleIds?: boolean
+  alertUserIds?: boolean
   parentChannelId?: boolean
   nameTemplate?: boolean
   openMessage?: boolean
@@ -1127,7 +1167,7 @@ export type TicketCategorySelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "description" | "emoji" | "buttonStyle" | "enabled" | "position" | "supportRoleIds" | "parentChannelId" | "nameTemplate" | "openMessage" | "defaultPriority" | "questions" | "requiredRoleIds" | "maxOpenPerUser" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketCategory"]>
+export type TicketCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "description" | "emoji" | "buttonStyle" | "enabled" | "position" | "supportRoleIds" | "alertUserIds" | "parentChannelId" | "nameTemplate" | "openMessage" | "defaultPriority" | "questions" | "requiredRoleIds" | "maxOpenPerUser" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketCategory"]>
 export type TicketCategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   tickets?: boolean | Prisma.TicketCategory$ticketsArgs<ExtArgs>
@@ -1156,6 +1196,7 @@ export type $TicketCategoryPayload<ExtArgs extends runtime.Types.Extensions.Inte
     enabled: boolean
     position: number
     supportRoleIds: string[]
+    alertUserIds: string[]
     parentChannelId: string | null
     nameTemplate: string | null
     openMessage: string | null
@@ -1599,6 +1640,7 @@ export interface TicketCategoryFieldRefs {
   readonly enabled: Prisma.FieldRef<"TicketCategory", 'Boolean'>
   readonly position: Prisma.FieldRef<"TicketCategory", 'Int'>
   readonly supportRoleIds: Prisma.FieldRef<"TicketCategory", 'String[]'>
+  readonly alertUserIds: Prisma.FieldRef<"TicketCategory", 'String[]'>
   readonly parentChannelId: Prisma.FieldRef<"TicketCategory", 'String'>
   readonly nameTemplate: Prisma.FieldRef<"TicketCategory", 'String'>
   readonly openMessage: Prisma.FieldRef<"TicketCategory", 'String'>

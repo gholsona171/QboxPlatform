@@ -68,6 +68,7 @@ export class TicketsCommand implements DiscordCommand {
       .addStringOption((option) => option.setName("emoji").setDescription("Button emoji."))
       .addStringOption((option) => option.setName("style").setDescription("Button color.").addChoices({ name: "Blurple", value: "PRIMARY" }, { name: "Grey", value: "SECONDARY" }, { name: "Green", value: "SUCCESS" }, { name: "Red", value: "DANGER" }))
       .addRoleOption((option) => option.setName("support-role").setDescription("Extra support role for this type."))
+      .addUserOption((option) => option.setName("alert-member").setDescription("Member to add and ping on every ticket of this type."))
       .addStringOption((option) => option.setName("priority").setDescription("Default priority.").addChoices({ name: "Low", value: "LOW" }, { name: "Normal", value: "NORMAL" }, { name: "High", value: "HIGH" }, { name: "Urgent", value: "URGENT" }))
       .addStringOption((option) => option.setName("question").setDescription("Optional form question asked when opening.").setMaxLength(45)))
     .addSubcommand((sub) => sub.setName("category-toggle").setDescription("Enable or disable a ticket type.")
@@ -170,6 +171,7 @@ export class TicketsCommand implements DiscordCommand {
       }
       case "category-create": {
         const supportRole = options.optionalRole("support-role");
+        const alertMember = options.optionalUser("alert-member");
         const question = options.optionalString("question");
         const category = await tickets.saveCategory({
           guildId,
@@ -179,6 +181,7 @@ export class TicketsCommand implements DiscordCommand {
           buttonStyle: (options.optionalString("style") as TicketButtonStyle | undefined) ?? "PRIMARY",
           enabled: true,
           supportRoleIds: supportRole ? [supportRole.id] : [],
+          alertUserIds: alertMember ? [alertMember.id] : [],
           defaultPriority: (options.optionalString("priority") as TicketPriority | undefined) ?? "NORMAL",
           questions: question ? [{ id: "details", label: question, style: "PARAGRAPH", required: true, maxLength: 1000 }] : [],
           requiredRoleIds: [],

@@ -62,6 +62,10 @@ class FakeGateway implements TicketDiscordGateway {
   public async deletePanelMessage() {}
   public async postTranscript(input: TicketTranscriptPost) { this.transcripts.push(input); return { messageId: "900000000000000001" }; }
   public async directMessage(input: TicketDirectMessage) { this.dms.push(input); return true; }
+  public async listChannels() { return []; }
+  public async listRoles() { return []; }
+  public async searchMembers() { return []; }
+  public async getMembers() { return []; }
 }
 
 function actor(userId: string, roleIds: readonly string[] = [], elevated = false): TicketActor {
@@ -119,6 +123,7 @@ describe("TicketService opening", () => {
       buttonStyle: "DANGER",
       enabled: true,
       supportRoleIds: [VIP_ROLE],
+      alertUserIds: [],
       defaultPriority: "HIGH",
       nameTemplate: "appeal-{number}-{username}",
       questions: [{ id: "ban-reason", label: "Why were you banned?", style: "PARAGRAPH", required: true }],
@@ -134,11 +139,21 @@ describe("TicketService opening", () => {
     expect(gateway.notices.some((notice) => notice.channelId === LOGS)).toBe(true);
   });
 
+  it("gives alerted members access, pings them, and lets them handle the ticket", async () => {
+    const { service, gateway } = await setup();
+    const category = await service.saveCategory({ guildId: GUILD, name: "Store", buttonStyle: "SUCCESS", enabled: true, supportRoleIds: [], alertUserIds: [STAFF_2, STAFF_2], defaultPriority: "NORMAL", parentChannelId: CLOSED_CATEGORY, questions: [], requiredRoleIds: [] });
+    expect(category.alertUserIds).toEqual([STAFF_2]);
+    const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: category.id });
+    expect(gateway.spaces[0]).toMatchObject({ parentChannelId: CLOSED_CATEGORY, memberIds: [STAFF_2] });
+    expect(gateway.openings[0]?.mentionUserIds).toEqual([USER, STAFF_2]);
+    expect((await service.claim(GUILD, ticket.id, actor(STAFF_2))).claimedById).toBe(STAFF_2);
+  });
+
   it("enforces enablement, blocks, required roles, answers, and limits", async () => {
     const { service } = await setup({ blockedUserIds: [OTHER_USER], maxOpenPerUser: 1 });
     await expect(service.openTicket({ guildId: GUILD, actor: actor(OTHER_USER) })).rejects.toMatchObject({ code: "FORBIDDEN" });
     const vip = await service.saveCategory({
-      guildId: GUILD, name: "VIP", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], defaultPriority: "NORMAL",
+      guildId: GUILD, name: "VIP", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL",
       questions: [{ id: "details", label: "Details", style: "SHORT", required: true }], requiredRoleIds: [VIP_ROLE],
     });
     await expect(service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: vip.id, answers: { details: "x" } })).rejects.toMatchObject({ code: "FORBIDDEN" });
@@ -274,8 +289,8 @@ describe("TicketService closing", () => {
 describe("TicketService panels", () => {
   it("validates categories and publishes panels", async () => {
     const { service, gateway } = await setup();
-    const general = await service.saveCategory({ guildId: GUILD, name: "General", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
-    await expect(service.saveCategory({ guildId: GUILD, name: "general", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] })).rejects.toMatchObject({ code: "CONFLICT" });
+    const general = await service.saveCategory({ guildId: GUILD, name: "General", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+    await expect(service.saveCategory({ guildId: GUILD, name: "general", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] })).rejects.toMatchObject({ code: "CONFLICT" });
     await expect(service.savePanel({ guildId: GUILD, name: "Main", channelId: PANEL_CHANNEL, title: "Support", description: "Open a ticket", color: "#5865F2", style: "BUTTONS", placeholder: "Pick", categoryIds: ["missing"] })).rejects.toMatchObject({ code: "INVALID_INPUT" });
     const panel = await service.savePanel({ guildId: GUILD, name: "Main", channelId: PANEL_CHANNEL, title: "Support", description: "Open a ticket", color: "5865f2", style: "BUTTONS", placeholder: "Pick", categoryIds: [general.id] });
     const published = await service.publishPanel(GUILD, panel.id);
@@ -301,7 +316,7 @@ describe("DiscordRestTicketGateway", () => {
   it("creates private channels that hide the ticket from everyone", async () => {
     const rest = new RecordingRest();
     const gateway = new DiscordRestTicketGateway(rest);
-    await gateway.createTicketSpace({ guildId: GUILD, mode: "CHANNEL", parentChannelId: CATEGORY_CHANNEL, name: "ticket-1", openerId: USER, supportRoleIds: [SUPPORT_ROLE], topic: "t" });
+    await gateway.createTicketSpace({ guildId: GUILD, mode: "CHANNEL", parentChannelId: CATEGORY_CHANNEL, name: "ticket-1", openerId: USER, supportRoleIds: [SUPPORT_ROLE], memberIds: [], topic: "t" });
     const create = rest.calls.find((call) => call.route === `/guilds/${GUILD}/channels`);
     const overwrites = (create?.options?.body as { permission_overwrites: { id: string; deny: string; allow: string }[] }).permission_overwrites;
     expect(overwrites.find((item) => item.id === GUILD)?.deny).toBe(String(1n << 10n));
@@ -310,7 +325,7 @@ describe("DiscordRestTicketGateway", () => {
 
   it("creates private threads and adds the opener", async () => {
     const rest = new RecordingRest();
-    await new DiscordRestTicketGateway(rest).createTicketSpace({ guildId: GUILD, mode: "THREAD", parentChannelId: PANEL_CHANNEL, name: "ticket-1", openerId: USER, supportRoleIds: [], topic: "t" });
+    await new DiscordRestTicketGateway(rest).createTicketSpace({ guildId: GUILD, mode: "THREAD", parentChannelId: PANEL_CHANNEL, name: "ticket-1", openerId: USER, supportRoleIds: [], memberIds: [], topic: "t" });
     expect(rest.calls.map((call) => `${call.method} ${call.route}`)).toEqual([
       `POST /channels/${PANEL_CHANNEL}/threads`,
       `PUT /channels/123456789012345678/thread-members/${USER}`,
@@ -322,7 +337,7 @@ describe("DiscordRestTicketGateway", () => {
     const gateway = new DiscordRestTicketGateway(rest);
     const categories = Array.from({ length: 7 }, (_, index) => ({
       id: `cat-${index}`, guildId: GUILD, name: `Type ${index}`, buttonStyle: "PRIMARY" as const, enabled: true, position: index,
-      supportRoleIds: [], defaultPriority: "NORMAL" as const, questions: [], requiredRoleIds: [], emoji: "<:qb:123456789012345678>",
+      supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL" as const, questions: [], requiredRoleIds: [], emoji: "<:qb:123456789012345678>",
     }));
     const panel = { id: "p", guildId: GUILD, name: "Main", channelId: PANEL_CHANNEL, title: "Support", description: "d", color: "#5865F2", style: "BUTTONS" as const, placeholder: "Pick", categoryIds: [] };
     await gateway.publishPanel({ panel, categories });

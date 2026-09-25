@@ -91,6 +91,7 @@ export function validateCategory(input: TicketCategoryInput): void {
   if (!TICKET_PRIORITIES.includes(input.defaultPriority)) invalid("defaultPriority is not supported.");
   requireRoleList("supportRoleIds", input.supportRoleIds);
   requireRoleList("requiredRoleIds", input.requiredRoleIds);
+  requireRoleList("alertUserIds", input.alertUserIds);
   optionalSnowflake("parentChannelId", input.parentChannelId);
   if (input.nameTemplate !== undefined) requireLength("nameTemplate", input.nameTemplate, 1, 90);
   if (input.openMessage !== undefined) requireLength("openMessage", input.openMessage, 1, 2000);

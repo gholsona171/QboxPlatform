@@ -63,6 +63,7 @@ describe("permission foundation migration", () => {
       "20260802193000_role_management_parity",
       "20260802203000_role_management_conflict_metadata",
       "20260925090000_ticket_system",
+      "20260925120000_ticket_alert_members",
     ]);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",

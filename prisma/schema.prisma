@@ -668,6 +668,7 @@ model TicketCategory {
   enabled         Boolean        @default(true)
   position        Int            @default(0)
   supportRoleIds  String[]       @map("support_role_ids")
+  alertUserIds    String[]       @map("alert_user_ids")
   parentChannelId String?        @map("parent_channel_id")
   nameTemplate    String?        @map("name_template")
   openMessage     String?        @map("open_message")

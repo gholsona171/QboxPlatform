@@ -84,6 +84,8 @@ export interface TicketCategory {
   readonly position: number;
   /** Extra support roles for this category, added to the global roles. */
   readonly supportRoleIds: readonly string[];
+  /** Members who get access to and are pinged on every ticket of this type. */
+  readonly alertUserIds: readonly string[];
   /** Overrides the Discord category (channel mode) or parent channel (thread mode). */
   readonly parentChannelId?: string | undefined;
   readonly nameTemplate?: string | undefined;
@@ -286,6 +288,8 @@ export interface TicketSpaceInput {
   readonly name: string;
   readonly openerId: string;
   readonly supportRoleIds: readonly string[];
+  /** Individual members given access in addition to the opener and support roles. */
+  readonly memberIds: readonly string[];
   readonly topic: string;
 }
 
@@ -360,6 +364,29 @@ export interface TicketDirectMessage {
   readonly feedbackTicketId?: string | undefined;
 }
 
+/** Discord server resources shown in the portal pickers. */
+export interface TicketDirectoryChannel {
+  readonly id: string;
+  readonly name: string;
+  readonly type: "TEXT" | "ANNOUNCEMENT" | "CATEGORY" | "FORUM" | "OTHER";
+  readonly parentId?: string | undefined;
+  readonly position: number;
+}
+
+export interface TicketDirectoryRole {
+  readonly id: string;
+  readonly name: string;
+  readonly color: string;
+  readonly position: number;
+}
+
+export interface TicketDirectoryMember {
+  readonly id: string;
+  readonly username: string;
+  readonly displayName: string;
+  readonly avatarUrl?: string | undefined;
+}
+
 /** Discord operations the ticket service needs. */
 export interface TicketDiscordGateway {
   createTicketSpace(input: TicketSpaceInput): Promise<{ readonly channelId: string }>;
@@ -374,6 +401,10 @@ export interface TicketDiscordGateway {
   deletePanelMessage(channelId: string, messageId: string): Promise<void>;
   postTranscript(input: TicketTranscriptPost): Promise<{ readonly messageId: string }>;
   directMessage(input: TicketDirectMessage): Promise<boolean>;
+  listChannels(guildId: string): Promise<readonly TicketDirectoryChannel[]>;
+  listRoles(guildId: string): Promise<readonly TicketDirectoryRole[]>;
+  searchMembers(guildId: string, query: string): Promise<readonly TicketDirectoryMember[]>;
+  getMembers(guildId: string, userIds: readonly string[]): Promise<readonly TicketDirectoryMember[]>;
 }
 
 /** Who is acting on a ticket, as seen by the service. */

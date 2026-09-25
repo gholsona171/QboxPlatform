@@ -93,6 +93,7 @@ const categorySchema = z.strictObject({
   enabled: z.boolean().default(true),
   position: z.number().int().min(0).max(100).optional(),
   supportRoleIds: snowflakes,
+  alertUserIds: snowflakes,
   parentChannelId: optionalSnowflake,
   nameTemplate: z.string().optional(),
   openMessage: z.string().optional(),
@@ -136,7 +137,7 @@ const userSchema = z.strictObject({ userId: snowflake });
 export function registerTicketRoutes(server: FastifyInstance, dependencies: TicketRouteDependencies): void {
   const { tickets, guildId, guard } = dependencies;
   const handler = (request: FastifyRequest, options = { mutation: false }) => guard(request, "tickets.handle", options);
-  const manager = (request: FastifyRequest) => guard(request, "tickets.manage", { mutation: true });
+  const manager = (request: FastifyRequest, mutation = true) => guard(request, "tickets.manage", { mutation });
   const actor = (identity: TicketStaffIdentity): TicketActor => ({
     userId: identity.userId,
     displayName: identity.displayName,
@@ -155,6 +156,21 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
       tickets.stats(guildId),
     ]);
     return { data: { settings, categories, panels, stats } };
+  });
+
+  server.get("/api/v1/tickets/directory", async (request, reply) => {
+    noStore(reply);
+    await manager(request, false);
+    const query = request.query && typeof request.query === "object" ? Reflect.get(request.query, "members") : undefined;
+    const memberIds = typeof query === "string" ? query.split(",").filter((id) => /^\d{17,20}$/.test(id)) : [];
+    return { data: await safe(() => tickets.directory(guildId, memberIds)) };
+  });
+
+  server.get("/api/v1/tickets/directory/members", async (request, reply) => {
+    noStore(reply);
+    await manager(request, false);
+    const query = request.query && typeof request.query === "object" ? Reflect.get(request.query, "query") : undefined;
+    return { data: await safe(() => tickets.searchMembers(guildId, typeof query === "string" ? query : "")) };
   });
 
   server.put("/api/v1/tickets/settings", async (request) => {

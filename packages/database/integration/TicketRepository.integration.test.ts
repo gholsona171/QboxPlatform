@@ -33,6 +33,10 @@ const gateway: TicketDiscordGateway = {
   deletePanelMessage: async () => undefined,
   postTranscript: async () => ({ messageId: "1432100000000000003" }),
   directMessage: async () => true,
+  listChannels: async () => [],
+  listRoles: async () => [],
+  searchMembers: async () => [],
+  getMembers: async () => [],
 };
 const service = new TicketService(repository, gateway);
 
@@ -73,6 +77,7 @@ describe("PrismaTicketRepository", () => {
       buttonStyle: "SUCCESS",
       enabled: true,
       supportRoleIds: [],
+      alertUserIds: [],
       defaultPriority: "HIGH",
       questions: [{ id: "order", label: "Order ID", style: "SHORT", required: true, maxLength: 40 }],
       requiredRoleIds: [],
@@ -109,7 +114,7 @@ describe("PrismaTicketRepository", () => {
 
   it("keeps tickets when their category is deleted", async () => {
     await enable();
-    const category = await service.saveCategory({ guildId, name: "Temp", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+    const category = await service.saveCategory({ guildId, name: "Temp", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
     const ticket = await service.openTicket({ guildId, actor: opener, categoryId: category.id });
     await service.deleteCategory(guildId, category.id);
     const reloaded = await service.ticket(guildId, ticket.id);
