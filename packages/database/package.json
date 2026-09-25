@@ -21,6 +21,7 @@
     "@qbox/prisma": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/scheduled-messages": "workspace:*",
+    "@qbox/server-builder": "workspace:*",
     "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "@qbox/verification": "workspace:*",

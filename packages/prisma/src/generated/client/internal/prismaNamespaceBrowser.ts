@@ -87,6 +87,9 @@ export const ModelName = {
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
   BirthdaySettings: 'BirthdaySettings',
   Birthday: 'Birthday',
+  BuilderDraft: 'BuilderDraft',
+  BuilderRun: 'BuilderRun',
+  BuilderRunItem: 'BuilderRunItem',
   FivemSettings: 'FivemSettings',
   FivemStatusSnapshot: 'FivemStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
@@ -815,6 +818,61 @@ export const BirthdayScalarFieldEnum = {
 } as const
 
 export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
+
+
+export const BuilderDraftScalarFieldEnum = {
+  guildId: 'guildId',
+  answers: 'answers',
+  blueprint: 'blueprint',
+  updatedById: 'updatedById',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderDraftScalarFieldEnum = (typeof BuilderDraftScalarFieldEnum)[keyof typeof BuilderDraftScalarFieldEnum]
+
+
+export const BuilderRunScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  status: 'status',
+  mode: 'mode',
+  links: 'links',
+  planned: 'planned',
+  done: 'done',
+  skipped: 'skipped',
+  failed: 'failed',
+  startedById: 'startedById',
+  startedByName: 'startedByName',
+  warnings: 'warnings',
+  error: 'error',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  undoneAt: 'undoneAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderRunScalarFieldEnum = (typeof BuilderRunScalarFieldEnum)[keyof typeof BuilderRunScalarFieldEnum]
+
+
+export const BuilderRunItemScalarFieldEnum = {
+  id: 'id',
+  runId: 'runId',
+  sequence: 'sequence',
+  kind: 'kind',
+  key: 'key',
+  name: 'name',
+  discordId: 'discordId',
+  status: 'status',
+  error: 'error',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BuilderRunItemScalarFieldEnum = (typeof BuilderRunItemScalarFieldEnum)[keyof typeof BuilderRunItemScalarFieldEnum]
 
 
 export const FivemSettingsScalarFieldEnum = {
