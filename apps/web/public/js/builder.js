@@ -160,9 +160,9 @@ function categoryCard(category, access) {
     return `<li class="builder-channel">
       <span class="builder-type" title="${escapeHtml(channel.type.toLowerCase())}">${TYPE_ICONS[channel.type]}</span>
       <input class="inline-name" data-b-rename-channel="${escapeHtml(channel.key)}" value="${escapeHtml(channel.name)}" aria-label="Channel name">
-      ${channel.purpose ? badge(channel.purpose) : ""}
-      <small class="microcopy">${who ? `Sees: ${escapeHtml(who.see)} · ${isVoice(channel.type) ? "Joins" : "Posts"}: ${escapeHtml(who.post.replace(/^join: /, ""))}` : ""}</small>
+      <span>${channel.purpose ? badge(channel.purpose) : ""}</span>
       <button type="button" class="button compact" data-b-remove-channel="${escapeHtml(channel.key)}">Remove</button>
+      <small class="microcopy">${who ? `Sees: ${escapeHtml(who.see)} · ${isVoice(channel.type) ? "Joins" : "Posts"}: ${escapeHtml(who.post.replace(/^join: /, ""))}` : ""}</small>
     </li>`;
   }).join("");
   return `<div class="card">
