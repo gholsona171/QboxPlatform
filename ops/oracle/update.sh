@@ -5,15 +5,26 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
-git fetch --quiet origin main
-if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-  CHANGED="$(git diff --name-only HEAD origin/main)"
-  echo "Updating to $(git rev-parse --short origin/main)"
-  git merge --ff-only --quiet origin/main
+# GitHub builds main and publishes the result to the "deploy" branch
+# (.github/workflows/deploy-build.yml), so the server only downloads and
+# restarts. Without that branch it falls back to building main here.
+if git fetch --quiet origin main deploy 2>/dev/null; then
+  TARGET=origin/deploy PREBUILT=1
+else
+  git fetch --quiet origin main
+  TARGET=origin/main PREBUILT=0
+fi
+
+if [ "$(git rev-parse HEAD)" != "$(git rev-parse "$TARGET")" ]; then
+  CHANGED="$(git diff --name-only HEAD "$TARGET")"
+  echo "Updating to $(git rev-parse --short "$TARGET")"
+  git reset --hard --quiet "$TARGET"
   if [ "$CHANGED" != "ops/discord-server-id" ]; then
     pnpm install --frozen-lockfile
-    pnpm build
-    git rev-parse HEAD > .qbox-built-commit
+    if [ "$PREBUILT" = 0 ]; then
+      pnpm build
+      git rev-parse HEAD > .qbox-built-commit
+    fi
   fi
 fi
 

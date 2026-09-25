@@ -31,7 +31,7 @@ Finally, add `https://<portal address>/auth/discord/callback` under **Discord De
 
 ## Updates
 
-`qbox-update.timer` checks GitHub every 5 minutes. When `main` changes, the server pulls it, rebuilds, re-registers slash commands, and restarts. Database changes are applied by the GitHub workflow.
+When `main` changes, the **Deploy build** GitHub workflow compiles Qbox and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers slash commands, and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
 
 ## Moving to a different Discord server
 
