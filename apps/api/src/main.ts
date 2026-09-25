@@ -1,3 +1,6 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { logger } from "@qbox/logger";
 import { createApiApplication } from "./composition/ApiApplication.js";
 import type { ApiConfigurationInput } from "./config/ApiConfiguration.js";
@@ -18,6 +21,7 @@ export interface ApiProcessEnvironment {
   readonly API_TRUST_PROXY?: string | undefined;
   readonly API_ALLOWED_HOSTS?: string | undefined;
   readonly API_PUBLIC_BASE_URL?: string | undefined;
+  readonly API_PORTAL_DIRECTORY?: string | undefined;
   readonly LOG_LEVEL?: string | undefined;
   readonly QBOX_BUILD_VERSION?: string | undefined;
   readonly DISCORD_OAUTH_CLIENT_ID?: string | undefined;
@@ -75,6 +79,7 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
       applicationId: environment.DISCORD_APPLICATION_ID,
     },
     databaseUrl: environment.DATABASE_URL,
+    portalDirectory: portalDirectoryFromEnvironment(environment.API_PORTAL_DIRECTORY),
   });
   const removeSignals = installApiSignalHandlers(application, logger);
   try {
@@ -115,4 +120,17 @@ function parseTrustProxy(value: string | undefined): false | readonly string[] |
 function parseOptionalCsv(value: string | undefined): readonly string[] | undefined {
   if (value === undefined || value.trim() === "") return undefined;
   return value.split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+/**
+ * Resolves the portal asset directory. `disabled` turns portal hosting off;
+ * otherwise the configured or workspace `apps/web/public` directory is used
+ * when it contains `index.html`.
+ */
+export function portalDirectoryFromEnvironment(value: string | undefined): string | undefined {
+  if (value?.trim() === "disabled") return undefined;
+  const directory = value?.trim()
+    ? resolve(value.trim())
+    : fileURLToPath(new URL("../../web/public/", import.meta.url));
+  return existsSync(resolve(directory, "index.html")) ? directory : undefined;
 }

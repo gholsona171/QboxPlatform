@@ -2,7 +2,7 @@
 
 ## Status and estimation notes
 
-QboxPlatform has an implemented TypeScript monorepo, platform kernel, persistent PostgreSQL permission system, complete Discord command platform, hardened Fastify API foundation, and a browser-accessible authentication proof of concept. The proof of concept includes Discord OAuth login, first-login platform account creation, encrypted OAuth credential persistence, guild membership verification, opaque session cookies, authenticated request actor binding, `/api/v1/me`, `/api/v1/admin-check`, logout, and a framework-free dashboard that can be served locally or deployed as an independent Vercel web workspace. Worker, scheduler, OpenAI, FiveM/Qbox, and feature-module areas remain placeholders or empty directories.
+QboxPlatform has an implemented TypeScript monorepo, platform kernel, persistent PostgreSQL permission system, complete Discord command platform, hardened Fastify API foundation, and a browser-accessible authentication proof of concept. The proof of concept includes Discord OAuth login, first-login platform account creation, encrypted OAuth credential persistence, guild membership verification, opaque session cookies, authenticated request actor binding, `/api/v1/me`, `/api/v1/admin-check`, logout, and a framework-free portal served by the Qbox API and previewed on GitHub Pages. Worker, scheduler, OpenAI, FiveM/Qbox, and feature-module areas remain placeholders or empty directories.
 
 This roadmap separates existing functionality from planned work. A listed milestone does not indicate that its work is already implemented.
 
@@ -158,7 +158,7 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - An unbound Fastify server factory with immutable configuration, request context, structured request logging, typed Problem Details errors, metrics boundary, health endpoints, and injection tests.
 - Persistence-first process lifecycle, loopback socket binding, health/readiness composition, graceful signal shutdown, Zod transport validation, and HTTP hardening.
 - Pure authentication contracts, additive PostgreSQL models, repository/crypto/session/credential/membership services, Discord provider infrastructure, browser login routes, authenticated actor binding, and proof-of-concept account/permission endpoints exist.
-- `apps/web` contains a deployable Vercel static dashboard and same-origin proxy to the VPS API.
+- `apps/web` contains the static portal, served by the Qbox API on the live platform and published as a Demo Mode preview on GitHub Pages.
 - General authentication middleware, service credentials, account-management endpoints, and production domain-management APIs remain deferred.
 
 ## Milestone 4.1 — Establish the API runtime

@@ -1,3 +1,4 @@
+import { appPath, currentRoutePage } from "./config.js";
 import { navItems } from "./data.js";
 import { adminCheck, loginUrl, logout } from "./api.js";
 import { initializeModal, notify } from "./ui.js";
@@ -8,7 +9,7 @@ const pages = new Set(navItems.map(([page]) => page));
 initializeModal();
 
 document.getElementById("navigation").innerHTML = navItems
-  .map(([page, icon, label]) => `<a class="nav-link" href="/${page === "overview" ? "" : page}" data-route="${page}" data-page="${page}"><span class="nav-icon">${icon}</span><span>${label}</span></a>`)
+  .map(([page, icon, label]) => `<a class="nav-link" href="${appPath(page === "overview" ? "/" : `/${page}`)}" data-route="${page}" data-page="${page}"><span class="nav-icon">${icon}</span><span>${label}</span></a>`)
   .join("");
 
 document.addEventListener("click", async (event) => {
@@ -63,12 +64,12 @@ renderAccountChrome();
 
 function navigate(page, tab) {
   const path = page === "overview" ? "/" : `/${page}${tab ? `?tab=${encodeURIComponent(tab)}` : ""}`;
-  history.pushState({}, "", path);
+  history.pushState({}, "", appPath(path));
   renderPage(page);
 }
 
 function renderCurrentRoute() {
-  const page = location.pathname.split("/").filter(Boolean)[0] || "overview";
+  const page = currentRoutePage();
   renderPage(pages.has(page) ? page : "overview");
 }
 

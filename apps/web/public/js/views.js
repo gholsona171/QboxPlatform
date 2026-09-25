@@ -1,3 +1,4 @@
+import { appPath, currentRoutePage, liveUrl, staticHosting } from "./config.js";
 import { appVersion } from "./data.js";
 import { addRoleMenuOption, adminCheck, createDiscordRole, createRoleMenu, deleteDiscordRole, deleteRoleMenu, disableRoleMenu, editDiscordRole, inspectDiscordRole, listDiscordChannels, listDiscordRoleDependencies, listDiscordRoles, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, moveDiscordRole, publishRoleMenu, saveDiscordFeature } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
@@ -92,7 +93,7 @@ function discordPage(state) {
   return `
     ${shellIntro("Discord Bot", "Discord remains fully usable without the portal. The portal configures and manages the same underlying features. Demo sections are browser-only until their backend is implemented.")}
     <section class="discord-tabs" aria-label="Discord Bot sections">
-      ${tabs.map(([id, label]) => `<a class="button compact ${tab === id ? "primary" : "ghost"}" href="/discord?tab=${id}" data-route="discord" data-tab="${id}">${escapeHtml(label)}</a>`).join("")}
+      ${tabs.map(([id, label]) => `<a class="button compact ${tab === id ? "primary" : "ghost"}" href="${appPath(`/discord?tab=${id}`)}" data-route="discord" data-tab="${id}">${escapeHtml(label)}</a>`).join("")}
     </section>
     ${tab === "role-management" ? discordRoleManagementPage(state) : tab === "roles" ? discordRoleMenusPage(state) : discordCommunityFeaturePage(state, tab)}
   `;
@@ -523,7 +524,7 @@ function fivemPage(state) {
 
 function settingsPage(state) {
   const storageKeys = safeLocalStorageSnapshot();
-  return `${shellIntro("Settings", "Configure demo preferences, inspect live-service status, and reset browser-only data.")}<section class="grid cols-2"><div class="card"><h2>Demo Mode</h2>${detail("Status", "Active for product module pages")}${detail("Stored keys", storageKeys.join(", ") || "None")}${detail("Public version", appVersion)}<button class="button danger" data-action="reset-demo">Reset Demo Data</button></div><div class="card"><h2>Live services</h2>${detail("API connection", live.available ? "Reachable" : "Live services are not connected yet")}${detail("Discord authentication", account ? "Authenticated" : "Not authenticated")}${detail("Health", "/health/live and /health/ready remain available through the proxy")}<a class="button" href="/health/live" target="_blank" rel="noreferrer">Open liveness</a><a class="button" href="/health/ready" target="_blank" rel="noreferrer">Open readiness</a></div><div class="card"><h2>Preferences</h2><form class="form-grid" data-action="save-settings">${select("theme", "Theme", ["Dark"], state.settings.theme === "dark" ? "Dark" : "Dark")}${select("notifications", "Notifications", ["On", "Off"], state.settings.notifications ? "On" : "Off")}<button class="button primary full">Save preferences</button></form></div><div class="card"><h2>Account</h2><p class="microcopy">Discord login remains available but is not required to explore Demo Mode.</p><a class="button primary" href="${loginUrl()}">Login with Discord</a><button class="button danger" data-action="logout">Logout</button></div></section>`;
+  return `${shellIntro("Settings", "Configure demo preferences, inspect live-service status, and reset browser-only data.")}<section class="grid cols-2"><div class="card"><h2>Demo Mode</h2>${detail("Status", "Active for product module pages")}${detail("Stored keys", storageKeys.join(", ") || "None")}${detail("Public version", appVersion)}<button class="button danger" data-action="reset-demo">Reset Demo Data</button></div><div class="card"><h2>Live services</h2>${detail("API connection", live.available ? "Reachable" : "Live services are not connected yet")}${detail("Discord authentication", account ? "Authenticated" : "Not authenticated")}${staticHosting() ? `${detail("Hosting", "GitHub Pages preview (Demo Mode)")}${liveUrl() ? `<a class="button primary" href="${escapeHtml(liveUrl())}/">Open live platform</a>` : ""}` : `${detail("Health", "/health/live and /health/ready are served by the Qbox API")}<a class="button" href="${appPath("/health/live")}" target="_blank" rel="noreferrer">Open liveness</a><a class="button" href="${appPath("/health/ready")}" target="_blank" rel="noreferrer">Open readiness</a>`}</div><div class="card"><h2>Preferences</h2><form class="form-grid" data-action="save-settings">${select("theme", "Theme", ["Dark"], state.settings.theme === "dark" ? "Dark" : "Dark")}${select("notifications", "Notifications", ["On", "Off"], state.settings.notifications ? "On" : "Off")}<button class="button primary full">Save preferences</button></form></div><div class="card"><h2>Account</h2><p class="microcopy">Discord login remains available but is not required to explore Demo Mode.</p><a class="button primary" href="${loginUrl()}">Login with Discord</a><button class="button danger" data-action="logout">Logout</button></div></section>`;
 }
 
 function bindPageEvents(page) {
@@ -956,7 +957,7 @@ function metric(label, value, detailText) {
 }
 
 function quick(page, label) {
-  return `<a class="button" href="/${page}" data-route="${page}">${escapeHtml(label)}</a>`;
+  return `<a class="button" href="${appPath(`/${page}`)}" data-route="${page}">${escapeHtml(label)}</a>`;
 }
 
 function toolbar(placeholder, id, filters) {
@@ -1010,7 +1011,7 @@ function value(selector) {
 }
 
 function currentPage() {
-  return location.pathname.split("/").filter(Boolean)[0] || "overview";
+  return currentRoutePage();
 }
 
 function pageTitle(page) {

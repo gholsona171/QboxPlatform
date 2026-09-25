@@ -4,8 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="QboxPlatform dashboard proof of concept">
+  <meta name="qbox-hosting" content="live">
+  <meta name="qbox-live-url" content="">
+  <base href="/">
   <title>QboxPlatform Dashboard</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -45,7 +48,7 @@
             </button>
             <div class="profile-popover" id="profilePopover" hidden>
               <div id="profileSummary">Demo Mode is active.</div>
-              <a class="button compact" href="/auth/discord/start" id="loginButton">Login with Discord</a>
+              <a class="button compact" href="auth/discord/start" id="loginButton">Login with Discord</a>
               <button class="button compact danger" id="logoutButton">Logout</button>
             </div>
           </div>
@@ -73,6 +76,6 @@
     </div>
   </div>
 
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

@@ -1,6 +1,9 @@
+import { appPath, liveUrl, staticHosting } from "./config.js";
+
 const csrfCookieName = document.cookie.includes("__Host-qbox_csrf=") ? "__Host-qbox_csrf" : "qbox_csrf";
 
 export async function loadHealth() {
+  if (staticHosting()) return { available: false, message: "This is the GitHub Pages preview. Open the live platform to manage Discord." };
   try {
     const [live, ready] = await Promise.all([
       requestJson("/health/live"),
@@ -13,6 +16,7 @@ export async function loadHealth() {
 }
 
 export async function loadMe(refresh = false) {
+  if (staticHosting()) throw Object.assign(new Error("Login on the live platform."), { code: "AUTHENTICATION_REQUIRED" });
   return requestJson(`/api/v1/me${refresh ? "?refresh=1" : ""}`);
 }
 
@@ -132,7 +136,8 @@ export async function logout() {
 }
 
 export function loginUrl() {
-  return "/auth/discord/start";
+  if (staticHosting()) return liveUrl() ? `${liveUrl()}/auth/discord/start` : "#";
+  return appPath("/auth/discord/start");
 }
 
 export function cookieValue(name) {
@@ -143,7 +148,8 @@ export function cookieValue(name) {
 }
 
 async function requestJson(path, options = {}) {
-  const response = await fetch(path, {
+  if (staticHosting()) throw Object.assign(new Error("Live services are available on the live platform."), { code: "DEPENDENCY_UNAVAILABLE" });
+  const response = await fetch(appPath(path), {
     credentials: "same-origin",
     ...options,
   });

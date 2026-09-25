@@ -11,11 +11,11 @@
 ## `@qbox/web`
 
 - **Location:** `apps/web/`
-- **Purpose:** Static, framework-free browser dashboard for the QboxPlatform proof of concept. It is designed to be deployed independently by Vercel with `apps/web` as the project root and calls only same-origin API, auth, and health paths.
-- **Entry points:** `apps/web/index.html`, `apps/web/app.js`, `apps/web/styles.css`
-- **Vercel proxy:** `apps/web/api/[...path].js` forwards `/api/*`, `/auth/*`, and `/health/*` to the configured VPS API origin from `QBOX_API_ORIGIN` without exposing that origin to browser JavaScript.
+- **Purpose:** Static, framework-free browser portal for QboxPlatform. The Qbox API serves it from the API origin (live platform), and `.github/workflows/pages.yml` publishes a Demo Mode preview to GitHub Pages.
+- **Entry points:** `apps/web/public/index.html`, `apps/web/public/js/app.js`, `apps/web/public/styles.css`
+- **Hosting:** `apps/api/src/portal/PortalStaticRoutes.ts` serves the portal with client-side route fallback; `scripts/build-pages.mjs` builds the GitHub Pages preview.
 - **Declared dependencies:** None.
-- **Scripts:** `build`, `test`
+- **Scripts:** `test`
 
 ## `@qbox/bot`
 
@@ -303,7 +303,6 @@ Each command file exports a named `command` instance. `CommandLoader` discovers 
 | `.gitignore`          | Ignored secrets, dependencies, generated output, coverage, logs, editor files, and temporary files |
 | `.env.example`        | Names of environment settings recognized by the repository                                         |
 | `.env`                | Local environment values; ignored by Git and loaded by `@qbox/shared`                              |
-| `AGENTS.md`           | Operating instructions for AI coding agents                                                        |
 | `PROJECT_CHARTER.md`  | Repository engineering principles and definition of done                                           |
 
 ## Workspace configuration
@@ -355,7 +354,7 @@ Environment variable names recognized by current source or `.env.example`:
 
 `PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED` defaults to enabled and accepts the exact value `false` to request retirement. Startup then requires persistent owner and administrator recovery paths.
 
-The API browser proof of concept additionally requires Discord OAuth configuration and authentication key material. Development keys can be generated with `pnpm --filter @qbox/api auth:keys`; generated values belong only in ignored local environment configuration. The Vercel web project uses `QBOX_API_ORIGIN` to proxy same-origin browser requests to the public HTTPS VPS API.
+The API browser proof of concept additionally requires Discord OAuth configuration and authentication key material. Development keys can be generated with `pnpm --filter @qbox/api auth:keys`; generated values belong only in ignored local environment configuration. The API serves the portal from `API_PUBLIC_BASE_URL`, so browser requests stay same-origin without a proxy.
 
 # Build Pipeline
 

@@ -111,7 +111,7 @@ describe("API transport hardening", () => {
   it("accepts configured public API hosts separate from the browser public base URL", async () => {
     const server = createApiServer({
       configuration: configuration({
-        publicBaseUrl: "https://qbox-platform.vercel.app",
+        publicBaseUrl: "https://qbox.example.com",
         allowedHosts: ["qbox-vps.tailnet.ts.net"],
       }),
     });
@@ -128,7 +128,7 @@ describe("API transport hardening", () => {
     const server = createApiServer({
       configuration: configuration({
         environment: "development",
-        publicBaseUrl: "https://qbox-platform.vercel.app",
+        publicBaseUrl: "https://qbox.example.com",
       }),
     });
     const response = await server.inject({
