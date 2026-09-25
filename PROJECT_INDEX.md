@@ -11,7 +11,7 @@
 ## `@qbox/web`
 
 - **Location:** `apps/web/`
-- **Purpose:** Static, framework-free browser portal for QboxPlatform. The Qbox API serves it from the API origin (live platform), and `.github/workflows/pages.yml` publishes a Demo Mode preview to GitHub Pages.
+- **Purpose:** Static, framework-free browser portal for QboxPlatform. The Qbox API serves it from the API origin (live platform), and `.github/workflows/pages.yml` publishes a sign-in page to GitHub Pages that links to the live platform.
 - **Entry points:** `apps/web/public/index.html`, `apps/web/public/js/app.js`, `apps/web/public/styles.css`
 - **Hosting:** `apps/api/src/portal/PortalStaticRoutes.ts` serves the portal with client-side route fallback; `scripts/build-pages.mjs` builds the GitHub Pages preview.
 - **Declared dependencies:** None.

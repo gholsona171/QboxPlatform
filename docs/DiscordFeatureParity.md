@@ -20,13 +20,13 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Starboard | LIVE | starboard |  | messageReactionAdd, messageDelete | /api/v1/discord/starboard | /discord?tab=starboard | discord.starboard.manage | StarboardConfig, StarboardEntry | Discord yes / Portal yes |
 | Applications | PLANNED |  |  |  |  | /applications |  |  | Discord no / Portal no |
 | Tickets | LIVE | ticket, tickets | ticket panel buttons, ticket select menus, ticket forms, close/claim/reopen/transcript buttons, feedback ratings | messageCreate, channelDelete, threadDelete, auto-close timer | /api/v1/tickets, /api/v1/tickets/overview, /api/v1/tickets/settings, /api/v1/tickets/categories, /api/v1/tickets/panels | /tickets | tickets.manage, tickets.handle | TicketSettings, TicketCategory, TicketPanel, Ticket, TicketMessage, TicketEvent | Discord yes / Portal yes |
-| Staff | DEMO |  |  |  |  | /staff |  |  | Discord no / Portal yes |
+| Staff | PLANNED |  |  |  |  | /staff |  |  | Discord no / Portal no |
 | Moderation | PLANNED |  |  |  |  | /moderation |  |  | Discord no / Portal no |
-| Verification | DEMO |  |  |  |  | /verification |  |  | Discord no / Portal yes |
-| Polls | DEMO |  |  |  |  | /polls |  |  | Discord no / Portal yes |
-| Birthdays | DEMO |  |  |  |  | /birthdays |  |  | Discord no / Portal yes |
-| Knowledge Base | DEMO |  |  |  |  | /knowledge |  |  | Discord no / Portal yes |
-| FiveM Server | DEMO |  |  |  |  | /fivem |  |  | Discord no / Portal yes |
+| Verification | PLANNED |  |  |  |  | /verification |  |  | Discord no / Portal no |
+| Polls | PLANNED |  |  |  |  | /polls |  |  | Discord no / Portal no |
+| Birthdays | PLANNED |  |  |  |  | /birthdays |  |  | Discord no / Portal no |
+| Knowledge Base | PLANNED |  |  |  |  | /knowledge |  |  | Discord no / Portal no |
+| FiveM Server | PLANNED |  |  |  |  | /fivem |  |  | Discord no / Portal no |
 | Scheduled Messages | PLANNED |  |  |  |  | /discord?tab=scheduled |  |  | Discord no / Portal no |
 | Giveaways | PLANNED |  |  |  |  | /discord?tab=giveaways |  |  | Discord no / Portal no |
 | Levels and Rewards | PLANNED |  |  |  |  | /discord?tab=levels |  |  | Discord no / Portal no |

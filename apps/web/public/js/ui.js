@@ -21,8 +21,19 @@ export function badge(value) {
   return `<span class="badge ${kind}">${text}</span>`;
 }
 
-export function demoChip() {
-  return `<span class="demo-chip">Demo data</span>`;
+/** Shown in place of any page until the visitor signs in with Discord. */
+export function signInCard(loginHref, previewSite, liveHref) {
+  const button = previewSite
+    ? liveHref
+      ? `<a class="button primary" href="${escapeHtml(liveHref)}/">Open the live platform</a>`
+      : `<p class="microcopy">The live platform link has not been configured for this preview site yet.</p>`
+    : `<a class="button primary" href="${escapeHtml(loginHref)}">Sign in with Discord</a>`;
+  return `<section class="card sign-in-card">
+    <div class="brand-mark large">QB</div>
+    <h2>Sign in to manage your server</h2>
+    <p class="microcopy">QboxPlatform uses your Discord account. You only see the tools your server roles allow.</p>
+    ${button}
+  </section>`;
 }
 
 export function notify(message, kind = "success") {

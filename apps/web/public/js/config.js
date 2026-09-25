@@ -3,7 +3,7 @@
  *
  * The API origin serves the portal at `/` (live mode). The GitHub Pages build
  * rewrites `<base href>` to the repository path and sets `qbox-hosting` to
- * `static`, which keeps the portal in Demo Mode and points login at the live
+ * `static`, which shows a sign-in screen that links to the live
  * platform URL from `qbox-live-url`.
  */
 function meta(name) {

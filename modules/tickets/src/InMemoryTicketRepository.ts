@@ -21,7 +21,7 @@ import type {
 } from "./types.js";
 import { TicketError } from "./validation.js";
 
-/** Process-local repository for tests and demos. Not for production use. */
+/** Process-local repository for tests. Not for production use. */
 export class InMemoryTicketRepository implements TicketRepository {
   public readonly settingsByGuild = new Map<string, TicketSettings>();
   public readonly categories = new Map<string, TicketCategory>();

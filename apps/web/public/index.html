@@ -3,30 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="QboxPlatform dashboard proof of concept">
+  <meta name="description" content="QboxPlatform control panel for your Discord server">
   <meta name="qbox-hosting" content="live">
   <meta name="qbox-live-url" content="">
   <base href="/">
-  <title>QboxPlatform Dashboard</title>
+  <title>QboxPlatform</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
-  <div class="app-shell" data-theme="dark">
+  <div class="app-shell">
     <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
       <div class="brand">
         <div class="brand-mark">QB</div>
         <div>
           <strong>QboxPlatform</strong>
-          <span>Community OS</span>
+          <span>Community control panel</span>
         </div>
       </div>
       <nav class="nav" id="navigation"></nav>
-      <div class="sidebar-card">
-        <span class="status-dot demo"></span>
+      <div class="sidebar-card" id="connectionCard">
+        <span class="status-dot" id="connectionDot"></span>
         <div>
-          <strong>Demo Mode</strong>
-          <p>Product actions are browser-only until live modules are connected.</p>
+          <strong id="connectionTitle">Connecting...</strong>
+          <p id="connectionText">Checking the Qbox API.</p>
         </div>
       </div>
     </aside>
@@ -35,29 +35,23 @@
       <header class="topbar">
         <button class="icon-button mobile-only" id="menuToggle" aria-expanded="false" aria-controls="sidebar" aria-label="Open navigation">☰</button>
         <div>
-          <p class="breadcrumbs" id="breadcrumbs">Dashboard / Overview</p>
+          <p class="breadcrumbs" id="breadcrumbs">QboxPlatform</p>
           <h1 id="pageTitle">Overview</h1>
         </div>
         <div class="topbar-actions">
-          <div class="connection-pill" id="connectionStatus">Checking services...</div>
-          <button class="icon-button" id="notificationButton" aria-label="Notifications">🔔</button>
           <div class="account-menu">
             <button class="profile-button" id="profileButton" aria-haspopup="true" aria-expanded="false">
               <span class="avatar" id="profileAvatar">QB</span>
-              <span id="profileName">Demo Explorer</span>
+              <span id="profileName">Not signed in</span>
             </button>
             <div class="profile-popover" id="profilePopover" hidden>
-              <div id="profileSummary">Demo Mode is active.</div>
-              <a class="button compact" href="auth/discord/start" id="loginButton">Login with Discord</a>
-              <button class="button compact danger" id="logoutButton">Logout</button>
+              <div id="profileSummary"></div>
+              <a class="button compact primary" href="auth/discord/start" id="loginButton">Sign in with Discord</a>
+              <button class="button compact danger" id="logoutButton" hidden>Sign out</button>
             </div>
           </div>
         </div>
       </header>
-
-      <section class="demo-banner" role="status">
-        Demo Mode: Changes are stored only in this browser and do not affect Discord or FiveM.
-      </section>
 
       <section class="notification-area" id="notificationArea" aria-live="polite"></section>
 
@@ -68,7 +62,7 @@
   <div class="modal-backdrop" id="modalBackdrop" hidden>
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <h2 id="modalTitle">Confirm action</h2>
-      <p id="modalBody">This action affects demo data only.</p>
+      <p id="modalBody"></p>
       <div class="modal-actions">
         <button class="button" id="modalCancel">Cancel</button>
         <button class="button danger" id="modalConfirm">Confirm</button>

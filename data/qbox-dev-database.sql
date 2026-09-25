@@ -1689,7 +1689,8 @@ CREATE TABLE "public"."ticket_categories" (
     "required_role_ids" "text"[],
     "max_open_per_user" integer,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "alert_user_ids" "text"[]
 );
 
 
@@ -1868,6 +1869,7 @@ daf4f787-5e30-469d-8801-82810121cf13	62512b9df8c3d9ca7a19a40d12a96d7c25a0d2eda60
 485dcfae-dc82-4c10-8764-ecc864dc304e	63506ee3814fedbd52f753893ca90ed6b44ae86b8bb9ebd604ea1e9ae71e1754	2026-09-25 04:41:44.24965+00	20260802193000_role_management_parity	\N	\N	2026-09-25 04:41:44.243407+00	1
 b15e2d92-e740-4f8b-80f9-d057036999ee	679bfaa0e2e88b46e38d0244afb92df1ff7ff5dda829c0f1ce26447cf60f4511	2026-09-25 04:41:44.254412+00	20260802203000_role_management_conflict_metadata	\N	\N	2026-09-25 04:41:44.250132+00	1
 421843d3-4d53-49e5-8351-9e6a70293487	50842d0e1245f24e5cc484c5f591254bd8406884a88936df31bd2fc5b82af3f9	2026-09-25 05:10:59.204373+00	20260925090000_ticket_system	\N	\N	2026-09-25 05:10:59.167464+00	1
+f3526aac-fb47-4a86-b0cf-29d1f27bbfd2	e5f57fef98683b928643458d7375b07aa98a594e406604ec994146a8333563ac	2026-09-25 05:26:24.773511+00	20260925120000_ticket_alert_members	\N	\N	2026-09-25 05:26:24.770336+00	1
 \.
 
 
@@ -2067,7 +2069,7 @@ COPY "public"."suggestions" ("id", "guild_id", "submitter_id", "content", "statu
 -- Data for Name: ticket_categories; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at") FROM stdin;
+COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at", "alert_user_ids") FROM stdin;
 \.
 
 

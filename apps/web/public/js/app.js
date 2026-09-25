@@ -1,25 +1,31 @@
-import { appPath, currentRoutePage } from "./config.js";
-import { navItems } from "./data.js";
-import { adminCheck, loginUrl, logout } from "./api.js";
-import { initializeModal, notify } from "./ui.js";
-import { refreshLiveState, renderAccountChrome, renderPage } from "./views.js";
+import { loginUrl, logout } from "./api.js";
+import { appPath, currentRoutePage, liveUrl, staticHosting } from "./config.js";
+import { renderDiscordPage } from "./discord.js";
+import { refreshSession, session, signedIn } from "./session.js";
+import { renderTicketsPage } from "./tickets.js";
+import { escapeHtml, initializeModal, notify, signInCard } from "./ui.js";
+import { renderOverviewPage, renderSettingsPage } from "./views.js";
 
-const pages = new Set(navItems.map(([page]) => page));
+const pages = [
+  { id: "overview", icon: "◎", label: "Overview", render: renderOverviewPage },
+  { id: "tickets", icon: "✉", label: "Tickets", render: renderTicketsPage },
+  { id: "discord", icon: "⚙", label: "Discord Bot", render: renderDiscordPage },
+  { id: "settings", icon: "☰", label: "Account", render: renderSettingsPage },
+];
 
 initializeModal();
 
-document.getElementById("navigation").innerHTML = navItems
-  .map(([page, icon, label]) => `<a class="nav-link" href="${appPath(page === "overview" ? "/" : `/${page}`)}" data-route="${page}" data-page="${page}"><span class="nav-icon">${icon}</span><span>${label}</span></a>`)
+document.getElementById("navigation").innerHTML = pages
+  .map((page) => `<a class="nav-link" href="${appPath(page.id === "overview" ? "/" : `/${page.id}`)}" data-route="${page.id}"><span class="nav-icon" aria-hidden="true">${page.icon}</span><span>${escapeHtml(page.label)}</span></a>`)
   .join("");
 
-document.addEventListener("click", async (event) => {
-  const route = event.target.closest("[data-route]");
-  if (route) {
-    event.preventDefault();
-    navigate(route.dataset.route, route.dataset.tab);
-    closeMobileNav();
-    return;
-  }
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("[data-route]");
+  if (!link) return;
+  event.preventDefault();
+  navigate(link.dataset.route, link.dataset.tab);
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded", "false");
 });
 
 document.getElementById("menuToggle").addEventListener("click", () => {
@@ -31,49 +37,82 @@ document.getElementById("menuToggle").addEventListener("click", () => {
 
 document.getElementById("profileButton").addEventListener("click", () => {
   const popover = document.getElementById("profilePopover");
-  const open = popover.hidden;
-  popover.hidden = !open;
-  document.getElementById("profileButton").setAttribute("aria-expanded", String(open));
+  popover.hidden = !popover.hidden;
+  document.getElementById("profileButton").setAttribute("aria-expanded", String(!popover.hidden));
 });
 
-document.getElementById("notificationButton").addEventListener("click", async () => {
-  try {
-    const result = await adminCheck();
-    notify(result.allowed ? "Live administrator check allowed." : "Live administrator check denied.", result.allowed ? "success" : "warning");
-  } catch (error) {
-    notify(error.message || "Live admin check is unavailable. Demo Mode remains usable.", "warning");
-  }
-});
-
-document.getElementById("loginButton").setAttribute("href", loginUrl());
 document.getElementById("logoutButton").addEventListener("click", async () => {
   try {
     await logout();
-    notify("Logged out.");
-    await refreshLiveState({ quiet: true });
+    notify("Signed out.");
   } catch (error) {
-    notify(error.message || "Logout unavailable. Demo Mode remains usable.", "warning");
+    notify(error.message || "Sign out failed.", "error");
   }
+  await refreshSession();
+  renderChrome();
+  renderCurrentRoute();
 });
 
 window.addEventListener("popstate", () => renderCurrentRoute());
 
-await refreshLiveState({ quiet: true });
+await refreshSession({ refreshAccount: new URLSearchParams(location.search).has("auth") });
+renderChrome();
 renderCurrentRoute();
-renderAccountChrome();
 
-function navigate(page, tab) {
-  const path = page === "overview" ? "/" : `/${page}${tab ? `?tab=${encodeURIComponent(tab)}` : ""}`;
+export function navigate(pageId, tab) {
+  const path = pageId === "overview" ? "/" : `/${pageId}${tab ? `?tab=${encodeURIComponent(tab)}` : ""}`;
   history.pushState({}, "", appPath(path));
-  renderPage(page);
+  renderCurrentRoute();
 }
 
 function renderCurrentRoute() {
-  const page = currentRoutePage();
-  renderPage(pages.has(page) ? page : "overview");
+  const current = pages.find((page) => page.id === currentRoutePage()) ?? pages[0];
+  document.getElementById("pageTitle").textContent = current.label;
+  document.getElementById("breadcrumbs").textContent = `QboxPlatform / ${current.label}`;
+  document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.route === current.id));
+  const content = document.getElementById("content");
+  if (!signedIn() && current.id !== "overview") {
+    content.innerHTML = signInCard(loginUrl(), staticHosting(), liveUrl());
+    return;
+  }
+  content.innerHTML = "";
+  void Promise.resolve(current.render(content)).catch((error) => {
+    content.innerHTML = `<section class="card"><h2>Something went wrong</h2><p class="microcopy">${escapeHtml(error.message || "This page could not load.")}</p></section>`;
+  });
+  content.focus({ preventScroll: true });
 }
 
-function closeMobileNav() {
-  document.getElementById("sidebar").classList.remove("open");
-  document.getElementById("menuToggle").setAttribute("aria-expanded", "false");
+function renderChrome() {
+  const profile = session.account?.account;
+  const dot = document.getElementById("connectionDot");
+  const title = document.getElementById("connectionTitle");
+  const text = document.getElementById("connectionText");
+  dot.className = `status-dot ${session.health.available ? "live" : "danger"}`;
+  title.textContent = staticHosting() ? "Preview site" : session.health.available ? "Connected" : "API offline";
+  text.textContent = staticHosting()
+    ? "Sign in on the live platform to manage your server."
+    : session.health.available
+      ? profile ? "Changes here apply to your Discord server." : "Sign in with Discord to continue."
+      : "The Qbox API is not reachable right now.";
+
+  const name = document.getElementById("profileName");
+  const avatar = document.getElementById("profileAvatar");
+  const summary = document.getElementById("profileSummary");
+  const login = document.getElementById("loginButton");
+  const logoutButton = document.getElementById("logoutButton");
+  login.setAttribute("href", loginUrl());
+  login.hidden = Boolean(profile);
+  logoutButton.hidden = !profile;
+  if (profile) {
+    name.textContent = profile.globalName || profile.username || "Signed in";
+    const avatarUrl = profile.avatar && /^\d{17,20}$/.test(profile.discordUserId ?? "") && /^(a_)?[0-9a-f]{32}$/.test(profile.avatar)
+      ? `https://cdn.discordapp.com/avatars/${profile.discordUserId}/${profile.avatar}.png?size=64`
+      : undefined;
+    avatar.innerHTML = avatarUrl ? `<img alt="" src="${escapeHtml(avatarUrl)}">` : escapeHtml(name.textContent.slice(0, 2).toUpperCase());
+    summary.innerHTML = `<strong>${escapeHtml(name.textContent)}</strong><p class="microcopy">Signed in with Discord.</p>`;
+  } else {
+    name.textContent = "Not signed in";
+    avatar.textContent = "QB";
+    summary.innerHTML = `<p class="microcopy">Sign in with the Discord account you use on the server.</p>`;
+  }
 }

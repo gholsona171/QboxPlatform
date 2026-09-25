@@ -1,4 +1,4 @@
-export type FeatureStatus = "LIVE" | "PARTIAL" | "DEMO" | "DISABLED" | "PLANNED";
+export type FeatureStatus = "LIVE" | "PARTIAL" | "DISABLED" | "PLANNED";
 
 export interface FeatureRegistryRecord {
   readonly id: string;
@@ -30,13 +30,13 @@ export const featureRegistry = [
   live("starboard", "Starboard", ["starboard"], [], ["messageReactionAdd", "messageDelete"], ["/api/v1/discord/starboard"], "/discord?tab=starboard", ["discord.starboard.manage"], ["StarboardConfig", "StarboardEntry"], true, true),
   planned("applications", "Applications", "/applications"),
   live("tickets", "Tickets", ["ticket", "tickets"], ["ticket panel buttons", "ticket select menus", "ticket forms", "close/claim/reopen/transcript buttons", "feedback ratings"], ["messageCreate", "channelDelete", "threadDelete", "auto-close timer"], ["/api/v1/tickets", "/api/v1/tickets/overview", "/api/v1/tickets/settings", "/api/v1/tickets/categories", "/api/v1/tickets/panels"], "/tickets", ["tickets.manage", "tickets.handle"], ["TicketSettings", "TicketCategory", "TicketPanel", "Ticket", "TicketMessage", "TicketEvent"], true, true),
-  demo("staff", "Staff", "/staff"),
+  planned("staff", "Staff", "/staff"),
   planned("moderation", "Moderation", "/moderation"),
-  demo("verification", "Verification", "/verification"),
-  demo("polls", "Polls", "/polls"),
-  demo("birthdays", "Birthdays", "/birthdays"),
-  demo("knowledge-base", "Knowledge Base", "/knowledge"),
-  demo("fivem-server", "FiveM Server", "/fivem"),
+  planned("verification", "Verification", "/verification"),
+  planned("polls", "Polls", "/polls"),
+  planned("birthdays", "Birthdays", "/birthdays"),
+  planned("knowledge-base", "Knowledge Base", "/knowledge"),
+  planned("fivem-server", "FiveM Server", "/fivem"),
   planned("scheduled-messages", "Scheduled Messages", "/discord?tab=scheduled"),
   planned("giveaways", "Giveaways", "/discord?tab=giveaways"),
   planned("levels-rewards", "Levels and Rewards", "/discord?tab=levels"),
@@ -57,10 +57,6 @@ function live(
   portalAvailable: boolean,
 ): FeatureRegistryRecord {
   return { id, displayName, status: "LIVE", discordCommands, discordInteractions, automaticHandlers, apiRoutes, portalRoute, requiredPermissions, persistence, discordFallbackAvailable, portalAvailable };
-}
-
-function demo(id: string, displayName: string, portalRoute: string): FeatureRegistryRecord {
-  return { id, displayName, status: "DEMO", discordCommands: [], discordInteractions: [], automaticHandlers: [], apiRoutes: [], portalRoute, requiredPermissions: [], persistence: [], discordFallbackAvailable: false, portalAvailable: true };
 }
 
 function planned(id: string, displayName: string, portalRoute: string): FeatureRegistryRecord {

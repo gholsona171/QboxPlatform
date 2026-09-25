@@ -41,7 +41,7 @@ After the first deploy that adds these commands, redeploy slash commands with th
 
 ## Features
 
-- **Ticket types** with their own emoji, button color, description, default priority, support roles, required roles, per-type open limit, channel or category override, name template, opening message, and up to 5 form questions (pop-up form).
+- **Ticket reasons** with their own emoji, button color, description, default priority, support roles, alerted members, required roles, per-type open limit, channel or category override, name template, opening message, and up to 5 form questions (pop-up form).
 - **Panels** as buttons (up to 25) or a dropdown menu, with title, text, color, image, and footer. Panels can be updated in place.
 - **Private channels or private threads.** Channel names come from a template (`{number}`, `{username}`, `{category}`).
 - **Staff tools:** claim, unclaim, transfer, add/remove members, rename, priority (low/normal/high/urgent), "waiting on member" status, tags, internal notes (never shown to the member), replies from the portal, reopen, delete channel.
@@ -56,10 +56,13 @@ After the first deploy that adds these commands, redeploy slash commands with th
 
 ## Portal
 
-Signed-in users with `tickets.handle` see the live console at `/tickets`:
-Inbox (filter, search, conversation, actions), Settings, Ticket types, Panels,
-and Statistics. Visitors who are not signed in, and the GitHub Pages preview,
-see the Demo Mode page.
+Setup is easiest in the portal at `/tickets`:
+
+1. **Settings:** turn tickets on, pick the default Discord category, the support team roles, and the transcript and log channels.
+2. **Ticket reasons:** add one reason per button (for example General Support, Report a Player, Ban Appeal). Each reason can have its own Discord category, support roles, alerted members (added to the ticket and pinged), roles required to open it, per-member limit, opening message, and up to 5 form questions.
+3. **Panels:** choose the channel, title, message, color, and which reasons to show. The live preview shows how it will look in Discord. Click **Post in Discord**.
+
+Users with `tickets.handle` also get the Inbox (filter, search, conversation, replies, notes, actions) and Statistics. `tickets.manage` unlocks Ticket reasons, Panels, and Settings.
 
 All ticket changes from the portal require the CSRF token that the portal
 sends automatically.

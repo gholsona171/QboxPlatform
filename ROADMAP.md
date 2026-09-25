@@ -158,7 +158,7 @@ Effort estimates are planning ranges for one engineer familiar with the reposito
 - An unbound Fastify server factory with immutable configuration, request context, structured request logging, typed Problem Details errors, metrics boundary, health endpoints, and injection tests.
 - Persistence-first process lifecycle, loopback socket binding, health/readiness composition, graceful signal shutdown, Zod transport validation, and HTTP hardening.
 - Pure authentication contracts, additive PostgreSQL models, repository/crypto/session/credential/membership services, Discord provider infrastructure, browser login routes, authenticated actor binding, and proof-of-concept account/permission endpoints exist.
-- `apps/web` contains the static portal, served by the Qbox API on the live platform and published as a Demo Mode preview on GitHub Pages.
+- `apps/web` contains the static portal, served by the Qbox API on the live platform and published on GitHub Pages as a sign-in page that links to the live platform.
 - General authentication middleware, service credentials, account-management endpoints, and production domain-management APIs remain deferred.
 
 ## Milestone 4.1 — Establish the API runtime
