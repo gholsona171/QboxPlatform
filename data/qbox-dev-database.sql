@@ -48,6 +48,7 @@ ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXIS
 ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_external_identity_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."knowledge_articles" DROP CONSTRAINT IF EXISTS "knowledge_articles_category_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."giveaway_entries" DROP CONSTRAINT IF EXISTS "giveaway_entries_giveaway_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."games_status_snapshots" DROP CONSTRAINT IF EXISTS "games_status_snapshots_server_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."external_identities" DROP CONSTRAINT IF EXISTS "external_identities_platform_user_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."embed_templates" DROP CONSTRAINT IF EXISTS "embed_templates_guild_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."discord_role_audit_events" DROP CONSTRAINT IF EXISTS "discord_role_audit_events_guild_id_fkey";
@@ -114,6 +115,8 @@ DROP INDEX IF EXISTS "public"."ticket_events_ticket_created_idx";
 DROP INDEX IF EXISTS "public"."ticket_categories_guild_position_idx";
 DROP INDEX IF EXISTS "public"."ticket_categories_guild_name_key";
 DROP INDEX IF EXISTS "public"."suggestions_guild_status_idx";
+DROP INDEX IF EXISTS "public"."streams_subscriptions_guild_creator_key";
+DROP INDEX IF EXISTS "public"."streams_subscriptions_active_idx";
 DROP INDEX IF EXISTS "public"."starboard_entries_source_key";
 DROP INDEX IF EXISTS "public"."starboard_entries_guild_deleted_idx";
 DROP INDEX IF EXISTS "public"."staff_strikes_guild_user_idx";
@@ -169,6 +172,7 @@ DROP INDEX IF EXISTS "public"."moderation_cases_guild_type_active_idx";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_target_idx";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_number_key";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_created_idx";
+DROP INDEX IF EXISTS "public"."messages_templates_guild_key_key";
 DROP INDEX IF EXISTS "public"."level_members_guild_xp_idx";
 DROP INDEX IF EXISTS "public"."knowledge_categories_guild_order_idx";
 DROP INDEX IF EXISTS "public"."knowledge_articles_guild_slug_key";
@@ -179,6 +183,8 @@ DROP INDEX IF EXISTS "public"."giveaways_status_ends_idx";
 DROP INDEX IF EXISTS "public"."giveaways_guild_status_idx";
 DROP INDEX IF EXISTS "public"."giveaways_guild_number_key";
 DROP INDEX IF EXISTS "public"."giveaway_entries_giveaway_user_key";
+DROP INDEX IF EXISTS "public"."games_status_snapshots_server_at_idx";
+DROP INDEX IF EXISTS "public"."games_servers_guild_idx";
 DROP INDEX IF EXISTS "public"."fivem_status_snapshots_guild_at_idx";
 DROP INDEX IF EXISTS "public"."external_identities_user_provider_key";
 DROP INDEX IF EXISTS "public"."external_identities_user_enabled_idx";
@@ -231,6 +237,8 @@ ALTER TABLE IF EXISTS ONLY "public"."ticket_messages" DROP CONSTRAINT IF EXISTS 
 ALTER TABLE IF EXISTS ONLY "public"."ticket_events" DROP CONSTRAINT IF EXISTS "ticket_events_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."ticket_categories" DROP CONSTRAINT IF EXISTS "ticket_categories_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."suggestions" DROP CONSTRAINT IF EXISTS "suggestions_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."streams_subscriptions" DROP CONSTRAINT IF EXISTS "streams_subscriptions_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."streams_settings" DROP CONSTRAINT IF EXISTS "streams_settings_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_entries" DROP CONSTRAINT IF EXISTS "starboard_entries_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_configs" DROP CONSTRAINT IF EXISTS "starboard_configs_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."staff_strikes" DROP CONSTRAINT IF EXISTS "staff_strikes_pkey";
@@ -259,6 +267,8 @@ ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXIS
 ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."moderation_settings" DROP CONSTRAINT IF EXISTS "moderation_settings_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."moderation_cases" DROP CONSTRAINT IF EXISTS "moderation_cases_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."messages_templates" DROP CONSTRAINT IF EXISTS "messages_templates_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."messages_looks" DROP CONSTRAINT IF EXISTS "messages_looks_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."level_settings" DROP CONSTRAINT IF EXISTS "level_settings_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."level_members" DROP CONSTRAINT IF EXISTS "level_members_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."knowledge_settings" DROP CONSTRAINT IF EXISTS "knowledge_settings_pkey";
@@ -268,6 +278,9 @@ ALTER TABLE IF EXISTS ONLY "public"."guilds" DROP CONSTRAINT IF EXISTS "guilds_p
 ALTER TABLE IF EXISTS ONLY "public"."giveaways" DROP CONSTRAINT IF EXISTS "giveaways_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."giveaway_entries" DROP CONSTRAINT IF EXISTS "giveaway_entries_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."giveaway_counters" DROP CONSTRAINT IF EXISTS "giveaway_counters_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."games_status_snapshots" DROP CONSTRAINT IF EXISTS "games_status_snapshots_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."games_settings" DROP CONSTRAINT IF EXISTS "games_settings_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."games_servers" DROP CONSTRAINT IF EXISTS "games_servers_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."fivem_status_snapshots" DROP CONSTRAINT IF EXISTS "fivem_status_snapshots_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."fivem_settings" DROP CONSTRAINT IF EXISTS "fivem_settings_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."external_identities" DROP CONSTRAINT IF EXISTS "external_identities_pkey";
@@ -308,6 +321,8 @@ DROP TABLE IF EXISTS "public"."ticket_messages";
 DROP TABLE IF EXISTS "public"."ticket_events";
 DROP TABLE IF EXISTS "public"."ticket_categories";
 DROP TABLE IF EXISTS "public"."suggestions";
+DROP TABLE IF EXISTS "public"."streams_subscriptions";
+DROP TABLE IF EXISTS "public"."streams_settings";
 DROP TABLE IF EXISTS "public"."starboard_entries";
 DROP TABLE IF EXISTS "public"."starboard_configs";
 DROP TABLE IF EXISTS "public"."staff_strikes";
@@ -336,6 +351,8 @@ DROP TABLE IF EXISTS "public"."oauth_transactions";
 DROP TABLE IF EXISTS "public"."oauth_credentials";
 DROP TABLE IF EXISTS "public"."moderation_settings";
 DROP TABLE IF EXISTS "public"."moderation_cases";
+DROP TABLE IF EXISTS "public"."messages_templates";
+DROP TABLE IF EXISTS "public"."messages_looks";
 DROP TABLE IF EXISTS "public"."level_settings";
 DROP TABLE IF EXISTS "public"."level_members";
 DROP TABLE IF EXISTS "public"."knowledge_settings";
@@ -345,6 +362,9 @@ DROP TABLE IF EXISTS "public"."guilds";
 DROP TABLE IF EXISTS "public"."giveaways";
 DROP TABLE IF EXISTS "public"."giveaway_entries";
 DROP TABLE IF EXISTS "public"."giveaway_counters";
+DROP TABLE IF EXISTS "public"."games_status_snapshots";
+DROP TABLE IF EXISTS "public"."games_settings";
+DROP TABLE IF EXISTS "public"."games_servers";
 DROP TABLE IF EXISTS "public"."fivem_status_snapshots";
 DROP TABLE IF EXISTS "public"."fivem_settings";
 DROP TABLE IF EXISTS "public"."external_identities";
@@ -385,6 +405,7 @@ DROP FUNCTION IF EXISTS "public"."enforce_external_identity_immutability"();
 DROP FUNCTION IF EXISTS "public"."enforce_browser_session_identity"();
 DROP FUNCTION IF EXISTS "public"."authentication_scopes_are_normalized"("scopes" "text"[]);
 DROP FUNCTION IF EXISTS "public"."authentication_audit_metadata_is_safe"("metadata" "jsonb");
+DROP TYPE IF EXISTS "public"."messages_look_mode";
 DROP TYPE IF EXISTS "public"."WelcomeGoodbyeKind";
 DROP TYPE IF EXISTS "public"."VerificationMode";
 DROP TYPE IF EXISTS "public"."VerificationAttemptSource";
@@ -397,6 +418,8 @@ DROP TYPE IF EXISTS "public"."TicketMode";
 DROP TYPE IF EXISTS "public"."TicketMessageSource";
 DROP TYPE IF EXISTS "public"."TicketCloseAction";
 DROP TYPE IF EXISTS "public"."SuggestionStatus";
+DROP TYPE IF EXISTS "public"."StreamsPlatform";
+DROP TYPE IF EXISTS "public"."StreamsEndedBehavior";
 DROP TYPE IF EXISTS "public"."StarboardNsfwMode";
 DROP TYPE IF EXISTS "public"."StarboardChannelMode";
 DROP TYPE IF EXISTS "public"."StaffRecordType";
@@ -426,6 +449,7 @@ DROP TYPE IF EXISTS "public"."ModerationCaseSource";
 DROP TYPE IF EXISTS "public"."LevelUpMode";
 DROP TYPE IF EXISTS "public"."LevelRewardMode";
 DROP TYPE IF EXISTS "public"."GiveawayStatus";
+DROP TYPE IF EXISTS "public"."GamesServerKind";
 DROP TYPE IF EXISTS "public"."DiscordGuildMembershipStatus";
 DROP TYPE IF EXISTS "public"."DiscordGuildMembershipSource";
 DROP TYPE IF EXISTS "public"."CustomCommandTriggerMode";
@@ -711,6 +735,17 @@ CREATE TYPE "public"."DiscordGuildMembershipStatus" AS ENUM (
     'present',
     'absent',
     'unknown'
+);
+
+
+--
+-- Name: GamesServerKind; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."GamesServerKind" AS ENUM (
+    'minecraft-java',
+    'minecraft-bedrock',
+    'steam'
 );
 
 
@@ -1073,6 +1108,28 @@ CREATE TYPE "public"."StarboardNsfwMode" AS ENUM (
 
 
 --
+-- Name: StreamsEndedBehavior; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."StreamsEndedBehavior" AS ENUM (
+    'keep',
+    'edit',
+    'delete'
+);
+
+
+--
+-- Name: StreamsPlatform; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."StreamsPlatform" AS ENUM (
+    'twitch',
+    'kick',
+    'youtube'
+);
+
+
+--
 -- Name: SuggestionStatus; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -1204,6 +1261,16 @@ CREATE TYPE "public"."VerificationMode" AS ENUM (
 CREATE TYPE "public"."WelcomeGoodbyeKind" AS ENUM (
     'welcome',
     'goodbye'
+);
+
+
+--
+-- Name: messages_look_mode; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."messages_look_mode" AS ENUM (
+    'fill',
+    'override'
 );
 
 
@@ -2028,6 +2095,68 @@ CREATE TABLE "public"."fivem_status_snapshots" (
 
 
 --
+-- Name: games_servers; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."games_servers" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "kind" "public"."GamesServerKind" NOT NULL,
+    "address" "text" NOT NULL,
+    "game" "text",
+    "connect_url" "text",
+    "status_channel_id" "text",
+    "status_message_id" "text",
+    "update_interval_seconds" integer DEFAULT 60 NOT NULL,
+    "player_count_channel_id" "text",
+    "alert_channel_id" "text",
+    "alert_role_id" "text",
+    "enabled" boolean DEFAULT true NOT NULL,
+    "last_online" boolean,
+    "online_since" timestamp(3) with time zone,
+    "offline_since" timestamp(3) with time zone,
+    "failure_streak" integer DEFAULT 0 NOT NULL,
+    "last_polled_at" timestamp(3) with time zone,
+    "last_error" "text",
+    "last_player_count" integer DEFAULT 0 NOT NULL,
+    "last_max_players" integer DEFAULT 0 NOT NULL,
+    "last_renamed_at" timestamp(3) with time zone,
+    "last_channel_name" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: games_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."games_settings" (
+    "guild_id" "text" NOT NULL,
+    "player_count_template" "text" DEFAULT '🎮 {online}/{max} online'::"text" NOT NULL,
+    "player_count_offline_template" "text" DEFAULT '🔴 Offline'::"text" NOT NULL,
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: games_status_snapshots; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."games_status_snapshots" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "server_id" "uuid" NOT NULL,
+    "online" boolean NOT NULL,
+    "players" integer NOT NULL,
+    "max_players" integer NOT NULL,
+    "at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
 -- Name: giveaway_counters; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2201,6 +2330,44 @@ CREATE TABLE "public"."level_settings" (
     "remove_rewards_on_reset" boolean DEFAULT true NOT NULL,
     "max_level" integer DEFAULT 0 NOT NULL,
     "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: messages_looks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."messages_looks" (
+    "guild_id" "text" NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "accent_color" "text",
+    "footer_text" "text",
+    "footer_icon_url" "text",
+    "author_name" "text",
+    "author_icon_url" "text",
+    "thumbnail_url" "text",
+    "show_timestamp" boolean DEFAULT false NOT NULL,
+    "mode" "public"."messages_look_mode" DEFAULT 'fill'::"public"."messages_look_mode" NOT NULL,
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: messages_templates; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."messages_templates" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "key" "text" NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "content" "text",
+    "embeds" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "updated_by" "text",
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL
 );
@@ -2833,6 +3000,53 @@ CREATE TABLE "public"."starboard_entries" (
 
 
 --
+-- Name: streams_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."streams_settings" (
+    "guild_id" "text" NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "default_channel_id" "text",
+    "ended_behavior" "public"."StreamsEndedBehavior" DEFAULT 'edit'::"public"."StreamsEndedBehavior" NOT NULL,
+    "check_interval_seconds" integer DEFAULT 90 NOT NULL,
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: streams_subscriptions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."streams_subscriptions" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "platform" "public"."StreamsPlatform" NOT NULL,
+    "handle" "text" NOT NULL,
+    "display_name" "text" NOT NULL,
+    "avatar_url" "text",
+    "platform_id" "text" NOT NULL,
+    "announce_channel_id" "text",
+    "ping_role_id" "text",
+    "message_text" "text",
+    "announce_videos" boolean DEFAULT false NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "last_stream_id" "text",
+    "live_since" timestamp(3) with time zone,
+    "last_announcement_channel_id" "text",
+    "last_announcement_message_id" "text",
+    "last_video_id" "text",
+    "last_checked_at" timestamp(3) with time zone,
+    "offline_streak" integer DEFAULT 0 NOT NULL,
+    "failure_streak" integer DEFAULT 0 NOT NULL,
+    "last_error" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
 -- Name: suggestions; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3197,9 +3411,12 @@ da7ce312-cdad-4306-9a30-a4bef765bb02	44978aae6e8f87770a99e5171243ded02b0b0b9ab0b
 2e765162-1010-40f0-a08b-4dfe03eca212	b40b68c977037a7a44aa4e0911451f13b1f69bb3d6b825ab41347da9d7a07b94	2026-09-25 07:42:04.627499+00	20260925163000_polls	\N	\N	2026-09-25 07:42:04.605943+00	1
 f91c97f0-865b-4829-b57c-69f4e96365d0	455372482d8b81715b4ea5c0d609fff873a84dbbed3a890775ee284fa63d2929	2026-09-25 07:42:04.647395+00	20260925164000_giveaways	\N	\N	2026-09-25 07:42:04.628418+00	1
 9fe8cf79-532f-4ca5-b62b-c4952a1c283e	00f4cce54802da9352ef607578e84450fd476d6397b852ffa1d694bb602c9f52	2026-09-25 07:42:04.658922+00	20260925165000_birthdays	\N	\N	2026-09-25 07:42:04.647941+00	1
+9875bd80-dfdc-4631-9742-81bfe5dbb771	f8ae2ed6b899c9c275865a5488a8b556ac1859d62b31efb8e7002bf43599c39d	2026-09-25 22:44:14.377054+00	20260925205000_messages	\N	\N	2026-09-25 22:44:14.35872+00	1
 1e804714-dc58-43a6-8d41-c4a7c187986c	3eba4a12e252d7ffd258c4b79f13a9fcb5575421c1c589b87ed4312883a44fd0	2026-09-25 07:42:04.71291+00	20260925169000_knowledge_base	\N	\N	2026-09-25 07:42:04.698097+00	1
 51247960-fd61-4055-aa9f-95e96be6c45f	307a135d5b688fd524951a4f5541f9fee6d8a4ee929a1f1890aa7241ac8cae63	2026-09-25 07:42:04.722688+00	20260925170000_fivem	\N	\N	2026-09-25 07:42:04.713943+00	1
 41dc8833-4765-450f-9552-198e68947c00	9e39f3479ce16199453aa68b3a54bd306959b87b5bc2b3333ec48767db69ff91	2026-09-25 20:10:28.93473+00	20260925180000_server_builder	\N	\N	2026-09-25 20:10:28.905477+00	1
+83621368-162d-480f-90c4-60103f4ed08a	f547136dec58f9520a0bbf7ba2b1d227ed33156e42a3ae34055489ba70a24843	2026-09-25 22:44:14.390756+00	20260925210000_streams	\N	\N	2026-09-25 22:44:14.377505+00	1
+9eb9d356-141e-4309-bf34-9f8a1d56f646	0ddfd72be5ffadcefde88a70aa8f800fe24cace46d91fecfbbe72a6d9a44b968	2026-09-25 22:44:14.405316+00	20260925220000_games	\N	\N	2026-09-25 22:44:14.391443+00	1
 \.
 
 
@@ -3389,6 +3606,30 @@ COPY "public"."fivem_status_snapshots" ("id", "guild_id", "online", "players", "
 
 
 --
+-- Data for Name: games_servers; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."games_servers" ("id", "guild_id", "name", "kind", "address", "game", "connect_url", "status_channel_id", "status_message_id", "update_interval_seconds", "player_count_channel_id", "alert_channel_id", "alert_role_id", "enabled", "last_online", "online_since", "offline_since", "failure_streak", "last_polled_at", "last_error", "last_player_count", "last_max_players", "last_renamed_at", "last_channel_name", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: games_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."games_settings" ("guild_id", "player_count_template", "player_count_offline_template", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: games_status_snapshots; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."games_status_snapshots" ("id", "server_id", "online", "players", "max_players", "at") FROM stdin;
+\.
+
+
+--
 -- Data for Name: giveaway_counters; Type: TABLE DATA; Schema: public; Owner: -
 --
 
@@ -3457,6 +3698,22 @@ COPY "public"."level_members" ("guild_id", "user_id", "display_name", "xp", "lev
 --
 
 COPY "public"."level_settings" ("guild_id", "enabled", "message_xp_min", "message_xp_max", "cooldown_seconds", "voice_xp_per_minute", "curve_base", "curve_exponent", "curve_linear", "role_multipliers", "channel_multipliers", "no_xp_role_ids", "no_xp_channel_ids", "level_up_mode", "level_up_channel_id", "level_up_message", "rewards", "reward_mode", "remove_rewards_on_reset", "max_level", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: messages_looks; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."messages_looks" ("guild_id", "enabled", "accent_color", "footer_text", "footer_icon_url", "author_name", "author_icon_url", "thumbnail_url", "show_timestamp", "mode", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: messages_templates; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."messages_templates" ("id", "guild_id", "key", "enabled", "content", "embeds", "updated_by", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -3706,6 +3963,22 @@ COPY "public"."starboard_configs" ("guild_id", "enabled", "destination_channel_i
 --
 
 COPY "public"."starboard_entries" ("id", "guild_id", "source_channel_id", "source_message_id", "destination_message_id", "author_id", "star_count", "deleted", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: streams_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."streams_settings" ("guild_id", "enabled", "default_channel_id", "ended_behavior", "check_interval_seconds", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: streams_subscriptions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."streams_subscriptions" ("id", "guild_id", "platform", "handle", "display_name", "avatar_url", "platform_id", "announce_channel_id", "ping_role_id", "message_text", "announce_videos", "enabled", "last_stream_id", "live_since", "last_announcement_channel_id", "last_announcement_message_id", "last_video_id", "last_checked_at", "offline_streak", "failure_streak", "last_error", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -4029,6 +4302,30 @@ ALTER TABLE ONLY "public"."fivem_status_snapshots"
 
 
 --
+-- Name: games_servers games_servers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."games_servers"
+    ADD CONSTRAINT "games_servers_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: games_settings games_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."games_settings"
+    ADD CONSTRAINT "games_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: games_status_snapshots games_status_snapshots_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."games_status_snapshots"
+    ADD CONSTRAINT "games_status_snapshots_pkey" PRIMARY KEY ("id");
+
+
+--
 -- Name: giveaway_counters giveaway_counters_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4098,6 +4395,22 @@ ALTER TABLE ONLY "public"."level_members"
 
 ALTER TABLE ONLY "public"."level_settings"
     ADD CONSTRAINT "level_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: messages_looks messages_looks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."messages_looks"
+    ADD CONSTRAINT "messages_looks_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: messages_templates messages_templates_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."messages_templates"
+    ADD CONSTRAINT "messages_templates_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -4322,6 +4635,22 @@ ALTER TABLE ONLY "public"."starboard_configs"
 
 ALTER TABLE ONLY "public"."starboard_entries"
     ADD CONSTRAINT "starboard_entries_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: streams_settings streams_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."streams_settings"
+    ADD CONSTRAINT "streams_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: streams_subscriptions streams_subscriptions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."streams_subscriptions"
+    ADD CONSTRAINT "streams_subscriptions_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -4703,6 +5032,20 @@ CREATE INDEX "fivem_status_snapshots_guild_at_idx" ON "public"."fivem_status_sna
 
 
 --
+-- Name: games_servers_guild_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "games_servers_guild_idx" ON "public"."games_servers" USING "btree" ("guild_id");
+
+
+--
+-- Name: games_status_snapshots_server_at_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "games_status_snapshots_server_at_idx" ON "public"."games_status_snapshots" USING "btree" ("server_id", "at");
+
+
+--
 -- Name: giveaway_entries_giveaway_user_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -4770,6 +5113,13 @@ CREATE INDEX "knowledge_categories_guild_order_idx" ON "public"."knowledge_categ
 --
 
 CREATE INDEX "level_members_guild_xp_idx" ON "public"."level_members" USING "btree" ("guild_id", "xp" DESC);
+
+
+--
+-- Name: messages_templates_guild_key_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "messages_templates_guild_key_key" ON "public"."messages_templates" USING "btree" ("guild_id", "key");
 
 
 --
@@ -5155,6 +5505,20 @@ CREATE INDEX "starboard_entries_guild_deleted_idx" ON "public"."starboard_entrie
 --
 
 CREATE UNIQUE INDEX "starboard_entries_source_key" ON "public"."starboard_entries" USING "btree" ("guild_id", "source_message_id");
+
+
+--
+-- Name: streams_subscriptions_active_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "streams_subscriptions_active_idx" ON "public"."streams_subscriptions" USING "btree" ("enabled", "guild_id");
+
+
+--
+-- Name: streams_subscriptions_guild_creator_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "streams_subscriptions_guild_creator_key" ON "public"."streams_subscriptions" USING "btree" ("guild_id", "platform", "platform_id");
 
 
 --
@@ -5641,6 +6005,14 @@ ALTER TABLE ONLY "public"."embed_templates"
 
 ALTER TABLE ONLY "public"."external_identities"
     ADD CONSTRAINT "external_identities_platform_user_id_fkey" FOREIGN KEY ("platform_user_id") REFERENCES "public"."platform_users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: games_status_snapshots games_status_snapshots_server_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."games_status_snapshots"
+    ADD CONSTRAINT "games_status_snapshots_server_id_fkey" FOREIGN KEY ("server_id") REFERENCES "public"."games_servers"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

@@ -33,20 +33,20 @@ export function streamsApiFeature(streams: StreamsService): ApiFeature {
 }
 
 function registerStreamsRoutes(server: FastifyInstance, context: ApiFeatureContext, streams: StreamsService): void {
-  const { guard, guildId } = context;
+  const { guard } = context;
   const id = (request: Parameters<typeof routeParam>[0]) => routeParam(request, "id");
 
   server.get("/api/v1/streams/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "streams.manage", { mutation: false });
-    const [settings, subscriptions] = await Promise.all([safe(() => streams.settings(guildId)), safe(() => streams.list(guildId))]);
+    const [settings, subscriptions] = await Promise.all([safe(() => streams.settings(context.guildId)), safe(() => streams.list(context.guildId))]);
     return { data: { settings, subscriptions, platforms: streams.availability() } };
   });
 
   server.put("/api/v1/streams/settings", async (request) => {
     await guard(request, "streams.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => streams.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => streams.saveSettings({ ...body, guildId: context.guildId })) };
   });
 
   server.post("/api/v1/streams/resolve", async (request) => {
@@ -59,23 +59,23 @@ function registerStreamsRoutes(server: FastifyInstance, context: ApiFeatureConte
     await guard(request, "streams.manage", { mutation: true });
     const body = parse(createSchema, request.body);
     reply.code(201);
-    return { data: await safe(() => streams.add({ ...body, guildId })) };
+    return { data: await safe(() => streams.add({ ...body, guildId: context.guildId })) };
   });
 
   server.put("/api/v1/streams/subscriptions/:id", async (request) => {
     await guard(request, "streams.manage", { mutation: true });
     const body = parse(patchSchema, request.body);
-    return { data: await safe(() => streams.update(guildId, id(request), body)) };
+    return { data: await safe(() => streams.update(context.guildId, id(request), body)) };
   });
 
   server.delete("/api/v1/streams/subscriptions/:id", async (request) => {
     await guard(request, "streams.manage", { mutation: true });
-    await safe(() => streams.remove(guildId, id(request)));
+    await safe(() => streams.remove(context.guildId, id(request)));
     return { data: { deleted: true } };
   });
 
   server.post("/api/v1/streams/subscriptions/:id/test", async (request) => {
     await guard(request, "streams.manage", { mutation: true });
-    return { data: await safe(() => streams.test(guildId, id(request))) };
+    return { data: await safe(() => streams.test(context.guildId, id(request))) };
   });
 }
