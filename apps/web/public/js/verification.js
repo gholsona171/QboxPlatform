@@ -67,7 +67,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to verification" : "Verification is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the verification.members or verification.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to verification" : "Verification is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Verify members permission (verification.members) or the Manage verification permission (verification.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   const tabs = TABS.filter(([id]) => id === "activity" || view.overview.can.manage);
@@ -91,8 +91,15 @@ function activityTab() {
     ["Details", escapeHtml((item.reason ?? "—").slice(0, 100))],
     ["By", item.staffId ? memberName(item.staffId) : item.source === "AUTOMATIC" ? "Qbox" : "Member"],
   ]));
+  if (!settings.enabled) {
+    return `<div class="empty-state">
+      <h3>Verification is off. New members get in without checking.</h3>
+      ${can.manage
+        ? `<p>Turn it on in Settings, then post the Verify button in Panel.</p><button class="button primary" data-v-tab="settings">Set up verification</button>`
+        : `<p class="microcopy">Ask a server admin to set it up.</p>`}
+    </div>`;
+  }
   return `
-    ${settings.enabled ? "" : `<p class="microcopy">Verification is off.${can.manage ? " Turn it on in Settings." : ""}</p>`}
     <section class="grid cols-4">
       ${metric("Verified (24h)", stats.verified24h)}${metric("Failed (24h)", stats.failed24h)}${metric("Waiting to verify", stats.pending)}${metric("Kicked (24h)", stats.kicked24h)}
     </section>
@@ -168,7 +175,8 @@ function panelTab() {
   const posted = s.panelMessageId && s.panelChannelId;
   return `<section class="grid cols-2">
     <form class="card form-grid" data-v-form="panel">
-      <h3>Panel message</h3>
+      <h3>Message with the Verify button</h3>
+      <p class="microcopy full">Members press the Verify button on this message to start.</p>
       ${textField("title", "Title", s.panel.title, "", true, "full")}
       ${textArea("description", "Text", s.panel.description)}
       <label>Color<input type="color" name="color" value="${escapeHtml(s.panel.color)}"></label>
@@ -181,7 +189,7 @@ function panelTab() {
       ${detail("Channel", s.channelId ? escapeHtml(channelLabel(s.channelId)) : "Not set. Choose one in Settings.")}
       ${posted ? detail("Posted", escapeHtml(channelLabel(s.panelChannelId))) : ""}
       <p class="microcopy">Posting again updates the existing panel when it is still in the same channel.</p>
-      <button class="button full" data-v-action="post" ${s.channelId ? "" : "disabled"}>${posted ? "Update panel in Discord" : "Post panel in Discord"}</button>
+      <button class="button full" data-v-action="post" ${s.channelId ? "" : "disabled"}>${posted ? "Update the Verify button message in Discord" : "Post the Verify button message in Discord"}</button>
     </div>
   </section>`;
 }

@@ -103,7 +103,7 @@ function statusTab() {
         ${chart(view.history)}
       </div>
       <div class="card"><h3>Online now</h3>
-        ${table(["ID", "Name", "Ping"], players.map((player) => row([["ID", String(player.id)], ["Name", escapeHtml(player.name)], ["Ping", `${player.ping} ms`]])), view.status?.online && view.status.playerCount > 0 ? "The player list is hidden on this server." : "Nobody is online.")}
+        ${table(["ID", "Name", "Ping"], players.map((player) => row([["ID", String(player.id)], ["Name", escapeHtml(player.name)], ["Ping", `${player.ping} ms`]])), !view.status?.online ? "The server is offline." : view.status.playerCount > 0 ? "The player list is hidden on this server." : "Nobody is online.")}
       </div>
     </section>`;
 }

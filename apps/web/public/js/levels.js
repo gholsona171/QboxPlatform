@@ -105,6 +105,14 @@ function leaderboardTab() {
     ["Messages", member.messages.toLocaleString()],
     ["Voice", `${member.voiceMinutes.toLocaleString()} min`],
   ], member.userId === me.member.userId ? `class="selected"` : ""));
+  if (!board.enabled) {
+    return `<div class="empty-state">
+      <h3>Levels are off${board.canManage ? ", so nobody is earning XP." : " on this server."}</h3>
+      ${board.canManage
+        ? `<p>Turn on Members earn XP in Settings. Add role rewards in Rewards.</p><button class="button primary" data-l-tab="settings">Turn on levels</button>`
+        : ""}
+    </div>`;
+  }
   return `<section class="grid cols-4">
       ${metric("Your rank", me.rank ? `#${me.rank}` : "Unranked")}${metric("Your level", me.member.level)}${metric("Your XP", me.member.xp.toLocaleString())}${metric("Next level", progress(me))}
     </section>
@@ -221,7 +229,7 @@ function rewardsTab() {
     ${roleSelect(`rw${index}.roleId`, "Role", reward.roleId)}
   </div>`).join("");
   return `<form class="form-grid readable-form" data-l-form="rewards">
-    <p class="microcopy full">Members get these roles when they reach the level. Leave a row empty to skip it. The Qbox role must be above these roles.</p>
+    <p class="microcopy full">Members get these roles when they reach the level. Leave a row empty to skip it. In Discord's role list, drag the Qbox role above these roles.</p>
     ${rows}
     ${selectField("rewardMode", "When a member earns more than one", [["STACK", "Keep all reward roles"], ["HIGHEST", "Keep only the highest reward role"]], s.rewardMode)}
     ${checkbox("removeRewardsOnReset", "Remove reward roles when XP is reset", s.removeRewardsOnReset)}

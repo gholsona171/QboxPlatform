@@ -56,7 +56,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to giveaways" : "Giveaways are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the giveaways.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to giveaways" : "Giveaways are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Manage giveaways permission (giveaways.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   if (!TABS.some(([id]) => id === view.tab)) view.tab = "active";
@@ -78,7 +78,9 @@ function listTab(giveaways) {
     [view.tab === "active" ? "Ends" : "Winners", view.tab === "active" ? escapeHtml(item.status === "PAUSED" ? "Paused" : relative(item.endsAt)) : item.winnerIds.map(memberName).join(", ") || "—"],
   ], `data-g-item="${escapeHtml(item.id)}" class="${item.id === view.selected?.giveaway.id ? "selected" : ""}" tabindex="0"`));
   return `<section class="grid main-detail">
-    <div>${table(["Giveaway", "Prize", "State", "Entries", view.tab === "active" ? "Ends" : "Winners"], rows, view.tab === "active" ? "No running giveaways. Start one here or with /giveaway start." : "No ended giveaways yet.")}</div>
+    <div>${!rows.length && view.tab === "active"
+      ? `<div class="empty-state"><p>No running giveaways.</p><button class="button primary" data-g-tab="start">Start a giveaway</button><p class="microcopy">Or use /giveaway start in Discord.</p></div>`
+      : table(["Giveaway", "Prize", "State", "Entries", view.tab === "active" ? "Ends" : "Winners"], rows, "No ended giveaways yet.")}</div>
     <div class="card">${giveawayDetail()}</div>
   </section>`;
 }

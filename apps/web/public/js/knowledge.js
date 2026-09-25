@@ -76,6 +76,15 @@ function categoryName(id) {
 
 function articlesTab() {
   const manage = view.overview.can.manage;
+  if (!view.overview.articles.length) {
+    return manage
+      ? `<div class="empty-state">
+          <h3>Your knowledge base is empty.</h3>
+          <p>Write your first article in Write. Members read articles here and with /faq.</p>
+          <button class="button primary" data-k-tab="editor">Write an article</button>
+        </div>`
+      : `<div class="empty-state">No articles have been published yet.</div>`;
+  }
   const rows = view.articles.map((item) => row([
     ["Title", `${item.pinned ? "📌 " : ""}<strong>${escapeHtml(item.title)}</strong><br><small>${escapeHtml(item.excerpt)}</small>`],
     ["Category", escapeHtml(categoryName(item.categoryId))],

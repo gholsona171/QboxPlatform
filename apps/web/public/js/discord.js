@@ -75,7 +75,8 @@ function render() {
     ? `<div class="empty-state">${view.error.status === 403 ? "You don't have permission to manage this feature. Ask a server admin to grant it." : escapeHtml(view.error.message)}</div>`
     : tabContent();
   const label = TABS.find(([id]) => id === view.tab)?.[1] ?? "";
-  container.innerHTML = `<div class="subnav-layout">
+  container.innerHTML = `<p class="microcopy">Nothing here is on until you turn it on and save.</p>
+  <div class="subnav-layout">
     <nav class="subnav" aria-label="Discord bot features">${TABS.map(([id, text]) => `<button class="${view.tab === id ? "active" : ""}" data-d-tab="${id}" ${view.tab === id ? 'aria-current="page"' : ""}>${escapeHtml(text)}</button>`).join("")}</nav>
     <section class="grid">
       <div class="section-head"><h2>${escapeHtml(label)}</h2><p class="microcopy">${escapeHtml(DESCRIPTIONS[view.tab] ?? "")}</p></div>

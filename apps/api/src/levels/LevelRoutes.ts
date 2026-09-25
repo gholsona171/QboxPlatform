@@ -55,12 +55,13 @@ function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext
     const identity = await member(request, { mutation: false });
     const query = routeQuery(request);
     const page = query.page === undefined ? 1 : parse(pageSchema, query.page);
-    const [board, me, canManage] = await Promise.all([
+    const [board, me, settings, canManage] = await Promise.all([
       safe(() => levels.leaderboard(guildId, page)),
       safe(() => levels.profile(guildId, identity.userId)),
+      levels.settings(guildId),
       guard(request, "levels.manage", { mutation: false }).then(() => true, () => false),
     ]);
-    return { data: { ...board, me, canManage } };
+    return { data: { ...board, me, enabled: settings.enabled, canManage } };
   });
 
   server.get("/api/v1/levels/overview", async (request, reply) => {

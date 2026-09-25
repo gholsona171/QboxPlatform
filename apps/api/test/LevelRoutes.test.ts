@@ -45,7 +45,7 @@ describe("level routes", () => {
     expect(response.statusCode).toBe(200);
     const data = response.json().data;
     expect(data.members.map((member: { displayName: string }) => member.displayName)).toEqual(["Alex", "Jay"]);
-    expect(data).toMatchObject({ total: 2, canManage: false, me: { rank: 2, member: { xp: 50 } } });
+    expect(data).toMatchObject({ total: 2, canManage: false, enabled: defaultLevelSettings(GUILD).enabled, me: { rank: 2, member: { xp: 50 } } });
     expect((await server.inject({ method: "GET", url: "/api/v1/levels/overview", headers: host })).statusCode).toBe(403);
   });
 
