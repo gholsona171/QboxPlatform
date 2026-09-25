@@ -20,6 +20,20 @@ export async function loadMe(refresh = false) {
   return requestJson(`/api/v1/me${refresh ? "?refresh=1" : ""}`);
 }
 
+/** Servers the signed-in member and the bot share. refresh=true re-reads Discord. */
+export function listGuilds(refresh = false) {
+  return requestJson(`/api/v1/guilds${refresh ? "?refresh=1" : ""}`);
+}
+
+/** Makes one server the current server for this browser (cookie set by the API). */
+export function selectGuild(guildId) {
+  return mutateJson("/api/v1/guilds/select", "POST", { guildId });
+}
+
+export function clearGuild() {
+  return mutateJson("/api/v1/guilds/clear", "POST", {});
+}
+
 export async function listRoleMenus() {
   return requestJson("/api/v1/discord/role-menus");
 }
@@ -156,6 +170,7 @@ async function requestJson(path, options = {}) {
     }
     const detailMessage = Array.isArray(problem.errors) ? problem.errors.find((item) => typeof item?.message === "string")?.message : undefined;
     const message = detailMessage || userMessage(problem.code, problem.detail || response.statusText);
+    if (problem.code === "GUILD_REQUIRED") window.dispatchEvent(new CustomEvent("qbox:guild-required"));
     throw Object.assign(new Error(message), { code: problem.code || "REQUEST_FAILED", status: response.status });
   }
   return response.json();
@@ -165,7 +180,8 @@ function userMessage(code, fallback) {
   const messages = {
     AUTHENTICATION_REQUIRED: "Your session expired. Sign in with Discord again.",
     AUTHORIZATION_DENIED: "Administrator permission denied.",
-    DISCORD_GUILD_MEMBERSHIP_REQUIRED: "You are not a member of the configured server.",
+    DISCORD_GUILD_MEMBERSHIP_REQUIRED: "You are not a member of that server.",
+    GUILD_REQUIRED: "Choose a server first.",
     DISCORD_GUILD_MEMBERSHIP_PENDING: "Membership screening is still pending.",
     OAUTH_STATE_INVALID: "OAuth state expired. Start Discord login again.",
     DEPENDENCY_UNAVAILABLE: "Discord or the Qbox API is not reachable right now.",

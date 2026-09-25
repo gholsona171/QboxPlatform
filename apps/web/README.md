@@ -2,10 +2,24 @@
 
 Static, framework-free portal in `apps/web/public`. It only shows live data from your Discord server: visitors who are not signed in see a "Sign in with Discord" screen. It is hosted in two ways.
 
+## Server picker
+
+Qbox can be in many Discord servers. After sign-in the portal shows the servers
+you and the bot share (`GET /api/v1/me` → `guilds`). The sidebar header shows
+the current server with a "Switch server" control; when no server is chosen
+yet, or the API answers `409 GUILD_REQUIRED`, the content area shows the
+"Choose a server" page with "Add Qbox to a server" (`inviteUrl`) and "Refresh
+list" (`GET /api/v1/guilds?refresh=1`). Choosing a server calls
+`POST /api/v1/guilds/select`, which sets the `qbox_guild` cookie, and then the
+page reloads so no page keeps data from the previous server. Servers where you
+are not an owner, administrator, or Manage Server member are marked "Limited":
+you can still open member pages such as Apply, Leaderboard, and Birthdays.
+
 ## Pages
 
 | Page | Contents |
 | --- | --- |
+| Choose a server | Shown until a server is chosen; lists the servers you and Qbox share |
 | Overview | API status, open tickets, waiting tickets, average rating, links to features |
 | Tickets | Inbox, ticket reasons, panels (with a Discord preview), settings, statistics. See `docs/Tickets.md`. |
 | Discord Bot | Welcome and goodbye, autoroles, rules, roles, role menus, counters, logs, embeds, custom commands, suggestions, starboard |

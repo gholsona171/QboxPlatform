@@ -14,11 +14,13 @@
   <a class="skip-link" href="#content">Skip to content</a>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar" aria-label="Primary navigation">
-      <div class="brand">
-        <div class="brand-mark">QB</div>
-        <div>
-          <strong>QboxPlatform</strong>
-          <span>Community control panel</span>
+      <div class="server-header" id="serverHeader">
+        <div class="brand">
+          <div class="brand-mark">QB</div>
+          <div>
+            <strong>QboxPlatform</strong>
+            <span>Community control panel</span>
+          </div>
         </div>
       </div>
       <nav class="nav" id="navigation"></nav>
@@ -67,6 +69,15 @@
         <button class="button" id="modalCancel">Cancel</button>
         <button class="button danger" id="modalConfirm">Confirm</button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="guildPickerBackdrop" hidden>
+    <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="guildPickerTitle">
+      <h2 id="guildPickerTitle">Switch server</h2>
+      <p>Servers you and Qbox are both in.</p>
+      <div id="guildPickerList"></div>
+      <div class="modal-actions" id="guildPickerActions"></div>
     </div>
   </div>
 

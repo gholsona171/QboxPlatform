@@ -1,11 +1,13 @@
 import { loginUrl, logout } from "./api.js";
 import { appPath, currentRoutePage, liveUrl, staticHosting } from "./config.js";
-import { refreshSession, session, signedIn } from "./session.js";
+import { chooseServerView, initializeGuildPicker, renderServerHeader } from "./guilds.js";
+import { currentGuild, refreshSession, session, signedIn } from "./session.js";
 import { escapeHtml, initializeModal, notify, signInCard } from "./ui.js";
 import { pages } from "./pages.js";
 
 
 initializeModal();
+initializeGuildPicker();
 
 const navLink = (page) => `<a class="nav-link" href="${appPath(page.id === "overview" ? "/" : `/${page.id}`)}" data-route="${page.id}"><span class="nav-icon" aria-hidden="true">${page.icon}</span><span>${escapeHtml(page.label)}</span></a>`;
 
@@ -49,6 +51,14 @@ document.getElementById("logoutButton").addEventListener("click", async () => {
 
 window.addEventListener("popstate", () => renderCurrentRoute());
 
+// A feature route answered 409 GUILD_REQUIRED: the browser has no server yet.
+window.addEventListener("qbox:guild-required", () => {
+  if (!session.account || !currentGuild()) return renderCurrentRoute();
+  session.account.guild = null;
+  renderChrome();
+  renderCurrentRoute();
+});
+
 await refreshSession({ refreshAccount: new URLSearchParams(location.search).has("auth") });
 renderChrome();
 renderCurrentRoute();
@@ -70,6 +80,13 @@ function renderCurrentRoute() {
     content.innerHTML = signInCard(loginUrl(), staticHosting(), liveUrl());
     return;
   }
+  if (signedIn() && !currentGuild()) {
+    document.getElementById("pageTitle").textContent = "Choose a server";
+    document.getElementById("breadcrumbs").textContent = "Pick the Discord server to manage.";
+    content.innerHTML = chooseServerView();
+    content.focus({ preventScroll: true });
+    return;
+  }
   content.innerHTML = "";
   void Promise.resolve(current.render(content)).catch((error) => {
     content.innerHTML = `<section class="card"><h2>Something went wrong</h2><p class="microcopy">${escapeHtml(error.message || "This page could not load.")}</p></section>`;
@@ -79,6 +96,7 @@ function renderCurrentRoute() {
 
 function renderChrome() {
   const profile = session.account?.account;
+  renderServerHeader();
   const dot = document.getElementById("connectionDot");
   const title = document.getElementById("connectionTitle");
   const text = document.getElementById("connectionText");
@@ -87,7 +105,7 @@ function renderChrome() {
   text.textContent = staticHosting()
     ? "Sign in on the live platform to manage your server."
     : session.health.available
-      ? profile ? "Changes here apply to your Discord server." : "Sign in with Discord to continue."
+      ? profile ? (currentGuild() ? `Changes here apply to ${currentGuild().name}.` : "Choose a server to get started.") : "Sign in with Discord to continue."
       : "The Qbox API is not reachable right now.";
 
   const name = document.getElementById("profileName");
