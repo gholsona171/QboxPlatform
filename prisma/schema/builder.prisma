@@ -1,0 +1,86 @@
+// Server builder (see docs/ServerBuilder.md). guildId is the Discord guild snowflake.
+
+enum BuilderRunStatus {
+  QUEUED    @map("queued")
+  RUNNING   @map("running")
+  SUCCEEDED @map("succeeded")
+  FAILED    @map("failed")
+  PARTIAL   @map("partial")
+  UNDONE    @map("undone")
+}
+
+enum BuilderRunMode {
+  ADD   @map("add")
+  FRESH @map("fresh")
+}
+
+enum BuilderItemKind {
+  ROLE     @map("role")
+  CATEGORY @map("category")
+  CHANNEL  @map("channel")
+  LINK     @map("link")
+}
+
+enum BuilderItemStatus {
+  CREATED @map("created")
+  SKIPPED @map("skipped")
+  FAILED  @map("failed")
+  DELETED @map("deleted")
+}
+
+model BuilderDraft {
+  guildId     String   @id @map("guild_id")
+  answers     Json     @db.JsonB
+  blueprint   Json     @db.JsonB
+  updatedById String?  @map("updated_by_id")
+  revision    Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("builder_drafts")
+}
+
+model BuilderRun {
+  id            String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId       String           @map("guild_id")
+  status        BuilderRunStatus @default(QUEUED)
+  mode          BuilderRunMode
+  links         String[]
+  planned       Int              @default(0)
+  done          Int              @default(0)
+  skipped       Int              @default(0)
+  failed        Int              @default(0)
+  startedById   String           @map("started_by_id")
+  startedByName String           @map("started_by_name")
+  warnings      String[]
+  error         String?
+  startedAt     DateTime?        @map("started_at") @db.Timestamptz(3)
+  finishedAt    DateTime?        @map("finished_at") @db.Timestamptz(3)
+  undoneAt      DateTime?        @map("undone_at") @db.Timestamptz(3)
+  createdAt     DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  items         BuilderRunItem[]
+
+  @@index([guildId, createdAt], map: "builder_runs_guild_created_idx")
+  @@index([status], map: "builder_runs_status_idx")
+  @@map("builder_runs")
+}
+
+model BuilderRunItem {
+  id        String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  runId     String            @map("run_id") @db.Uuid
+  run       BuilderRun        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  sequence  Int               @default(autoincrement())
+  kind      BuilderItemKind
+  key       String
+  name      String
+  discordId String?           @map("discord_id")
+  status    BuilderItemStatus
+  error     String?
+  note      String?
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([runId, sequence], map: "builder_run_items_run_sequence_idx")
+  @@map("builder_run_items")
+}

@@ -1,5 +1,5 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
@@ -8,6 +8,8 @@ import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
 import { DiscordRestGiveawayGateway, GiveawayService } from "@qbox/giveaways";
 import { DiscordRestPollGateway, PollService } from "@qbox/polls";
 import { BirthdayService, DiscordRestBirthdayGateway } from "@qbox/birthdays";
+import { DiscordCommunityService } from "@qbox/discord-community";
+import { BuilderService, DiscordRestBuilderGateway } from "@qbox/server-builder";
 import { DiscordRestScheduledMessageGateway, ScheduledMessageService } from "@qbox/scheduled-messages";
 import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
 import { DiscordRestVerificationGateway, VerificationService } from "@qbox/verification";
@@ -16,6 +18,8 @@ import type { REST } from "discord.js";
 
 import { applicationsApiFeature } from "./applications/ApplicationRoutes.js";
 import { birthdaysApiFeature } from "./birthdays/BirthdayRoutes.js";
+import { builderApiFeature } from "./builder/BuilderRoutes.js";
+import { ServiceBuilderLinks } from "./builder/builderLinks.js";
 import { directoryApiFeature } from "./directory/DirectoryRoutes.js";
 import type { ApiFeature } from "./features/ApiFeature.js";
 import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
@@ -38,20 +42,32 @@ export interface ApiFeatureDependencies {
 
 /** Every pluggable API feature. Add one line per feature. */
 export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies): readonly ApiFeature[] {
+  const tickets = new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined);
+  const moderation = new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined);
+  const verification = new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined);
+  const applications = new ApplicationService(new PrismaApplicationRepository(persistence.prisma), discordRest ? new DiscordRestApplicationGateway(discordRest) : undefined);
+  const staff = new StaffService(new PrismaStaffRepository(persistence.prisma), discordRest ? new DiscordRestStaffGateway(discordRest) : undefined);
+  const birthdays = new BirthdayService(new PrismaBirthdayRepository(persistence.prisma), discordRest ? new DiscordRestBirthdayGateway(discordRest) : undefined);
+  const levels = new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined);
+  const voice = new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined);
+  const fivem = new FivemService(new PrismaFivemRepository(persistence.prisma), new HttpFivemQueryClient(), discordRest ? new DiscordRestFivemGateway(discordRest) : undefined);
+  const community = new DiscordCommunityService(persistence.repositories.discordCommunity);
+  const builderLinks = new ServiceBuilderLinks({ moderation, verification, tickets, applications, staff, levels, birthdays, fivem, voice, community });
   return [
     directoryApiFeature(discordRest),
-    ticketsApiFeature(new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined)),
-    moderationApiFeature(new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined)),
-    verificationApiFeature(new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined)),
-    applicationsApiFeature(new ApplicationService(new PrismaApplicationRepository(persistence.prisma), discordRest ? new DiscordRestApplicationGateway(discordRest) : undefined)),
-    staffApiFeature(new StaffService(new PrismaStaffRepository(persistence.prisma), discordRest ? new DiscordRestStaffGateway(discordRest) : undefined)),
+    ticketsApiFeature(tickets),
+    moderationApiFeature(moderation),
+    verificationApiFeature(verification),
+    applicationsApiFeature(applications),
+    staffApiFeature(staff),
     pollsApiFeature(new PollService(new PrismaPollRepository(persistence.prisma), discordRest ? new DiscordRestPollGateway(discordRest) : undefined)),
     giveawaysApiFeature(new GiveawayService(new PrismaGiveawayRepository(persistence.prisma), discordRest ? new DiscordRestGiveawayGateway(discordRest) : undefined)),
-    birthdaysApiFeature(new BirthdayService(new PrismaBirthdayRepository(persistence.prisma), discordRest ? new DiscordRestBirthdayGateway(discordRest) : undefined)),
+    birthdaysApiFeature(birthdays),
     scheduledMessagesApiFeature(new ScheduledMessageService(new PrismaScheduledMessageRepository(persistence.prisma), discordRest ? new DiscordRestScheduledMessageGateway(discordRest) : undefined)),
-    levelsApiFeature(new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined)),
-    voiceRoomsApiFeature(new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined)),
+    levelsApiFeature(levels),
+    voiceRoomsApiFeature(voice),
     knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
-    fivemApiFeature(new FivemService(new PrismaFivemRepository(persistence.prisma), new HttpFivemQueryClient(), discordRest ? new DiscordRestFivemGateway(discordRest) : undefined)),
+    fivemApiFeature(fivem),
+    builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
   ];
 }

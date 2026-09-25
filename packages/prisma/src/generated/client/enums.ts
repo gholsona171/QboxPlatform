@@ -394,6 +394,46 @@ export const AuthenticationAuditActorType = {
 export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]
 
 
+export const BuilderRunStatus = {
+  QUEUED: 'QUEUED',
+  RUNNING: 'RUNNING',
+  SUCCEEDED: 'SUCCEEDED',
+  FAILED: 'FAILED',
+  PARTIAL: 'PARTIAL',
+  UNDONE: 'UNDONE'
+} as const
+
+export type BuilderRunStatus = (typeof BuilderRunStatus)[keyof typeof BuilderRunStatus]
+
+
+export const BuilderRunMode = {
+  ADD: 'ADD',
+  FRESH: 'FRESH'
+} as const
+
+export type BuilderRunMode = (typeof BuilderRunMode)[keyof typeof BuilderRunMode]
+
+
+export const BuilderItemKind = {
+  ROLE: 'ROLE',
+  CATEGORY: 'CATEGORY',
+  CHANNEL: 'CHANNEL',
+  LINK: 'LINK'
+} as const
+
+export type BuilderItemKind = (typeof BuilderItemKind)[keyof typeof BuilderItemKind]
+
+
+export const BuilderItemStatus = {
+  CREATED: 'CREATED',
+  SKIPPED: 'SKIPPED',
+  FAILED: 'FAILED',
+  DELETED: 'DELETED'
+} as const
+
+export type BuilderItemStatus = (typeof BuilderItemStatus)[keyof typeof BuilderItemStatus]
+
+
 export const GiveawayStatus = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',

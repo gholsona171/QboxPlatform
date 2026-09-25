@@ -198,6 +198,21 @@ export type BirthdaySettings = Prisma.BirthdaySettingsModel
  */
 export type Birthday = Prisma.BirthdayModel
 /**
+ * Model BuilderDraft
+ *
+ */
+export type BuilderDraft = Prisma.BuilderDraftModel
+/**
+ * Model BuilderRun
+ *
+ */
+export type BuilderRun = Prisma.BuilderRunModel
+/**
+ * Model BuilderRunItem
+ *
+ */
+export type BuilderRunItem = Prisma.BuilderRunItemModel
+/**
  * Model FivemSettings
  *
  */

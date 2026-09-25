@@ -1,5 +1,5 @@
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, builderFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
 import { env } from "@qbox/shared";
 
 /**
@@ -21,5 +21,6 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient): rea
     voiceRoomsFeature(new PrismaVoiceRepository(persistence.prisma)),
     knowledgeFeature(new PrismaKnowledgeRepository(persistence.prisma), { openAiApiKey: env.OPENAI_API_KEY, openAiModel: env.OPENAI_MODEL }),
     fivemFeature(new PrismaFivemRepository(persistence.prisma)),
+    builderFeature(new PrismaBuilderRepository(persistence.prisma)),
   ];
 }
