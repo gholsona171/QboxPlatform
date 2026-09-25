@@ -595,3 +595,18 @@ label { display: grid; gap: 6px; color: var(--muted); font-weight: 800; font-siz
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
+
+/* Tickets console */
+.form-grid h3, .form-grid fieldset, .form-grid > p { grid-column: 1 / -1; margin: 8px 0 0; }
+.form-grid fieldset { border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.form-grid fieldset legend { color: var(--muted); font-weight: 800; font-size: 13px; padding: 0 6px; }
+.form-grid label.checkbox { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text); }
+.form-grid label.checkbox input { width: 18px; height: 18px; min-height: 0; padding: 0; flex: none; accent-color: var(--accent); }
+.form-grid select[multiple] { min-height: 96px; }
+.timeline li.internal-note { border-left: 3px solid var(--warning); padding-left: 10px; }
+.timeline li p { margin: 4px 0 0; color: var(--text); white-space: pre-wrap; overflow-wrap: anywhere; }
+tr[data-ticket-select] { cursor: pointer; }
+tr[data-ticket-select].selected td { background: var(--surface-3); }
+@media (max-width: 900px) {
+  .form-grid fieldset { grid-template-columns: 1fr; }
+}

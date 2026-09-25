@@ -19,7 +19,7 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Suggestions | LIVE | suggest |  |  | /api/v1/discord/suggestions | /discord?tab=suggestions | discord.suggestions.manage | Suggestion | Discord yes / Portal yes |
 | Starboard | LIVE | starboard |  | messageReactionAdd, messageDelete | /api/v1/discord/starboard | /discord?tab=starboard | discord.starboard.manage | StarboardConfig, StarboardEntry | Discord yes / Portal yes |
 | Applications | PLANNED |  |  |  |  | /applications |  |  | Discord no / Portal no |
-| Tickets | PLANNED |  |  |  |  | /tickets |  |  | Discord no / Portal no |
+| Tickets | LIVE | ticket, tickets | ticket panel buttons, ticket select menus, ticket forms, close/claim/reopen/transcript buttons, feedback ratings | messageCreate, channelDelete, threadDelete, auto-close timer | /api/v1/tickets, /api/v1/tickets/overview, /api/v1/tickets/settings, /api/v1/tickets/categories, /api/v1/tickets/panels | /tickets | tickets.manage, tickets.handle | TicketSettings, TicketCategory, TicketPanel, Ticket, TicketMessage, TicketEvent | Discord yes / Portal yes |
 | Staff | DEMO |  |  |  |  | /staff |  |  | Discord no / Portal yes |
 | Moderation | PLANNED |  |  |  |  | /moderation |  |  | Discord no / Portal no |
 | Verification | DEMO |  |  |  |  | /verification |  |  | Discord no / Portal yes |

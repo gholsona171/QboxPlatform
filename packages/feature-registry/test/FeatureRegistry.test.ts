@@ -26,6 +26,8 @@ const commandNames = [
   "suggest",
   "welcome",
   "roles",
+  "ticket",
+  "tickets",
 ];
 
 describe("featureRegistry", () => {

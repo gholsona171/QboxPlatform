@@ -126,6 +126,67 @@ export async function saveDiscordFeature(path, input, method = "PUT") {
   });
 }
 
+export function ticketsOverview() {
+  return requestJson("/api/v1/tickets/overview");
+}
+
+export function listTickets(filters = {}) {
+  const query = new URLSearchParams(Object.entries(filters).filter(([, value]) => value !== undefined && value !== ""));
+  return requestJson(`/api/v1/tickets${query.size ? `?${query}` : ""}`);
+}
+
+export function ticketDetail(ticketId) {
+  return requestJson(`/api/v1/tickets/${encodeURIComponent(ticketId)}`);
+}
+
+export function ticketTranscriptUrl(ticketId) {
+  return appPath(`/api/v1/tickets/${encodeURIComponent(ticketId)}/transcript`);
+}
+
+export function ticketAction(ticketId, action, body = {}) {
+  return mutateJson(`/api/v1/tickets/${encodeURIComponent(ticketId)}/${action}`, "POST", body);
+}
+
+export function removeTicketParticipant(ticketId, userId) {
+  return mutateJson(`/api/v1/tickets/${encodeURIComponent(ticketId)}/participants/${encodeURIComponent(userId)}`, "DELETE");
+}
+
+export function saveTicketSettings(settings) {
+  return mutateJson("/api/v1/tickets/settings", "PUT", settings);
+}
+
+export function saveTicketCategory(category, id) {
+  return mutateJson(id ? `/api/v1/tickets/categories/${encodeURIComponent(id)}` : "/api/v1/tickets/categories", id ? "PUT" : "POST", category);
+}
+
+export function deleteTicketCategory(id) {
+  return mutateJson(`/api/v1/tickets/categories/${encodeURIComponent(id)}`, "DELETE");
+}
+
+export function saveTicketPanel(panel, id) {
+  return mutateJson(id ? `/api/v1/tickets/panels/${encodeURIComponent(id)}` : "/api/v1/tickets/panels", id ? "PUT" : "POST", panel);
+}
+
+export function publishTicketPanel(id) {
+  return mutateJson(`/api/v1/tickets/panels/${encodeURIComponent(id)}/publish`, "POST", {});
+}
+
+export function deleteTicketPanel(id) {
+  return mutateJson(`/api/v1/tickets/panels/${encodeURIComponent(id)}`, "DELETE");
+}
+
+function mutateJson(path, method, body) {
+  const csrf = cookieValue(csrfCookieName);
+  return requestJson(path, {
+    method,
+    headers: {
+      ...(body === undefined ? {} : { "content-type": "application/json" }),
+      ...(csrf ? { "x-csrf-token": csrf } : {}),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+}
+
 export async function logout() {
   const csrf = cookieValue(csrfCookieName);
   if (!csrf) throw Object.assign(new Error("Session expired."), { code: "AUTHENTICATION_REQUIRED" });
@@ -160,7 +221,8 @@ async function requestJson(path, options = {}) {
     } catch {
       // Keep provider and proxy errors out of the UI.
     }
-    const message = userMessage(problem.code, problem.detail || response.statusText);
+    const detailMessage = Array.isArray(problem.errors) ? problem.errors.find((item) => typeof item?.message === "string")?.message : undefined;
+    const message = detailMessage || userMessage(problem.code, problem.detail || response.statusText);
     throw Object.assign(new Error(message), { code: problem.code || "REQUEST_FAILED", status: response.status });
   }
   return response.json();

@@ -19,6 +19,8 @@ import { logger } from "@qbox/logger";
 import { RoleMenuService } from "@qbox/role-menus";
 import { DiscordCommunityService } from "@qbox/discord-community";
 import { RoleManagementService } from "@qbox/discord-roles";
+import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
+import { REST } from "discord.js";
 import {
   InMemoryPermissionCache,
   PersistentPermissionService,
@@ -132,6 +134,12 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       ? new DiscordRestRoleGateway(input.discord.token, input.discord.applicationId)
       : undefined,
   );
+  const tickets = new TicketService(
+    persistence.repositories.tickets,
+    input.discord?.token
+      ? new DiscordRestTicketGateway(new REST({ version: "10" }).setToken(input.discord.token))
+      : undefined,
+  );
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -198,6 +206,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         roleMenus,
         community,
         roles,
+        tickets,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       });

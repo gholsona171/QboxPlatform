@@ -29,7 +29,7 @@ export const featureRegistry = [
   live("suggestions", "Suggestions", ["suggest"], [], [], ["/api/v1/discord/suggestions"], "/discord?tab=suggestions", ["discord.suggestions.manage"], ["Suggestion"], true, true),
   live("starboard", "Starboard", ["starboard"], [], ["messageReactionAdd", "messageDelete"], ["/api/v1/discord/starboard"], "/discord?tab=starboard", ["discord.starboard.manage"], ["StarboardConfig", "StarboardEntry"], true, true),
   planned("applications", "Applications", "/applications"),
-  planned("tickets", "Tickets", "/tickets"),
+  live("tickets", "Tickets", ["ticket", "tickets"], ["ticket panel buttons", "ticket select menus", "ticket forms", "close/claim/reopen/transcript buttons", "feedback ratings"], ["messageCreate", "channelDelete", "threadDelete", "auto-close timer"], ["/api/v1/tickets", "/api/v1/tickets/overview", "/api/v1/tickets/settings", "/api/v1/tickets/categories", "/api/v1/tickets/panels"], "/tickets", ["tickets.manage", "tickets.handle"], ["TicketSettings", "TicketCategory", "TicketPanel", "Ticket", "TicketMessage", "TicketEvent"], true, true),
   demo("staff", "Staff", "/staff"),
   planned("moderation", "Moderation", "/moderation"),
   demo("verification", "Verification", "/verification"),

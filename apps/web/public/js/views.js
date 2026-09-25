@@ -2,6 +2,7 @@ import { appPath, currentRoutePage, liveUrl, staticHosting } from "./config.js";
 import { appVersion } from "./data.js";
 import { addRoleMenuOption, adminCheck, createDiscordRole, createRoleMenu, deleteDiscordRole, deleteRoleMenu, disableRoleMenu, editDiscordRole, inspectDiscordRole, listDiscordChannels, listDiscordRoleDependencies, listDiscordRoles, listRoleMenus, loadDiscordFeature, loadHealth, loadMe, loginUrl, logout, moveDiscordRole, publishRoleMenu, saveDiscordFeature } from "./api.js";
 import { loadDemoState, loadVotes, mutateDemoState, recordActivity, resetDemoState, safeLocalStorageSnapshot, saveVotes } from "./store.js";
+import { liveTicketsShell, mountLiveTickets } from "./tickets.js";
 import { badge, confirmAction, demoChip, escapeHtml, formData, notify, row, table, timeline } from "./ui.js";
 
 const statuses = {
@@ -37,6 +38,7 @@ export function renderPage(page) {
   content.innerHTML = route(page, state);
   content.focus({ preventScroll: true });
   bindPageEvents(page);
+  if (page === "tickets" && account) void mountLiveTickets();
 }
 
 export function renderAccountChrome() {
@@ -46,10 +48,25 @@ export function renderAccountChrome() {
   const summary = document.getElementById("profileSummary");
   status.textContent = live.available ? "Live API reachable" : "Live services are not connected yet";
   status.className = `connection-pill ${live.available ? "success" : ""}`.trim();
-  if (account?.discord?.username || account?.discord?.globalName) {
-    name.textContent = account.discord.globalName || account.discord.username;
-    avatar.innerHTML = account.discord.avatarUrl ? `<img alt="" src="${escapeHtml(account.discord.avatarUrl)}">` : escapeHtml((account.discord.username || "QB").slice(0, 2).toUpperCase());
-    summary.innerHTML = `<strong>${escapeHtml(name.textContent)}</strong><p class="microcopy">Authenticated as platform user ${escapeHtml(account.platformUser.id)}.</p>`;
+  const profile = account?.account;
+  const banner = document.querySelector(".demo-banner");
+  if (banner) banner.hidden = Boolean(profile);
+  const modeCard = document.querySelector(".sidebar-card");
+  if (modeCard) {
+    modeCard.querySelector(".status-dot")?.classList.toggle("live", Boolean(profile));
+    modeCard.querySelector(".status-dot")?.classList.toggle("demo", !profile);
+    const title = modeCard.querySelector("strong");
+    const text = modeCard.querySelector("p");
+    if (title) title.textContent = profile ? "Live" : "Demo Mode";
+    if (text) text.textContent = profile ? "Signed in with Discord. Live pages change your server." : "Product actions are browser-only until live modules are connected.";
+  }
+  if (profile?.username || profile?.globalName) {
+    name.textContent = profile.globalName || profile.username;
+    const avatarUrl = profile.avatar && /^\d{17,20}$/.test(profile.discordUserId ?? "") && /^(a_)?[0-9a-f]{32}$/.test(profile.avatar)
+      ? `https://cdn.discordapp.com/avatars/${profile.discordUserId}/${profile.avatar}.png?size=64`
+      : undefined;
+    avatar.innerHTML = avatarUrl ? `<img alt="" src="${escapeHtml(avatarUrl)}">` : escapeHtml((profile.username || "QB").slice(0, 2).toUpperCase());
+    summary.innerHTML = `<strong>${escapeHtml(name.textContent)}</strong><p class="microcopy">Signed in with Discord as platform user ${escapeHtml(profile.platformUserId)}.</p>`;
   } else {
     name.textContent = "Demo Explorer";
     avatar.textContent = "QB";
@@ -426,6 +443,7 @@ function applicationDetail(item) {
 }
 
 function ticketsPage(state) {
+  if (account) return liveTicketsShell();
   const rows = state.tickets.map((item) => row([
     ["Ticket", `<strong>${escapeHtml(item.id)}</strong>`],
     ["Subject", escapeHtml(item.subject)],
@@ -435,7 +453,7 @@ function ticketsPage(state) {
     ["Assignee", escapeHtml(item.assignee)],
   ], `class="clickable" data-select="${item.id}"`));
   return `
-    ${shellIntro("Tickets", "Create, claim, message, and reopen support tickets using local demo state only.")}
+    ${shellIntro("Tickets", staticHosting() ? "Demo Mode preview. Open the live platform and log in with Discord to manage real tickets." : "Demo Mode. Log in with Discord to manage real tickets from your server.")}
     <section class="grid main-detail"><div class="card">${toolbar("Search tickets", "ticketSearch", statuses.tickets)}${table(["Ticket", "Subject", "Category", "Priority", "Status", "Assignee"], rows)}</div><div class="card" id="detailPanel">${ticketDetail(state.tickets[0])}</div></section>
     <section class="card"><h2>Create ticket</h2><form class="form-grid" data-action="create-ticket">${input("subject", "Subject", "Demo support request")}${select("category", "Category", ["Support", "Discord", "FiveM", "Billing"])}${select("priority", "Priority", ["Low", "Medium", "High"])}${select("assignee", "Assign staff", ["Unassigned", ...state.staff.map((s) => s.name)])}<button class="button primary full">Create demo ticket</button></form></section>
   `;

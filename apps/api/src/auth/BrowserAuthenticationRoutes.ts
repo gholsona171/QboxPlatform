@@ -30,6 +30,7 @@ import type {
 import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
 import { CommunityFeatureError, type CounterType, type DiscordCommunityService, type SuggestionStatus } from "@qbox/discord-community";
 import { RoleManagementError, type RoleManagementService } from "@qbox/discord-roles";
+import type { TicketService } from "@qbox/tickets";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
@@ -39,6 +40,7 @@ import {
 } from "../errors/ApiError.js";
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { cookieSecret, type ApiAuthenticationConfiguration } from "./ApiAuthenticationConfiguration.js";
+import { registerTicketRoutes } from "../tickets/TicketRoutes.js";
 
 /** Dependencies for browser-visible authentication and dashboard routes. */
 export interface BrowserAuthenticationRouteDependencies {
@@ -54,6 +56,7 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly roleMenus: RoleMenuService;
   readonly community: DiscordCommunityService;
   readonly roles: RoleManagementService;
+  readonly tickets?: TicketService;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -633,6 +636,20 @@ export async function registerBrowserAuthenticationRoutes(
     return { data: await dependencies.community.saveStarboard({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), destinationChannelId: stringField(body, "destinationChannelId"), emoji: optionalStringField(body, "emoji") ?? "\u2b50", threshold: optionalIntegerField(body, "threshold") ?? 3, allowSelfStar: optionalBooleanField(body, "allowSelfStar") ?? false, includeBotMessages: optionalBooleanField(body, "includeBotMessages") ?? false, nsfw: "BLOCK", mode: "DENYLIST", channels: stringArrayField(body, "channels"), ignoredRoles: stringArrayField(body, "ignoredRoles") }) };
   });
 
+  if (dependencies.tickets)
+    registerTicketRoutes(server, {
+      tickets: dependencies.tickets,
+      guildId: diagnostics.discordGuildId,
+      guard: async (request, permission, options) => {
+        if (options.mutation) await requireCsrf(request, dependencies);
+        const { account } = await requireDiscordManager(request, dependencies, permission);
+        return {
+          userId: account.identity.providerSubjectId,
+          displayName: account.identity.profile.globalName ?? account.identity.profile.username ?? "Support team",
+        };
+      },
+    });
+
   server.post("/auth/logout", async (request, reply) => {
     validateSameOrigin(request, diagnostics.dashboardUrl);
     const sessionSecret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
@@ -674,6 +691,24 @@ async function requireSession(
       }),
     });
     return verified;
+  } catch {
+    throw new AuthenticationRequiredApiError();
+  }
+}
+
+/** Double-submit CSRF check bound to the current browser session. */
+async function requireCsrf(
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+): Promise<void> {
+  const diagnostics = dependencies.configuration.diagnostics();
+  const sessionSecret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
+  const csrfCookie = cookieSecret(readCookie(request, diagnostics.csrfCookieName));
+  const csrfHeader = cookieSecret(singleHeader(request.headers["x-csrf-token"]));
+  if (!sessionSecret || !csrfCookie || !csrfHeader || csrfCookie !== csrfHeader)
+    throw new AuthenticationRequiredApiError();
+  try {
+    await dependencies.sessions.verifySessionCsrf(sessionSecret, csrfHeader);
   } catch {
     throw new AuthenticationRequiredApiError();
   }

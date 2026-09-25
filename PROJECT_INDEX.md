@@ -132,21 +132,14 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 
 ## Module workspace directories
 
-`pnpm-workspace.yaml` includes `modules/*`. The following directories currently exist, but contain no source files, manifests, commands, services, events, or exports:
+`pnpm-workspace.yaml` includes `modules/*`. Each module is a pnpm workspace package with domain rules and ports; persistence lives in `@qbox/database` and Discord wiring in `@qbox/discord`.
 
-| Directory               | Current contents            |
-| ----------------------- | --------------------------- |
-| `modules/applications/` | Empty placeholder directory |
-| `modules/birthdays/`    | Empty placeholder directory |
-| `modules/fivem/`        | Empty placeholder directory |
-| `modules/knowledge/`    | Empty placeholder directory |
-| `modules/moderation/`   | Empty placeholder directory |
-| `modules/polls/`        | Empty placeholder directory |
-| `modules/staff/`        | Empty placeholder directory |
-| `modules/tickets/`      | Empty placeholder directory |
-| `modules/verification/` | Empty placeholder directory |
-
-Because they have no `package.json`, these directories are not currently pnpm workspace packages despite matching the configured path pattern.
+| Package                    | Directory                   | Purpose                                                                 |
+| -------------------------- | --------------------------- | ----------------------------------------------------------------------- |
+| `@qbox/discord-community`  | `modules/discord-community` | Welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard |
+| `@qbox/discord-roles`      | `modules/discord-roles`     | Role management and dependency tracking                                  |
+| `@qbox/role-menus`         | `modules/role-menus`        | Self-assignable role menus                                               |
+| `@qbox/tickets`            | `modules/tickets`           | Ticket system and shared Discord REST adapter. See `docs/Tickets.md`.    |
 
 # Services
 

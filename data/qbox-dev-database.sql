@@ -16,6 +16,13 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 ALTER TABLE IF EXISTS ONLY "public"."welcome_goodbye_configs" DROP CONSTRAINT IF EXISTS "welcome_goodbye_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."tickets" DROP CONSTRAINT IF EXISTS "tickets_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."tickets" DROP CONSTRAINT IF EXISTS "tickets_category_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_settings" DROP CONSTRAINT IF EXISTS "ticket_settings_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_panels" DROP CONSTRAINT IF EXISTS "ticket_panels_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_messages" DROP CONSTRAINT IF EXISTS "ticket_messages_ticket_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_events" DROP CONSTRAINT IF EXISTS "ticket_events_ticket_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_categories" DROP CONSTRAINT IF EXISTS "ticket_categories_guild_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."suggestions" DROP CONSTRAINT IF EXISTS "suggestions_guild_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_entries" DROP CONSTRAINT IF EXISTS "starboard_entries_guild_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_configs" DROP CONSTRAINT IF EXISTS "starboard_configs_guild_id_fkey";
@@ -77,6 +84,16 @@ DROP TRIGGER IF EXISTS "browser_sessions_identity_immutable" ON "public"."browse
 DROP TRIGGER IF EXISTS "browser_sessions_identity_guard" ON "public"."browser_sessions";
 DROP TRIGGER IF EXISTS "authentication_audit_events_append_only" ON "public"."authentication_audit_events";
 DROP INDEX IF EXISTS "public"."welcome_goodbye_configs_guild_kind_key";
+DROP INDEX IF EXISTS "public"."tickets_guild_status_activity_idx";
+DROP INDEX IF EXISTS "public"."tickets_guild_opener_status_idx";
+DROP INDEX IF EXISTS "public"."tickets_guild_number_key";
+DROP INDEX IF EXISTS "public"."tickets_channel_id_key";
+DROP INDEX IF EXISTS "public"."ticket_panels_guild_name_key";
+DROP INDEX IF EXISTS "public"."ticket_messages_ticket_created_idx";
+DROP INDEX IF EXISTS "public"."ticket_messages_discord_message_id_key";
+DROP INDEX IF EXISTS "public"."ticket_events_ticket_created_idx";
+DROP INDEX IF EXISTS "public"."ticket_categories_guild_position_idx";
+DROP INDEX IF EXISTS "public"."ticket_categories_guild_name_key";
 DROP INDEX IF EXISTS "public"."suggestions_guild_status_idx";
 DROP INDEX IF EXISTS "public"."starboard_entries_source_key";
 DROP INDEX IF EXISTS "public"."starboard_entries_guild_deleted_idx";
@@ -133,6 +150,12 @@ DROP INDEX IF EXISTS "public"."authentication_audit_events_correlation_idx";
 DROP INDEX IF EXISTS "public"."authentication_audit_events_actor_time_idx";
 DROP INDEX IF EXISTS "public"."authentication_audit_events_action_time_idx";
 ALTER TABLE IF EXISTS ONLY "public"."welcome_goodbye_configs" DROP CONSTRAINT IF EXISTS "welcome_goodbye_configs_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."tickets" DROP CONSTRAINT IF EXISTS "tickets_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_settings" DROP CONSTRAINT IF EXISTS "ticket_settings_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_panels" DROP CONSTRAINT IF EXISTS "ticket_panels_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_messages" DROP CONSTRAINT IF EXISTS "ticket_messages_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_events" DROP CONSTRAINT IF EXISTS "ticket_events_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_categories" DROP CONSTRAINT IF EXISTS "ticket_categories_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."suggestions" DROP CONSTRAINT IF EXISTS "suggestions_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_entries" DROP CONSTRAINT IF EXISTS "starboard_entries_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."starboard_configs" DROP CONSTRAINT IF EXISTS "starboard_configs_pkey";
@@ -162,6 +185,12 @@ ALTER TABLE IF EXISTS ONLY "public"."autorole_configs" DROP CONSTRAINT IF EXISTS
 ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."_prisma_migrations" DROP CONSTRAINT IF EXISTS "_prisma_migrations_pkey";
 DROP TABLE IF EXISTS "public"."welcome_goodbye_configs";
+DROP TABLE IF EXISTS "public"."tickets";
+DROP TABLE IF EXISTS "public"."ticket_settings";
+DROP TABLE IF EXISTS "public"."ticket_panels";
+DROP TABLE IF EXISTS "public"."ticket_messages";
+DROP TABLE IF EXISTS "public"."ticket_events";
+DROP TABLE IF EXISTS "public"."ticket_categories";
 DROP TABLE IF EXISTS "public"."suggestions";
 DROP TABLE IF EXISTS "public"."starboard_entries";
 DROP TABLE IF EXISTS "public"."starboard_configs";
@@ -205,6 +234,12 @@ DROP FUNCTION IF EXISTS "public"."enforce_browser_session_identity"();
 DROP FUNCTION IF EXISTS "public"."authentication_scopes_are_normalized"("scopes" "text"[]);
 DROP FUNCTION IF EXISTS "public"."authentication_audit_metadata_is_safe"("metadata" "jsonb");
 DROP TYPE IF EXISTS "public"."WelcomeGoodbyeKind";
+DROP TYPE IF EXISTS "public"."TicketStatus";
+DROP TYPE IF EXISTS "public"."TicketPriority";
+DROP TYPE IF EXISTS "public"."TicketPanelStyle";
+DROP TYPE IF EXISTS "public"."TicketMode";
+DROP TYPE IF EXISTS "public"."TicketMessageSource";
+DROP TYPE IF EXISTS "public"."TicketCloseAction";
 DROP TYPE IF EXISTS "public"."SuggestionStatus";
 DROP TYPE IF EXISTS "public"."StarboardNsfwMode";
 DROP TYPE IF EXISTS "public"."StarboardChannelMode";
@@ -647,6 +682,71 @@ CREATE TYPE "public"."SuggestionStatus" AS ENUM (
 
 
 --
+-- Name: TicketCloseAction; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketCloseAction" AS ENUM (
+    'archive',
+    'delete'
+);
+
+
+--
+-- Name: TicketMessageSource; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketMessageSource" AS ENUM (
+    'discord',
+    'web',
+    'system'
+);
+
+
+--
+-- Name: TicketMode; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketMode" AS ENUM (
+    'channel',
+    'thread'
+);
+
+
+--
+-- Name: TicketPanelStyle; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketPanelStyle" AS ENUM (
+    'buttons',
+    'select-menu'
+);
+
+
+--
+-- Name: TicketPriority; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketPriority" AS ENUM (
+    'low',
+    'normal',
+    'high',
+    'urgent'
+);
+
+
+--
+-- Name: TicketStatus; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."TicketStatus" AS ENUM (
+    'open',
+    'claimed',
+    'pending',
+    'closed'
+);
+
+
+--
 -- Name: WelcomeGoodbyeKind; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -1037,7 +1137,7 @@ CREATE TABLE "public"."browser_sessions" (
     "device_label" "text",
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    CONSTRAINT "browser_sessions_device_label_check" CHECK ((("device_label" IS NULL) OR ((("length"("device_label") >= 1) AND ("length"("device_label") <= 120)) AND ("device_label" !~ '[[:cntrl:]]'::"text")))),
+    CONSTRAINT "browser_sessions_device_label_check" CHECK ((("device_label" IS NULL) OR (("length"("device_label") >= 1) AND ("length"("device_label") <= 120) AND ("device_label" !~ '[[:cntrl:]]'::"text")))),
     CONSTRAINT "browser_sessions_digest_format_check" CHECK ((("token_digest" ~ '^[0-9a-f]{64}$'::"text") AND ("csrf_digest" ~ '^[0-9a-f]{64}$'::"text") AND (("ip_hmac" IS NULL) OR ("ip_hmac" ~ '^[0-9a-f]{64}$'::"text")) AND (("user_agent_hmac" IS NULL) OR ("user_agent_hmac" ~ '^[0-9a-f]{64}$'::"text")) AND (("device_hmac" IS NULL) OR ("device_hmac" ~ '^[0-9a-f]{64}$'::"text")))),
     CONSTRAINT "browser_sessions_expiry_order_check" CHECK ((("authenticated_at" >= "created_at") AND ("last_seen_at" >= "authenticated_at") AND ("idle_expires_at" > "last_seen_at") AND ("absolute_expires_at" >= "idle_expires_at") AND ("updated_at" >= "created_at"))),
     CONSTRAINT "browser_sessions_key_versions_check" CHECK ((("token_key_version" > 0) AND ("csrf_key_version" > 0) AND ("authentication_revision_at_issue" > 0))),
@@ -1568,6 +1668,164 @@ CREATE TABLE "public"."suggestions" (
 
 
 --
+-- Name: ticket_categories; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."ticket_categories" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "emoji" "text",
+    "button_style" "text" DEFAULT 'PRIMARY'::"text" NOT NULL,
+    "enabled" boolean DEFAULT true NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL,
+    "support_role_ids" "text"[],
+    "parent_channel_id" "text",
+    "name_template" "text",
+    "open_message" "text",
+    "default_priority" "public"."TicketPriority" DEFAULT 'normal'::"public"."TicketPriority" NOT NULL,
+    "questions" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "required_role_ids" "text"[],
+    "max_open_per_user" integer,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: ticket_events; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."ticket_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "ticket_id" "uuid" NOT NULL,
+    "action" "text" NOT NULL,
+    "actor_id" "text" NOT NULL,
+    "source" "text" NOT NULL,
+    "details" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: ticket_messages; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."ticket_messages" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "ticket_id" "uuid" NOT NULL,
+    "discord_message_id" "text",
+    "author_id" "text" NOT NULL,
+    "author_name" "text" NOT NULL,
+    "content" "text" NOT NULL,
+    "attachments" "text"[],
+    "source" "public"."TicketMessageSource" DEFAULT 'discord'::"public"."TicketMessageSource" NOT NULL,
+    "internal" boolean DEFAULT false NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: ticket_panels; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."ticket_panels" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "uuid" NOT NULL,
+    "name" "text" NOT NULL,
+    "channel_id" "text" NOT NULL,
+    "message_id" "text",
+    "title" "text" NOT NULL,
+    "description" "text" NOT NULL,
+    "color" "text" DEFAULT '#5865F2'::"text" NOT NULL,
+    "style" "public"."TicketPanelStyle" DEFAULT 'buttons'::"public"."TicketPanelStyle" NOT NULL,
+    "placeholder" "text" DEFAULT 'Select a ticket type'::"text" NOT NULL,
+    "image_url" "text",
+    "footer" "text",
+    "category_ids" "text"[],
+    "published_at" timestamp(3) with time zone,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: ticket_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."ticket_settings" (
+    "guild_id" "uuid" NOT NULL,
+    "enabled" boolean DEFAULT false NOT NULL,
+    "mode" "public"."TicketMode" DEFAULT 'channel'::"public"."TicketMode" NOT NULL,
+    "open_category_channel_id" "text",
+    "closed_category_channel_id" "text",
+    "thread_parent_channel_id" "text",
+    "transcript_channel_id" "text",
+    "log_channel_id" "text",
+    "support_role_ids" "text"[],
+    "ping_support_on_open" boolean DEFAULT true NOT NULL,
+    "max_open_per_user" integer DEFAULT 1 NOT NULL,
+    "name_template" "text" DEFAULT 'ticket-{number}'::"text" NOT NULL,
+    "open_message" "text" DEFAULT 'Thanks for contacting support, {user}. A team member will be with you shortly.'::"text" NOT NULL,
+    "embed_color" "text" DEFAULT '#5865F2'::"text" NOT NULL,
+    "allow_user_close" boolean DEFAULT true NOT NULL,
+    "require_close_reason" boolean DEFAULT false NOT NULL,
+    "close_confirmation" boolean DEFAULT true NOT NULL,
+    "close_action" "public"."TicketCloseAction" DEFAULT 'archive'::"public"."TicketCloseAction" NOT NULL,
+    "delete_delay_seconds" integer DEFAULT 10 NOT NULL,
+    "claim_enabled" boolean DEFAULT true NOT NULL,
+    "claim_restricts_replies" boolean DEFAULT false NOT NULL,
+    "transcripts_enabled" boolean DEFAULT true NOT NULL,
+    "transcript_dm_user" boolean DEFAULT false NOT NULL,
+    "feedback_enabled" boolean DEFAULT true NOT NULL,
+    "auto_close_hours" integer DEFAULT 0 NOT NULL,
+    "auto_close_warning_hours" integer DEFAULT 0 NOT NULL,
+    "auto_close_exclude_claimed" boolean DEFAULT true NOT NULL,
+    "blocked_user_ids" "text"[],
+    "blocked_role_ids" "text"[],
+    "next_number" integer DEFAULT 1 NOT NULL,
+    "revision" integer DEFAULT 1 NOT NULL,
+    "last_operation_source" "text" DEFAULT 'SYSTEM'::"text" NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: tickets; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."tickets" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "uuid" NOT NULL,
+    "number" integer NOT NULL,
+    "category_id" "uuid",
+    "opener_id" "text" NOT NULL,
+    "opener_name" "text" NOT NULL,
+    "channel_id" "text",
+    "subject" "text",
+    "answers" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "status" "public"."TicketStatus" DEFAULT 'open'::"public"."TicketStatus" NOT NULL,
+    "priority" "public"."TicketPriority" DEFAULT 'normal'::"public"."TicketPriority" NOT NULL,
+    "claimed_by_id" "text",
+    "participant_ids" "text"[],
+    "tags" "text"[],
+    "closed_by_id" "text",
+    "close_reason" "text",
+    "rating" integer,
+    "feedback" "text",
+    "transcript_message_id" "text",
+    "auto_close_warned_at" timestamp(3) with time zone,
+    "first_response_at" timestamp(3) with time zone,
+    "last_activity_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "closed_at" timestamp(3) with time zone,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
 -- Name: welcome_goodbye_configs; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1609,6 +1867,7 @@ daf4f787-5e30-469d-8801-82810121cf13	62512b9df8c3d9ca7a19a40d12a96d7c25a0d2eda60
 775b79e8-f53c-4f8b-a596-ca2e4cc7d6c0	98acb651e11a6a9b6ed25fa51d62de6d5dfdc98fdcc863d3c6ebe0d9a561791c	2026-09-25 04:41:44.242522+00	20260802180000_discord_community_essentials	\N	\N	2026-09-25 04:41:44.199292+00	1
 485dcfae-dc82-4c10-8764-ecc864dc304e	63506ee3814fedbd52f753893ca90ed6b44ae86b8bb9ebd604ea1e9ae71e1754	2026-09-25 04:41:44.24965+00	20260802193000_role_management_parity	\N	\N	2026-09-25 04:41:44.243407+00	1
 b15e2d92-e740-4f8b-80f9-d057036999ee	679bfaa0e2e88b46e38d0244afb92df1ff7ff5dda829c0f1ce26447cf60f4511	2026-09-25 04:41:44.254412+00	20260802203000_role_management_conflict_metadata	\N	\N	2026-09-25 04:41:44.250132+00	1
+421843d3-4d53-49e5-8351-9e6a70293487	50842d0e1245f24e5cc484c5f591254bd8406884a88936df31bd2fc5b82af3f9	2026-09-25 05:10:59.204373+00	20260925090000_ticket_system	\N	\N	2026-09-25 05:10:59.167464+00	1
 \.
 
 
@@ -1801,6 +2060,54 @@ COPY "public"."starboard_entries" ("id", "guild_id", "source_channel_id", "sourc
 --
 
 COPY "public"."suggestions" ("id", "guild_id", "submitter_id", "content", "status", "submission_message_id", "review_message_id", "result_message_id", "reviewer_id", "staff_note", "upvotes", "downvotes", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket_categories; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket_events; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."ticket_events" ("id", "ticket_id", "action", "actor_id", "source", "details", "created_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket_messages; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."ticket_messages" ("id", "ticket_id", "discord_message_id", "author_id", "author_name", "content", "attachments", "source", "internal", "created_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket_panels; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."ticket_panels" ("id", "guild_id", "name", "channel_id", "message_id", "title", "description", "color", "style", "placeholder", "image_url", "footer", "category_ids", "published_at", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: ticket_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."ticket_settings" ("guild_id", "enabled", "mode", "open_category_channel_id", "closed_category_channel_id", "thread_parent_channel_id", "transcript_channel_id", "log_channel_id", "support_role_ids", "ping_support_on_open", "max_open_per_user", "name_template", "open_message", "embed_color", "allow_user_close", "require_close_reason", "close_confirmation", "close_action", "delete_delay_seconds", "claim_enabled", "claim_restricts_replies", "transcripts_enabled", "transcript_dm_user", "feedback_enabled", "auto_close_hours", "auto_close_warning_hours", "auto_close_exclude_claimed", "blocked_user_ids", "blocked_role_ids", "next_number", "revision", "last_operation_source", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."tickets" ("id", "guild_id", "number", "category_id", "opener_id", "opener_name", "channel_id", "subject", "answers", "status", "priority", "claimed_by_id", "participant_ids", "tags", "closed_by_id", "close_reason", "rating", "feedback", "transcript_message_id", "auto_close_warned_at", "first_response_at", "last_activity_at", "closed_at", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -2034,6 +2341,54 @@ ALTER TABLE ONLY "public"."starboard_entries"
 
 ALTER TABLE ONLY "public"."suggestions"
     ADD CONSTRAINT "suggestions_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: ticket_categories ticket_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_categories"
+    ADD CONSTRAINT "ticket_categories_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: ticket_events ticket_events_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_events"
+    ADD CONSTRAINT "ticket_events_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: ticket_messages ticket_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_messages"
+    ADD CONSTRAINT "ticket_messages_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: ticket_panels ticket_panels_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_panels"
+    ADD CONSTRAINT "ticket_panels_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: ticket_settings ticket_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_settings"
+    ADD CONSTRAINT "ticket_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: tickets tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."tickets"
+    ADD CONSTRAINT "tickets_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -2427,6 +2782,76 @@ CREATE UNIQUE INDEX "starboard_entries_source_key" ON "public"."starboard_entrie
 --
 
 CREATE INDEX "suggestions_guild_status_idx" ON "public"."suggestions" USING "btree" ("guild_id", "status", "created_at");
+
+
+--
+-- Name: ticket_categories_guild_name_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "ticket_categories_guild_name_key" ON "public"."ticket_categories" USING "btree" ("guild_id", "name");
+
+
+--
+-- Name: ticket_categories_guild_position_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "ticket_categories_guild_position_idx" ON "public"."ticket_categories" USING "btree" ("guild_id", "position");
+
+
+--
+-- Name: ticket_events_ticket_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "ticket_events_ticket_created_idx" ON "public"."ticket_events" USING "btree" ("ticket_id", "created_at");
+
+
+--
+-- Name: ticket_messages_discord_message_id_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "ticket_messages_discord_message_id_key" ON "public"."ticket_messages" USING "btree" ("discord_message_id");
+
+
+--
+-- Name: ticket_messages_ticket_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "ticket_messages_ticket_created_idx" ON "public"."ticket_messages" USING "btree" ("ticket_id", "created_at");
+
+
+--
+-- Name: ticket_panels_guild_name_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "ticket_panels_guild_name_key" ON "public"."ticket_panels" USING "btree" ("guild_id", "name");
+
+
+--
+-- Name: tickets_channel_id_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "tickets_channel_id_key" ON "public"."tickets" USING "btree" ("channel_id");
+
+
+--
+-- Name: tickets_guild_number_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "tickets_guild_number_key" ON "public"."tickets" USING "btree" ("guild_id", "number");
+
+
+--
+-- Name: tickets_guild_opener_status_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "tickets_guild_opener_status_idx" ON "public"."tickets" USING "btree" ("guild_id", "opener_id", "status");
+
+
+--
+-- Name: tickets_guild_status_activity_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "tickets_guild_status_activity_idx" ON "public"."tickets" USING "btree" ("guild_id", "status", "last_activity_at");
 
 
 --
@@ -2893,6 +3318,62 @@ ALTER TABLE ONLY "public"."starboard_entries"
 
 ALTER TABLE ONLY "public"."suggestions"
     ADD CONSTRAINT "suggestions_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_categories ticket_categories_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_categories"
+    ADD CONSTRAINT "ticket_categories_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_events ticket_events_ticket_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_events"
+    ADD CONSTRAINT "ticket_events_ticket_id_fkey" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: ticket_messages ticket_messages_ticket_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_messages"
+    ADD CONSTRAINT "ticket_messages_ticket_id_fkey" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: ticket_panels ticket_panels_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_panels"
+    ADD CONSTRAINT "ticket_panels_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_settings ticket_settings_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_settings"
+    ADD CONSTRAINT "ticket_settings_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: tickets tickets_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."tickets"
+    ADD CONSTRAINT "tickets_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."ticket_categories"("id") ON UPDATE RESTRICT ON DELETE SET NULL;
+
+
+--
+-- Name: tickets tickets_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."tickets"
+    ADD CONSTRAINT "tickets_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 
 --

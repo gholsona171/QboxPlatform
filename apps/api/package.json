@@ -25,6 +25,7 @@
     "@qbox/shared": "workspace:*",
     "discord.js": "^14",
     "fastify": "^5.11.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "@qbox/tickets": "workspace:*"
   }
 }
