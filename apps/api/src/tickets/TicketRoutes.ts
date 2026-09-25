@@ -16,7 +16,8 @@ const safe = <T>(operation: () => Promise<T>) => featureCall(operation, isTicket
 
 export interface TicketRouteDependencies {
   readonly tickets: TicketService;
-  readonly guildId: string;
+  /** Current server for the request being handled. Read inside handlers only. */
+  readonly currentGuildId: () => string;
   readonly guard: ApiPermissionGuard;
 }
 
@@ -24,7 +25,7 @@ export interface TicketRouteDependencies {
 export function ticketsApiFeature(tickets: TicketService): ApiFeature {
   return {
     name: "tickets",
-    register: (server, context) => registerTicketRoutes(server, { tickets, guildId: context.guildId, guard: context.guard }),
+    register: (server, context) => registerTicketRoutes(server, { tickets, currentGuildId: () => context.guildId, guard: context.guard }),
   };
 }
 
@@ -125,7 +126,7 @@ const userSchema = z.strictObject({ userId: snowflake });
 
 /** Registers `/api/v1/tickets/*` for the portal. */
 export function registerTicketRoutes(server: FastifyInstance, dependencies: TicketRouteDependencies): void {
-  const { tickets, guildId, guard } = dependencies;
+  const { tickets, currentGuildId, guard } = dependencies;
   const handler = (request: FastifyRequest, options = { mutation: false }) => guard(request, "tickets.handle", options);
   const manager = (request: FastifyRequest, mutation = true) => guard(request, "tickets.manage", { mutation });
   const actor = (identity: ApiIdentity): TicketActor => ({
@@ -140,10 +141,10 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
     noStore(reply);
     await handler(request);
     const [settings, categories, panels, stats] = await Promise.all([
-      tickets.settings(guildId),
-      tickets.categories(guildId),
-      tickets.panels(guildId),
-      tickets.stats(guildId),
+      tickets.settings(currentGuildId()),
+      tickets.categories(currentGuildId()),
+      tickets.panels(currentGuildId()),
+      tickets.stats(currentGuildId()),
     ]);
     const canManage = await manager(request, false).then(() => true, () => false);
     return { data: { settings, categories, panels, stats, canManage } };
@@ -152,43 +153,43 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
   server.put("/api/v1/tickets/settings", async (request) => {
     await manager(request);
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => tickets.saveSettings({ ...body, guildId, source: "WEB" })) };
+    return { data: await safe(() => tickets.saveSettings({ ...body, guildId: currentGuildId(), source: "WEB" })) };
   });
 
   server.post("/api/v1/tickets/categories", async (request) => {
     await manager(request);
-    return { data: await safe(() => tickets.saveCategory({ ...parse(categorySchema, request.body), guildId })) };
+    return { data: await safe(() => tickets.saveCategory({ ...parse(categorySchema, request.body), guildId: currentGuildId() })) };
   });
 
   server.put("/api/v1/tickets/categories/:id", async (request) => {
     await manager(request);
-    return { data: await safe(() => tickets.saveCategory({ ...parse(categorySchema, request.body), guildId, id: param(request, "id") })) };
+    return { data: await safe(() => tickets.saveCategory({ ...parse(categorySchema, request.body), guildId: currentGuildId(), id: param(request, "id") })) };
   });
 
   server.delete("/api/v1/tickets/categories/:id", async (request) => {
     await manager(request);
-    await safe(() => tickets.deleteCategory(guildId, param(request, "id")));
+    await safe(() => tickets.deleteCategory(currentGuildId(), param(request, "id")));
     return { success: true };
   });
 
   server.post("/api/v1/tickets/panels", async (request) => {
     await manager(request);
-    return { data: await safe(() => tickets.savePanel({ ...parse(panelSchema, request.body), guildId })) };
+    return { data: await safe(() => tickets.savePanel({ ...parse(panelSchema, request.body), guildId: currentGuildId() })) };
   });
 
   server.put("/api/v1/tickets/panels/:id", async (request) => {
     await manager(request);
-    return { data: await safe(() => tickets.savePanel({ ...parse(panelSchema, request.body), guildId, id: param(request, "id") })) };
+    return { data: await safe(() => tickets.savePanel({ ...parse(panelSchema, request.body), guildId: currentGuildId(), id: param(request, "id") })) };
   });
 
   server.post("/api/v1/tickets/panels/:id/publish", async (request) => {
     await manager(request);
-    return { data: await safe(() => tickets.publishPanel(guildId, param(request, "id"))) };
+    return { data: await safe(() => tickets.publishPanel(currentGuildId(), param(request, "id"))) };
   });
 
   server.delete("/api/v1/tickets/panels/:id", async (request) => {
     await manager(request);
-    await safe(() => tickets.deletePanel(guildId, param(request, "id")));
+    await safe(() => tickets.deletePanel(currentGuildId(), param(request, "id")));
     return { success: true };
   });
 
@@ -201,7 +202,7 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
       : undefined;
     const data = await safe(() =>
       tickets.list({
-        guildId,
+        guildId: currentGuildId(),
         ...(statuses && statuses.length > 0 ? { statuses } : {}),
         ...(query.priority ? { priority: query.priority as (typeof TICKET_PRIORITIES)[number] } : {}),
         ...(query.categoryId ? { categoryId: query.categoryId } : {}),
@@ -217,12 +218,12 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
   server.get("/api/v1/tickets/:id", async (request, reply) => {
     noStore(reply);
     await handler(request);
-    return { data: await safe(() => tickets.detail(guildId, param(request, "id"))) };
+    return { data: await safe(() => tickets.detail(currentGuildId(), param(request, "id"))) };
   });
 
   server.get("/api/v1/tickets/:id/transcript", async (request, reply) => {
     await handler(request);
-    const file = await safe(() => tickets.transcript(guildId, param(request, "id"), true));
+    const file = await safe(() => tickets.transcript(currentGuildId(), param(request, "id"), true));
     return reply
       .header("content-type", "text/plain; charset=utf-8")
       .header("content-disposition", `attachment; filename="${file.fileName}"`)
@@ -236,22 +237,22 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
     });
   };
 
-  action("reply", (id, staff, body) => tickets.reply(guildId, id, staff, parse(textSchema, body).content));
-  action("notes", (id, staff, body) => tickets.addNote(guildId, id, staff, parse(textSchema, body).content));
-  action("claim", (id, staff) => tickets.claim(guildId, id, staff));
-  action("unclaim", (id, staff) => tickets.unclaim(guildId, id, staff));
-  action("close", (id, staff, body) => tickets.close(guildId, id, staff, parse(reasonSchema, body).reason));
-  action("reopen", (id, staff) => tickets.reopen(guildId, id, staff));
-  action("priority", (id, staff, body) => tickets.setPriority(guildId, id, staff, parse(prioritySchema, body).priority));
-  action("tags", (id, staff, body) => tickets.setTags(guildId, id, staff, parse(tagsSchema, body).tags));
-  action("waiting", (id, staff, body) => tickets.setPending(guildId, id, staff, parse(waitingSchema, body).waiting));
-  action("transfer", (id, staff, body) => tickets.transfer(guildId, id, staff, parse(userSchema, body).userId));
-  action("participants", (id, staff, body) => tickets.addParticipant(guildId, id, staff, parse(userSchema, body).userId));
-  action("delete-channel", (id, staff) => tickets.deleteChannel(guildId, id, staff));
+  action("reply", (id, staff, body) => tickets.reply(currentGuildId(), id, staff, parse(textSchema, body).content));
+  action("notes", (id, staff, body) => tickets.addNote(currentGuildId(), id, staff, parse(textSchema, body).content));
+  action("claim", (id, staff) => tickets.claim(currentGuildId(), id, staff));
+  action("unclaim", (id, staff) => tickets.unclaim(currentGuildId(), id, staff));
+  action("close", (id, staff, body) => tickets.close(currentGuildId(), id, staff, parse(reasonSchema, body).reason));
+  action("reopen", (id, staff) => tickets.reopen(currentGuildId(), id, staff));
+  action("priority", (id, staff, body) => tickets.setPriority(currentGuildId(), id, staff, parse(prioritySchema, body).priority));
+  action("tags", (id, staff, body) => tickets.setTags(currentGuildId(), id, staff, parse(tagsSchema, body).tags));
+  action("waiting", (id, staff, body) => tickets.setPending(currentGuildId(), id, staff, parse(waitingSchema, body).waiting));
+  action("transfer", (id, staff, body) => tickets.transfer(currentGuildId(), id, staff, parse(userSchema, body).userId));
+  action("participants", (id, staff, body) => tickets.addParticipant(currentGuildId(), id, staff, parse(userSchema, body).userId));
+  action("delete-channel", (id, staff) => tickets.deleteChannel(currentGuildId(), id, staff));
 
   server.delete("/api/v1/tickets/:id/participants/:userId", async (request) => {
     const identity = await handler(request, { mutation: true });
-    return { data: await safe(() => tickets.removeParticipant(guildId, param(request, "id"), actor(identity), param(request, "userId"))) };
+    return { data: await safe(() => tickets.removeParticipant(currentGuildId(), param(request, "id"), actor(identity), param(request, "userId"))) };
   });
 }
 

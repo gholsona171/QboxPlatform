@@ -36,7 +36,7 @@ function setup(allowed: readonly string[] = ["tickets.handle", "tickets.manage"]
   };
   const server = createApiServer({
     configuration: ApiConfiguration.from({ environment: "test", publicBaseUrl: "http://127.0.0.1:3000", buildVersion: "tickets-test" }),
-    registerRoutes: (instance) => registerTicketRoutes(instance, { tickets, guildId: GUILD, guard }),
+    registerRoutes: (instance) => registerTicketRoutes(instance, { tickets, currentGuildId: () => GUILD, guard }),
   });
   return { server, tickets, calls };
 }
