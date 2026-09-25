@@ -1,12 +1,16 @@
-import { PrismaModerationRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaLevelRepository, PrismaModerationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
 import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
+import { DiscordRestVoiceGateway, VoiceRoomService } from "@qbox/voice-rooms";
 import type { REST } from "discord.js";
 
 import { directoryApiFeature } from "./directory/DirectoryRoutes.js";
 import type { ApiFeature } from "./features/ApiFeature.js";
+import { levelsApiFeature } from "./levels/LevelRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
 import { ticketsApiFeature } from "./tickets/TicketRoutes.js";
+import { voiceRoomsApiFeature } from "./voiceRooms/VoiceRoutes.js";
 
 export interface ApiFeatureDependencies {
   readonly persistence: PrismaPermissionPersistenceClient;
@@ -20,5 +24,7 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     directoryApiFeature(discordRest),
     ticketsApiFeature(new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined)),
     moderationApiFeature(new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined)),
+    levelsApiFeature(new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined)),
+    voiceRoomsApiFeature(new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined)),
   ];
 }

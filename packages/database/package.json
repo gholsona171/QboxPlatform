@@ -9,11 +9,13 @@
     "@qbox/authentication": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
+    "@qbox/levels": "workspace:*",
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/prisma": "workspace:*",
     "@qbox/role-menus": "workspace:*",
-    "@qbox/tickets": "workspace:*"
+    "@qbox/tickets": "workspace:*",
+    "@qbox/voice-rooms": "workspace:*"
   },
   "scripts": {
     "build": "tsc",

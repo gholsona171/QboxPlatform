@@ -29,5 +29,5 @@ Discord remains the primary operational and fallback interface. The portal is th
 | FiveM Server | PLANNED |  |  |  |  | /fivem |  |  | Discord no / Portal no |
 | Scheduled Messages | PLANNED |  |  |  |  | /discord?tab=scheduled |  |  | Discord no / Portal no |
 | Giveaways | PLANNED |  |  |  |  | /discord?tab=giveaways |  |  | Discord no / Portal no |
-| Levels and Rewards | PLANNED |  |  |  |  | /discord?tab=levels |  |  | Discord no / Portal no |
-| Voice Rooms | PLANNED |  |  |  |  | /discord?tab=voice |  |  | Discord no / Portal no |
+| Levels and Rewards | LIVE | rank, leaderboard, levels |  | messageCreate, voiceStateUpdate, voice XP timer | /api/v1/levels/leaderboard, /api/v1/levels/overview, /api/v1/levels/members, /api/v1/levels/settings, /api/v1/levels/reset | /levels | levels.manage | LevelSettings, LevelMember | Discord yes / Portal yes |
+| Voice Rooms | LIVE | voice | voice room control panel buttons, member pickers, rename and limit forms | voiceStateUpdate, channelDelete, empty room timer, startup cleanup | /api/v1/voice/overview, /api/v1/voice/settings, /api/v1/voice/hubs, /api/v1/voice/rooms | /voice | voice.manage | VoiceSettings, VoiceHub, VoiceRoom | Discord yes / Portal yes |

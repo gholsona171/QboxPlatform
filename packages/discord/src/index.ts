@@ -21,3 +21,5 @@ export * from "./features/DiscordFeature.js";
 export { ticketsFeature } from "./tickets/TicketsFeature.js";
 export * from "./features/featureAuthorization.js";
 export { moderationFeature } from "./moderation/ModerationFeature.js";
+export { levelsFeature } from "./levels/LevelsFeature.js";
+export { voiceRoomsFeature } from "./voiceRooms/VoiceRoomsFeature.js";

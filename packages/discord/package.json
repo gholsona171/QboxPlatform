@@ -15,12 +15,14 @@
     "@qbox/core": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
+    "@qbox/levels": "workspace:*",
     "@qbox/logger": "workspace:*",
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/shared": "workspace:*",
     "@qbox/tickets": "workspace:*",
+    "@qbox/voice-rooms": "workspace:*",
     "discord.js": "^14"
   }
 }

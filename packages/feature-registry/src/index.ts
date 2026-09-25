@@ -39,8 +39,8 @@ export const featureRegistry = [
   planned("fivem-server", "FiveM Server", "/fivem"),
   planned("scheduled-messages", "Scheduled Messages", "/discord?tab=scheduled"),
   planned("giveaways", "Giveaways", "/discord?tab=giveaways"),
-  planned("levels-rewards", "Levels and Rewards", "/discord?tab=levels"),
-  planned("voice-rooms", "Voice Rooms", "/discord?tab=voice"),
+  live("levels-rewards", "Levels and Rewards", ["rank", "leaderboard", "levels"], [], ["messageCreate", "voiceStateUpdate", "voice XP timer"], ["/api/v1/levels/leaderboard", "/api/v1/levels/overview", "/api/v1/levels/members", "/api/v1/levels/settings", "/api/v1/levels/reset"], "/levels", ["levels.manage"], ["LevelSettings", "LevelMember"], true, true),
+  live("voice-rooms", "Voice Rooms", ["voice"], ["voice room control panel buttons", "member pickers", "rename and limit forms"], ["voiceStateUpdate", "channelDelete", "empty room timer", "startup cleanup"], ["/api/v1/voice/overview", "/api/v1/voice/settings", "/api/v1/voice/hubs", "/api/v1/voice/rooms"], "/voice", ["voice.manage"], ["VoiceSettings", "VoiceHub", "VoiceRoom"], true, true),
 ] as const satisfies readonly FeatureRegistryRecord[];
 
 function live(
