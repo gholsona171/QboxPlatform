@@ -33,6 +33,15 @@ Finally, add `https://<portal address>/auth/discord/callback` under **Discord De
 
 `qbox-update.timer` checks GitHub every 5 minutes. When `main` changes, the server pulls it, rebuilds, re-registers slash commands, and restarts. Database changes are applied by the GitHub workflow.
 
+## Moving to a different Discord server
+
+Qbox runs in one Discord server at a time. To move it:
+
+1. Invite the bot to the new server (Discord Developer Portal > OAuth2 > URL Generator, scopes `bot` and `applications.commands`, permission Administrator).
+2. On the server, run `bash ~/qbox/ops/oracle/switch-server.sh <new server ID>`.
+
+Settings are stored per Discord server, so the new server starts fresh and the old server's data is kept.
+
 ## Checking on it
 
 ```text
