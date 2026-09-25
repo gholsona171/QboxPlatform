@@ -54,9 +54,15 @@ importers:
       '@fastify/cookie':
         specifier: ^11.1.2
         version: 11.1.2
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../../packages/authentication
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -69,18 +75,51 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
+      '@qbox/moderation':
+        specifier: workspace:*
+        version: link:../../modules/moderation
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../../packages/permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
+      '@qbox/tickets':
+        specifier: workspace:*
+        version: link:../../modules/tickets
+      '@qbox/verification':
+        specifier: workspace:*
+        version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
       discord.js:
         specifier: ^14
         version: 14.27.0
@@ -123,11 +162,89 @@ importers:
         specifier: workspace:*
         version: link:../../packages/core
 
+  modules/applications:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/birthdays:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/discord-community: {}
 
   modules/discord-roles: {}
 
+  modules/fivem:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/giveaways:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/knowledge-base:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/levels:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/moderation:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/polls:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/role-menus: {}
+
+  modules/scheduled-messages:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/staff:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/tickets:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/verification:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/voice-rooms:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   packages/authentication: {}
 
@@ -139,27 +256,72 @@ importers:
 
   packages/database:
     dependencies:
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../authentication
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/discord-community':
         specifier: workspace:*
         version: link:../../modules/discord-community
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
+      '@qbox/moderation':
+        specifier: workspace:*
+        version: link:../../modules/moderation
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/prisma':
         specifier: workspace:*
         version: link:../prisma
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
+      '@qbox/tickets':
+        specifier: workspace:*
+        version: link:../../modules/tickets
+      '@qbox/verification':
+        specifier: workspace:*
+        version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
 
   packages/discord:
     dependencies:
+      '@qbox/applications':
+        specifier: workspace:*
+        version: link:../../modules/applications
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/core':
         specifier: workspace:*
         version: link:../core
@@ -169,18 +331,51 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger
+      '@qbox/moderation':
+        specifier: workspace:*
+        version: link:../../modules/moderation
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared
+      '@qbox/staff':
+        specifier: workspace:*
+        version: link:../../modules/staff
+      '@qbox/tickets':
+        specifier: workspace:*
+        version: link:../../modules/tickets
+      '@qbox/verification':
+        specifier: workspace:*
+        version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
       discord.js:
         specifier: ^14
         version: 14.27.0

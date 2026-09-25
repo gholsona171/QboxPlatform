@@ -1,43 +1,49 @@
-# QboxPlatform Web Dashboard
+# QboxPlatform Web Portal
 
-This workspace is the Vercel-deployable public Qbox dashboard.
+Static, framework-free portal in `apps/web/public`. It only shows live data from your Discord server: visitors who are not signed in see a "Sign in with Discord" screen. It is hosted in two ways.
 
-Vercel project settings:
+## Pages
 
-- Project Name: `qbox-platform`
-- Framework Preset: `Other`
-- Root Directory: `apps/web`
-- Production Branch: `main`
-- Build Command: `pnpm build`
-- Output Directory: `public`
-- Install Command: empty
+| Page | Contents |
+| --- | --- |
+| Overview | API status, open tickets, waiting tickets, average rating, links to features |
+| Tickets | Inbox, ticket reasons, panels (with a Discord preview), settings, statistics. See `docs/Tickets.md`. |
+| Discord Bot | Welcome and goodbye, autoroles, rules, roles, role menus, counters, logs, embeds, custom commands, suggestions, starboard |
+| Account | Signed-in Discord account and service health |
 
-Required Vercel environment variable:
+## Live platform (served by the Qbox API)
 
-- `QBOX_API_ORIGIN` - public HTTPS origin of the Qbox VPS API, for example `https://api.example.com`
+The API serves the portal from its own origin, so login cookies, CSRF cookies,
+and the Discord OAuth callback all stay on one host.
 
-The browser application uses only same-origin paths:
+- Start the API (`pnpm --filter @qbox/api start`) and open `API_PUBLIC_BASE_URL`.
+- The API looks for `apps/web/public/index.html` next to its build output. Set
+  `API_PORTAL_DIRECTORY` to use another directory, or `disabled` to turn portal
+  hosting off.
+- Paths under `/api`, `/auth`, and `/health` are never served as portal pages.
+- Unknown page paths (for example `/tickets`) return `index.html` for
+  client-side routing.
 
-- `/auth/discord/start`
-- `/auth/discord/callback`
-- `/auth/logout`
-- `/api/v1/me`
-- `/api/v1/admin-check`
-- `/health/live`
-- `/health/ready`
-
-The Vercel function proxy forwards `/api/*`, `/auth/*`, and `/health/*` to
-`QBOX_API_ORIGIN`. The browser never receives or calls the VPS API origin
-directly.
-
-Static files are served from `apps/web/public`. Feature-page URLs are handled by
-client-side routing and direct refreshes return the same application shell.
-
-After Vercel assigns the final production domain, register this Discord OAuth
-callback URL in the Discord Developer Portal:
+Share the public API URL (for example the Tailscale Funnel URL) as the live
+platform link. Register this Discord OAuth callback in the Discord Developer
+Portal:
 
 ```text
-https://<VERCEL_PRODUCTION_DOMAIN>/auth/discord/callback
+<API_PUBLIC_BASE_URL>/auth/discord/callback
 ```
 
-Do not hardcode `qbox-platform.vercel.app` until Vercel confirms that domain.
+## GitHub Pages preview
+
+`.github/workflows/pages.yml` publishes the portal to GitHub Pages on every
+push to `main` that touches `apps/web`. The Pages copy cannot reach the API, so
+it only shows the sign-in screen and a link to the live platform.
+
+- In the repository settings, set **Pages > Source** to **GitHub Actions**.
+- Set the repository variable `QBOX_LIVE_URL` to the live platform URL
+  (`https://...`). The sign-in button on the Pages site links there.
+
+Build the preview locally with:
+
+```text
+BASE_PATH=/QboxPlatform QBOX_LIVE_URL=https://example.ts.net node scripts/build-pages.mjs _site
+```

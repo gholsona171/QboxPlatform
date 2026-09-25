@@ -1,8 +1,13 @@
 import { randomUUID } from "node:crypto";
+import { readdir } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { PrismaClientFactory } from "../src/index.js";
+
+const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl)
@@ -50,19 +55,12 @@ describe("permission foundation migration", () => {
     const tables = await client.$queryRawUnsafe<Array<{ table_name: string }>>(
       "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE 'permission_%'",
     );
-    expect(migrations.map(({ migration_name }) => migration_name)).toEqual([
-      "20260731000000_permission_foundation",
-      "20260731230000_permission_repository_metadata",
-      "20260731233000_permission_assignment_lifecycle_actions",
-      "20260731234500_owner_protection_audit_actions",
-      "20260801000000_authentication_foundation",
-      "20260801030000_oauth_pkce_mode",
-      "20260802090000_role_menus",
-      "20260802093000_permission_hyphenated_segments",
-      "20260802180000_discord_community_essentials",
-      "20260802193000_role_management_parity",
-      "20260802203000_role_management_conflict_metadata",
-    ]);
+    const committed = (await readdir(resolve(repositoryRoot, "prisma/migrations"), { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+    expect(committed[0]).toBe("20260731000000_permission_foundation");
+    expect(migrations.map(({ migration_name }) => migration_name)).toEqual(committed);
     expect(tables.map(({ table_name }) => table_name).sort()).toEqual([
       "permission_assignments",
       "permission_audit_events",

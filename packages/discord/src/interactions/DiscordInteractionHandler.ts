@@ -34,6 +34,8 @@ export interface DiscordInteractionHandlerOptions {
   readonly log?: InteractionLogger;
   readonly roleMenuInteractions?: DiscordRoleMenuInteractionHandler;
   readonly community?: DiscordCommunityService;
+  /** Feature handlers for components and modals, matched by custom ID prefix. */
+  readonly featureInteractions?: readonly FeatureInteractionHandler[];
 }
 
 export class CommandExecutionTimeoutError extends Error {
@@ -66,6 +68,7 @@ export class DiscordInteractionHandler {
   private readonly log: InteractionLogger;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly community: DiscordCommunityService | undefined;
+  private readonly featureInteractions: readonly FeatureInteractionHandler[];
   private readonly activeExecutions = new Set<Promise<void>>();
   private readonly activeControllers = new Set<AbortController>();
   private acceptingExecutions = true;
@@ -85,9 +88,17 @@ export class DiscordInteractionHandler {
     this.log = options.log ?? logger;
     this.roleMenuInteractions = options.roleMenuInteractions;
     this.community = options.community;
+    this.featureInteractions = options.featureInteractions ?? [];
   }
 
   public async handle(interaction: Interaction): Promise<void> {
+    const customId = componentCustomId(interaction);
+    const feature = customId === undefined ? undefined : this.featureInteractions.find((handler) => handler.prefixes.some((prefix) => customId.startsWith(prefix)));
+    if (feature) {
+      await feature.handle(interaction);
+      return;
+    }
+
     if (typeof interaction.isButton === "function" && interaction.isButton() && interaction.customId.startsWith("qbox:rules:")) {
       if (!this.community || !interaction.guildId || !interaction.member || !("user" in interaction.member)) return;
       await interaction.deferReply({ ephemeral: true });
@@ -378,4 +389,18 @@ export class DiscordInteractionHandler {
       );
     }
   }
+}
+
+export interface FeatureInteractionHandler {
+  readonly prefixes: readonly string[];
+  handle(interaction: Interaction): Promise<void>;
+}
+
+function componentCustomId(interaction: Interaction): string | undefined {
+  const component =
+    (typeof interaction.isButton === "function" && interaction.isButton()) ||
+    (typeof interaction.isStringSelectMenu === "function" && interaction.isStringSelectMenu()) ||
+    (typeof interaction.isAnySelectMenu === "function" && interaction.isAnySelectMenu()) ||
+    (typeof interaction.isModalSubmit === "function" && interaction.isModalSubmit());
+  return component && "customId" in interaction && typeof interaction.customId === "string" ? interaction.customId : undefined;
 }

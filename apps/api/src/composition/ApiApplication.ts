@@ -19,6 +19,7 @@ import { logger } from "@qbox/logger";
 import { RoleMenuService } from "@qbox/role-menus";
 import { DiscordCommunityService } from "@qbox/discord-community";
 import { RoleManagementService } from "@qbox/discord-roles";
+import { REST } from "discord.js";
 import {
   InMemoryPermissionCache,
   PersistentPermissionService,
@@ -35,12 +36,16 @@ import { DiscordRestRoleGateway } from "../discord/DiscordRestRoleGateway.js";
 import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersistenceModule.js";
+import { registerPortalStaticRoutes } from "../portal/PortalStaticRoutes.js";
+import { apiFeatures } from "../features.js";
 
 /** Validated composition input supplied by the executable environment layer. */
 export interface ApiApplicationInput {
   readonly api: ApiConfigurationInput;
   readonly authentication: ApiAuthenticationConfigurationInput;
   readonly databaseUrl: string | undefined;
+  /** Absolute portal asset directory served from the API origin, when present. */
+  readonly portalDirectory?: string | undefined;
   readonly discord?: {
     readonly token?: string | undefined;
     readonly applicationId?: string | undefined;
@@ -129,6 +134,10 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       ? new DiscordRestRoleGateway(input.discord.token, input.discord.applicationId)
       : undefined,
   );
+  const features = apiFeatures({
+    persistence,
+    discordRest: input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined,
+  });
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -179,8 +188,10 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     configuration: apiConfiguration,
     health,
     logger,
-    registerRoutes: (instance) =>
-      registerBrowserAuthenticationRoutes(instance, {
+    registerRoutes: (instance) => {
+      if (input.portalDirectory !== undefined)
+        registerPortalStaticRoutes(instance, { directory: input.portalDirectory });
+      return registerBrowserAuthenticationRoutes(instance, {
         configuration: authenticationConfiguration,
         provider,
         oauthTransactions,
@@ -193,9 +204,11 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         roleMenus,
         community,
         roles,
+        features,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
-      }),
+      });
+    },
   });
   const kernel = new PlatformKernel();
   kernel.registerModule(

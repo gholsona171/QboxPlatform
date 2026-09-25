@@ -1,0 +1,53 @@
+// Knowledge base (see docs/KnowledgeBase.md). guildId is the Discord guild snowflake.
+
+model KnowledgeSettings {
+  guildId                   String   @id @map("guild_id")
+  autoAnswerEnabled         Boolean  @default(false) @map("auto_answer_enabled")
+  autoAnswerChannelIds      String[] @map("auto_answer_channel_ids")
+  autoAnswerThreshold       Int      @default(70) @map("auto_answer_threshold")
+  autoAnswerCooldownSeconds Int      @default(300) @map("auto_answer_cooldown_seconds")
+  revision                  Int      @default(1)
+  createdAt                 DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                 DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("knowledge_settings")
+}
+
+model KnowledgeCategory {
+  id        String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String             @map("guild_id")
+  name      String
+  emoji     String?
+  order     Int                @default(0)
+  articles  KnowledgeArticle[]
+  createdAt DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime           @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([guildId, order], map: "knowledge_categories_guild_order_idx")
+  @@map("knowledge_categories")
+}
+
+model KnowledgeArticle {
+  id            String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId       String             @map("guild_id")
+  categoryId    String?            @map("category_id") @db.Uuid
+  category      KnowledgeCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  title         String
+  slug          String
+  body          String
+  tags          String[]
+  published     Boolean            @default(false)
+  pinned        Boolean            @default(false)
+  views         Int                @default(0)
+  authorId      String             @map("author_id")
+  authorName    String             @map("author_name")
+  updatedById   String?            @map("updated_by_id")
+  updatedByName String?            @map("updated_by_name")
+  createdAt     DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime           @default(now()) @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, slug], map: "knowledge_articles_guild_slug_key")
+  @@index([guildId, published, updatedAt], map: "knowledge_articles_guild_published_idx")
+  @@index([categoryId], map: "knowledge_articles_category_idx")
+  @@map("knowledge_articles")
+}

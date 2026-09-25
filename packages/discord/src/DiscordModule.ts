@@ -5,6 +5,7 @@ import type { PermissionAuthorizer } from "@qbox/permissions";
 import type { RoleMenuRepository } from "@qbox/role-menus";
 import type { CommunityRepository } from "@qbox/discord-community";
 import type { RoleDependencyRepository } from "@qbox/discord-roles";
+import type { DiscordFeatureFactory } from "./features/DiscordFeature.js";
 import { env } from "@qbox/shared";
 
 import { RoleMenuCommand } from "./commands/RoleMenu.command.js";
@@ -44,10 +45,11 @@ export class DiscordModule implements PlatformModule {
       readonly roleMenuRepository?: RoleMenuRepository;
       readonly communityRepository?: CommunityRepository;
       readonly roleDependencyRepository?: RoleDependencyRepository;
+      readonly features?: readonly DiscordFeatureFactory[];
     } = {},
   ) {
     this.discordService =
-      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository);
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository, dependencies.features);
     this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
   }
 
@@ -151,6 +153,8 @@ export class DiscordModule implements PlatformModule {
   }
 
   private replaceCommand(command: DiscordCommand): DiscordCommand {
+    const featureCommand = this.discordService.featureCommand(command.data.name);
+    if (featureCommand) return featureCommand;
     switch (command.data.name) {
       case "role-menu": return new RoleMenuCommand(this.discordService.roleMenus);
       case "welcome": return new WelcomeCommand(this.discordService.community);

@@ -16,6 +16,32 @@ export type SuggestionStatus = "SUBMITTED" | "UNDER_REVIEW" | "APPROVED" | "DENI
 export type TriggerMode = "SLASH_ONLY" | "EXACT" | "STARTS_WITH" | "CONTAINS";
 export type CommunityOperationSource = "DISCORD" | "WEB" | "SYSTEM";
 
+/** Server log event keys. `destinations` may map each key, or `all`, to a channel. */
+export const LOG_EVENTS = ["memberJoin", "memberLeave", "messageDelete", "messageEdit", "roleChange", "nicknameChange", "voice", "ban"] as const;
+export type LogEvent = (typeof LOG_EVENTS)[number];
+
+const LOG_COLORS: Readonly<Record<LogEvent, string>> = {
+  memberJoin: "#57F287",
+  memberLeave: "#ED4245",
+  messageDelete: "#ED4245",
+  messageEdit: "#FEE75C",
+  roleChange: "#5865F2",
+  nicknameChange: "#5865F2",
+  voice: "#99AAB5",
+  ban: "#ED4245",
+};
+
+export interface LogDelivery {
+  readonly guildId: string;
+  readonly event: LogEvent;
+  readonly title: string;
+  readonly description: string;
+  readonly userId?: string | undefined;
+  readonly channelId?: string | undefined;
+  readonly roleIds?: readonly string[] | undefined;
+  readonly isBot?: boolean | undefined;
+}
+
 export interface CommunityRepository {
   getSettings(guildId: string): Promise<CommunitySettings>;
   saveWelcomeGoodbye(input: WelcomeGoodbyeConfig): Promise<WelcomeGoodbyeConfig>;
@@ -455,6 +481,29 @@ export class DiscordCommunityService {
   public saveLogs(input: ServerLogConfig): Promise<ServerLogConfig> {
     validateLogs(input);
     return this.repository.saveLogs(input);
+  }
+
+  /** Posts a server log entry when logging is on for this event and nothing is ignored. */
+  public async deliverLog(input: LogDelivery): Promise<CommunitySentMessage | undefined> {
+    const logs = (await this.settings(input.guildId)).logs;
+    if (!logs?.enabled || !logs.events.includes(input.event)) return undefined;
+    if (input.isBot && !logs.includeBots) return undefined;
+    if (input.userId && logs.ignoredUsers.includes(input.userId)) return undefined;
+    if (input.channelId && logs.ignoredChannels.includes(input.channelId)) return undefined;
+    if (input.roleIds?.some((roleId) => logs.ignoredRoles.includes(roleId))) return undefined;
+    const channelId = logs.destinations[input.event] ?? logs.destinations.all ?? Object.values(logs.destinations)[0];
+    if (!channelId) return undefined;
+    if (!this.gateway) throw unavailable();
+    return this.gateway.sendMessage({
+      guildId: input.guildId,
+      channelId,
+      embed: compactEmbed({
+        title: input.title,
+        description: input.description.slice(0, 4000),
+        color: parseColor(logs.colors[input.event] ?? LOG_COLORS[input.event]),
+        timestamp: true,
+      }),
+    });
   }
 
   public saveEmbedTemplate(input: EmbedTemplateInput): Promise<EmbedTemplate> {

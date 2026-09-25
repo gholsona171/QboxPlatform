@@ -12,13 +12,26 @@
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },
   "dependencies": {
+    "@qbox/applications": "workspace:*",
+    "@qbox/birthdays": "workspace:*",
     "@qbox/core": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
+    "@qbox/fivem": "workspace:*",
+    "@qbox/giveaways": "workspace:*",
+    "@qbox/knowledge-base": "workspace:*",
+    "@qbox/levels": "workspace:*",
     "@qbox/logger": "workspace:*",
+    "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
+    "@qbox/polls": "workspace:*",
     "@qbox/role-menus": "workspace:*",
+    "@qbox/scheduled-messages": "workspace:*",
     "@qbox/shared": "workspace:*",
+    "@qbox/staff": "workspace:*",
+    "@qbox/tickets": "workspace:*",
+    "@qbox/verification": "workspace:*",
+    "@qbox/voice-rooms": "workspace:*",
     "discord.js": "^14"
   }
 }

@@ -1,0 +1,61 @@
+export type PollErrorCode = "INVALID_INPUT" | "NOT_FOUND" | "FORBIDDEN" | "INVALID_STATE" | "CONFLICT" | "LIMIT_REACHED" | "DEPENDENCY_UNAVAILABLE";
+
+/** Stable, user-safe poll failure. Messages are shown to members and staff. */
+export class PollError extends Error {
+  public constructor(
+    public readonly code: PollErrorCode,
+    message: string,
+    public readonly details?: Readonly<Record<string, string | number>> | undefined,
+  ) {
+    super(message);
+    this.name = "PollError";
+  }
+}
+
+const SNOWFLAKE = /^\d{17,20}$/;
+const CUSTOM_EMOJI = /^<a?:\w{2,32}:\d{17,20}>$/;
+
+export function invalid(message: string): never {
+  throw new PollError("INVALID_INPUT", message);
+}
+
+export function requireSnowflake(name: string, value: string | undefined): void {
+  if (!value || !SNOWFLAKE.test(value)) invalid(`${name} must be a Discord ID.`);
+}
+
+export function requireRange(name: string, value: number, min: number, max: number): void {
+  if (!Number.isInteger(value) || value < min || value > max) invalid(`${name} must be a whole number between ${min} and ${max}.`);
+}
+
+export function requireLength(name: string, value: string, min: number, max: number): void {
+  if (value.length < min || value.length > max) invalid(`${name} must be between ${min} and ${max} characters.`);
+}
+
+export function requireIds(name: string, values: readonly string[], max: number): void {
+  if (values.length > max) invalid(`${name} can contain at most ${max} entries.`);
+  for (const value of values) requireSnowflake(name, value);
+}
+
+/** Accepts one unicode emoji (up to 16 characters) or a custom `<:name:id>` emoji. */
+export function requireEmoji(value: string): void {
+  if (CUSTOM_EMOJI.test(value)) return;
+  if (value.length > 16 || /[\sA-Za-z_]/.test(value) || /^[\x00-\x7F]+$/.test(value)) invalid(`"${value}" is not a valid emoji.`);
+}
+
+const LEADING_EMOJI = /^(<a?:\w{2,32}:\d{17,20}>|[0-9#*]️?⃣|\p{Extended_Pictographic}(?:️|[\u{1F3FB}-\u{1F3FF}]|‍\p{Extended_Pictographic}️?)*)\s*(.+)$/u;
+
+/** Splits `🍕 Pizza` into an emoji and a label. Text without a leading emoji is all label. */
+export function splitOptionText(text: string): { readonly label: string; readonly emoji?: string } {
+  const match = LEADING_EMOJI.exec(text.trim());
+  return match ? { label: (match[2] as string).trim(), emoji: match[1] as string } : { label: text.trim() };
+}
+
+/** `10m`, `2h`, `3d`, `1w`, or plain minutes. Returns minutes, or undefined when invalid. */
+export function parseDuration(text: string): number | undefined {
+  const match = /^\s*(\d{1,6})\s*(m|min|mins|minutes?|h|hrs?|hours?|d|days?|w|weeks?)?\s*$/i.exec(text);
+  if (!match) return undefined;
+  const amount = Number(match[1]);
+  const unit = (match[2] ?? "m").toLowerCase()[0];
+  const minutes = amount * (unit === "w" ? 10_080 : unit === "d" ? 1440 : unit === "h" ? 60 : 1);
+  return minutes > 0 ? minutes : undefined;
+}

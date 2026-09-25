@@ -3,12 +3,23 @@ import type { DiscordCommunityService } from "@qbox/discord-community";
 import { CommunityCommand, enabledText } from "./communityCommandHelpers.js";
 import type { CommandExecutionContext } from "./DiscordCommand.js";
 
+const LOG_EVENT_CHOICES = [
+  { name: "Member joined", value: "memberJoin" },
+  { name: "Member left", value: "memberLeave" },
+  { name: "Message deleted", value: "messageDelete" },
+  { name: "Message edited", value: "messageEdit" },
+  { name: "Member roles changed", value: "roleChange" },
+  { name: "Nickname changed", value: "nicknameChange" },
+  { name: "Voice joins and leaves", value: "voice" },
+  { name: "Bans and unbans", value: "ban" },
+] as const;
+
 export class LogsCommand extends CommunityCommand {
   public readonly data = new SlashCommandBuilder()
     .setName("logs").setDescription("Manage server logs.")
-    .addSubcommand((sub) => sub.setName("configure").setDescription("Set destination for log events.").addChannelOption((option) => option.setName("channel").setDescription("Destination channel.").setRequired(true)).addStringOption((option) => option.setName("group").setDescription("Event group.").setRequired(true)))
-    .addSubcommand((sub) => sub.setName("event-enable").setDescription("Enable an event.").addStringOption((option) => option.setName("event").setDescription("Event name.").setRequired(true)))
-    .addSubcommand((sub) => sub.setName("event-disable").setDescription("Disable an event.").addStringOption((option) => option.setName("event").setDescription("Event name.").setRequired(true)))
+    .addSubcommand((sub) => sub.setName("configure").setDescription("Set destination for log events.").addChannelOption((option) => option.setName("channel").setDescription("Destination channel.").setRequired(true)).addStringOption((option) => option.setName("group").setDescription("Which events go to this channel.").setRequired(true).addChoices({ name: "All events", value: "all" }, ...LOG_EVENT_CHOICES)))
+    .addSubcommand((sub) => sub.setName("event-enable").setDescription("Enable an event.").addStringOption((option) => option.setName("event").setDescription("Event.").setRequired(true).addChoices(...LOG_EVENT_CHOICES)))
+    .addSubcommand((sub) => sub.setName("event-disable").setDescription("Disable an event.").addStringOption((option) => option.setName("event").setDescription("Event.").setRequired(true).addChoices(...LOG_EVENT_CHOICES)))
     .addSubcommand((sub) => sub.setName("ignore-add").setDescription("Add ignored ID.").addStringOption((option) => option.setName("id").setDescription("Discord ID.").setRequired(true)))
     .addSubcommand((sub) => sub.setName("ignore-remove").setDescription("Remove ignored ID.").addStringOption((option) => option.setName("id").setDescription("Discord ID.").setRequired(true)))
     .addSubcommand((sub) => sub.setName("inspect").setDescription("Inspect logging."))
@@ -33,7 +44,13 @@ export class LogsCommand extends CommunityCommand {
       const ignoredUsers = route === "ignore-add" ? [...new Set([...current.ignoredUsers, id])] : current.ignoredUsers.filter((item) => item !== id);
       await service.saveLogs({ ...current, ignoredUsers }); await context.editReply({ content: "Log ignore list updated." }); return;
     }
-    if (route === "test") { await context.editReply({ content: "Server log test passed. No production event was emitted." }); return; }
+    if (route === "test") {
+      const destination = current.destinations.all ?? Object.values(current.destinations)[0];
+      if (!destination) { await context.editReply({ content: "Set a log channel first with /logs configure." }); return; }
+      await service.sendAnnouncement({ guildId, channelId: destination, content: `Qbox log test from <@${context.interaction.user.id}>. Logging is working.` });
+      await context.editReply({ content: `Test message sent to <#${destination}>.` });
+      return;
+    }
     await context.editReply({ content: `Logs are ${enabledText(current.enabled)}. Events: ${current.events.join(", ") || "none"}.` });
   }
 }

@@ -1,0 +1,53 @@
+// Voice rooms (see docs/VoiceRooms.md). guildId is the Discord guild snowflake.
+
+model VoiceSettings {
+  guildId      String   @id @map("guild_id")
+  enabled      Boolean  @default(true)
+  controlPanel Boolean  @default(true) @map("control_panel")
+  allowClaim   Boolean  @default(true) @map("allow_claim")
+  revision     Int      @default(1)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("voice_settings")
+}
+
+model VoiceHub {
+  id                 String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId            String      @map("guild_id")
+  name               String
+  enabled            Boolean     @default(true)
+  channelId          String      @map("channel_id")
+  categoryId         String?     @map("category_id")
+  nameTemplate       String      @map("name_template")
+  userLimit          Int         @default(0) @map("user_limit")
+  bitrateKbps        Int         @default(64) @map("bitrate_kbps")
+  privateByDefault   Boolean     @default(false) @map("private_by_default")
+  deleteDelaySeconds Int         @default(0) @map("delete_delay_seconds")
+  allowedRoleIds     String[]    @map("allowed_role_ids")
+  createdAt          DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+  rooms              VoiceRoom[]
+
+  @@unique([guildId, channelId], map: "voice_hubs_guild_channel_key")
+  @@map("voice_hubs")
+}
+
+model VoiceRoom {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId        String    @map("guild_id")
+  hubId          String?   @map("hub_id") @db.Uuid
+  hub            VoiceHub? @relation(fields: [hubId], references: [id], onDelete: SetNull)
+  channelId      String    @unique(map: "voice_rooms_channel_key") @map("channel_id")
+  ownerId        String    @map("owner_id")
+  name           String
+  locked         Boolean   @default(false)
+  hidden         Boolean   @default(false)
+  panelMessageId String?   @map("panel_message_id")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([guildId, ownerId], map: "voice_rooms_guild_owner_idx")
+  @@index([hubId], map: "voice_rooms_hub_idx")
+  @@map("voice_rooms")
+}

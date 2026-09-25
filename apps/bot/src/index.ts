@@ -14,6 +14,7 @@ import {
 } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
+import { botFeatures } from "./features.js";
 import { PermissionPersistenceModule } from "./PermissionPersistenceModule.js";
 
 const kernel = new PlatformKernel();
@@ -62,6 +63,7 @@ kernel.registerModule(
     roleMenuRepository: persistence.repositories.roleMenus,
     communityRepository: persistence.repositories.discordCommunity,
     roleDependencyRepository: persistence.repositories.discordRoles,
+    features: botFeatures(persistence),
   }),
 );
 

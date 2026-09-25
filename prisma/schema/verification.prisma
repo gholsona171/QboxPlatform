@@ -1,0 +1,89 @@
+// Verification (see docs/Verification.md). guildId is the Discord guild snowflake.
+
+enum VerificationMode {
+  BUTTON   @map("button")
+  CAPTCHA  @map("captcha")
+  QUESTION @map("question")
+}
+
+enum VerificationAgeAction {
+  DENY @map("deny")
+  KICK @map("kick")
+  FLAG @map("flag")
+}
+
+enum VerificationAttemptResult {
+  PASSED     @map("passed")
+  FAILED     @map("failed")
+  DENIED_AGE @map("denied-age")
+  KICKED     @map("kicked")
+  MANUAL     @map("manual")
+  REVOKED    @map("revoked")
+}
+
+enum VerificationAttemptSource {
+  DISCORD   @map("discord")
+  WEB       @map("web")
+  AUTOMATIC @map("automatic")
+}
+
+model VerificationSettings {
+  guildId               String                @id @map("guild_id")
+  enabled               Boolean               @default(false)
+  mode                  VerificationMode      @default(BUTTON)
+  verifiedRoleIds       String[]              @map("verified_role_ids")
+  unverifiedRoleId      String?               @map("unverified_role_id")
+  channelId             String?               @map("channel_id")
+  panelTitle            String                @map("panel_title")
+  panelDescription      String                @map("panel_description")
+  panelColor            String                @default("#5865F2") @map("panel_color")
+  panelButtonLabel      String                @default("Verify") @map("panel_button_label")
+  panelChannelId        String?               @map("panel_channel_id")
+  panelMessageId        String?               @map("panel_message_id")
+  questions             Json                  @default("[]") @db.JsonB
+  logChannelId          String?               @map("log_channel_id")
+  minAccountAgeDays     Int                   @default(0) @map("min_account_age_days")
+  ageAction             VerificationAgeAction @default(DENY) @map("age_action")
+  kickUnverifiedMinutes Int                   @default(0) @map("kick_unverified_minutes")
+  maxAttempts           Int                   @default(3) @map("max_attempts")
+  cooldownMinutes       Int                   @default(10) @map("cooldown_minutes")
+  dmOnSuccess           Boolean               @default(false) @map("dm_on_success")
+  successMessage        String?               @map("success_message")
+  welcomeChannelId      String?               @map("welcome_channel_id")
+  welcomeMessage        String?               @map("welcome_message")
+  revision              Int                   @default(1)
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([enabled, kickUnverifiedMinutes], map: "verification_settings_kick_idx")
+  @@map("verification_settings")
+}
+
+model VerificationAttempt {
+  id        String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String                    @map("guild_id")
+  userId    String                    @map("user_id")
+  userName  String                    @map("user_name")
+  result    VerificationAttemptResult
+  reason    String?
+  staffId   String?                   @map("staff_id")
+  staffName String?                   @map("staff_name")
+  source    VerificationAttemptSource @default(DISCORD)
+  createdAt DateTime                  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([guildId, createdAt], map: "verification_attempts_guild_created_idx")
+  @@index([guildId, userId, result, createdAt], map: "verification_attempts_guild_user_idx")
+  @@index([guildId, result, createdAt], map: "verification_attempts_guild_result_idx")
+  @@map("verification_attempts")
+}
+
+model VerificationPendingMember {
+  guildId  String   @map("guild_id")
+  userId   String   @map("user_id")
+  joinedAt DateTime @map("joined_at") @db.Timestamptz(3)
+  flagged  Boolean  @default(false)
+
+  @@id([guildId, userId], map: "verification_pending_members_pkey")
+  @@index([guildId, joinedAt], map: "verification_pending_members_guild_joined_idx")
+  @@map("verification_pending_members")
+}

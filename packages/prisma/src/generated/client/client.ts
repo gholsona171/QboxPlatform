@@ -31,8 +31,8 @@ export * from "./enums.js"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Guilds
- * const guilds = await prisma.guild.findMany()
+ * // Fetch zero or more ApplicationCounters
+ * const applicationCounters = await prisma.applicationCounter.findMany()
  * ```
  *
  * Read more in our [docs](https://pris.ly/d/client).
@@ -41,6 +41,36 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model ApplicationCounter
+ *
+ */
+export type ApplicationCounter = Prisma.ApplicationCounterModel
+/**
+ * Model ApplicationForm
+ *
+ */
+export type ApplicationForm = Prisma.ApplicationFormModel
+/**
+ * Model ApplicationPanel
+ *
+ */
+export type ApplicationPanel = Prisma.ApplicationPanelModel
+/**
+ * Model Application
+ *
+ */
+export type Application = Prisma.ApplicationModel
+/**
+ * Model ApplicationVote
+ *
+ */
+export type ApplicationVote = Prisma.ApplicationVoteModel
+/**
+ * Model ApplicationNote
+ *
+ */
+export type ApplicationNote = Prisma.ApplicationNoteModel
 /**
  * Model Guild
  *
@@ -181,3 +211,193 @@ export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
  *
  */
 export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel
+/**
+ * Model BirthdaySettings
+ *
+ */
+export type BirthdaySettings = Prisma.BirthdaySettingsModel
+/**
+ * Model Birthday
+ *
+ */
+export type Birthday = Prisma.BirthdayModel
+/**
+ * Model FivemSettings
+ *
+ */
+export type FivemSettings = Prisma.FivemSettingsModel
+/**
+ * Model FivemStatusSnapshot
+ *
+ */
+export type FivemStatusSnapshot = Prisma.FivemStatusSnapshotModel
+/**
+ * Model GiveawayCounter
+ *
+ */
+export type GiveawayCounter = Prisma.GiveawayCounterModel
+/**
+ * Model Giveaway
+ *
+ */
+export type Giveaway = Prisma.GiveawayModel
+/**
+ * Model GiveawayEntry
+ *
+ */
+export type GiveawayEntry = Prisma.GiveawayEntryModel
+/**
+ * Model KnowledgeSettings
+ *
+ */
+export type KnowledgeSettings = Prisma.KnowledgeSettingsModel
+/**
+ * Model KnowledgeCategory
+ *
+ */
+export type KnowledgeCategory = Prisma.KnowledgeCategoryModel
+/**
+ * Model KnowledgeArticle
+ *
+ */
+export type KnowledgeArticle = Prisma.KnowledgeArticleModel
+/**
+ * Model LevelSettings
+ *
+ */
+export type LevelSettings = Prisma.LevelSettingsModel
+/**
+ * Model LevelMember
+ *
+ */
+export type LevelMember = Prisma.LevelMemberModel
+/**
+ * Model ModerationSettings
+ *
+ */
+export type ModerationSettings = Prisma.ModerationSettingsModel
+/**
+ * Model ModerationCase
+ *
+ */
+export type ModerationCase = Prisma.ModerationCaseModel
+/**
+ * Model PollCounter
+ *
+ */
+export type PollCounter = Prisma.PollCounterModel
+/**
+ * Model Poll
+ *
+ */
+export type Poll = Prisma.PollModel
+/**
+ * Model PollVote
+ *
+ */
+export type PollVote = Prisma.PollVoteModel
+/**
+ * Model ScheduledMessage
+ *
+ */
+export type ScheduledMessage = Prisma.ScheduledMessageModel
+/**
+ * Model ScheduledMessageRun
+ *
+ */
+export type ScheduledMessageRun = Prisma.ScheduledMessageRunModel
+/**
+ * Model StaffSettings
+ *
+ */
+export type StaffSettings = Prisma.StaffSettingsModel
+/**
+ * Model StaffRank
+ *
+ */
+export type StaffRank = Prisma.StaffRankModel
+/**
+ * Model StaffMember
+ *
+ */
+export type StaffMember = Prisma.StaffMemberModel
+/**
+ * Model StaffRecord
+ *
+ */
+export type StaffRecord = Prisma.StaffRecordModel
+/**
+ * Model StaffStrike
+ *
+ */
+export type StaffStrike = Prisma.StaffStrikeModel
+/**
+ * Model StaffLeave
+ *
+ */
+export type StaffLeave = Prisma.StaffLeaveModel
+/**
+ * Model StaffShift
+ *
+ */
+export type StaffShift = Prisma.StaffShiftModel
+/**
+ * Model TicketSettings
+ *
+ */
+export type TicketSettings = Prisma.TicketSettingsModel
+/**
+ * Model TicketCategory
+ *
+ */
+export type TicketCategory = Prisma.TicketCategoryModel
+/**
+ * Model TicketPanel
+ *
+ */
+export type TicketPanel = Prisma.TicketPanelModel
+/**
+ * Model Ticket
+ *
+ */
+export type Ticket = Prisma.TicketModel
+/**
+ * Model TicketMessage
+ *
+ */
+export type TicketMessage = Prisma.TicketMessageModel
+/**
+ * Model TicketEvent
+ *
+ */
+export type TicketEvent = Prisma.TicketEventModel
+/**
+ * Model VerificationSettings
+ *
+ */
+export type VerificationSettings = Prisma.VerificationSettingsModel
+/**
+ * Model VerificationAttempt
+ *
+ */
+export type VerificationAttempt = Prisma.VerificationAttemptModel
+/**
+ * Model VerificationPendingMember
+ *
+ */
+export type VerificationPendingMember = Prisma.VerificationPendingMemberModel
+/**
+ * Model VoiceSettings
+ *
+ */
+export type VoiceSettings = Prisma.VoiceSettingsModel
+/**
+ * Model VoiceHub
+ *
+ */
+export type VoiceHub = Prisma.VoiceHubModel
+/**
+ * Model VoiceRoom
+ *
+ */
+export type VoiceRoom = Prisma.VoiceRoomModel

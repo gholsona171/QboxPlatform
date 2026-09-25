@@ -16,6 +16,7 @@ import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuIn
 import { DiscordCommunityGatewayAdapter } from "./community/DiscordCommunityGateway.js";
 import { DiscordCommunityEventHandler } from "./community/DiscordCommunityEventHandler.js";
 import { DiscordRoleManagementGateway } from "./roles/DiscordRoleManagementGateway.js";
+import type { DiscordFeature, DiscordFeatureFactory } from "./features/DiscordFeature.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -54,6 +55,8 @@ export class DiscordService {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildVoiceStates,
+      GatewayIntentBits.GuildModeration,
+      ...(env.DISCORD_MESSAGE_CONTENT_INTENT ? [GatewayIntentBits.MessageContent] : []),
     ],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   });
@@ -62,6 +65,8 @@ export class DiscordService {
   public readonly roleMenus: RoleMenuService | undefined;
   public readonly community: DiscordCommunityService | undefined;
   public readonly roles: RoleManagementService | undefined;
+  /** Pluggable features (tickets, moderation, ...) composed at startup. */
+  public readonly features: readonly DiscordFeature[];
   private readonly interactions: DiscordInteractionHandler;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly communityEvents: DiscordCommunityEventHandler | undefined;
@@ -94,8 +99,10 @@ export class DiscordService {
     roleMenuRepository?: RoleMenuRepository,
     communityRepository?: CommunityRepository,
     roleDependencyRepository?: RoleDependencyRepository,
+    featureFactories: readonly DiscordFeatureFactory[] = [],
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
+    this.features = featureFactories.map((create) => create({ client: this.client, authorizer: permissionAuthorizer }));
     if (roleMenuRepository) {
       this.roleMenus = new RoleMenuService(
         roleMenuRepository,
@@ -122,7 +129,21 @@ export class DiscordService {
       executionTimeoutMs: readExecutionTimeout(),
       ...(this.roleMenuInteractions ? { roleMenuInteractions: this.roleMenuInteractions } : {}),
       ...(this.community ? { community: this.community } : {}),
+      featureInteractions: this.features.flatMap((feature) =>
+        feature.handleInteraction && feature.interactionPrefixes
+          ? [{ prefixes: feature.interactionPrefixes, handle: feature.handleInteraction.bind(feature) }]
+          : [],
+      ),
     });
+  }
+
+  /** Live command instance provided by a feature for this command name. */
+  public featureCommand(name: string): DiscordCommand | undefined {
+    for (const feature of this.features) {
+      const command = feature.commands().find((candidate) => candidate.data.name === name);
+      if (command) return command;
+    }
+    return undefined;
   }
 
   public registerCommands(commands: readonly DiscordCommand[]): number {
@@ -142,6 +163,7 @@ export class DiscordService {
     this.client.on(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.on(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.attach(this.client);
+    for (const feature of this.features) feature.attach?.(this.client);
 
     logger.info(
       {
@@ -157,6 +179,7 @@ export class DiscordService {
       this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
       this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
       this.communityEvents?.detach();
+      for (const feature of this.features) feature.detach?.();
       this.client.destroy();
       throw error;
     }
@@ -265,6 +288,7 @@ export class DiscordService {
     this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.detach();
+    for (const feature of this.features) feature.detach?.();
     this.client.destroy();
   }
 }

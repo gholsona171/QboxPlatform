@@ -48,7 +48,7 @@ jobs:
       - name: Generate Prisma client
         run: pnpm --filter @qbox/prisma prisma:generate
       - name: Verify generated Prisma artifacts
-        run: git diff --exit-code -- prisma/schema.prisma prisma/migrations packages/prisma/src/generated
+        run: git diff --exit-code -- prisma/schema prisma/migrations packages/prisma/src/generated
       - name: Build
         run: pnpm build
       - name: Typecheck

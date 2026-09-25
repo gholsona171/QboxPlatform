@@ -9,6 +9,42 @@
 * 🟢 You can import this file directly.
 */
 
+export const ApplicationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DENIED: 'DENIED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const ApplicationSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB'
+} as const
+
+export type ApplicationSource = (typeof ApplicationSource)[keyof typeof ApplicationSource]
+
+
+export const ApplicationVoteType = {
+  UP: 'UP',
+  DOWN: 'DOWN'
+} as const
+
+export type ApplicationVoteType = (typeof ApplicationVoteType)[keyof typeof ApplicationVoteType]
+
+
+export const ApplicationButtonStyle = {
+  PRIMARY: 'PRIMARY',
+  SECONDARY: 'SECONDARY',
+  SUCCESS: 'SUCCESS',
+  DANGER: 'DANGER'
+} as const
+
+export type ApplicationButtonStyle = (typeof ApplicationButtonStyle)[keyof typeof ApplicationButtonStyle]
+
+
 export const PermissionPrincipalType = {
   DISCORD_USER: 'DISCORD_USER',
   DISCORD_ROLE: 'DISCORD_ROLE'
@@ -356,3 +392,210 @@ export const AuthenticationAuditActorType = {
 } as const
 
 export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]
+
+
+export const GiveawayStatus = {
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  ENDED: 'ENDED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type GiveawayStatus = (typeof GiveawayStatus)[keyof typeof GiveawayStatus]
+
+
+export const LevelUpMode = {
+  CURRENT: 'CURRENT',
+  CHANNEL: 'CHANNEL',
+  DM: 'DM',
+  OFF: 'OFF'
+} as const
+
+export type LevelUpMode = (typeof LevelUpMode)[keyof typeof LevelUpMode]
+
+
+export const LevelRewardMode = {
+  STACK: 'STACK',
+  HIGHEST: 'HIGHEST'
+} as const
+
+export type LevelRewardMode = (typeof LevelRewardMode)[keyof typeof LevelRewardMode]
+
+
+export const ModerationCaseType = {
+  WARN: 'WARN',
+  TIMEOUT: 'TIMEOUT',
+  UNTIMEOUT: 'UNTIMEOUT',
+  KICK: 'KICK',
+  BAN: 'BAN',
+  UNBAN: 'UNBAN',
+  SOFTBAN: 'SOFTBAN',
+  NOTE: 'NOTE'
+} as const
+
+export type ModerationCaseType = (typeof ModerationCaseType)[keyof typeof ModerationCaseType]
+
+
+export const ModerationCaseSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  AUTOMOD: 'AUTOMOD',
+  EXTERNAL: 'EXTERNAL'
+} as const
+
+export type ModerationCaseSource = (typeof ModerationCaseSource)[keyof typeof ModerationCaseSource]
+
+
+export const PollStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PollStatus = (typeof PollStatus)[keyof typeof PollStatus]
+
+
+export const PollResultsVisibility = {
+  LIVE: 'LIVE',
+  AFTER_CLOSE: 'AFTER_CLOSE'
+} as const
+
+export type PollResultsVisibility = (typeof PollResultsVisibility)[keyof typeof PollResultsVisibility]
+
+
+export const ScheduledMessageType = {
+  ONCE: 'ONCE',
+  INTERVAL: 'INTERVAL',
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY'
+} as const
+
+export type ScheduledMessageType = (typeof ScheduledMessageType)[keyof typeof ScheduledMessageType]
+
+
+export const StaffMemberStatus = {
+  ACTIVE: 'ACTIVE',
+  LOA: 'LOA',
+  SUSPENDED: 'SUSPENDED',
+  RETIRED: 'RETIRED'
+} as const
+
+export type StaffMemberStatus = (typeof StaffMemberStatus)[keyof typeof StaffMemberStatus]
+
+
+export const StaffRecordType = {
+  HIRE: 'HIRE',
+  PROMOTE: 'PROMOTE',
+  DEMOTE: 'DEMOTE',
+  FIRE: 'FIRE',
+  LOA_START: 'LOA_START',
+  LOA_END: 'LOA_END',
+  NOTE: 'NOTE',
+  STRIKE: 'STRIKE'
+} as const
+
+export type StaffRecordType = (typeof StaffRecordType)[keyof typeof StaffRecordType]
+
+
+export const StaffLeaveStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  ACTIVE: 'ACTIVE',
+  ENDED: 'ENDED',
+  DENIED: 'DENIED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type StaffLeaveStatus = (typeof StaffLeaveStatus)[keyof typeof StaffLeaveStatus]
+
+
+export const TicketMode = {
+  CHANNEL: 'CHANNEL',
+  THREAD: 'THREAD'
+} as const
+
+export type TicketMode = (typeof TicketMode)[keyof typeof TicketMode]
+
+
+export const TicketStatus = {
+  OPEN: 'OPEN',
+  CLAIMED: 'CLAIMED',
+  PENDING: 'PENDING',
+  CLOSED: 'CLOSED'
+} as const
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+} as const
+
+export type TicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority]
+
+
+export const TicketPanelStyle = {
+  BUTTONS: 'BUTTONS',
+  SELECT_MENU: 'SELECT_MENU'
+} as const
+
+export type TicketPanelStyle = (typeof TicketPanelStyle)[keyof typeof TicketPanelStyle]
+
+
+export const TicketMessageSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type TicketMessageSource = (typeof TicketMessageSource)[keyof typeof TicketMessageSource]
+
+
+export const TicketCloseAction = {
+  ARCHIVE: 'ARCHIVE',
+  DELETE: 'DELETE'
+} as const
+
+export type TicketCloseAction = (typeof TicketCloseAction)[keyof typeof TicketCloseAction]
+
+
+export const VerificationMode = {
+  BUTTON: 'BUTTON',
+  CAPTCHA: 'CAPTCHA',
+  QUESTION: 'QUESTION'
+} as const
+
+export type VerificationMode = (typeof VerificationMode)[keyof typeof VerificationMode]
+
+
+export const VerificationAgeAction = {
+  DENY: 'DENY',
+  KICK: 'KICK',
+  FLAG: 'FLAG'
+} as const
+
+export type VerificationAgeAction = (typeof VerificationAgeAction)[keyof typeof VerificationAgeAction]
+
+
+export const VerificationAttemptResult = {
+  PASSED: 'PASSED',
+  FAILED: 'FAILED',
+  DENIED_AGE: 'DENIED_AGE',
+  KICKED: 'KICKED',
+  MANUAL: 'MANUAL',
+  REVOKED: 'REVOKED'
+} as const
+
+export type VerificationAttemptResult = (typeof VerificationAttemptResult)[keyof typeof VerificationAttemptResult]
+
+
+export const VerificationAttemptSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  AUTOMATIC: 'AUTOMATIC'
+} as const
+
+export type VerificationAttemptSource = (typeof VerificationAttemptSource)[keyof typeof VerificationAttemptSource]

@@ -6,12 +6,25 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@qbox/applications": "workspace:*",
     "@qbox/authentication": "workspace:*",
+    "@qbox/birthdays": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
+    "@qbox/fivem": "workspace:*",
+    "@qbox/giveaways": "workspace:*",
+    "@qbox/knowledge-base": "workspace:*",
+    "@qbox/levels": "workspace:*",
+    "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
+    "@qbox/polls": "workspace:*",
     "@qbox/prisma": "workspace:*",
-    "@qbox/role-menus": "workspace:*"
+    "@qbox/role-menus": "workspace:*",
+    "@qbox/scheduled-messages": "workspace:*",
+    "@qbox/staff": "workspace:*",
+    "@qbox/tickets": "workspace:*",
+    "@qbox/verification": "workspace:*",
+    "@qbox/voice-rooms": "workspace:*"
   },
   "scripts": {
     "build": "tsc",

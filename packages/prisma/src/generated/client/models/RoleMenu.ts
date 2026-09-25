@@ -613,10 +613,6 @@ export type RoleMenuUncheckedUpdateManyWithoutGuildNestedInput = {
   deleteMany?: Prisma.RoleMenuScalarWhereInput | Prisma.RoleMenuScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type EnumRoleMenuPresentationTypeFieldUpdateOperationsInput = {
   set?: $Enums.RoleMenuPresentationType
 }
@@ -627,14 +623,6 @@ export type EnumRoleMenuAssignmentModeFieldUpdateOperationsInput = {
 
 export type EnumRoleMenuStatusFieldUpdateOperationsInput = {
   set?: $Enums.RoleMenuStatus
-}
-
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
 }
 
 export type RoleMenuCreateNestedOneWithoutOptionsInput = {

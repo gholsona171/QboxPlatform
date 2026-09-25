@@ -17,6 +17,7 @@ void main({
   AUTH_OAUTH_ENCRYPTION_KEY: process.env.AUTH_OAUTH_ENCRYPTION_KEY,
   AUTH_KEY_VERSION: process.env.AUTH_KEY_VERSION,
   API_PUBLIC_BASE_URL: process.env.API_PUBLIC_BASE_URL,
+  API_PORTAL_DIRECTORY: process.env.API_PORTAL_DIRECTORY,
 }).catch(() => {
   process.exitCode = 1;
 });

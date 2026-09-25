@@ -1,0 +1,139 @@
+// Applications (see docs/Applications.md). guildId is the Discord guild snowflake.
+
+enum ApplicationStatus {
+  PENDING   @map("pending")
+  ACCEPTED  @map("accepted")
+  DENIED    @map("denied")
+  WITHDRAWN @map("withdrawn")
+}
+
+enum ApplicationSource {
+  DISCORD @map("discord")
+  WEB     @map("web")
+}
+
+enum ApplicationVoteType {
+  UP   @map("up")
+  DOWN @map("down")
+}
+
+enum ApplicationButtonStyle {
+  PRIMARY   @map("primary")
+  SECONDARY @map("secondary")
+  SUCCESS   @map("success")
+  DANGER    @map("danger")
+}
+
+model ApplicationCounter {
+  guildId    String   @id @map("guild_id")
+  nextNumber Int      @default(1) @map("next_number")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("application_counters")
+}
+
+model ApplicationForm {
+  id                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId             String                 @map("guild_id")
+  name                String
+  description         String?
+  enabled             Boolean                @default(true)
+  questions           Json                   @default("[]") @db.JsonB
+  cooldownDays        Int                    @default(0) @map("cooldown_days")
+  onePending          Boolean                @default(true) @map("one_pending")
+  requiredRoleIds     String[]               @map("required_role_ids")
+  blockedRoleIds      String[]               @map("blocked_role_ids")
+  minAccountAgeDays   Int?                   @map("min_account_age_days")
+  reviewChannelId     String?                @map("review_channel_id")
+  reviewerRoleIds     String[]               @map("reviewer_role_ids")
+  pingMemberIds       String[]               @map("ping_member_ids")
+  acceptRoleIds       String[]               @map("accept_role_ids")
+  removeRoleIds       String[]               @map("remove_role_ids")
+  acceptMessage       String?                @map("accept_message")
+  denyMessage         String?                @map("deny_message")
+  discussionChannelId String?                @map("discussion_channel_id")
+  buttonLabel         String?                @map("button_label")
+  buttonEmoji         String?                @map("button_emoji")
+  buttonStyle         ApplicationButtonStyle @default(PRIMARY) @map("button_style")
+  position            Int                    @default(0)
+  revision            Int                    @default(1)
+  createdAt           DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
+  applications        Application[]
+
+  @@index([guildId, position], map: "application_forms_guild_position_idx")
+  @@map("application_forms")
+}
+
+model ApplicationPanel {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String   @map("guild_id")
+  channelId   String   @map("channel_id")
+  messageId   String?  @map("message_id")
+  title       String
+  description String
+  color       String   @default("#5865F2")
+  formIds     String[] @map("form_ids")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([guildId], map: "application_panels_guild_idx")
+  @@map("application_panels")
+}
+
+model Application {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String            @map("guild_id")
+  number          Int
+  formId          String?           @map("form_id") @db.Uuid
+  form            ApplicationForm?  @relation(fields: [formId], references: [id], onDelete: SetNull)
+  formName        String            @map("form_name")
+  applicantId     String            @map("applicant_id")
+  applicantName   String            @map("applicant_name")
+  status          ApplicationStatus @default(PENDING)
+  source          ApplicationSource @default(DISCORD)
+  answers         Json              @default("[]") @db.JsonB
+  reviewChannelId String?           @map("review_channel_id")
+  reviewMessageId String?           @map("review_message_id")
+  threadId        String?           @map("thread_id")
+  decidedById     String?           @map("decided_by_id")
+  decidedByName   String?           @map("decided_by_name")
+  decisionReason  String?           @map("decision_reason")
+  decidedAt       DateTime?         @map("decided_at") @db.Timestamptz(3)
+  dmDelivered     Boolean?          @map("dm_delivered")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  votes           ApplicationVote[]
+  notes           ApplicationNote[]
+
+  @@unique([guildId, number], map: "applications_guild_number_key")
+  @@index([guildId, status, createdAt], map: "applications_guild_status_idx")
+  @@index([guildId, formId, applicantId], map: "applications_guild_form_applicant_idx")
+  @@index([guildId, applicantId], map: "applications_guild_applicant_idx")
+  @@map("applications")
+}
+
+model ApplicationVote {
+  applicationId String              @map("application_id") @db.Uuid
+  application   Application         @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  userId        String              @map("user_id")
+  vote          ApplicationVoteType
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@id([applicationId, userId], map: "application_votes_pkey")
+  @@map("application_votes")
+}
+
+model ApplicationNote {
+  id            String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  applicationId String      @map("application_id") @db.Uuid
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authorId      String      @map("author_id")
+  authorName    String      @map("author_name")
+  body          String
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([applicationId, createdAt], map: "application_notes_application_idx")
+  @@map("application_notes")
+}

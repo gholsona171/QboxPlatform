@@ -41,6 +41,19 @@ const secondRoleId = "1262656532902842425";
 const memberId = "804859666655739996";
 
 describe("DiscordCommunityService", () => {
+  it("delivers server logs only for enabled, non-ignored events", async () => {
+    const gateway = new FakeGateway();
+    const service = new DiscordCommunityService(new InMemoryCommunityRepository(), gateway);
+    await service.saveLogs({ guildId, enabled: true, events: ["memberJoin", "messageDelete"], destinations: { all: channelId }, ignoredChannels: [secondRoleId], ignoredRoles: [roleId], ignoredUsers: [], includeBots: false, contentMode: "REDACTED", colors: {} });
+    await service.deliverLog({ guildId, event: "memberJoin", title: "Member joined", description: "hi", userId: memberId });
+    await service.deliverLog({ guildId, event: "voice", title: "Voice", description: "not enabled" });
+    await service.deliverLog({ guildId, event: "memberJoin", title: "Bot joined", description: "bot", isBot: true });
+    await service.deliverLog({ guildId, event: "messageDelete", title: "Deleted", description: "ignored channel", channelId: secondRoleId });
+    await service.deliverLog({ guildId, event: "messageDelete", title: "Deleted", description: "ignored role", roleIds: [roleId] });
+    expect(gateway.sent.map((message) => message.embed?.title)).toEqual(["Member joined"]);
+    expect(gateway.sent[0]).toMatchObject({ channelId, embed: { color: 0x57f287 } });
+  });
+
   it("renders welcome placeholders and skips disabled delivery", async () => {
     const gateway = new FakeGateway();
     const service = new DiscordCommunityService(new InMemoryCommunityRepository(), gateway);

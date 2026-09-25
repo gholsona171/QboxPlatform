@@ -1,0 +1,60 @@
+// Scheduled messages (see docs/ScheduledMessages.md). guildId is the Discord guild snowflake.
+
+enum ScheduledMessageType {
+  ONCE     @map("once")
+  INTERVAL @map("interval")
+  DAILY    @map("daily")
+  WEEKLY   @map("weekly")
+  MONTHLY  @map("monthly")
+}
+
+model ScheduledMessage {
+  id              String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String                @map("guild_id")
+  name            String
+  channelId       String                @map("channel_id")
+  content         String?
+  embed           Json?                 @db.JsonB
+  pingRoleIds     String[]              @map("ping_role_ids")
+  scheduleType    ScheduledMessageType  @map("schedule_type")
+  timeZone        String                @map("time_zone")
+  runAt           String?               @map("run_at")
+  intervalMinutes Int?                  @map("interval_minutes")
+  time            String?
+  weekdays        Int[]
+  dayOfMonth      Int?                  @map("day_of_month")
+  startDate       String?               @map("start_date")
+  endDate         String?               @map("end_date")
+  enabled         Boolean               @default(true)
+  deletePrevious  Boolean               @default(false) @map("delete_previous")
+  pin             Boolean               @default(false)
+  maxRuns         Int?                  @map("max_runs")
+  runCount        Int                   @default(0) @map("run_count")
+  lastRunAt       DateTime?             @map("last_run_at") @db.Timestamptz(3)
+  lastMessageId   String?               @map("last_message_id")
+  nextRunAt       DateTime?             @map("next_run_at") @db.Timestamptz(3)
+  createdById     String                @map("created_by_id")
+  createdAt       DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+  runs            ScheduledMessageRun[]
+
+  @@unique([guildId, name], map: "scheduled_messages_guild_name_key")
+  @@index([enabled, nextRunAt], map: "scheduled_messages_due_idx")
+  @@map("scheduled_messages")
+}
+
+model ScheduledMessageRun {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  messageId        String           @map("message_id") @db.Uuid
+  guildId          String           @map("guild_id")
+  success          Boolean
+  discordMessageId String?          @map("discord_message_id")
+  error            String?
+  manual           Boolean          @default(false)
+  ranAt            DateTime         @default(now()) @map("ran_at") @db.Timestamptz(3)
+  message          ScheduledMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([guildId, ranAt], map: "scheduled_message_runs_guild_idx")
+  @@index([messageId, ranAt], map: "scheduled_message_runs_message_idx")
+  @@map("scheduled_message_runs")
+}

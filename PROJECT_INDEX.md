@@ -11,11 +11,11 @@
 ## `@qbox/web`
 
 - **Location:** `apps/web/`
-- **Purpose:** Static, framework-free browser dashboard for the QboxPlatform proof of concept. It is designed to be deployed independently by Vercel with `apps/web` as the project root and calls only same-origin API, auth, and health paths.
-- **Entry points:** `apps/web/index.html`, `apps/web/app.js`, `apps/web/styles.css`
-- **Vercel proxy:** `apps/web/api/[...path].js` forwards `/api/*`, `/auth/*`, and `/health/*` to the configured VPS API origin from `QBOX_API_ORIGIN` without exposing that origin to browser JavaScript.
+- **Purpose:** Static, framework-free browser portal for QboxPlatform. The Qbox API serves it from the API origin (live platform), and `.github/workflows/pages.yml` publishes a sign-in page to GitHub Pages that links to the live platform.
+- **Entry points:** `apps/web/public/index.html`, `apps/web/public/js/app.js`, `apps/web/public/styles.css`
+- **Hosting:** `apps/api/src/portal/PortalStaticRoutes.ts` serves the portal with client-side route fallback; `scripts/build-pages.mjs` builds the GitHub Pages preview.
 - **Declared dependencies:** None.
-- **Scripts:** `build`, `test`
+- **Scripts:** `test`
 
 ## `@qbox/bot`
 
@@ -132,21 +132,26 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 
 ## Module workspace directories
 
-`pnpm-workspace.yaml` includes `modules/*`. The following directories currently exist, but contain no source files, manifests, commands, services, events, or exports:
+`pnpm-workspace.yaml` includes `modules/*`. Each module is a pnpm workspace package with domain rules and ports; persistence lives in `@qbox/database` and Discord wiring in `@qbox/discord`.
 
-| Directory               | Current contents            |
-| ----------------------- | --------------------------- |
-| `modules/applications/` | Empty placeholder directory |
-| `modules/birthdays/`    | Empty placeholder directory |
-| `modules/fivem/`        | Empty placeholder directory |
-| `modules/knowledge/`    | Empty placeholder directory |
-| `modules/moderation/`   | Empty placeholder directory |
-| `modules/polls/`        | Empty placeholder directory |
-| `modules/staff/`        | Empty placeholder directory |
-| `modules/tickets/`      | Empty placeholder directory |
-| `modules/verification/` | Empty placeholder directory |
-
-Because they have no `package.json`, these directories are not currently pnpm workspace packages despite matching the configured path pattern.
+| Package                    | Directory                   | Purpose                                                                 |
+| -------------------------- | --------------------------- | ----------------------------------------------------------------------- |
+| `@qbox/discord-community`  | `modules/discord-community` | Welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard |
+| `@qbox/discord-roles`      | `modules/discord-roles`     | Role management and dependency tracking                                  |
+| `@qbox/role-menus`         | `modules/role-menus`        | Self-assignable role menus                                               |
+| `@qbox/tickets`            | `modules/tickets`           | Ticket system and shared Discord REST adapter. See `docs/Tickets.md`.    |
+| `@qbox/applications` | `modules/applications` | Staff and whitelist application forms, review, and votes. See `docs/Applications.md`. |
+| `@qbox/birthdays` | `modules/birthdays` | Birthday announcements and birthday role. See `docs/Birthdays.md`. |
+| `@qbox/fivem` | `modules/fivem` | FiveM server status, player chart, alerts, and restart warnings. See `docs/FiveM.md`. |
+| `@qbox/giveaways` | `modules/giveaways` | Giveaways with requirements, bonus entries, and fair draws. See `docs/Giveaways.md`. |
+| `@qbox/knowledge-base` | `modules/knowledge-base` | Help articles, `/faq`, automatic answers, and optional AI `/ask`. See `docs/KnowledgeBase.md`. |
+| `@qbox/levels` | `modules/levels` | Message and voice XP, leaderboard, and reward roles. See `docs/Levels.md`. |
+| `@qbox/moderation` | `modules/moderation` | Cases, automod, automatic punishments, and channel tools. See `docs/Moderation.md`. |
+| `@qbox/polls` | `modules/polls` | Button polls with live or hidden results and CSV export. See `docs/Polls.md`. |
+| `@qbox/scheduled-messages` | `modules/scheduled-messages` | Messages posted once or on a repeating schedule. See `docs/ScheduledMessages.md`. |
+| `@qbox/staff` | `modules/staff` | Staff roster, ranks, strikes, leave, and shifts. See `docs/Staff.md`. |
+| `@qbox/verification` | `modules/verification` | Button, code, or question verification with account age checks. See `docs/Verification.md`. |
+| `@qbox/voice-rooms` | `modules/voice-rooms` | Join-to-create voice rooms with owner controls. See `docs/VoiceRooms.md`. |
 
 # Services
 
@@ -303,7 +308,6 @@ Each command file exports a named `command` instance. `CommandLoader` discovers 
 | `.gitignore`          | Ignored secrets, dependencies, generated output, coverage, logs, editor files, and temporary files |
 | `.env.example`        | Names of environment settings recognized by the repository                                         |
 | `.env`                | Local environment values; ignored by Git and loaded by `@qbox/shared`                              |
-| `AGENTS.md`           | Operating instructions for AI coding agents                                                        |
 | `PROJECT_CHARTER.md`  | Repository engineering principles and definition of done                                           |
 
 ## Workspace configuration
@@ -355,7 +359,7 @@ Environment variable names recognized by current source or `.env.example`:
 
 `PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED` defaults to enabled and accepts the exact value `false` to request retirement. Startup then requires persistent owner and administrator recovery paths.
 
-The API browser proof of concept additionally requires Discord OAuth configuration and authentication key material. Development keys can be generated with `pnpm --filter @qbox/api auth:keys`; generated values belong only in ignored local environment configuration. The Vercel web project uses `QBOX_API_ORIGIN` to proxy same-origin browser requests to the public HTTPS VPS API.
+The API browser proof of concept additionally requires Discord OAuth configuration and authentication key material. Development keys can be generated with `pnpm --filter @qbox/api auth:keys`; generated values belong only in ignored local environment configuration. The API serves the portal from `API_PUBLIC_BASE_URL`, so browser requests stay same-origin without a proxy.
 
 # Build Pipeline
 
@@ -389,14 +393,5 @@ The following systems have repository locations or placeholder classes but no fu
 
 - Production authentication features beyond the browser proof of concept: account linking UI, owner recovery UI, service credentials, generalized CSRF middleware, authenticated domain-management routes, and session-management UI are not implemented.
 - Background worker: `apps/worker/` does not create BullMQ or Redis workers.
-- OpenAI integration: `packages/openai/` does not construct or call an OpenAI client.
-- Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ.
-- FiveM/Qbox integration: `modules/fivem/` is empty.
-- Applications module: `modules/applications/` is empty.
-- Birthdays module: `modules/birthdays/` is empty.
-- Knowledge module: `modules/knowledge/` is empty.
-- Moderation module: `modules/moderation/` is empty.
-- Polls module: `modules/polls/` is empty.
-- Staff module: `modules/staff/` is empty.
-- Tickets module: `modules/tickets/` is empty.
-- Verification module: `modules/verification/` is empty.
+- OpenAI integration: `packages/openai/` does not construct or call an OpenAI client. The knowledge base's optional `/ask` calls the OpenAI API directly with `fetch` when `OPENAI_API_KEY` is set.
+- Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ. Feature timers (scheduled messages, giveaways, polls, birthdays, and others) run inside the bot process.

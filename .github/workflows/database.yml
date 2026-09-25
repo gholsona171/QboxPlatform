@@ -1,0 +1,47 @@
+name: Database migrations
+
+# Applies committed Prisma migrations to the hosted database (Supabase).
+# The connection string comes only from the DATABASE_URL repository secret.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, claude/discord-bot-repo-review-iyip8h]
+    paths:
+      - "prisma/migrations/**"
+      - ".github/workflows/database.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: database-migrations
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Check the database secret
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "::error::Add the DATABASE_URL repository secret (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Apply migrations
+        run: pnpm --filter @qbox/prisma prisma:migrate:deploy
+      - name: Check migration status
+        run: pnpm --filter @qbox/prisma exec prisma migrate status --config prisma.config.ts
+      - name: Check the database matches the schema
+        run: pnpm --filter @qbox/prisma prisma:drift:check

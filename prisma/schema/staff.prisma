@@ -1,0 +1,155 @@
+// Staff management (see docs/Staff.md). guildId is the Discord guild snowflake.
+
+enum StaffMemberStatus {
+  ACTIVE    @map("active")
+  LOA       @map("loa")
+  SUSPENDED @map("suspended")
+  RETIRED   @map("retired")
+}
+
+enum StaffRecordType {
+  HIRE      @map("hire")
+  PROMOTE   @map("promote")
+  DEMOTE    @map("demote")
+  FIRE      @map("fire")
+  LOA_START @map("loa-start")
+  LOA_END   @map("loa-end")
+  NOTE      @map("note")
+  STRIKE    @map("strike")
+}
+
+enum StaffLeaveStatus {
+  PENDING   @map("pending")
+  APPROVED  @map("approved")
+  ACTIVE    @map("active")
+  ENDED     @map("ended")
+  DENIED    @map("denied")
+  CANCELLED @map("cancelled")
+}
+
+model StaffSettings {
+  guildId           String   @id @map("guild_id")
+  logChannelId      String?  @map("log_channel_id")
+  rosterChannelId   String?  @map("roster_channel_id")
+  rosterMessageId   String?  @map("roster_message_id")
+  loaRoleId         String?  @map("loa_role_id")
+  autoClockOutHours Int      @default(12) @map("auto_clock_out_hours")
+  maxLeaveDays      Int      @default(60) @map("max_leave_days")
+  revision          Int      @default(1)
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("staff_settings")
+}
+
+model StaffRank {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String        @map("guild_id")
+  name        String
+  roleId      String?       @map("role_id")
+  color       String        @default("#5865F2")
+  description String?
+  /// 0 is the highest rank.
+  position    Int
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  members     StaffMember[]
+
+  @@unique([guildId, name], map: "staff_ranks_guild_name_key")
+  @@index([guildId, position], map: "staff_ranks_guild_position_idx")
+  @@map("staff_ranks")
+}
+
+model StaffMember {
+  id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String            @map("guild_id")
+  userId      String            @map("user_id")
+  displayName String            @map("display_name")
+  rankId      String            @map("rank_id") @db.Uuid
+  rank        StaffRank         @relation(fields: [rankId], references: [id], onDelete: Restrict)
+  callsign    String?
+  joinedAt    DateTime          @map("joined_at") @db.Timestamptz(3)
+  status      StaffMemberStatus @default(ACTIVE)
+  notes       String?
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, userId], map: "staff_members_guild_user_key")
+  @@index([rankId], map: "staff_members_rank_idx")
+  @@map("staff_members")
+}
+
+model StaffRecord {
+  id        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId   String          @map("guild_id")
+  userId    String          @map("user_id")
+  userName  String          @map("user_name")
+  type      StaffRecordType
+  actorId   String          @map("actor_id")
+  actorName String          @map("actor_name")
+  reason    String?
+  fromRank  String?         @map("from_rank")
+  toRank    String?         @map("to_rank")
+  createdAt DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([guildId, userId, createdAt], map: "staff_records_guild_user_idx")
+  @@index([guildId, createdAt], map: "staff_records_guild_created_idx")
+  @@map("staff_records")
+}
+
+model StaffStrike {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String    @map("guild_id")
+  userId      String    @map("user_id")
+  userName    String    @map("user_name")
+  reason      String
+  actorId     String    @map("actor_id")
+  actorName   String    @map("actor_name")
+  expiresAt   DateTime? @map("expires_at") @db.Timestamptz(3)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(3)
+  revokedById String?   @map("revoked_by_id")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([guildId, userId, createdAt], map: "staff_strikes_guild_user_idx")
+  @@map("staff_strikes")
+}
+
+model StaffLeave {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId      String           @map("guild_id")
+  userId       String           @map("user_id")
+  userName     String           @map("user_name")
+  startsAt     DateTime         @map("starts_at") @db.Timestamptz(3)
+  endsAt       DateTime         @map("ends_at") @db.Timestamptz(3)
+  reason       String
+  status       StaffLeaveStatus @default(PENDING)
+  reviewerId   String?          @map("reviewer_id")
+  reviewerName String?          @map("reviewer_name")
+  reviewNote   String?          @map("review_note")
+  reviewedAt   DateTime?        @map("reviewed_at") @db.Timestamptz(3)
+  messageId    String?          @map("message_id")
+  createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([guildId, status, startsAt], map: "staff_leaves_guild_status_idx")
+  @@index([guildId, userId, createdAt], map: "staff_leaves_guild_user_idx")
+  @@index([status, startsAt, endsAt], map: "staff_leaves_due_idx")
+  @@map("staff_leaves")
+}
+
+model StaffShift {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String    @map("guild_id")
+  userId          String    @map("user_id")
+  userName        String    @map("user_name")
+  startedAt       DateTime  @map("started_at") @db.Timestamptz(3)
+  endedAt         DateTime? @map("ended_at") @db.Timestamptz(3)
+  durationSeconds Int?      @map("duration_seconds")
+  autoEnded       Boolean   @default(false) @map("auto_ended")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([guildId, userId, startedAt], map: "staff_shifts_guild_user_idx")
+  @@index([guildId, startedAt], map: "staff_shifts_guild_started_idx")
+  @@index([endedAt], map: "staff_shifts_open_idx")
+  @@map("staff_shifts")
+}

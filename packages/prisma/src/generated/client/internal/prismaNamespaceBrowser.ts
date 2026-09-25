@@ -51,6 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  ApplicationCounter: 'ApplicationCounter',
+  ApplicationForm: 'ApplicationForm',
+  ApplicationPanel: 'ApplicationPanel',
+  Application: 'Application',
+  ApplicationVote: 'ApplicationVote',
+  ApplicationNote: 'ApplicationNote',
   Guild: 'Guild',
   RoleMenu: 'RoleMenu',
   RoleMenuOption: 'RoleMenuOption',
@@ -78,7 +84,45 @@ export const ModelName = {
   OAuthCredential: 'OAuthCredential',
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
-  AuthenticationAuditEvent: 'AuthenticationAuditEvent'
+  AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  BirthdaySettings: 'BirthdaySettings',
+  Birthday: 'Birthday',
+  FivemSettings: 'FivemSettings',
+  FivemStatusSnapshot: 'FivemStatusSnapshot',
+  GiveawayCounter: 'GiveawayCounter',
+  Giveaway: 'Giveaway',
+  GiveawayEntry: 'GiveawayEntry',
+  KnowledgeSettings: 'KnowledgeSettings',
+  KnowledgeCategory: 'KnowledgeCategory',
+  KnowledgeArticle: 'KnowledgeArticle',
+  LevelSettings: 'LevelSettings',
+  LevelMember: 'LevelMember',
+  ModerationSettings: 'ModerationSettings',
+  ModerationCase: 'ModerationCase',
+  PollCounter: 'PollCounter',
+  Poll: 'Poll',
+  PollVote: 'PollVote',
+  ScheduledMessage: 'ScheduledMessage',
+  ScheduledMessageRun: 'ScheduledMessageRun',
+  StaffSettings: 'StaffSettings',
+  StaffRank: 'StaffRank',
+  StaffMember: 'StaffMember',
+  StaffRecord: 'StaffRecord',
+  StaffStrike: 'StaffStrike',
+  StaffLeave: 'StaffLeave',
+  StaffShift: 'StaffShift',
+  TicketSettings: 'TicketSettings',
+  TicketCategory: 'TicketCategory',
+  TicketPanel: 'TicketPanel',
+  Ticket: 'Ticket',
+  TicketMessage: 'TicketMessage',
+  TicketEvent: 'TicketEvent',
+  VerificationSettings: 'VerificationSettings',
+  VerificationAttempt: 'VerificationAttempt',
+  VerificationPendingMember: 'VerificationPendingMember',
+  VoiceSettings: 'VoiceSettings',
+  VoiceHub: 'VoiceHub',
+  VoiceRoom: 'VoiceRoom'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -95,6 +139,112 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const ApplicationCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationCounterScalarFieldEnum = (typeof ApplicationCounterScalarFieldEnum)[keyof typeof ApplicationCounterScalarFieldEnum]
+
+
+export const ApplicationFormScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  enabled: 'enabled',
+  questions: 'questions',
+  cooldownDays: 'cooldownDays',
+  onePending: 'onePending',
+  requiredRoleIds: 'requiredRoleIds',
+  blockedRoleIds: 'blockedRoleIds',
+  minAccountAgeDays: 'minAccountAgeDays',
+  reviewChannelId: 'reviewChannelId',
+  reviewerRoleIds: 'reviewerRoleIds',
+  pingMemberIds: 'pingMemberIds',
+  acceptRoleIds: 'acceptRoleIds',
+  removeRoleIds: 'removeRoleIds',
+  acceptMessage: 'acceptMessage',
+  denyMessage: 'denyMessage',
+  discussionChannelId: 'discussionChannelId',
+  buttonLabel: 'buttonLabel',
+  buttonEmoji: 'buttonEmoji',
+  buttonStyle: 'buttonStyle',
+  position: 'position',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationFormScalarFieldEnum = (typeof ApplicationFormScalarFieldEnum)[keyof typeof ApplicationFormScalarFieldEnum]
+
+
+export const ApplicationPanelScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  color: 'color',
+  formIds: 'formIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationPanelScalarFieldEnum = (typeof ApplicationPanelScalarFieldEnum)[keyof typeof ApplicationPanelScalarFieldEnum]
+
+
+export const ApplicationScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  formId: 'formId',
+  formName: 'formName',
+  applicantId: 'applicantId',
+  applicantName: 'applicantName',
+  status: 'status',
+  source: 'source',
+  answers: 'answers',
+  reviewChannelId: 'reviewChannelId',
+  reviewMessageId: 'reviewMessageId',
+  threadId: 'threadId',
+  decidedById: 'decidedById',
+  decidedByName: 'decidedByName',
+  decisionReason: 'decisionReason',
+  decidedAt: 'decidedAt',
+  dmDelivered: 'dmDelivered',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const ApplicationVoteScalarFieldEnum = {
+  applicationId: 'applicationId',
+  userId: 'userId',
+  vote: 'vote',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationVoteScalarFieldEnum = (typeof ApplicationVoteScalarFieldEnum)[keyof typeof ApplicationVoteScalarFieldEnum]
+
+
+export const ApplicationNoteScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationNoteScalarFieldEnum = (typeof ApplicationNoteScalarFieldEnum)[keyof typeof ApplicationNoteScalarFieldEnum]
 
 
 export const GuildScalarFieldEnum = {
@@ -626,6 +776,746 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 } as const
 
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
+
+
+export const BirthdaySettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  message: 'message',
+  embedColor: 'embedColor',
+  roleId: 'roleId',
+  announceHour: 'announceHour',
+  pingRoleId: 'pingRoleId',
+  allowYear: 'allowYear',
+  requireConfirmation: 'requireConfirmation',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdaySettingsScalarFieldEnum = (typeof BirthdaySettingsScalarFieldEnum)[keyof typeof BirthdaySettingsScalarFieldEnum]
+
+
+export const BirthdayScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  month: 'month',
+  day: 'day',
+  year: 'year',
+  showAge: 'showAge',
+  timeZone: 'timeZone',
+  lastAnnouncedYear: 'lastAnnouncedYear',
+  grantedRoleId: 'grantedRoleId',
+  roleRemoveAt: 'roleRemoveAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
+
+
+export const FivemSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  serverAddress: 'serverAddress',
+  connectUrl: 'connectUrl',
+  statusChannelId: 'statusChannelId',
+  statusMessageId: 'statusMessageId',
+  updateIntervalSeconds: 'updateIntervalSeconds',
+  alertChannelId: 'alertChannelId',
+  alertRoleId: 'alertRoleId',
+  restartTimes: 'restartTimes',
+  timeZone: 'timeZone',
+  restartWarningMinutes: 'restartWarningMinutes',
+  lastOnline: 'lastOnline',
+  onlineSince: 'onlineSince',
+  failureStreak: 'failureStreak',
+  lastPolledAt: 'lastPolledAt',
+  sentRestartWarnings: 'sentRestartWarnings',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FivemSettingsScalarFieldEnum = (typeof FivemSettingsScalarFieldEnum)[keyof typeof FivemSettingsScalarFieldEnum]
+
+
+export const FivemStatusSnapshotScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  online: 'online',
+  players: 'players',
+  maxPlayers: 'maxPlayers',
+  at: 'at'
+} as const
+
+export type FivemStatusSnapshotScalarFieldEnum = (typeof FivemStatusSnapshotScalarFieldEnum)[keyof typeof FivemStatusSnapshotScalarFieldEnum]
+
+
+export const GiveawayCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber'
+} as const
+
+export type GiveawayCounterScalarFieldEnum = (typeof GiveawayCounterScalarFieldEnum)[keyof typeof GiveawayCounterScalarFieldEnum]
+
+
+export const GiveawayScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  prize: 'prize',
+  description: 'description',
+  winnerCount: 'winnerCount',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  hostId: 'hostId',
+  requiredRoleIds: 'requiredRoleIds',
+  blockedRoleIds: 'blockedRoleIds',
+  minAccountAgeDays: 'minAccountAgeDays',
+  minServerDays: 'minServerDays',
+  bonusEntries: 'bonusEntries',
+  pingRoleId: 'pingRoleId',
+  dmWinners: 'dmWinners',
+  endsAt: 'endsAt',
+  pausedAt: 'pausedAt',
+  status: 'status',
+  winnerIds: 'winnerIds',
+  endedAt: 'endedAt',
+  endedById: 'endedById',
+  createdById: 'createdById',
+  createdByName: 'createdByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GiveawayScalarFieldEnum = (typeof GiveawayScalarFieldEnum)[keyof typeof GiveawayScalarFieldEnum]
+
+
+export const GiveawayEntryScalarFieldEnum = {
+  id: 'id',
+  giveawayId: 'giveawayId',
+  userId: 'userId',
+  userName: 'userName',
+  entries: 'entries',
+  createdAt: 'createdAt'
+} as const
+
+export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
+
+
+export const KnowledgeSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  autoAnswerEnabled: 'autoAnswerEnabled',
+  autoAnswerChannelIds: 'autoAnswerChannelIds',
+  autoAnswerThreshold: 'autoAnswerThreshold',
+  autoAnswerCooldownSeconds: 'autoAnswerCooldownSeconds',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSettingsScalarFieldEnum = (typeof KnowledgeSettingsScalarFieldEnum)[keyof typeof KnowledgeSettingsScalarFieldEnum]
+
+
+export const KnowledgeCategoryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  emoji: 'emoji',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeCategoryScalarFieldEnum = (typeof KnowledgeCategoryScalarFieldEnum)[keyof typeof KnowledgeCategoryScalarFieldEnum]
+
+
+export const KnowledgeArticleScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  categoryId: 'categoryId',
+  title: 'title',
+  slug: 'slug',
+  body: 'body',
+  tags: 'tags',
+  published: 'published',
+  pinned: 'pinned',
+  views: 'views',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  updatedById: 'updatedById',
+  updatedByName: 'updatedByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeArticleScalarFieldEnum = (typeof KnowledgeArticleScalarFieldEnum)[keyof typeof KnowledgeArticleScalarFieldEnum]
+
+
+export const LevelSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  messageXpMin: 'messageXpMin',
+  messageXpMax: 'messageXpMax',
+  cooldownSeconds: 'cooldownSeconds',
+  voiceXpPerMinute: 'voiceXpPerMinute',
+  curveBase: 'curveBase',
+  curveExponent: 'curveExponent',
+  curveLinear: 'curveLinear',
+  roleMultipliers: 'roleMultipliers',
+  channelMultipliers: 'channelMultipliers',
+  noXpRoleIds: 'noXpRoleIds',
+  noXpChannelIds: 'noXpChannelIds',
+  levelUpMode: 'levelUpMode',
+  levelUpChannelId: 'levelUpChannelId',
+  levelUpMessage: 'levelUpMessage',
+  rewards: 'rewards',
+  rewardMode: 'rewardMode',
+  removeRewardsOnReset: 'removeRewardsOnReset',
+  maxLevel: 'maxLevel',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelSettingsScalarFieldEnum = (typeof LevelSettingsScalarFieldEnum)[keyof typeof LevelSettingsScalarFieldEnum]
+
+
+export const LevelMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  xp: 'xp',
+  level: 'level',
+  messages: 'messages',
+  voiceMinutes: 'voiceMinutes',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelMemberScalarFieldEnum = (typeof LevelMemberScalarFieldEnum)[keyof typeof LevelMemberScalarFieldEnum]
+
+
+export const ModerationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  logChannelId: 'logChannelId',
+  dmOnAction: 'dmOnAction',
+  dmIncludeModerator: 'dmIncludeModerator',
+  appealMessage: 'appealMessage',
+  requireReason: 'requireReason',
+  defaultTimeoutMinutes: 'defaultTimeoutMinutes',
+  banDeleteMessageHours: 'banDeleteMessageHours',
+  warningExpiryDays: 'warningExpiryDays',
+  protectedRoleIds: 'protectedRoleIds',
+  escalation: 'escalation',
+  automod: 'automod',
+  recordExternalActions: 'recordExternalActions',
+  nextCaseNumber: 'nextCaseNumber',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationSettingsScalarFieldEnum = (typeof ModerationSettingsScalarFieldEnum)[keyof typeof ModerationSettingsScalarFieldEnum]
+
+
+export const ModerationCaseScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  type: 'type',
+  targetId: 'targetId',
+  targetName: 'targetName',
+  moderatorId: 'moderatorId',
+  moderatorName: 'moderatorName',
+  reason: 'reason',
+  durationMinutes: 'durationMinutes',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  source: 'source',
+  evidence: 'evidence',
+  dmDelivered: 'dmDelivered',
+  logMessageId: 'logMessageId',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById',
+  revokeReason: 'revokeReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
+export const PollCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber'
+} as const
+
+export type PollCounterScalarFieldEnum = (typeof PollCounterScalarFieldEnum)[keyof typeof PollCounterScalarFieldEnum]
+
+
+export const PollScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  question: 'question',
+  options: 'options',
+  maxChoices: 'maxChoices',
+  anonymous: 'anonymous',
+  resultsVisibility: 'resultsVisibility',
+  allowVoteChange: 'allowVoteChange',
+  allowedRoleIds: 'allowedRoleIds',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  pingRoleId: 'pingRoleId',
+  endsAt: 'endsAt',
+  status: 'status',
+  createdById: 'createdById',
+  createdByName: 'createdByName',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof PollScalarFieldEnum]
+
+
+export const PollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  userId: 'userId',
+  userName: 'userName',
+  optionIds: 'optionIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
+
+
+export const ScheduledMessageScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  channelId: 'channelId',
+  content: 'content',
+  embed: 'embed',
+  pingRoleIds: 'pingRoleIds',
+  scheduleType: 'scheduleType',
+  timeZone: 'timeZone',
+  runAt: 'runAt',
+  intervalMinutes: 'intervalMinutes',
+  time: 'time',
+  weekdays: 'weekdays',
+  dayOfMonth: 'dayOfMonth',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  enabled: 'enabled',
+  deletePrevious: 'deletePrevious',
+  pin: 'pin',
+  maxRuns: 'maxRuns',
+  runCount: 'runCount',
+  lastRunAt: 'lastRunAt',
+  lastMessageId: 'lastMessageId',
+  nextRunAt: 'nextRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScheduledMessageScalarFieldEnum = (typeof ScheduledMessageScalarFieldEnum)[keyof typeof ScheduledMessageScalarFieldEnum]
+
+
+export const ScheduledMessageRunScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  guildId: 'guildId',
+  success: 'success',
+  discordMessageId: 'discordMessageId',
+  error: 'error',
+  manual: 'manual',
+  ranAt: 'ranAt'
+} as const
+
+export type ScheduledMessageRunScalarFieldEnum = (typeof ScheduledMessageRunScalarFieldEnum)[keyof typeof ScheduledMessageRunScalarFieldEnum]
+
+
+export const StaffSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  logChannelId: 'logChannelId',
+  rosterChannelId: 'rosterChannelId',
+  rosterMessageId: 'rosterMessageId',
+  loaRoleId: 'loaRoleId',
+  autoClockOutHours: 'autoClockOutHours',
+  maxLeaveDays: 'maxLeaveDays',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffSettingsScalarFieldEnum = (typeof StaffSettingsScalarFieldEnum)[keyof typeof StaffSettingsScalarFieldEnum]
+
+
+export const StaffRankScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  roleId: 'roleId',
+  color: 'color',
+  description: 'description',
+  position: 'position',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffRankScalarFieldEnum = (typeof StaffRankScalarFieldEnum)[keyof typeof StaffRankScalarFieldEnum]
+
+
+export const StaffMemberScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  rankId: 'rankId',
+  callsign: 'callsign',
+  joinedAt: 'joinedAt',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffMemberScalarFieldEnum = (typeof StaffMemberScalarFieldEnum)[keyof typeof StaffMemberScalarFieldEnum]
+
+
+export const StaffRecordScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  type: 'type',
+  actorId: 'actorId',
+  actorName: 'actorName',
+  reason: 'reason',
+  fromRank: 'fromRank',
+  toRank: 'toRank',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffRecordScalarFieldEnum = (typeof StaffRecordScalarFieldEnum)[keyof typeof StaffRecordScalarFieldEnum]
+
+
+export const StaffStrikeScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  reason: 'reason',
+  actorId: 'actorId',
+  actorName: 'actorName',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffStrikeScalarFieldEnum = (typeof StaffStrikeScalarFieldEnum)[keyof typeof StaffStrikeScalarFieldEnum]
+
+
+export const StaffLeaveScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  reason: 'reason',
+  status: 'status',
+  reviewerId: 'reviewerId',
+  reviewerName: 'reviewerName',
+  reviewNote: 'reviewNote',
+  reviewedAt: 'reviewedAt',
+  messageId: 'messageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StaffLeaveScalarFieldEnum = (typeof StaffLeaveScalarFieldEnum)[keyof typeof StaffLeaveScalarFieldEnum]
+
+
+export const StaffShiftScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  startedAt: 'startedAt',
+  endedAt: 'endedAt',
+  durationSeconds: 'durationSeconds',
+  autoEnded: 'autoEnded',
+  createdAt: 'createdAt'
+} as const
+
+export type StaffShiftScalarFieldEnum = (typeof StaffShiftScalarFieldEnum)[keyof typeof StaffShiftScalarFieldEnum]
+
+
+export const TicketSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  mode: 'mode',
+  openCategoryChannelId: 'openCategoryChannelId',
+  closedCategoryChannelId: 'closedCategoryChannelId',
+  threadParentChannelId: 'threadParentChannelId',
+  transcriptChannelId: 'transcriptChannelId',
+  logChannelId: 'logChannelId',
+  supportRoleIds: 'supportRoleIds',
+  pingSupportOnOpen: 'pingSupportOnOpen',
+  maxOpenPerUser: 'maxOpenPerUser',
+  nameTemplate: 'nameTemplate',
+  openMessage: 'openMessage',
+  embedColor: 'embedColor',
+  allowUserClose: 'allowUserClose',
+  requireCloseReason: 'requireCloseReason',
+  closeConfirmation: 'closeConfirmation',
+  closeAction: 'closeAction',
+  deleteDelaySeconds: 'deleteDelaySeconds',
+  claimEnabled: 'claimEnabled',
+  claimRestrictsReplies: 'claimRestrictsReplies',
+  transcriptsEnabled: 'transcriptsEnabled',
+  transcriptDmUser: 'transcriptDmUser',
+  feedbackEnabled: 'feedbackEnabled',
+  autoCloseHours: 'autoCloseHours',
+  autoCloseWarningHours: 'autoCloseWarningHours',
+  autoCloseExcludeClaimed: 'autoCloseExcludeClaimed',
+  blockedUserIds: 'blockedUserIds',
+  blockedRoleIds: 'blockedRoleIds',
+  nextNumber: 'nextNumber',
+  revision: 'revision',
+  lastOperationSource: 'lastOperationSource',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketSettingsScalarFieldEnum = (typeof TicketSettingsScalarFieldEnum)[keyof typeof TicketSettingsScalarFieldEnum]
+
+
+export const TicketCategoryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  emoji: 'emoji',
+  buttonStyle: 'buttonStyle',
+  enabled: 'enabled',
+  position: 'position',
+  supportRoleIds: 'supportRoleIds',
+  alertUserIds: 'alertUserIds',
+  parentChannelId: 'parentChannelId',
+  nameTemplate: 'nameTemplate',
+  openMessage: 'openMessage',
+  defaultPriority: 'defaultPriority',
+  questions: 'questions',
+  requiredRoleIds: 'requiredRoleIds',
+  maxOpenPerUser: 'maxOpenPerUser',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketCategoryScalarFieldEnum = (typeof TicketCategoryScalarFieldEnum)[keyof typeof TicketCategoryScalarFieldEnum]
+
+
+export const TicketPanelScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  color: 'color',
+  style: 'style',
+  placeholder: 'placeholder',
+  imageUrl: 'imageUrl',
+  footer: 'footer',
+  categoryIds: 'categoryIds',
+  publishedAt: 'publishedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketPanelScalarFieldEnum = (typeof TicketPanelScalarFieldEnum)[keyof typeof TicketPanelScalarFieldEnum]
+
+
+export const TicketScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  categoryId: 'categoryId',
+  openerId: 'openerId',
+  openerName: 'openerName',
+  channelId: 'channelId',
+  subject: 'subject',
+  answers: 'answers',
+  status: 'status',
+  priority: 'priority',
+  claimedById: 'claimedById',
+  participantIds: 'participantIds',
+  tags: 'tags',
+  closedById: 'closedById',
+  closeReason: 'closeReason',
+  rating: 'rating',
+  feedback: 'feedback',
+  transcriptMessageId: 'transcriptMessageId',
+  autoCloseWarnedAt: 'autoCloseWarnedAt',
+  firstResponseAt: 'firstResponseAt',
+  lastActivityAt: 'lastActivityAt',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TicketScalarFieldEnum = (typeof TicketScalarFieldEnum)[keyof typeof TicketScalarFieldEnum]
+
+
+export const TicketMessageScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  discordMessageId: 'discordMessageId',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  content: 'content',
+  attachments: 'attachments',
+  source: 'source',
+  internal: 'internal',
+  createdAt: 'createdAt'
+} as const
+
+export type TicketMessageScalarFieldEnum = (typeof TicketMessageScalarFieldEnum)[keyof typeof TicketMessageScalarFieldEnum]
+
+
+export const TicketEventScalarFieldEnum = {
+  id: 'id',
+  ticketId: 'ticketId',
+  action: 'action',
+  actorId: 'actorId',
+  source: 'source',
+  details: 'details',
+  createdAt: 'createdAt'
+} as const
+
+export type TicketEventScalarFieldEnum = (typeof TicketEventScalarFieldEnum)[keyof typeof TicketEventScalarFieldEnum]
+
+
+export const VerificationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  mode: 'mode',
+  verifiedRoleIds: 'verifiedRoleIds',
+  unverifiedRoleId: 'unverifiedRoleId',
+  channelId: 'channelId',
+  panelTitle: 'panelTitle',
+  panelDescription: 'panelDescription',
+  panelColor: 'panelColor',
+  panelButtonLabel: 'panelButtonLabel',
+  panelChannelId: 'panelChannelId',
+  panelMessageId: 'panelMessageId',
+  questions: 'questions',
+  logChannelId: 'logChannelId',
+  minAccountAgeDays: 'minAccountAgeDays',
+  ageAction: 'ageAction',
+  kickUnverifiedMinutes: 'kickUnverifiedMinutes',
+  maxAttempts: 'maxAttempts',
+  cooldownMinutes: 'cooldownMinutes',
+  dmOnSuccess: 'dmOnSuccess',
+  successMessage: 'successMessage',
+  welcomeChannelId: 'welcomeChannelId',
+  welcomeMessage: 'welcomeMessage',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationSettingsScalarFieldEnum = (typeof VerificationSettingsScalarFieldEnum)[keyof typeof VerificationSettingsScalarFieldEnum]
+
+
+export const VerificationAttemptScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  result: 'result',
+  reason: 'reason',
+  staffId: 'staffId',
+  staffName: 'staffName',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationAttemptScalarFieldEnum = (typeof VerificationAttemptScalarFieldEnum)[keyof typeof VerificationAttemptScalarFieldEnum]
+
+
+export const VerificationPendingMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  joinedAt: 'joinedAt',
+  flagged: 'flagged'
+} as const
+
+export type VerificationPendingMemberScalarFieldEnum = (typeof VerificationPendingMemberScalarFieldEnum)[keyof typeof VerificationPendingMemberScalarFieldEnum]
+
+
+export const VoiceSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  controlPanel: 'controlPanel',
+  allowClaim: 'allowClaim',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceSettingsScalarFieldEnum = (typeof VoiceSettingsScalarFieldEnum)[keyof typeof VoiceSettingsScalarFieldEnum]
+
+
+export const VoiceHubScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  categoryId: 'categoryId',
+  nameTemplate: 'nameTemplate',
+  userLimit: 'userLimit',
+  bitrateKbps: 'bitrateKbps',
+  privateByDefault: 'privateByDefault',
+  deleteDelaySeconds: 'deleteDelaySeconds',
+  allowedRoleIds: 'allowedRoleIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceHubScalarFieldEnum = (typeof VoiceHubScalarFieldEnum)[keyof typeof VoiceHubScalarFieldEnum]
+
+
+export const VoiceRoomScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  hubId: 'hubId',
+  channelId: 'channelId',
+  ownerId: 'ownerId',
+  name: 'name',
+  locked: 'locked',
+  hidden: 'hidden',
+  panelMessageId: 'panelMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceRoomScalarFieldEnum = (typeof VoiceRoomScalarFieldEnum)[keyof typeof VoiceRoomScalarFieldEnum]
 
 
 export const SortOrder = {

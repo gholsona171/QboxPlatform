@@ -1,0 +1,203 @@
+// Ticket system (see docs/Tickets.md).
+
+enum TicketMode {
+  CHANNEL @map("channel")
+  THREAD  @map("thread")
+}
+
+enum TicketStatus {
+  OPEN    @map("open")
+  CLAIMED @map("claimed")
+  PENDING @map("pending")
+  CLOSED  @map("closed")
+}
+
+enum TicketPriority {
+  LOW    @map("low")
+  NORMAL @map("normal")
+  HIGH   @map("high")
+  URGENT @map("urgent")
+}
+
+enum TicketPanelStyle {
+  BUTTONS     @map("buttons")
+  SELECT_MENU @map("select-menu")
+}
+
+enum TicketMessageSource {
+  DISCORD @map("discord")
+  WEB     @map("web")
+  SYSTEM  @map("system")
+}
+
+enum TicketCloseAction {
+  ARCHIVE @map("archive")
+  DELETE  @map("delete")
+}
+
+model TicketSettings {
+  guildId                 String            @id @map("guild_id") @db.Uuid
+  enabled                 Boolean           @default(false)
+  mode                    TicketMode        @default(CHANNEL)
+  openCategoryChannelId   String?           @map("open_category_channel_id")
+  closedCategoryChannelId String?           @map("closed_category_channel_id")
+  threadParentChannelId   String?           @map("thread_parent_channel_id")
+  transcriptChannelId     String?           @map("transcript_channel_id")
+  logChannelId            String?           @map("log_channel_id")
+  supportRoleIds          String[]          @map("support_role_ids")
+  pingSupportOnOpen       Boolean           @default(true) @map("ping_support_on_open")
+  maxOpenPerUser          Int               @default(1) @map("max_open_per_user")
+  nameTemplate            String            @default("ticket-{number}") @map("name_template")
+  openMessage             String            @default("Thanks for contacting support, {user}. A team member will be with you shortly.") @map("open_message")
+  embedColor              String            @default("#5865F2") @map("embed_color")
+  allowUserClose          Boolean           @default(true) @map("allow_user_close")
+  requireCloseReason      Boolean           @default(false) @map("require_close_reason")
+  closeConfirmation       Boolean           @default(true) @map("close_confirmation")
+  closeAction             TicketCloseAction @default(ARCHIVE) @map("close_action")
+  deleteDelaySeconds      Int               @default(10) @map("delete_delay_seconds")
+  claimEnabled            Boolean           @default(true) @map("claim_enabled")
+  claimRestrictsReplies   Boolean           @default(false) @map("claim_restricts_replies")
+  transcriptsEnabled      Boolean           @default(true) @map("transcripts_enabled")
+  transcriptDmUser        Boolean           @default(false) @map("transcript_dm_user")
+  feedbackEnabled         Boolean           @default(true) @map("feedback_enabled")
+  autoCloseHours          Int               @default(0) @map("auto_close_hours")
+  autoCloseWarningHours   Int               @default(0) @map("auto_close_warning_hours")
+  autoCloseExcludeClaimed Boolean           @default(true) @map("auto_close_exclude_claimed")
+  blockedUserIds          String[]          @map("blocked_user_ids")
+  blockedRoleIds          String[]          @map("blocked_role_ids")
+  nextNumber              Int               @default(1) @map("next_number")
+  revision                Int               @default(1)
+  lastOperationSource     String            @default("SYSTEM") @map("last_operation_source")
+  createdAt               DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt               DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@map("ticket_settings")
+}
+
+model TicketCategory {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String         @map("guild_id") @db.Uuid
+  name            String
+  description     String?
+  emoji           String?
+  buttonStyle     String         @default("PRIMARY") @map("button_style")
+  enabled         Boolean        @default(true)
+  position        Int            @default(0)
+  supportRoleIds  String[]       @map("support_role_ids")
+  alertUserIds    String[]       @map("alert_user_ids")
+  parentChannelId String?        @map("parent_channel_id")
+  nameTemplate    String?        @map("name_template")
+  openMessage     String?        @map("open_message")
+  defaultPriority TicketPriority @default(NORMAL) @map("default_priority")
+  questions       Json           @default("[]") @db.JsonB
+  requiredRoleIds String[]       @map("required_role_ids")
+  maxOpenPerUser  Int?           @map("max_open_per_user")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild   Guild    @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  tickets Ticket[]
+
+  @@unique([guildId, name], map: "ticket_categories_guild_name_key")
+  @@index([guildId, position], map: "ticket_categories_guild_position_idx")
+  @@map("ticket_categories")
+}
+
+model TicketPanel {
+  id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String           @map("guild_id") @db.Uuid
+  name        String
+  channelId   String           @map("channel_id")
+  messageId   String?          @map("message_id")
+  title       String
+  description String
+  color       String           @default("#5865F2")
+  style       TicketPanelStyle @default(BUTTONS)
+  placeholder String           @default("Select a ticket type")
+  imageUrl    String?          @map("image_url")
+  footer      String?
+  categoryIds String[]         @map("category_ids")
+  publishedAt DateTime?        @map("published_at") @db.Timestamptz(3)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild Guild @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@unique([guildId, name], map: "ticket_panels_guild_name_key")
+  @@map("ticket_panels")
+}
+
+model Ticket {
+  id                  String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId             String         @map("guild_id") @db.Uuid
+  number              Int
+  categoryId          String?        @map("category_id") @db.Uuid
+  openerId            String         @map("opener_id")
+  openerName          String         @map("opener_name")
+  channelId           String?        @map("channel_id")
+  subject             String?
+  answers             Json           @default("[]") @db.JsonB
+  status              TicketStatus   @default(OPEN)
+  priority            TicketPriority @default(NORMAL)
+  claimedById         String?        @map("claimed_by_id")
+  participantIds      String[]       @map("participant_ids")
+  tags                String[]
+  closedById          String?        @map("closed_by_id")
+  closeReason         String?        @map("close_reason")
+  rating              Int?
+  feedback            String?
+  transcriptMessageId String?        @map("transcript_message_id")
+  autoCloseWarnedAt   DateTime?      @map("auto_close_warned_at") @db.Timestamptz(3)
+  firstResponseAt     DateTime?      @map("first_response_at") @db.Timestamptz(3)
+  lastActivityAt      DateTime       @default(now()) @map("last_activity_at") @db.Timestamptz(3)
+  closedAt            DateTime?      @map("closed_at") @db.Timestamptz(3)
+  createdAt           DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  guild    Guild           @relation(fields: [guildId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  category TicketCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  messages TicketMessage[]
+  events   TicketEvent[]
+
+  @@unique([guildId, number], map: "tickets_guild_number_key")
+  @@unique([channelId], map: "tickets_channel_id_key")
+  @@index([guildId, status, lastActivityAt], map: "tickets_guild_status_activity_idx")
+  @@index([guildId, openerId, status], map: "tickets_guild_opener_status_idx")
+  @@map("tickets")
+}
+
+model TicketMessage {
+  id               String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ticketId         String              @map("ticket_id") @db.Uuid
+  discordMessageId String?             @map("discord_message_id")
+  authorId         String              @map("author_id")
+  authorName       String              @map("author_name")
+  content          String
+  attachments      String[]
+  source           TicketMessageSource @default(DISCORD)
+  internal         Boolean             @default(false)
+  createdAt        DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@unique([discordMessageId], map: "ticket_messages_discord_message_id_key")
+  @@index([ticketId, createdAt], map: "ticket_messages_ticket_created_idx")
+  @@map("ticket_messages")
+}
+
+model TicketEvent {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ticketId  String   @map("ticket_id") @db.Uuid
+  action    String
+  actorId   String   @map("actor_id")
+  source    String
+  details   Json     @default("{}") @db.JsonB
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade, onUpdate: Restrict)
+
+  @@index([ticketId, createdAt], map: "ticket_events_ticket_created_idx")
+  @@map("ticket_events")
+}
