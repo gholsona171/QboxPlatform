@@ -26,3 +26,5 @@ export { applicationsFeature } from "./applications/ApplicationsFeature.js";
 export { staffFeature } from "./staff/StaffFeature.js";
 export { pollsFeature } from "./polls/PollsFeature.js";
 export { giveawaysFeature } from "./giveaways/GiveawaysFeature.js";
+export { birthdaysFeature } from "./birthdays/BirthdaysFeature.js";
+export { scheduledMessagesFeature } from "./scheduledMessages/ScheduledMessagesFeature.js";

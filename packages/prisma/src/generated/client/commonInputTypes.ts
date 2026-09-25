@@ -1170,6 +1170,23 @@ export type EnumPollStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
 }
 
+export type EnumScheduledMessageTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduledMessageType | Prisma.EnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel> | $Enums.ScheduledMessageType
+}
+
+export type EnumScheduledMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduledMessageType | Prisma.EnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduledMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.ScheduledMessageType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel>
+}
+
 export type EnumStaffMemberStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.StaffMemberStatus | Prisma.EnumStaffMemberStatusFieldRefInput<$PrismaModel>
   in?: $Enums.StaffMemberStatus[] | Prisma.ListEnumStaffMemberStatusFieldRefInput<$PrismaModel>
@@ -2500,6 +2517,23 @@ export type NestedEnumPollStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumScheduledMessageTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduledMessageType | Prisma.EnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel> | $Enums.ScheduledMessageType
+}
+
+export type NestedEnumScheduledMessageTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScheduledMessageType | Prisma.EnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScheduledMessageType[] | Prisma.ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScheduledMessageTypeWithAggregatesFilter<$PrismaModel> | $Enums.ScheduledMessageType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScheduledMessageTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumStaffMemberStatusFilter<$PrismaModel = never> = {

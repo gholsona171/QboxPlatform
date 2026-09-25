@@ -60,6 +60,9 @@ importers:
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../../packages/authentication
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -90,6 +93,9 @@ importers:
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
       '@qbox/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -150,6 +156,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/birthdays:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/discord-community: {}
 
   modules/discord-roles: {}
@@ -173,6 +185,12 @@ importers:
         version: link:../../packages/shared
 
   modules/role-menus: {}
+
+  modules/scheduled-messages:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   modules/staff:
     dependencies:
@@ -208,6 +226,9 @@ importers:
       '@qbox/authentication':
         specifier: workspace:*
         version: link:../authentication
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/discord-community':
         specifier: workspace:*
         version: link:../../modules/discord-community
@@ -232,6 +253,9 @@ importers:
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
       '@qbox/staff':
         specifier: workspace:*
         version: link:../../modules/staff
@@ -247,6 +271,9 @@ importers:
       '@qbox/applications':
         specifier: workspace:*
         version: link:../../modules/applications
+      '@qbox/birthdays':
+        specifier: workspace:*
+        version: link:../../modules/birthdays
       '@qbox/core':
         specifier: workspace:*
         version: link:../core
@@ -274,6 +301,9 @@ importers:
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
+      '@qbox/scheduled-messages':
+        specifier: workspace:*
+        version: link:../../modules/scheduled-messages
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared

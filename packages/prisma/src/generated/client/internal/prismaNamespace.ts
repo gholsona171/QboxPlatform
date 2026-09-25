@@ -431,6 +431,8 @@ export const ModelName = {
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  BirthdaySettings: 'BirthdaySettings',
+  Birthday: 'Birthday',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
@@ -439,6 +441,8 @@ export const ModelName = {
   PollCounter: 'PollCounter',
   Poll: 'Poll',
   PollVote: 'PollVote',
+  ScheduledMessage: 'ScheduledMessage',
+  ScheduledMessageRun: 'ScheduledMessageRun',
   StaffSettings: 'StaffSettings',
   StaffRank: 'StaffRank',
   StaffMember: 'StaffMember',
@@ -470,7 +474,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2990,6 +2994,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BirthdaySettings: {
+      payload: Prisma.$BirthdaySettingsPayload<ExtArgs>
+      fields: Prisma.BirthdaySettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BirthdaySettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BirthdaySettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.BirthdaySettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BirthdaySettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        findMany: {
+          args: Prisma.BirthdaySettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>[]
+        }
+        create: {
+          args: Prisma.BirthdaySettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        createMany: {
+          args: Prisma.BirthdaySettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BirthdaySettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.BirthdaySettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        update: {
+          args: Prisma.BirthdaySettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.BirthdaySettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BirthdaySettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BirthdaySettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.BirthdaySettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdaySettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.BirthdaySettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBirthdaySettings>
+        }
+        groupBy: {
+          args: Prisma.BirthdaySettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BirthdaySettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BirthdaySettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BirthdaySettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    Birthday: {
+      payload: Prisma.$BirthdayPayload<ExtArgs>
+      fields: Prisma.BirthdayFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BirthdayFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BirthdayFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        findFirst: {
+          args: Prisma.BirthdayFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BirthdayFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        findMany: {
+          args: Prisma.BirthdayFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>[]
+        }
+        create: {
+          args: Prisma.BirthdayCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        createMany: {
+          args: Prisma.BirthdayCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BirthdayCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>[]
+        }
+        delete: {
+          args: Prisma.BirthdayDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        update: {
+          args: Prisma.BirthdayUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        deleteMany: {
+          args: Prisma.BirthdayDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BirthdayUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BirthdayUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>[]
+        }
+        upsert: {
+          args: Prisma.BirthdayUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BirthdayPayload>
+        }
+        aggregate: {
+          args: Prisma.BirthdayAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBirthday>
+        }
+        groupBy: {
+          args: Prisma.BirthdayGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BirthdayGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BirthdayCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BirthdayCountAggregateOutputType> | number
+        }
+      }
+    }
     GiveawayCounter: {
       payload: Prisma.$GiveawayCounterPayload<ExtArgs>
       fields: Prisma.GiveawayCounterFieldRefs
@@ -3579,6 +3731,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PollVoteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PollVoteCountAggregateOutputType> | number
+        }
+      }
+    }
+    ScheduledMessage: {
+      payload: Prisma.$ScheduledMessagePayload<ExtArgs>
+      fields: Prisma.ScheduledMessageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScheduledMessageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScheduledMessageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        findFirst: {
+          args: Prisma.ScheduledMessageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScheduledMessageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        findMany: {
+          args: Prisma.ScheduledMessageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>[]
+        }
+        create: {
+          args: Prisma.ScheduledMessageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        createMany: {
+          args: Prisma.ScheduledMessageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScheduledMessageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>[]
+        }
+        delete: {
+          args: Prisma.ScheduledMessageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        update: {
+          args: Prisma.ScheduledMessageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        deleteMany: {
+          args: Prisma.ScheduledMessageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScheduledMessageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScheduledMessageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>[]
+        }
+        upsert: {
+          args: Prisma.ScheduledMessageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessagePayload>
+        }
+        aggregate: {
+          args: Prisma.ScheduledMessageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScheduledMessage>
+        }
+        groupBy: {
+          args: Prisma.ScheduledMessageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduledMessageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScheduledMessageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduledMessageCountAggregateOutputType> | number
+        }
+      }
+    }
+    ScheduledMessageRun: {
+      payload: Prisma.$ScheduledMessageRunPayload<ExtArgs>
+      fields: Prisma.ScheduledMessageRunFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ScheduledMessageRunFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ScheduledMessageRunFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        findFirst: {
+          args: Prisma.ScheduledMessageRunFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ScheduledMessageRunFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        findMany: {
+          args: Prisma.ScheduledMessageRunFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>[]
+        }
+        create: {
+          args: Prisma.ScheduledMessageRunCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        createMany: {
+          args: Prisma.ScheduledMessageRunCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ScheduledMessageRunCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>[]
+        }
+        delete: {
+          args: Prisma.ScheduledMessageRunDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        update: {
+          args: Prisma.ScheduledMessageRunUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        deleteMany: {
+          args: Prisma.ScheduledMessageRunDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ScheduledMessageRunUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ScheduledMessageRunUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>[]
+        }
+        upsert: {
+          args: Prisma.ScheduledMessageRunUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ScheduledMessageRunPayload>
+        }
+        aggregate: {
+          args: Prisma.ScheduledMessageRunAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateScheduledMessageRun>
+        }
+        groupBy: {
+          args: Prisma.ScheduledMessageRunGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduledMessageRunGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ScheduledMessageRunCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ScheduledMessageRunCountAggregateOutputType> | number
         }
       }
     }
@@ -5442,6 +5742,45 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
+export const BirthdaySettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  message: 'message',
+  embedColor: 'embedColor',
+  roleId: 'roleId',
+  announceHour: 'announceHour',
+  pingRoleId: 'pingRoleId',
+  allowYear: 'allowYear',
+  requireConfirmation: 'requireConfirmation',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdaySettingsScalarFieldEnum = (typeof BirthdaySettingsScalarFieldEnum)[keyof typeof BirthdaySettingsScalarFieldEnum]
+
+
+export const BirthdayScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  month: 'month',
+  day: 'day',
+  year: 'year',
+  showAge: 'showAge',
+  timeZone: 'timeZone',
+  lastAnnouncedYear: 'lastAnnouncedYear',
+  grantedRoleId: 'grantedRoleId',
+  roleRemoveAt: 'roleRemoveAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -5590,6 +5929,53 @@ export const PollVoteScalarFieldEnum = {
 } as const
 
 export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
+
+
+export const ScheduledMessageScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  channelId: 'channelId',
+  content: 'content',
+  embed: 'embed',
+  pingRoleIds: 'pingRoleIds',
+  scheduleType: 'scheduleType',
+  timeZone: 'timeZone',
+  runAt: 'runAt',
+  intervalMinutes: 'intervalMinutes',
+  time: 'time',
+  weekdays: 'weekdays',
+  dayOfMonth: 'dayOfMonth',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  enabled: 'enabled',
+  deletePrevious: 'deletePrevious',
+  pin: 'pin',
+  maxRuns: 'maxRuns',
+  runCount: 'runCount',
+  lastRunAt: 'lastRunAt',
+  lastMessageId: 'lastMessageId',
+  nextRunAt: 'nextRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScheduledMessageScalarFieldEnum = (typeof ScheduledMessageScalarFieldEnum)[keyof typeof ScheduledMessageScalarFieldEnum]
+
+
+export const ScheduledMessageRunScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  guildId: 'guildId',
+  success: 'success',
+  discordMessageId: 'discordMessageId',
+  error: 'error',
+  manual: 'manual',
+  ranAt: 'ranAt'
+} as const
+
+export type ScheduledMessageRunScalarFieldEnum = (typeof ScheduledMessageRunScalarFieldEnum)[keyof typeof ScheduledMessageRunScalarFieldEnum]
 
 
 export const StaffSettingsScalarFieldEnum = {
@@ -6621,6 +7007,20 @@ export type ListEnumPollStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
 
 
 /**
+ * Reference to a field of type 'ScheduledMessageType'
+ */
+export type EnumScheduledMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScheduledMessageType'>
+
+
+
+/**
+ * Reference to a field of type 'ScheduledMessageType[]'
+ */
+export type ListEnumScheduledMessageTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScheduledMessageType[]'>
+
+
+
+/**
  * Reference to a field of type 'StaffMemberStatus'
  */
 export type EnumStaffMemberStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffMemberStatus'>
@@ -7000,6 +7400,8 @@ export type GlobalOmitConfig = {
   discordGuildMembership?: Prisma.DiscordGuildMembershipOmit
   discordGuildMembershipRole?: Prisma.DiscordGuildMembershipRoleOmit
   authenticationAuditEvent?: Prisma.AuthenticationAuditEventOmit
+  birthdaySettings?: Prisma.BirthdaySettingsOmit
+  birthday?: Prisma.BirthdayOmit
   giveawayCounter?: Prisma.GiveawayCounterOmit
   giveaway?: Prisma.GiveawayOmit
   giveawayEntry?: Prisma.GiveawayEntryOmit
@@ -7008,6 +7410,8 @@ export type GlobalOmitConfig = {
   pollCounter?: Prisma.PollCounterOmit
   poll?: Prisma.PollOmit
   pollVote?: Prisma.PollVoteOmit
+  scheduledMessage?: Prisma.ScheduledMessageOmit
+  scheduledMessageRun?: Prisma.ScheduledMessageRunOmit
   staffSettings?: Prisma.StaffSettingsOmit
   staffRank?: Prisma.StaffRankOmit
   staffMember?: Prisma.StaffMemberOmit

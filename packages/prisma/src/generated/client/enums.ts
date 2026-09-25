@@ -444,6 +444,17 @@ export const PollResultsVisibility = {
 export type PollResultsVisibility = (typeof PollResultsVisibility)[keyof typeof PollResultsVisibility]
 
 
+export const ScheduledMessageType = {
+  ONCE: 'ONCE',
+  INTERVAL: 'INTERVAL',
+  DAILY: 'DAILY',
+  WEEKLY: 'WEEKLY',
+  MONTHLY: 'MONTHLY'
+} as const
+
+export type ScheduledMessageType = (typeof ScheduledMessageType)[keyof typeof ScheduledMessageType]
+
+
 export const StaffMemberStatus = {
   ACTIVE: 'ACTIVE',
   LOA: 'LOA',

@@ -85,6 +85,8 @@ export const ModelName = {
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  BirthdaySettings: 'BirthdaySettings',
+  Birthday: 'Birthday',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
@@ -93,6 +95,8 @@ export const ModelName = {
   PollCounter: 'PollCounter',
   Poll: 'Poll',
   PollVote: 'PollVote',
+  ScheduledMessage: 'ScheduledMessage',
+  ScheduledMessageRun: 'ScheduledMessageRun',
   StaffSettings: 'StaffSettings',
   StaffRank: 'StaffRank',
   StaffMember: 'StaffMember',
@@ -764,6 +768,45 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
+export const BirthdaySettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  message: 'message',
+  embedColor: 'embedColor',
+  roleId: 'roleId',
+  announceHour: 'announceHour',
+  pingRoleId: 'pingRoleId',
+  allowYear: 'allowYear',
+  requireConfirmation: 'requireConfirmation',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdaySettingsScalarFieldEnum = (typeof BirthdaySettingsScalarFieldEnum)[keyof typeof BirthdaySettingsScalarFieldEnum]
+
+
+export const BirthdayScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  month: 'month',
+  day: 'day',
+  year: 'year',
+  showAge: 'showAge',
+  timeZone: 'timeZone',
+  lastAnnouncedYear: 'lastAnnouncedYear',
+  grantedRoleId: 'grantedRoleId',
+  roleRemoveAt: 'roleRemoveAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -912,6 +955,53 @@ export const PollVoteScalarFieldEnum = {
 } as const
 
 export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
+
+
+export const ScheduledMessageScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  channelId: 'channelId',
+  content: 'content',
+  embed: 'embed',
+  pingRoleIds: 'pingRoleIds',
+  scheduleType: 'scheduleType',
+  timeZone: 'timeZone',
+  runAt: 'runAt',
+  intervalMinutes: 'intervalMinutes',
+  time: 'time',
+  weekdays: 'weekdays',
+  dayOfMonth: 'dayOfMonth',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  enabled: 'enabled',
+  deletePrevious: 'deletePrevious',
+  pin: 'pin',
+  maxRuns: 'maxRuns',
+  runCount: 'runCount',
+  lastRunAt: 'lastRunAt',
+  lastMessageId: 'lastMessageId',
+  nextRunAt: 'nextRunAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ScheduledMessageScalarFieldEnum = (typeof ScheduledMessageScalarFieldEnum)[keyof typeof ScheduledMessageScalarFieldEnum]
+
+
+export const ScheduledMessageRunScalarFieldEnum = {
+  id: 'id',
+  messageId: 'messageId',
+  guildId: 'guildId',
+  success: 'success',
+  discordMessageId: 'discordMessageId',
+  error: 'error',
+  manual: 'manual',
+  ranAt: 'ranAt'
+} as const
+
+export type ScheduledMessageRunScalarFieldEnum = (typeof ScheduledMessageRunScalarFieldEnum)[keyof typeof ScheduledMessageRunScalarFieldEnum]
 
 
 export const StaffSettingsScalarFieldEnum = {

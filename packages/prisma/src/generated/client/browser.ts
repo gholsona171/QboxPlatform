@@ -188,6 +188,16 @@ export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
  */
 export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel
 /**
+ * Model BirthdaySettings
+ *
+ */
+export type BirthdaySettings = Prisma.BirthdaySettingsModel
+/**
+ * Model Birthday
+ *
+ */
+export type Birthday = Prisma.BirthdayModel
+/**
  * Model GiveawayCounter
  *
  */
@@ -227,6 +237,16 @@ export type Poll = Prisma.PollModel
  *
  */
 export type PollVote = Prisma.PollVoteModel
+/**
+ * Model ScheduledMessage
+ *
+ */
+export type ScheduledMessage = Prisma.ScheduledMessageModel
+/**
+ * Model ScheduledMessageRun
+ *
+ */
+export type ScheduledMessageRun = Prisma.ScheduledMessageRunModel
 /**
  * Model StaffSettings
  *

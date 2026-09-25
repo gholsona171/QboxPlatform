@@ -35,6 +35,8 @@ const commandNames = [
   "staff",
   "poll",
   "giveaway",
+  "birthday",
+  "schedule",
 ];
 
 describe("featureRegistry", () => {

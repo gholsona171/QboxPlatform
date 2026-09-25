@@ -8,14 +8,16 @@
   "dependencies": {
     "@qbox/applications": "workspace:*",
     "@qbox/authentication": "workspace:*",
+    "@qbox/birthdays": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
     "@qbox/giveaways": "workspace:*",
     "@qbox/moderation": "workspace:*",
-    "@qbox/polls": "workspace:*",
     "@qbox/permissions": "workspace:*",
+    "@qbox/polls": "workspace:*",
     "@qbox/prisma": "workspace:*",
     "@qbox/role-menus": "workspace:*",
+    "@qbox/scheduled-messages": "workspace:*",
     "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "@qbox/verification": "workspace:*"
