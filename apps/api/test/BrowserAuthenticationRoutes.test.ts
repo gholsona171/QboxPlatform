@@ -1,4 +1,7 @@
 import { Buffer } from "node:buffer";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   authenticationCorrelationId,
@@ -11,6 +14,7 @@ import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationCon
 import { registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
 import { createApiServer } from "../src/createApiServer.js";
+import { registerPortalStaticRoutes } from "../src/portal/PortalStaticRoutes.js";
 import type { ApiLogger } from "../src/logging/ApiLogger.js";
 
 const logger: ApiLogger = {
@@ -21,6 +25,22 @@ const logger: ApiLogger = {
 };
 
 describe("browser authentication routes", () => {
+  it("lets the portal own / when it is served alongside the authentication routes", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "qbox-portal-"));
+    writeFileSync(join(directory, "index.html"), "<!doctype html><title>Qbox portal</title>");
+    try {
+      const server = serverWithRoutes({ portalDirectory: directory });
+      const page = await server.inject({ method: "GET", url: "/", headers: { host: "127.0.0.1:3000" } });
+      expect(page.statusCode).toBe(200);
+      expect(page.body).toContain("Qbox portal");
+      const start = await server.inject({ method: "GET", url: "/auth/discord/start", headers: { host: "127.0.0.1:3000" } });
+      expect(start.statusCode).toBe(302);
+      await server.close();
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
   it("serves the dashboard and starts Discord OAuth through a browser binding cookie", async () => {
     const server = serverWithRoutes();
     const page = await server.inject({ method: "GET", url: "/", headers: { host: "127.0.0.1:3000" } });
@@ -101,7 +121,7 @@ describe("browser authentication routes", () => {
   });
 });
 
-function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean } = {}) {
+function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean; readonly portalDirectory?: string } = {}) {
   const auth = authenticationConfiguration();
   return createApiServer({
     configuration: ApiConfiguration.from({
@@ -109,8 +129,11 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
       publicBaseUrl: "http://127.0.0.1:3000",
     }),
     logger,
-    registerRoutes: (instance) =>
-      registerBrowserAuthenticationRoutes(instance, {
+    registerRoutes: (instance) => {
+      if (options.portalDirectory !== undefined)
+        registerPortalStaticRoutes(instance, { directory: options.portalDirectory });
+      return registerBrowserAuthenticationRoutes(instance, {
+        serveDashboard: options.portalDirectory === undefined,
         configuration: auth,
         provider: fakeProvider(),
         oauthTransactions: {
@@ -192,7 +215,8 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
           listByGuild: async () => [{ id: "menu-1", title: "Community Roles", status: "PUBLISHED" }],
         } as never,
         logger,
-      }),
+      });
+    },
   });
 }
 
