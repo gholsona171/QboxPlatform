@@ -47,6 +47,7 @@ export function renderSettingsPage(container) {
         ${detail("Username", escapeHtml(profile.username || "Unknown"))}
         ${detail("Discord ID", `<code>${escapeHtml(profile.discordUserId)}</code>`)}
         ${detail("Server membership", badge(String(me.membership?.status ?? "unknown").toLowerCase()))}
+        ${detail("Portal access", me.permissions?.discordManager ? "Full access, because you own or administer the server in Discord." : "Set by your Qbox permissions.")}
         <a class="button" href="${escapeHtml(appPath("/auth/discord/start"))}">Refresh Discord sign-in</a>
       </div>
       <div class="card">

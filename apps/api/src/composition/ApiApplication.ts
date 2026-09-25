@@ -33,6 +33,7 @@ import { createApiServer } from "../createApiServer.js";
 import { ApiAuthenticationConfiguration, type ApiAuthenticationConfigurationInput } from "../auth/ApiAuthenticationConfiguration.js";
 import { NativeDiscordOAuthProvider } from "../auth/DiscordOAuthProvider.js";
 import { registerBrowserAuthenticationRoutes } from "../auth/BrowserAuthenticationRoutes.js";
+import { DiscordRestGuildAuthority } from "../auth/DiscordGuildAuthority.js";
 import { DiscordRestRoleGateway } from "../discord/DiscordRestRoleGateway.js";
 import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
@@ -135,10 +136,13 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       ? new DiscordRestRoleGateway(input.discord.token, input.discord.applicationId)
       : undefined,
   );
-  const features = apiFeatures({
-    persistence,
-    discordRest: input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined,
-  });
+  const discordRest = input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined;
+  const features = apiFeatures({ persistence, discordRest });
+  const guildAuthority = discordRest
+    ? new DiscordRestGuildAuthority(discordRest, {
+        onError: (error, guildId) => logger.warn({ err: error, guildId }, "Could not read server owner and roles from Discord."),
+      })
+    : undefined;
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -207,6 +211,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         roles,
         features,
         serveDashboard: input.portalDirectory === undefined,
+        ...(guildAuthority ? { guildAuthority } : {}),
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       });

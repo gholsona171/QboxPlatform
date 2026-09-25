@@ -29,6 +29,8 @@ The script asks for your Discord values and the Supabase connection string, writ
 
 Finally, add `https://<portal address>/auth/discord/callback` under **Discord Developer Portal > OAuth2 > Redirects**.
 
+Invite the bot with the link the setup prints (or **OAuth2 > URL Generator** with the `bot` and `applications.commands` scopes and Administrator). The server owner and Discord administrators can use the whole portal right away; no permission setup is needed.
+
 ## Updates
 
 When `main` changes, the **Deploy build** GitHub workflow compiles Qbox and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers slash commands, and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.

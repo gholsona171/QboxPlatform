@@ -41,6 +41,7 @@ import {
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { cookieSecret, type ApiAuthenticationConfiguration } from "./ApiAuthenticationConfiguration.js";
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
+import type { DiscordGuildAuthority } from "./DiscordGuildAuthority.js";
 
 /** Dependencies for browser-visible authentication and dashboard routes. */
 export interface BrowserAuthenticationRouteDependencies {
@@ -58,6 +59,8 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly roles: RoleManagementService;
   /** Pluggable features that register their own routes. */
   readonly features?: readonly ApiFeature[];
+  /** Discord owner / Administrator / Manage Server bypass; absent when the bot token is not configured. */
+  readonly guildAuthority?: DiscordGuildAuthority;
   /** Serve the built-in dashboard at `/`. Off when the portal owns `/`. */
   readonly serveDashboard?: boolean;
   readonly unitOfWork: AuthenticationUnitOfWork;
@@ -240,6 +243,13 @@ export async function registerBrowserAuthenticationRoutes(
             ),
           );
     const permissions = await permissionSummary(account.identity, membership, dependencies);
+    const discordManager =
+      membership?.status === "PRESENT" &&
+      ((await dependencies.guildAuthority?.isManager(
+        diagnostics.discordGuildId,
+        account.identity.providerSubjectId,
+        membership.roles.map((role) => role.roleId),
+      )) ?? false);
     return {
       account: {
         platformUserId: verified.actor.platformUserId,
@@ -256,7 +266,7 @@ export async function registerBrowserAuthenticationRoutes(
         idleExpiresAt: verified.session.idleExpiresAt.toISOString(),
         absoluteExpiresAt: verified.session.absoluteExpiresAt.toISOString(),
       },
-      permissions,
+      permissions: { ...permissions, discordManager },
       health: { live: "/health/live", ready: "/health/ready" },
     };
   });
@@ -751,6 +761,8 @@ async function requireDiscordManager(
 ) {
   const { verified, account, roleIds } = await requireGuildMember(request, dependencies);
   const guildDiscordId = dependencies.configuration.diagnostics().discordGuildId;
+  if (await dependencies.guildAuthority?.isManager(guildDiscordId, account.identity.providerSubjectId, roleIds))
+    return { verified, account, roleIds };
   const principals: PermissionPrincipal[] = [
     { type: "discord-user", externalId: account.identity.providerSubjectId, guildId: guildDiscordId },
     ...roleIds.map((roleId) => ({ type: "discord-role" as const, externalId: roleId, guildId: guildDiscordId })),

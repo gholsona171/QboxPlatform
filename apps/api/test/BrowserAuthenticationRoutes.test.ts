@@ -92,6 +92,32 @@ describe("browser authentication routes", () => {
     await server.close();
   });
 
+  it("lets Discord owners and administrators manage everything without Qbox permissions", async () => {
+    const server = serverWithRoutes({ roleMenuAllowed: false, discordManager: true });
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/v1/discord/role-menus",
+      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
+    });
+    expect(response.statusCode).toBe(200);
+    const me = await server.inject({
+      method: "GET",
+      url: "/api/v1/me",
+      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
+    });
+    expect(me.json()).toMatchObject({ permissions: { discordManager: true } });
+  });
+
+  it("still requires Qbox permissions for members who do not run the server in Discord", async () => {
+    const server = serverWithRoutes({ roleMenuAllowed: false, discordManager: false });
+    const response = await server.inject({
+      method: "GET",
+      url: "/api/v1/discord/role-menus",
+      headers: { host: "127.0.0.1:3000", cookie: "qbox_session=session-secret-value-000000000000000000" },
+    });
+    expect(response.statusCode).toBe(403);
+  });
+
   it("denies role-menu management routes when permission authorization fails", async () => {
     const server = serverWithRoutes({ roleMenuAllowed: false });
     const response = await server.inject({
@@ -121,7 +147,7 @@ describe("browser authentication routes", () => {
   });
 });
 
-function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean; readonly portalDirectory?: string } = {}) {
+function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly roleMenuAllowed?: boolean; readonly portalDirectory?: string; readonly discordManager?: boolean } = {}) {
   const auth = authenticationConfiguration();
   return createApiServer({
     configuration: ApiConfiguration.from({
@@ -134,6 +160,7 @@ function serverWithRoutes(options: { readonly adminAllowed?: boolean; readonly r
         registerPortalStaticRoutes(instance, { directory: options.portalDirectory });
       return registerBrowserAuthenticationRoutes(instance, {
         serveDashboard: options.portalDirectory === undefined,
+        ...(options.discordManager === undefined ? {} : { guildAuthority: { isManager: async () => options.discordManager === true } }),
         configuration: auth,
         provider: fakeProvider(),
         oauthTransactions: {

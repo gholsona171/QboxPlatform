@@ -33,3 +33,4 @@ export { voiceRoomsFeature } from "./voiceRooms/VoiceRoomsFeature.js";
 export { knowledgeFeature, type KnowledgeFeatureOptions } from "./knowledge/KnowledgeFeature.js";
 export { fivemFeature } from "./fivem/FivemFeature.js";
 export { builderFeature } from "./builder/BuilderFeature.js";
+export { guildOnboardingFeature, type GuildOwnerGrant } from "./onboarding/GuildOnboardingFeature.js";

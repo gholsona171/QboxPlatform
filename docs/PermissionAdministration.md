@@ -10,6 +10,16 @@ Expiration changes are evaluated at their requested future instant. Another owne
 
 ## Owner bootstrap
 
+## Automatic access
+
+Nobody has to grant permissions before a server can be managed:
+
+- **Bot:** when the bot starts, and whenever it joins a server, it makes that server's Discord owner the Qbox owner (`platform.owner`). This is the same grant the owner bootstrap CLI makes, done automatically (`guildOnboardingFeature`).
+- **Portal and API:** the server owner and any member with **Administrator** or **Manage Server** in Discord pass every permission check (`DiscordGuildAuthority`, read through the bot token and cached for a minute). Qbox permissions still apply to everyone else, and `/api/v1/me` reports `permissions.discordManager`.
+- **Slash commands:** Discord administrators pass every command's permission check.
+
+The CLI below remains for recovery, for example when the bot token is unavailable.
+
 Owner bootstrap is a local operator CLI, never a Discord command. It accepts only explicit 17–20 digit Discord guild and user IDs. The trusted system actor is created inside the workflow rather than accepted from user input.
 
 Dry-run is the default:
