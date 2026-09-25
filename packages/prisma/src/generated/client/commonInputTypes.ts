@@ -1231,6 +1231,23 @@ export type EnumLevelRewardModeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
 }
 
+export type EnumMessagesLookModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessagesLookMode | Prisma.EnumMessagesLookModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel> | $Enums.MessagesLookMode
+}
+
+export type EnumMessagesLookModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessagesLookMode | Prisma.EnumMessagesLookModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessagesLookModeWithAggregatesFilter<$PrismaModel> | $Enums.MessagesLookMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel>
+}
+
 export type EnumModerationCaseTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
@@ -1365,6 +1382,40 @@ export type EnumStaffLeaveStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumStaffLeaveStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumStaffLeaveStatusFilter<$PrismaModel>
+}
+
+export type EnumStreamsEndedBehaviorFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsEndedBehavior | Prisma.EnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel> | $Enums.StreamsEndedBehavior
+}
+
+export type EnumStreamsEndedBehaviorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsEndedBehavior | Prisma.EnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsEndedBehaviorWithAggregatesFilter<$PrismaModel> | $Enums.StreamsEndedBehavior
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel>
+}
+
+export type EnumStreamsPlatformFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsPlatform | Prisma.EnumStreamsPlatformFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel> | $Enums.StreamsPlatform
+}
+
+export type EnumStreamsPlatformWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsPlatform | Prisma.EnumStreamsPlatformFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsPlatformWithAggregatesFilter<$PrismaModel> | $Enums.StreamsPlatform
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel>
 }
 
 export type EnumTicketModeFilter<$PrismaModel = never> = {
@@ -2698,6 +2749,23 @@ export type NestedEnumLevelRewardModeWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
 }
 
+export type NestedEnumMessagesLookModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessagesLookMode | Prisma.EnumMessagesLookModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel> | $Enums.MessagesLookMode
+}
+
+export type NestedEnumMessagesLookModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MessagesLookMode | Prisma.EnumMessagesLookModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MessagesLookMode[] | Prisma.ListEnumMessagesLookModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMessagesLookModeWithAggregatesFilter<$PrismaModel> | $Enums.MessagesLookMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMessagesLookModeFilter<$PrismaModel>
+}
+
 export type NestedEnumModerationCaseTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
@@ -2832,6 +2900,40 @@ export type NestedEnumStaffLeaveStatusWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumStaffLeaveStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumStaffLeaveStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumStreamsEndedBehaviorFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsEndedBehavior | Prisma.EnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel> | $Enums.StreamsEndedBehavior
+}
+
+export type NestedEnumStreamsEndedBehaviorWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsEndedBehavior | Prisma.EnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsEndedBehavior[] | Prisma.ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsEndedBehaviorWithAggregatesFilter<$PrismaModel> | $Enums.StreamsEndedBehavior
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStreamsEndedBehaviorFilter<$PrismaModel>
+}
+
+export type NestedEnumStreamsPlatformFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsPlatform | Prisma.EnumStreamsPlatformFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel> | $Enums.StreamsPlatform
+}
+
+export type NestedEnumStreamsPlatformWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StreamsPlatform | Prisma.EnumStreamsPlatformFieldRefInput<$PrismaModel>
+  in?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  notIn?: $Enums.StreamsPlatform[] | Prisma.ListEnumStreamsPlatformFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumStreamsPlatformWithAggregatesFilter<$PrismaModel> | $Enums.StreamsPlatform
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStreamsPlatformFilter<$PrismaModel>
 }
 
 export type NestedEnumTicketModeFilter<$PrismaModel = never> = {

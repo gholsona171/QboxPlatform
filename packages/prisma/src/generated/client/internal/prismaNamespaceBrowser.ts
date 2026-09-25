@@ -100,6 +100,8 @@ export const ModelName = {
   KnowledgeArticle: 'KnowledgeArticle',
   LevelSettings: 'LevelSettings',
   LevelMember: 'LevelMember',
+  MessagesLook: 'MessagesLook',
+  MessagesTemplate: 'MessagesTemplate',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
   PollCounter: 'PollCounter',
@@ -114,6 +116,8 @@ export const ModelName = {
   StaffStrike: 'StaffStrike',
   StaffLeave: 'StaffLeave',
   StaffShift: 'StaffShift',
+  StreamsSettings: 'StreamsSettings',
+  StreamsSubscription: 'StreamsSubscription',
   TicketSettings: 'TicketSettings',
   TicketCategory: 'TicketCategory',
   TicketPanel: 'TicketPanel',
@@ -1058,6 +1062,40 @@ export const LevelMemberScalarFieldEnum = {
 export type LevelMemberScalarFieldEnum = (typeof LevelMemberScalarFieldEnum)[keyof typeof LevelMemberScalarFieldEnum]
 
 
+export const MessagesLookScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  accentColor: 'accentColor',
+  footerText: 'footerText',
+  footerIconUrl: 'footerIconUrl',
+  authorName: 'authorName',
+  authorIconUrl: 'authorIconUrl',
+  thumbnailUrl: 'thumbnailUrl',
+  showTimestamp: 'showTimestamp',
+  mode: 'mode',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessagesLookScalarFieldEnum = (typeof MessagesLookScalarFieldEnum)[keyof typeof MessagesLookScalarFieldEnum]
+
+
+export const MessagesTemplateScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  key: 'key',
+  enabled: 'enabled',
+  content: 'content',
+  embeds: 'embeds',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessagesTemplateScalarFieldEnum = (typeof MessagesTemplateScalarFieldEnum)[keyof typeof MessagesTemplateScalarFieldEnum]
+
+
 export const ModerationSettingsScalarFieldEnum = {
   guildId: 'guildId',
   logChannelId: 'logChannelId',
@@ -1319,6 +1357,49 @@ export const StaffShiftScalarFieldEnum = {
 } as const
 
 export type StaffShiftScalarFieldEnum = (typeof StaffShiftScalarFieldEnum)[keyof typeof StaffShiftScalarFieldEnum]
+
+
+export const StreamsSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  defaultChannelId: 'defaultChannelId',
+  endedBehavior: 'endedBehavior',
+  checkIntervalSeconds: 'checkIntervalSeconds',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StreamsSettingsScalarFieldEnum = (typeof StreamsSettingsScalarFieldEnum)[keyof typeof StreamsSettingsScalarFieldEnum]
+
+
+export const StreamsSubscriptionScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  platform: 'platform',
+  handle: 'handle',
+  displayName: 'displayName',
+  avatarUrl: 'avatarUrl',
+  platformId: 'platformId',
+  announceChannelId: 'announceChannelId',
+  pingRoleId: 'pingRoleId',
+  messageText: 'messageText',
+  announceVideos: 'announceVideos',
+  enabled: 'enabled',
+  lastStreamId: 'lastStreamId',
+  liveSince: 'liveSince',
+  lastAnnouncementChannelId: 'lastAnnouncementChannelId',
+  lastAnnouncementMessageId: 'lastAnnouncementMessageId',
+  lastVideoId: 'lastVideoId',
+  lastCheckedAt: 'lastCheckedAt',
+  offlineStreak: 'offlineStreak',
+  failureStreak: 'failureStreak',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StreamsSubscriptionScalarFieldEnum = (typeof StreamsSubscriptionScalarFieldEnum)[keyof typeof StreamsSubscriptionScalarFieldEnum]
 
 
 export const TicketSettingsScalarFieldEnum = {

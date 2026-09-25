@@ -446,6 +446,8 @@ export const ModelName = {
   KnowledgeArticle: 'KnowledgeArticle',
   LevelSettings: 'LevelSettings',
   LevelMember: 'LevelMember',
+  MessagesLook: 'MessagesLook',
+  MessagesTemplate: 'MessagesTemplate',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
   PollCounter: 'PollCounter',
@@ -460,6 +462,8 @@ export const ModelName = {
   StaffStrike: 'StaffStrike',
   StaffLeave: 'StaffLeave',
   StaffShift: 'StaffShift',
+  StreamsSettings: 'StreamsSettings',
+  StreamsSubscription: 'StreamsSubscription',
   TicketSettings: 'TicketSettings',
   TicketCategory: 'TicketCategory',
   TicketPanel: 'TicketPanel',
@@ -487,7 +491,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "builderDraft" | "builderRun" | "builderRunItem" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "builderDraft" | "builderRun" | "builderRunItem" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "messagesLook" | "messagesTemplate" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "streamsSettings" | "streamsSubscription" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4117,6 +4121,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MessagesLook: {
+      payload: Prisma.$MessagesLookPayload<ExtArgs>
+      fields: Prisma.MessagesLookFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessagesLookFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessagesLookFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        findFirst: {
+          args: Prisma.MessagesLookFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessagesLookFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        findMany: {
+          args: Prisma.MessagesLookFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>[]
+        }
+        create: {
+          args: Prisma.MessagesLookCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        createMany: {
+          args: Prisma.MessagesLookCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessagesLookCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>[]
+        }
+        delete: {
+          args: Prisma.MessagesLookDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        update: {
+          args: Prisma.MessagesLookUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        deleteMany: {
+          args: Prisma.MessagesLookDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessagesLookUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessagesLookUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>[]
+        }
+        upsert: {
+          args: Prisma.MessagesLookUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesLookPayload>
+        }
+        aggregate: {
+          args: Prisma.MessagesLookAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessagesLook>
+        }
+        groupBy: {
+          args: Prisma.MessagesLookGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessagesLookGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessagesLookCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessagesLookCountAggregateOutputType> | number
+        }
+      }
+    }
+    MessagesTemplate: {
+      payload: Prisma.$MessagesTemplatePayload<ExtArgs>
+      fields: Prisma.MessagesTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessagesTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessagesTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.MessagesTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessagesTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.MessagesTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.MessagesTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.MessagesTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessagesTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.MessagesTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        update: {
+          args: Prisma.MessagesTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.MessagesTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessagesTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessagesTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.MessagesTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessagesTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.MessagesTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessagesTemplate>
+        }
+        groupBy: {
+          args: Prisma.MessagesTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessagesTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessagesTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessagesTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
     ModerationSettings: {
       payload: Prisma.$ModerationSettingsPayload<ExtArgs>
       fields: Prisma.ModerationSettingsFieldRefs
@@ -5150,6 +5302,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.StaffShiftCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.StaffShiftCountAggregateOutputType> | number
+        }
+      }
+    }
+    StreamsSettings: {
+      payload: Prisma.$StreamsSettingsPayload<ExtArgs>
+      fields: Prisma.StreamsSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StreamsSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StreamsSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.StreamsSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StreamsSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.StreamsSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.StreamsSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.StreamsSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StreamsSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.StreamsSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        update: {
+          args: Prisma.StreamsSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.StreamsSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StreamsSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StreamsSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.StreamsSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.StreamsSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStreamsSettings>
+        }
+        groupBy: {
+          args: Prisma.StreamsSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StreamsSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StreamsSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StreamsSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    StreamsSubscription: {
+      payload: Prisma.$StreamsSubscriptionPayload<ExtArgs>
+      fields: Prisma.StreamsSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StreamsSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StreamsSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.StreamsSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StreamsSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.StreamsSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.StreamsSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.StreamsSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StreamsSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.StreamsSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.StreamsSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.StreamsSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StreamsSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StreamsSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.StreamsSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StreamsSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.StreamsSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStreamsSubscription>
+        }
+        groupBy: {
+          args: Prisma.StreamsSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StreamsSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StreamsSubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StreamsSubscriptionCountAggregateOutputType> | number
         }
       }
     }
@@ -6994,6 +7294,40 @@ export const LevelMemberScalarFieldEnum = {
 export type LevelMemberScalarFieldEnum = (typeof LevelMemberScalarFieldEnum)[keyof typeof LevelMemberScalarFieldEnum]
 
 
+export const MessagesLookScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  accentColor: 'accentColor',
+  footerText: 'footerText',
+  footerIconUrl: 'footerIconUrl',
+  authorName: 'authorName',
+  authorIconUrl: 'authorIconUrl',
+  thumbnailUrl: 'thumbnailUrl',
+  showTimestamp: 'showTimestamp',
+  mode: 'mode',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessagesLookScalarFieldEnum = (typeof MessagesLookScalarFieldEnum)[keyof typeof MessagesLookScalarFieldEnum]
+
+
+export const MessagesTemplateScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  key: 'key',
+  enabled: 'enabled',
+  content: 'content',
+  embeds: 'embeds',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessagesTemplateScalarFieldEnum = (typeof MessagesTemplateScalarFieldEnum)[keyof typeof MessagesTemplateScalarFieldEnum]
+
+
 export const ModerationSettingsScalarFieldEnum = {
   guildId: 'guildId',
   logChannelId: 'logChannelId',
@@ -7255,6 +7589,49 @@ export const StaffShiftScalarFieldEnum = {
 } as const
 
 export type StaffShiftScalarFieldEnum = (typeof StaffShiftScalarFieldEnum)[keyof typeof StaffShiftScalarFieldEnum]
+
+
+export const StreamsSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  defaultChannelId: 'defaultChannelId',
+  endedBehavior: 'endedBehavior',
+  checkIntervalSeconds: 'checkIntervalSeconds',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StreamsSettingsScalarFieldEnum = (typeof StreamsSettingsScalarFieldEnum)[keyof typeof StreamsSettingsScalarFieldEnum]
+
+
+export const StreamsSubscriptionScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  platform: 'platform',
+  handle: 'handle',
+  displayName: 'displayName',
+  avatarUrl: 'avatarUrl',
+  platformId: 'platformId',
+  announceChannelId: 'announceChannelId',
+  pingRoleId: 'pingRoleId',
+  messageText: 'messageText',
+  announceVideos: 'announceVideos',
+  enabled: 'enabled',
+  lastStreamId: 'lastStreamId',
+  liveSince: 'liveSince',
+  lastAnnouncementChannelId: 'lastAnnouncementChannelId',
+  lastAnnouncementMessageId: 'lastAnnouncementMessageId',
+  lastVideoId: 'lastVideoId',
+  lastCheckedAt: 'lastCheckedAt',
+  offlineStreak: 'offlineStreak',
+  failureStreak: 'failureStreak',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StreamsSubscriptionScalarFieldEnum = (typeof StreamsSubscriptionScalarFieldEnum)[keyof typeof StreamsSubscriptionScalarFieldEnum]
 
 
 export const TicketSettingsScalarFieldEnum = {
@@ -8262,6 +8639,20 @@ export type ListEnumLevelRewardModeFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'MessagesLookMode'
+ */
+export type EnumMessagesLookModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessagesLookMode'>
+
+
+
+/**
+ * Reference to a field of type 'MessagesLookMode[]'
+ */
+export type ListEnumMessagesLookModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MessagesLookMode[]'>
+
+
+
+/**
  * Reference to a field of type 'ModerationCaseType'
  */
 export type EnumModerationCaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseType'>
@@ -8370,6 +8761,34 @@ export type EnumStaffLeaveStatusFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'StaffLeaveStatus[]'
  */
 export type ListEnumStaffLeaveStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffLeaveStatus[]'>
+
+
+
+/**
+ * Reference to a field of type 'StreamsEndedBehavior'
+ */
+export type EnumStreamsEndedBehaviorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StreamsEndedBehavior'>
+
+
+
+/**
+ * Reference to a field of type 'StreamsEndedBehavior[]'
+ */
+export type ListEnumStreamsEndedBehaviorFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StreamsEndedBehavior[]'>
+
+
+
+/**
+ * Reference to a field of type 'StreamsPlatform'
+ */
+export type EnumStreamsPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StreamsPlatform'>
+
+
+
+/**
+ * Reference to a field of type 'StreamsPlatform[]'
+ */
+export type ListEnumStreamsPlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StreamsPlatform[]'>
 
 
 
@@ -8712,6 +9131,8 @@ export type GlobalOmitConfig = {
   knowledgeArticle?: Prisma.KnowledgeArticleOmit
   levelSettings?: Prisma.LevelSettingsOmit
   levelMember?: Prisma.LevelMemberOmit
+  messagesLook?: Prisma.MessagesLookOmit
+  messagesTemplate?: Prisma.MessagesTemplateOmit
   moderationSettings?: Prisma.ModerationSettingsOmit
   moderationCase?: Prisma.ModerationCaseOmit
   pollCounter?: Prisma.PollCounterOmit
@@ -8726,6 +9147,8 @@ export type GlobalOmitConfig = {
   staffStrike?: Prisma.StaffStrikeOmit
   staffLeave?: Prisma.StaffLeaveOmit
   staffShift?: Prisma.StaffShiftOmit
+  streamsSettings?: Prisma.StreamsSettingsOmit
+  streamsSubscription?: Prisma.StreamsSubscriptionOmit
   ticketSettings?: Prisma.TicketSettingsOmit
   ticketCategory?: Prisma.TicketCategoryOmit
   ticketPanel?: Prisma.TicketPanelOmit

@@ -18,7 +18,6 @@ import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
 import { DiscordRestVerificationGateway, VerificationService } from "@qbox/verification";
 import { DiscordRestVoiceGateway, VoiceRoomService } from "@qbox/voice-rooms";
 import type { REST } from "discord.js";
-import type { MessageTemplates } from "@qbox/shared/messages";
 
 import { applicationsApiFeature } from "./applications/ApplicationRoutes.js";
 import { birthdaysApiFeature } from "./birthdays/BirthdayRoutes.js";
@@ -51,7 +50,7 @@ export interface ApiFeatureDependencies {
 /** Every pluggable API feature. Add one line per feature. */
 export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFeatureDependencies): readonly ApiFeature[] {
   /** Custom messages and the server-wide look; passed to every service that posts to Discord. */
-  const templates: MessageTemplates = dependencies.templates ?? new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma), { gateway: discordRest ? new DiscordRestMessagesGateway(discordRest) : undefined });
+  const templates = dependencies.templates ?? new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma), { gateway: discordRest ? new DiscordRestMessagesGateway(discordRest) : undefined });
   const tickets = new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined, undefined, templates);
   const moderation = new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined, undefined, templates);
   const verification = new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined, undefined, templates);

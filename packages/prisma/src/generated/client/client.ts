@@ -287,6 +287,16 @@ export type LevelSettings = Prisma.LevelSettingsModel
  */
 export type LevelMember = Prisma.LevelMemberModel
 /**
+ * Model MessagesLook
+ *
+ */
+export type MessagesLook = Prisma.MessagesLookModel
+/**
+ * Model MessagesTemplate
+ *
+ */
+export type MessagesTemplate = Prisma.MessagesTemplateModel
+/**
  * Model ModerationSettings
  *
  */
@@ -356,6 +366,16 @@ export type StaffLeave = Prisma.StaffLeaveModel
  *
  */
 export type StaffShift = Prisma.StaffShiftModel
+/**
+ * Model StreamsSettings
+ *
+ */
+export type StreamsSettings = Prisma.StreamsSettingsModel
+/**
+ * Model StreamsSubscription
+ *
+ */
+export type StreamsSubscription = Prisma.StreamsSubscriptionModel
 /**
  * Model TicketSettings
  *

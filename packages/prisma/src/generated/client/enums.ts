@@ -462,6 +462,14 @@ export const LevelRewardMode = {
 export type LevelRewardMode = (typeof LevelRewardMode)[keyof typeof LevelRewardMode]
 
 
+export const MessagesLookMode = {
+  FILL: 'FILL',
+  OVERRIDE: 'OVERRIDE'
+} as const
+
+export type MessagesLookMode = (typeof MessagesLookMode)[keyof typeof MessagesLookMode]
+
+
 export const ModerationCaseType = {
   WARN: 'WARN',
   TIMEOUT: 'TIMEOUT',
@@ -547,6 +555,24 @@ export const StaffLeaveStatus = {
 } as const
 
 export type StaffLeaveStatus = (typeof StaffLeaveStatus)[keyof typeof StaffLeaveStatus]
+
+
+export const StreamsPlatform = {
+  TWITCH: 'TWITCH',
+  KICK: 'KICK',
+  YOUTUBE: 'YOUTUBE'
+} as const
+
+export type StreamsPlatform = (typeof StreamsPlatform)[keyof typeof StreamsPlatform]
+
+
+export const StreamsEndedBehavior = {
+  KEEP: 'KEEP',
+  EDIT: 'EDIT',
+  DELETE: 'DELETE'
+} as const
+
+export type StreamsEndedBehavior = (typeof StreamsEndedBehavior)[keyof typeof StreamsEndedBehavior]
 
 
 export const TicketMode = {
