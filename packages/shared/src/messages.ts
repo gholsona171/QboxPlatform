@@ -106,5 +106,48 @@ export function renderMessage(template: OutgoingMessage, values: TemplateValues)
  * customizable message appends its keys here; the portal lists them from
  * this catalog. Keep entries sorted by feature, then by key.
  */
-export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [];
+export const MESSAGE_CATALOG: readonly MessageKeyDefinition[] = [
+  {
+    key: "streams.ended",
+    feature: "streams",
+    name: "Stream ended",
+    description: "What the live announcement becomes when the stream ends (with the \"edit\" ended behavior).",
+    placeholders: [
+      { name: "creator", description: "The creator's display name" },
+      { name: "platform", description: "Twitch, Kick, or YouTube" },
+      { name: "duration", description: "How long the stream was live, for example 2h 15m" },
+      { name: "url", description: "Link to the creator's channel" },
+    ],
+  },
+  {
+    key: "streams.live",
+    feature: "streams",
+    name: "Creator went live",
+    description: "Posted when a followed creator starts streaming.",
+    placeholders: [
+      { name: "creator", description: "The creator's display name" },
+      { name: "platform", description: "Twitch, Kick, or YouTube" },
+      { name: "title", description: "Stream title" },
+      { name: "game", description: "Game or category, when known" },
+      { name: "viewers", description: "Current viewer count, when known" },
+      { name: "url", description: "Link to the stream" },
+      { name: "thumbnail", description: "Stream preview image link, when available" },
+      { name: "startedAt", description: "When the stream started" },
+      { name: "server", description: "This server's name" },
+      { name: "ping", description: "The role mention, or nothing when no ping role is set" },
+    ],
+  },
+  {
+    key: "streams.video",
+    feature: "streams",
+    name: "New video",
+    description: "Posted when a followed YouTube channel uploads a video.",
+    placeholders: [
+      { name: "creator", description: "The channel's name" },
+      { name: "title", description: "Video title" },
+      { name: "url", description: "Link to the video" },
+      { name: "publishedAt", description: "When the video was published" },
+    ],
+  },
+];
 

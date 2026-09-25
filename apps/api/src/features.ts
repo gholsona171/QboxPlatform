@@ -1,10 +1,12 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
+import { DiscordRestStreamsGateway, StreamsService, createStreamPlatformClients } from "@qbox/streams";
+import { env } from "@qbox/shared";
 import { DiscordRestGiveawayGateway, GiveawayService } from "@qbox/giveaways";
 import { DiscordRestPollGateway, PollService } from "@qbox/polls";
 import { BirthdayService, DiscordRestBirthdayGateway } from "@qbox/birthdays";
@@ -28,6 +30,7 @@ import { fivemApiFeature } from "./fivem/FivemRoutes.js";
 import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
 import { staffApiFeature } from "./staff/StaffRoutes.js";
+import { streamsApiFeature } from "./streams/StreamsRoutes.js";
 import { pollsApiFeature } from "./polls/PollRoutes.js";
 import { scheduledMessagesApiFeature } from "./scheduledMessages/ScheduledMessageRoutes.js";
 import { ticketsApiFeature } from "./tickets/TicketRoutes.js";
@@ -68,6 +71,18 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     voiceRoomsApiFeature(voice),
     knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
     fivemApiFeature(fivem),
+    streamsApiFeature(new StreamsService(new PrismaStreamsRepository(persistence.prisma), createStreamPlatformClients(streamCredentials()), discordRest ? new DiscordRestStreamsGateway(discordRest) : undefined)),
     builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
   ];
+}
+
+/** Platform credentials from the host environment; empty values mean the platform runs without them (or, for Twitch, is unavailable). */
+function streamCredentials() {
+  return {
+    twitchClientId: env.TWITCH_CLIENT_ID,
+    twitchClientSecret: env.TWITCH_CLIENT_SECRET,
+    kickClientId: env.KICK_CLIENT_ID,
+    kickClientSecret: env.KICK_CLIENT_SECRET,
+    youtubeApiKey: env.YOUTUBE_API_KEY,
+  };
 }

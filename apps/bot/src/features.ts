@@ -1,5 +1,5 @@
-import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, builderFeature, guildOnboardingFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
+import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, builderFeature, guildOnboardingFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, streamsFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
 import type { PersistentPermissionService } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
@@ -31,6 +31,18 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
     voiceRoomsFeature(new PrismaVoiceRepository(persistence.prisma)),
     knowledgeFeature(new PrismaKnowledgeRepository(persistence.prisma), { openAiApiKey: env.OPENAI_API_KEY, openAiModel: env.OPENAI_MODEL }),
     fivemFeature(new PrismaFivemRepository(persistence.prisma)),
+    streamsFeature(new PrismaStreamsRepository(persistence.prisma), { credentials: streamCredentials() }),
     builderFeature(new PrismaBuilderRepository(persistence.prisma)),
   ];
+}
+
+/** Platform credentials from the host environment; empty values mean the platform runs without them (or, for Twitch, is unavailable). */
+function streamCredentials() {
+  return {
+    twitchClientId: env.TWITCH_CLIENT_ID,
+    twitchClientSecret: env.TWITCH_CLIENT_SECRET,
+    kickClientId: env.KICK_CLIENT_ID,
+    kickClientSecret: env.KICK_CLIENT_SECRET,
+    youtubeApiKey: env.YOUTUBE_API_KEY,
+  };
 }

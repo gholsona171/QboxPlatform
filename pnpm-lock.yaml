@@ -114,6 +114,9 @@ importers:
       '@qbox/staff':
         specifier: workspace:*
         version: link:../../modules/staff
+      '@qbox/streams':
+        specifier: workspace:*
+        version: link:../../modules/streams
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets
@@ -249,6 +252,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/streams:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/tickets:
     dependencies:
       '@qbox/shared':
@@ -328,6 +337,9 @@ importers:
       '@qbox/staff':
         specifier: workspace:*
         version: link:../../modules/staff
+      '@qbox/streams':
+        specifier: workspace:*
+        version: link:../../modules/streams
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets
@@ -394,6 +406,9 @@ importers:
       '@qbox/staff':
         specifier: workspace:*
         version: link:../../modules/staff
+      '@qbox/streams':
+        specifier: workspace:*
+        version: link:../../modules/streams
       '@qbox/tickets':
         specifier: workspace:*
         version: link:../../modules/tickets

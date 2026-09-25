@@ -33,6 +33,7 @@
     "@qbox/scheduled-messages": "workspace:*",
     "@qbox/server-builder": "workspace:*",
     "@qbox/shared": "workspace:*",
+    "@qbox/streams": "workspace:*",
     "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "@qbox/verification": "workspace:*",

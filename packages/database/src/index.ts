@@ -25,4 +25,5 @@ export * from "./levels/PrismaLevelRepository.js";
 export * from "./voiceRooms/PrismaVoiceRepository.js";
 export * from "./knowledge/PrismaKnowledgeRepository.js";
 export * from "./fivem/PrismaFivemRepository.js";
+export * from "./streams/PrismaStreamsRepository.js";
 export * from "./builder/PrismaBuilderRepository.js";

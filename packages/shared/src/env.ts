@@ -25,6 +25,11 @@ export const env = {
   REDIS_URL: process.env.REDIS_URL ?? "",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
   OPENAI_MODEL: process.env.OPENAI_MODEL || "gpt-4o-mini",
+  TWITCH_CLIENT_ID: process.env.TWITCH_CLIENT_ID ?? "",
+  TWITCH_CLIENT_SECRET: process.env.TWITCH_CLIENT_SECRET ?? "",
+  KICK_CLIENT_ID: process.env.KICK_CLIENT_ID ?? "",
+  KICK_CLIENT_SECRET: process.env.KICK_CLIENT_SECRET ?? "",
+  YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY ?? "",
   DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
   DISCORD_MESSAGE_CONTENT_INTENT:
     (process.env.DISCORD_MESSAGE_CONTENT_INTENT ?? "false") === "true",
