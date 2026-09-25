@@ -63,8 +63,6 @@ function uptime(since) {
 }
 
 function statusCard() {
-  if (!view.overview.configured)
-    return `<div class="empty-state">No server is set up yet.${view.overview.can.manage ? " Add its address in Settings." : ""}</div>`;
   if (view.statusError) return `<div class="empty-state">${escapeHtml(view.statusError.message)}</div>`;
   const s = view.status;
   const metric = (label, value) => `<div class="card metric"><span class="metric-label">${escapeHtml(label)}</span><strong class="metric-value">${escapeHtml(String(value))}</strong></div>`;
@@ -83,7 +81,18 @@ function statusCard() {
     </div>`;
 }
 
+function setupCard() {
+  return `<div class="empty-state">
+    <h3>Set up your FiveM server</h3>
+    <p>Qbox is not connected to a FiveM server yet. Once it has the server address it shows live status and players here, keeps a status message updated in Discord, and can alert you when the server goes down.</p>
+    ${view.overview.can.manage
+      ? `<button class="button primary" data-f-tab="settings">Add the server address</button>`
+      : `<p class="microcopy">Ask a server admin to add the server address on the Settings tab.</p>`}
+  </div>`;
+}
+
 function statusTab() {
+  if (!view.overview.configured) return setupCard();
   const players = view.status?.online ? view.status.players : [];
   return `${statusCard()}
     <section class="grid main-detail">
