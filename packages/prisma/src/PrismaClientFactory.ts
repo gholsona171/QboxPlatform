@@ -32,6 +32,13 @@ export const PRISMA_SAFE_LOG_CONFIGURATION = [
 export const PRISMA_POSTGRES_SESSION_OPTIONS = "-c timezone=UTC";
 
 /**
+ * Interactive transaction limits. The hosted database can be in a different
+ * region than the bot, so each query in a transaction costs a network round
+ * trip; Prisma's 5 second default is too tight for multi-step writes there.
+ */
+export const PRISMA_TRANSACTION_OPTIONS = { maxWait: 10_000, timeout: 30_000 } as const;
+
+/**
  * Prisma 7 client factory for process-level dependency injection.
  *
  * Each call creates a distinct, disconnected Prisma Client backed by the
@@ -52,6 +59,7 @@ export class PrismaClientFactory {
     return new PrismaClient({
       adapter,
       log: [...PRISMA_SAFE_LOG_CONFIGURATION],
+      transactionOptions: PRISMA_TRANSACTION_OPTIONS,
     });
   }
 }

@@ -406,13 +406,10 @@ export class PrismaPermissionDefinitionRepository implements PermissionDefinitio
       if (unknownKeys.length > 0)
         throw new UnknownPermissionCatalogEntriesError(unknownKeys);
 
-      for (const key of catalog.permissions) {
-        await transaction.permissionDefinition.upsert({
-          where: { key },
-          create: { key },
-          update: {},
-        });
-      }
+      await transaction.permissionDefinition.createMany({
+        data: catalog.permissions.map((key) => ({ key })),
+        skipDuplicates: true,
+      });
       await new PrismaPermissionCatalogRepository(transaction).update(
         catalog.version,
         catalog.checksum,
