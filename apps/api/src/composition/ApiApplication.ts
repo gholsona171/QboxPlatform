@@ -34,6 +34,7 @@ import { ApiAuthenticationConfiguration, type ApiAuthenticationConfigurationInpu
 import { NativeDiscordOAuthProvider } from "../auth/DiscordOAuthProvider.js";
 import { registerBrowserAuthenticationRoutes } from "../auth/BrowserAuthenticationRoutes.js";
 import { DiscordRestGuildAuthority } from "../auth/DiscordGuildAuthority.js";
+import { DiscordGuildDirectory, DiscordRestBotGuildSource, createQboxAccessCheck } from "../auth/GuildDirectory.js";
 import { DiscordRestRoleGateway } from "../discord/DiscordRestRoleGateway.js";
 import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
@@ -189,6 +190,15 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     credentials,
     verifier: provider,
   });
+  const directory = new DiscordGuildDirectory({
+    credentials,
+    unitOfWork: persistence.authentication.unitOfWork,
+    provider,
+    bot: discordRest ? new DiscordRestBotGuildSource(discordRest) : undefined,
+    qboxAccess: createQboxAccessCheck({ authorizer, unitOfWork: persistence.authentication.unitOfWork }),
+    defaultGuildId: authenticationConfiguration.diagnostics().defaultGuildId,
+    logger,
+  });
   const server = createApiServer({
     configuration: apiConfiguration,
     health,
@@ -205,6 +215,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         sessions,
         memberships,
         guilds: persistence.repositories.guilds,
+        directory,
         authorizer,
         roleMenus,
         community,

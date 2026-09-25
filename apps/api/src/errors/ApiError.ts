@@ -14,6 +14,7 @@ export type ApiErrorCode =
   | "REQUEST_TIMEOUT"
   | "RATE_LIMITED"
   | "DEPENDENCY_UNAVAILABLE"
+  | "GUILD_REQUIRED"
   | "INTERNAL_ERROR";
 
 /** Expected application/transport failure safe for centralized mapping. */
@@ -103,6 +104,13 @@ export class RateLimitedApiError extends ApiError {
   }
 }
 
+/** No server is selected for this browser and no default server is configured. */
+export class GuildRequiredApiError extends ApiError {
+  public constructor() {
+    super("GUILD_REQUIRED", 409, "Server selection required", "Pick a server before using this route.", "info");
+  }
+}
+
 /** Authoritative RFC 9457-compatible error response schema. */
 export const ApiProblemDetailsSchema = z.strictObject({
   type: z.url(),
@@ -122,6 +130,7 @@ export const ApiProblemDetailsSchema = z.strictObject({
     "REQUEST_TIMEOUT",
     "RATE_LIMITED",
     "DEPENDENCY_UNAVAILABLE",
+    "GUILD_REQUIRED",
     "INTERNAL_ERROR",
   ]),
   requestId: z.string().min(1),

@@ -44,7 +44,7 @@ export function knowledgeApiFeature(knowledge: KnowledgeService): ApiFeature {
 }
 
 function registerKnowledgeRoutes(server: FastifyInstance, context: ApiFeatureContext, knowledge: KnowledgeService): void {
-  const { guildId, guard, member } = context;
+  const { guard, member } = context;
   const editor = (identity: ApiIdentity) => ({ userId: identity.userId, displayName: identity.displayName });
   /** Signed-in member; `manage` is true when they hold knowledge.manage. */
   const reader = async (request: FastifyRequest) => {
@@ -56,9 +56,9 @@ function registerKnowledgeRoutes(server: FastifyInstance, context: ApiFeatureCon
     reply.header("cache-control", "no-store");
     const manage = await reader(request);
     const [categories, articles, settings] = await Promise.all([
-      knowledge.categories(guildId),
-      knowledge.list(guildId, { includeDrafts: manage, limit: 500 }),
-      manage ? knowledge.settings(guildId) : Promise.resolve(undefined),
+      knowledge.categories(context.guildId),
+      knowledge.list(context.guildId, { includeDrafts: manage, limit: 500 }),
+      manage ? knowledge.settings(context.guildId) : Promise.resolve(undefined),
     ]);
     return { data: { categories, articles: articles.map(summary), ...(settings ? { settings } : {}), can: { manage } } };
   });
@@ -71,8 +71,8 @@ function registerKnowledgeRoutes(server: FastifyInstance, context: ApiFeatureCon
     const options = { includeDrafts, ...(query.categoryId ? { categoryId: query.categoryId } : {}) };
     const search = query.search?.trim();
     const articles = search
-      ? (await safe(() => knowledge.search(guildId, search, { ...options, limit: 100 }))).map((result) => ({ ...summary(result.article), score: result.score, match: result.match }))
-      : (await safe(() => knowledge.list(guildId, { ...options, limit: 500 }))).map(summary);
+      ? (await safe(() => knowledge.search(context.guildId, search, { ...options, limit: 100 }))).map((result) => ({ ...summary(result.article), score: result.score, match: result.match }))
+      : (await safe(() => knowledge.list(context.guildId, { ...options, limit: 500 }))).map(summary);
     return { data: query.status === "draft" ? articles.filter((article) => !article.published) : articles };
   });
 
@@ -80,55 +80,55 @@ function registerKnowledgeRoutes(server: FastifyInstance, context: ApiFeatureCon
     reply.header("cache-control", "no-store");
     const manage = await reader(request);
     const id = routeParam(request, "id");
-    return { data: await safe(() => (manage ? knowledge.article(guildId, id, true) : knowledge.view(guildId, id))) };
+    return { data: await safe(() => (manage ? knowledge.article(context.guildId, id, true) : knowledge.view(context.guildId, id))) };
   });
 
   server.post("/api/v1/knowledge/articles", async (request) => {
     const identity = await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(articleSchema, request.body);
-    return { data: await safe(() => knowledge.createArticle(guildId, body, editor(identity))) };
+    return { data: await safe(() => knowledge.createArticle(context.guildId, body, editor(identity))) };
   });
 
   server.put("/api/v1/knowledge/articles/:id", async (request) => {
     const identity = await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(articleSchema, request.body);
-    return { data: await safe(() => knowledge.updateArticle(guildId, routeParam(request, "id"), body, editor(identity))) };
+    return { data: await safe(() => knowledge.updateArticle(context.guildId, routeParam(request, "id"), body, editor(identity))) };
   });
 
   server.delete("/api/v1/knowledge/articles/:id", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
-    await safe(() => knowledge.deleteArticle(guildId, routeParam(request, "id")));
+    await safe(() => knowledge.deleteArticle(context.guildId, routeParam(request, "id")));
     return { success: true };
   });
 
   server.post("/api/v1/knowledge/articles/:id/post", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(z.strictObject({ channelId: snowflake }), request.body);
-    return { data: await safe(() => knowledge.post(guildId, routeParam(request, "id"), body.channelId)) };
+    return { data: await safe(() => knowledge.post(context.guildId, routeParam(request, "id"), body.channelId)) };
   });
 
   server.post("/api/v1/knowledge/categories", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(categorySchema, request.body);
-    return { data: await safe(() => knowledge.createCategory(guildId, body)) };
+    return { data: await safe(() => knowledge.createCategory(context.guildId, body)) };
   });
 
   server.put("/api/v1/knowledge/categories/:id", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(categorySchema, request.body);
-    return { data: await safe(() => knowledge.updateCategory(guildId, routeParam(request, "id"), body)) };
+    return { data: await safe(() => knowledge.updateCategory(context.guildId, routeParam(request, "id"), body)) };
   });
 
   server.delete("/api/v1/knowledge/categories/:id", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
-    await safe(() => knowledge.deleteCategory(guildId, routeParam(request, "id")));
+    await safe(() => knowledge.deleteCategory(context.guildId, routeParam(request, "id")));
     return { success: true };
   });
 
   server.put("/api/v1/knowledge/settings", async (request) => {
     await guard(request, "knowledge.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => knowledge.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => knowledge.saveSettings({ ...body, guildId: context.guildId })) };
   });
 }
 

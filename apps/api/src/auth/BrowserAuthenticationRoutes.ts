@@ -41,18 +41,29 @@ import {
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { cookieSecret, type ApiAuthenticationConfiguration } from "./ApiAuthenticationConfiguration.js";
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
+import {
+  GUILD_COOKIE_MAX_AGE_SECONDS,
+  GUILD_COOKIE_NAME,
+  currentGuildId,
+  requireCurrentGuildId,
+  runInGuildScope,
+  setCurrentGuildId,
+} from "./CurrentGuild.js";
 import type { DiscordGuildAuthority } from "./DiscordGuildAuthority.js";
+import type { DiscordUserGuildSource, GuildDirectory, GuildListing } from "./GuildDirectory.js";
 
 /** Dependencies for browser-visible authentication and dashboard routes. */
 export interface BrowserAuthenticationRouteDependencies {
   readonly configuration: ApiAuthenticationConfiguration;
-  readonly provider: DiscordOAuthProvider & DiscordGuildMembershipVerifier;
+  readonly provider: DiscordOAuthProvider & DiscordGuildMembershipVerifier & DiscordUserGuildSource;
   readonly oauthTransactions: OAuthTransactionService;
   readonly login: DiscordLoginService;
   readonly credentials: OAuthCredentialService;
   readonly sessions: BrowserSessionService;
   readonly memberships: DiscordGuildMembershipService;
   readonly guilds: Pick<GuildRepository, "findByDiscordId" | "create">;
+  /** Servers the member and the bot share; drives the server picker and the current-server cookie. */
+  readonly directory: GuildDirectory;
   readonly authorizer: PermissionAuthorizer;
   readonly roleMenus: RoleMenuService;
   readonly community: DiscordCommunityService;
@@ -70,6 +81,8 @@ export interface BrowserAuthenticationRouteDependencies {
 const SESSION_COOKIE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const OAUTH_COOKIE_MAX_AGE_SECONDS = 10 * 60;
 const CSRF_COOKIE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+const SNOWFLAKE = /^[1-9][0-9]{16,19}$/u;
+const verifiedSessions = new WeakMap<FastifyRequest, Promise<Awaited<ReturnType<BrowserSessionService["verifySession"]>>>>();
 
 /** Registers the QboxPlatform browser dashboard and proof-of-concept auth routes. */
 export async function registerBrowserAuthenticationRoutes(
@@ -78,6 +91,13 @@ export async function registerBrowserAuthenticationRoutes(
 ): Promise<void> {
   const diagnostics = dependencies.configuration.diagnostics();
   await server.register(cookie);
+
+  server.addHook("onRequest", (_request, _reply, done) => {
+    runInGuildScope(() => done());
+  });
+  server.addHook("preHandler", async (request, reply) => {
+    setCurrentGuildId(await resolveCurrentGuild(request, reply, dependencies));
+  });
 
   if (dependencies.serveDashboard !== false)
     server.get("/", async (_request, reply) =>
@@ -128,26 +148,6 @@ export async function registerBrowserAuthenticationRoutes(
         token.accessToken,
         request.apiContext.signal,
       );
-      const currentMembership = await dependencies.provider.verify({
-        identity,
-        accessToken: token.accessToken,
-        guildId: dependencies.configuration.configuredDiscordGuildId(),
-        signal: request.apiContext.signal,
-      });
-      if (currentMembership.status !== "PRESENT") {
-        await dependencies.oauthTransactions.failTransaction(
-          claimed.transaction.id,
-          currentMembership.status === "ABSENT"
-            ? "PROVIDER_REJECTED"
-            : "DEPENDENCY_UNAVAILABLE",
-          context,
-        );
-        clearOauthBindingCookie(reply, dependencies.configuration);
-        return redirectAuthFailure(
-          reply,
-          currentMembership.status === "ABSENT" ? "not-member" : "pending",
-        );
-      }
       const account = await dependencies.login.resolveLogin(
         {
           userId: identity.userId,
@@ -162,27 +162,16 @@ export async function registerBrowserAuthenticationRoutes(
         tokenResult: token,
         context,
       });
-      const guild =
-        (await dependencies.guilds.findByDiscordId(diagnostics.discordGuildId)) ??
-        (await dependencies.guilds.create(diagnostics.discordGuildId, {
-          source: "api-authentication-login",
-        }));
-      const membership = await dependencies.memberships.verifyCurrentMembership({
-        externalIdentityId: account.externalIdentity.id,
-        guildId: guildId(guild.id),
-        discordGuildId: discordGuildId(diagnostics.discordGuildId),
-        context,
-        signal: request.apiContext.signal,
-      });
-      if (membership.status !== "PRESENT") {
-        await dependencies.oauthTransactions.failTransaction(
-          claimed.transaction.id,
-          membership.status === "ABSENT" ? "PROVIDER_REJECTED" : "DEPENDENCY_UNAVAILABLE",
+      dependencies.directory.forget(account.externalIdentity.id);
+      if (diagnostics.defaultGuildId !== undefined)
+        await verifyDefaultGuildMembership(
+          account.externalIdentity.id,
+          diagnostics.defaultGuildId,
+          token.accessToken,
           context,
+          request,
+          dependencies,
         );
-        clearOauthBindingCookie(reply, dependencies.configuration);
-        return redirectAuthFailure(reply, membership.status === "ABSENT" ? "not-member" : "pending");
-      }
       const issuedSession = await dependencies.sessions.createSession({
         platformUserId: account.platformUser.id,
         loginIdentityId: account.externalIdentity.id,
@@ -220,36 +209,38 @@ export async function registerBrowserAuthenticationRoutes(
   server.get("/api/v1/me", async (request) => {
     const verified = await requireSession(request, dependencies);
     const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
-    const guild =
-      (await dependencies.guilds.findByDiscordId(diagnostics.discordGuildId)) ??
-      (await dependencies.guilds.create(diagnostics.discordGuildId, {
-        source: "api-authentication-me",
-      }));
+    const guildDiscordId = currentGuildId();
+    const listing = await safeDirectoryCall(() =>
+      dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal),
+    );
+    const refresh = queryFlag(request, "refresh");
     const membership =
-      request.query &&
-      typeof request.query === "object" &&
-      Reflect.get(request.query, "refresh") === "1"
-        ? await dependencies.memberships.verifyCurrentMembership({
-            externalIdentityId: account.identity.id,
-            guildId: guildId(guild.id),
-            discordGuildId: discordGuildId(diagnostics.discordGuildId),
-            context: operationContext(request),
-            signal: request.apiContext.signal,
-          })
-        : await dependencies.unitOfWork.run((repositories) =>
-            repositories.guildMemberships.find(
-              account.identity.id,
-              discordGuildId(diagnostics.discordGuildId),
-            ),
-          );
+      guildDiscordId === undefined
+        ? undefined
+        : refresh && listing.guilds.some((entry) => entry.id === guildDiscordId)
+          ? await verifyMembership(account.identity.id, guildDiscordId, "api-authentication-me", operationContext(request), request, dependencies)
+          : await dependencies.unitOfWork.run((repositories) =>
+              repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
+            );
     const permissions = await permissionSummary(account.identity, membership, dependencies);
     const discordManager =
+      guildDiscordId !== undefined &&
       membership?.status === "PRESENT" &&
       ((await dependencies.guildAuthority?.isManager(
-        diagnostics.discordGuildId,
+        guildDiscordId,
         account.identity.providerSubjectId,
         membership.roles.map((role) => role.roleId),
       )) ?? false);
+    const guild =
+      guildDiscordId === undefined
+        ? null
+        : listing.guilds.find((entry) => entry.id === guildDiscordId) ??
+          {
+            id: guildDiscordId,
+            name: guildDiscordId,
+            icon: null,
+            canManage: discordManager || permissions.platformAdmin.allowed,
+          };
     return {
       account: {
         platformUserId: verified.actor.platformUserId,
@@ -259,7 +250,11 @@ export async function registerBrowserAuthenticationRoutes(
         globalName: account.identity.profile.globalName ?? null,
         avatar: account.identity.profile.avatar ?? null,
       },
-      membership: membershipSummary(membership, diagnostics.discordGuildId),
+      membership: membershipSummary(membership, guildDiscordId),
+      guild: guild === null ? null : { id: guild.id, name: guild.name, icon: guild.icon, canManage: guild.canManage },
+      guilds: listing.guilds,
+      inviteUrl: inviteUrl(diagnostics.discord.clientId),
+      reauthRequired: listing.reauthRequired,
       session: {
         id: verified.session.id,
         authenticatedAt: verified.session.authenticatedAt.toISOString(),
@@ -271,18 +266,58 @@ export async function registerBrowserAuthenticationRoutes(
     };
   });
 
+  server.get("/api/v1/guilds", async (request) => {
+    const verified = await requireSession(request, dependencies);
+    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const listing = await safeDirectoryCall(() =>
+      dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal, {
+        refresh: queryFlag(request, "refresh"),
+      }),
+    );
+    return { data: listing.guilds, reauthRequired: listing.reauthRequired };
+  });
+
+  server.post("/api/v1/guilds/select", async (request, reply) => {
+    await requireCsrf(request, dependencies);
+    const verified = await requireSession(request, dependencies);
+    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const selected = stringField(objectBody(request), "guildId");
+    if (!SNOWFLAKE.test(selected))
+      throw new ValidationApiError([{ path: ["body", "guildId"], code: "invalid_type", message: "guildId must be a Discord server ID." }]);
+    const listing = await safeDirectoryCall(() =>
+      dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal),
+    );
+    const guild = listing.guilds.find((entry) => entry.id === selected);
+    if (!guild) throw new AuthorizationDeniedApiError();
+    const membership = await verifyMembership(account.identity.id, selected, "api-guild-select", operationContext(request), request, dependencies);
+    if (membership.status !== "PRESENT") throw new AuthorizationDeniedApiError();
+    writeCookie(reply, GUILD_COOKIE_NAME, selected, {
+      httpOnly: true,
+      secure: diagnostics.secureCookies,
+      sameSite: "lax",
+      path: "/",
+      maxAge: GUILD_COOKIE_MAX_AGE_SECONDS,
+    });
+    return { data: guild };
+  });
+
+  server.post("/api/v1/guilds/clear", async (request, reply) => {
+    await requireCsrf(request, dependencies);
+    await requireSession(request, dependencies);
+    deleteCookie(reply, GUILD_COOKIE_NAME);
+    return { success: true };
+  });
+
   server.get("/api/v1/admin-check", async (request) => {
     const verified = await requireSession(request, dependencies);
     const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
-    const guild = await dependencies.guilds.findByDiscordId(diagnostics.discordGuildId);
-    const membership = guild
-      ? await dependencies.unitOfWork.run((repositories) =>
-          repositories.guildMemberships.find(
-            account.identity.id,
-            discordGuildId(diagnostics.discordGuildId),
-          ),
-        )
-      : undefined;
+    const guildDiscordId = currentGuildId();
+    const membership =
+      guildDiscordId === undefined
+        ? undefined
+        : await dependencies.unitOfWork.run((repositories) =>
+            repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
+          );
     const permissions = await permissionSummary(account.identity, membership, dependencies);
     if (!permissions.platformAdmin.allowed) throw new AuthorizationDeniedApiError();
     return { allowed: true, decision: permissions.platformAdmin };
@@ -290,7 +325,7 @@ export async function registerBrowserAuthenticationRoutes(
 
   server.get("/api/v1/discord/role-menus", async (request) => {
     await requireRoleMenuManager(request, dependencies);
-    return { data: await dependencies.roleMenus.listByGuild(diagnostics.discordGuildId) };
+    return { data: await dependencies.roleMenus.listByGuild(requireCurrentGuildId()) };
   });
 
   server.post("/api/v1/discord/role-menus", async (request) => {
@@ -300,7 +335,7 @@ export async function registerBrowserAuthenticationRoutes(
     return {
       data: await safeRoleMenuCall(() =>
         dependencies.roleMenus.createDraft({
-          guildId: diagnostics.discordGuildId,
+          guildId: requireCurrentGuildId(),
           channelId: stringField(body, "channelId"),
           title: stringField(body, "title"),
           ...(description === undefined ? {} : { description }),
@@ -424,25 +459,25 @@ export async function registerBrowserAuthenticationRoutes(
   server.get("/api/v1/discord/roles", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.listRoles(diagnostics.discordGuildId)) };
+    return { data: await safeRoleCall(() => dependencies.roles.listRoles(requireCurrentGuildId())) };
   });
 
   server.get("/api/v1/discord/roles/capabilities", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.capabilities(diagnostics.discordGuildId)) };
+    return { data: await safeRoleCall(() => dependencies.roles.capabilities(requireCurrentGuildId())) };
   });
 
   server.get("/api/v1/discord/roles/:roleId", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.inspectRole(diagnostics.discordGuildId, param(request, "roleId"))) };
+    return { data: await safeRoleCall(() => dependencies.roles.inspectRole(requireCurrentGuildId(), param(request, "roleId"))) };
   });
 
   server.get("/api/v1/discord/roles/:roleId/dependencies", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await dependencies.roles.listDependencies(diagnostics.discordGuildId, param(request, "roleId")) };
+    return { data: await dependencies.roles.listDependencies(requireCurrentGuildId(), param(request, "roleId")) };
   });
 
   server.post("/api/v1/discord/roles", async (request, reply) => {
@@ -453,7 +488,7 @@ export async function registerBrowserAuthenticationRoutes(
     return {
       data: await safeRoleCall(() =>
         dependencies.roles.createRole({
-          guildId: diagnostics.discordGuildId,
+          guildId: requireCurrentGuildId(),
           name: stringField(body, "name"),
           ...(optionalStringField(body, "color") === undefined ? {} : { color: optionalStringField(body, "color") }),
           ...(optionalBooleanField(body, "hoist") === undefined ? {} : { hoist: optionalBooleanField(body, "hoist") }),
@@ -480,7 +515,7 @@ export async function registerBrowserAuthenticationRoutes(
     return {
       data: await safeRoleCall(() =>
         dependencies.roles.editRole({
-          guildId: diagnostics.discordGuildId,
+          guildId: requireCurrentGuildId(),
           roleId: param(request, "roleId"),
           ...(name === undefined ? {} : { name }),
           ...(color === undefined ? {} : { color }),
@@ -501,7 +536,7 @@ export async function registerBrowserAuthenticationRoutes(
     const body = objectBody(request);
     await safeRoleCall(() =>
       dependencies.roles.deleteRole({
-        guildId: diagnostics.discordGuildId,
+        guildId: requireCurrentGuildId(),
         roleId: param(request, "roleId"),
         confirmation: stringField(body, "confirmation"),
         actor: { type: "platform-user", id: account.identity.providerSubjectId },
@@ -518,7 +553,7 @@ export async function registerBrowserAuthenticationRoutes(
     return {
       data: await safeRoleCall(() =>
         dependencies.roles.moveRole({
-          guildId: diagnostics.discordGuildId,
+          guildId: requireCurrentGuildId(),
           roleId: param(request, "roleId"),
           position: integerField(body, "position"),
           actor: { type: "platform-user", id: account.identity.providerSubjectId },
@@ -536,7 +571,7 @@ export async function registerBrowserAuthenticationRoutes(
       data: {
         changed: await safeRoleCall(() =>
           dependencies.roles.replaceDependency({
-            guildId: diagnostics.discordGuildId,
+            guildId: requireCurrentGuildId(),
             oldRoleId: param(request, "roleId"),
             newRoleId: stringField(body, "newRoleId"),
             actor: { type: "platform-user", id: account.identity.providerSubjectId },
@@ -550,19 +585,19 @@ export async function registerBrowserAuthenticationRoutes(
   server.get("/api/v1/discord/resources/roles", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.listRoles(diagnostics.discordGuildId)) };
+    return { data: await safeRoleCall(() => dependencies.roles.listRoles(requireCurrentGuildId())) };
   });
 
   server.get("/api/v1/discord/resources/bot-capabilities", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.capabilities(diagnostics.discordGuildId)) };
+    return { data: await safeRoleCall(() => dependencies.roles.capabilities(requireCurrentGuildId())) };
   });
 
   server.get("/api/v1/discord/resources/channels", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await requireDiscordManager(request, dependencies, "discord.roles.manage");
-    return { data: await safeRoleCall(() => dependencies.roles.listChannels(diagnostics.discordGuildId)) };
+    return { data: await safeRoleCall(() => dependencies.roles.listChannels(requireCurrentGuildId())) };
   });
 
   const communityRoutes = [
@@ -581,77 +616,79 @@ export async function registerBrowserAuthenticationRoutes(
   for (const [route, permission] of communityRoutes) {
     server.get(`/api/v1/discord/${route}`, async (request) => {
       await requireDiscordManager(request, dependencies, permission);
-      return { data: await dependencies.community.settings(diagnostics.discordGuildId) };
+      return { data: await dependencies.community.settings(requireCurrentGuildId()) };
     });
   }
 
   server.put("/api/v1/discord/welcome", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.welcome.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: diagnostics.discordGuildId, kind: "WELCOME", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, ...(optionalStringField(body, "embedTitle") ? { embedTitle: optionalStringField(body, "embedTitle") } : {}), ...(optionalStringField(body, "embedDescription") ? { embedDescription: optionalStringField(body, "embedDescription") } : {}), ...(optionalStringField(body, "embedColor") ? { embedColor: optionalStringField(body, "embedColor") } : {}), thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: optionalBooleanField(body, "directMessageEnabled") ?? false }) };
+    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: requireCurrentGuildId(), kind: "WELCOME", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, ...(optionalStringField(body, "embedTitle") ? { embedTitle: optionalStringField(body, "embedTitle") } : {}), ...(optionalStringField(body, "embedDescription") ? { embedDescription: optionalStringField(body, "embedDescription") } : {}), ...(optionalStringField(body, "embedColor") ? { embedColor: optionalStringField(body, "embedColor") } : {}), thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: optionalBooleanField(body, "directMessageEnabled") ?? false }) };
   });
 
   server.put("/api/v1/discord/goodbye", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.welcome.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: diagnostics.discordGuildId, kind: "GOODBYE", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: false }) };
+    return { data: await dependencies.community.saveWelcomeGoodbye({ guildId: requireCurrentGuildId(), kind: "GOODBYE", enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), embedEnabled: optionalBooleanField(body, "embedEnabled") ?? false, thumbnailAvatar: optionalBooleanField(body, "thumbnailAvatar") ?? true, directMessageEnabled: false }) };
   });
 
   server.put("/api/v1/discord/autoroles", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.autoroles.manage");
-    const settings = await dependencies.community.settings(diagnostics.discordGuildId);
+    const settings = await dependencies.community.settings(requireCurrentGuildId());
     const body = objectBody(request);
     return { data: await safeCommunityCall(() => dependencies.community.saveAutoroles({ ...settings.autoroles, enabled: booleanField(body, "enabled"), delaySeconds: optionalIntegerField(body, "delaySeconds") ?? settings.autoroles.delaySeconds, includeBots: optionalBooleanField(body, "includeBots") ?? settings.autoroles.includeBots, expectedRevision: integerField(body, "expectedRevision"), source: "WEB" })) };
   });
 
   server.post("/api/v1/discord/autoroles/roles", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.autoroles.manage");
-    return { data: await dependencies.community.addAutorole({ guildId: diagnostics.discordGuildId, roleId: stringField(objectBody(request), "roleId") }) };
+    return { data: await dependencies.community.addAutorole({ guildId: requireCurrentGuildId(), roleId: stringField(objectBody(request), "roleId") }) };
   });
 
   server.put("/api/v1/discord/rules", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.rules.manage");
     const body = objectBody(request);
-    return { data: await safeCommunityCall(() => dependencies.community.saveRules({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), buttonLabel: optionalStringField(body, "buttonLabel") ?? "Accept Rules", acceptedRoleId: stringField(body, "acceptedRoleId"), ...(optionalStringField(body, "pendingRoleId") ? { pendingRoleId: optionalStringField(body, "pendingRoleId") } : {}), expectedRevision: integerField(body, "expectedRevision"), source: "WEB" })) };
+    return { data: await safeCommunityCall(() => dependencies.community.saveRules({ guildId: requireCurrentGuildId(), enabled: booleanField(body, "enabled"), channelId: stringField(body, "channelId"), messageText: stringField(body, "messageText"), buttonLabel: optionalStringField(body, "buttonLabel") ?? "Accept Rules", acceptedRoleId: stringField(body, "acceptedRoleId"), ...(optionalStringField(body, "pendingRoleId") ? { pendingRoleId: optionalStringField(body, "pendingRoleId") } : {}), expectedRevision: integerField(body, "expectedRevision"), source: "WEB" })) };
   });
 
   server.post("/api/v1/discord/counters", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.counters.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveCounter({ guildId: diagnostics.discordGuildId, enabled: optionalBooleanField(body, "enabled") ?? true, channelId: stringField(body, "channelId"), labelTemplate: stringField(body, "labelTemplate"), type: counterTypeField(body, "type"), ...(optionalStringField(body, "roleId") ? { roleId: optionalStringField(body, "roleId") } : {}), intervalSeconds: optionalIntegerField(body, "intervalSeconds") ?? 300 }) };
+    return { data: await dependencies.community.saveCounter({ guildId: requireCurrentGuildId(), enabled: optionalBooleanField(body, "enabled") ?? true, channelId: stringField(body, "channelId"), labelTemplate: stringField(body, "labelTemplate"), type: counterTypeField(body, "type"), ...(optionalStringField(body, "roleId") ? { roleId: optionalStringField(body, "roleId") } : {}), intervalSeconds: optionalIntegerField(body, "intervalSeconds") ?? 300 }) };
   });
 
   server.put("/api/v1/discord/logs", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.logs.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveLogs({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), events: stringArrayField(body, "events"), destinations: recordField(body, "destinations"), ignoredChannels: stringArrayField(body, "ignoredChannels"), ignoredRoles: stringArrayField(body, "ignoredRoles"), ignoredUsers: stringArrayField(body, "ignoredUsers"), includeBots: optionalBooleanField(body, "includeBots") ?? false, contentMode: "REDACTED", colors: recordField(body, "colors") }) };
+    return { data: await dependencies.community.saveLogs({ guildId: requireCurrentGuildId(), enabled: booleanField(body, "enabled"), events: stringArrayField(body, "events"), destinations: recordField(body, "destinations"), ignoredChannels: stringArrayField(body, "ignoredChannels"), ignoredRoles: stringArrayField(body, "ignoredRoles"), ignoredUsers: stringArrayField(body, "ignoredUsers"), includeBots: optionalBooleanField(body, "includeBots") ?? false, contentMode: "REDACTED", colors: recordField(body, "colors") }) };
   });
 
   server.post("/api/v1/discord/embeds", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.embeds.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveEmbedTemplate({ guildId: diagnostics.discordGuildId, name: stringField(body, "name"), ...(optionalStringField(body, "title") ? { title: optionalStringField(body, "title") } : {}), ...(optionalStringField(body, "description") ? { description: optionalStringField(body, "description") } : {}), timestamp: optionalBooleanField(body, "timestamp") ?? false, fields: [], allowedRoleMentions: stringArrayField(body, "allowedRoleMentions") }) };
+    return { data: await dependencies.community.saveEmbedTemplate({ guildId: requireCurrentGuildId(), name: stringField(body, "name"), ...(optionalStringField(body, "title") ? { title: optionalStringField(body, "title") } : {}), ...(optionalStringField(body, "description") ? { description: optionalStringField(body, "description") } : {}), timestamp: optionalBooleanField(body, "timestamp") ?? false, fields: [], allowedRoleMentions: stringArrayField(body, "allowedRoleMentions") }) };
   });
 
   server.post("/api/v1/discord/custom-commands", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.custom-commands.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveCustomCommand({ guildId: diagnostics.discordGuildId, name: stringField(body, "name"), description: optionalStringField(body, "description") ?? "Custom response.", responseText: stringField(body, "responseText"), enabled: optionalBooleanField(body, "enabled") ?? true, allowedChannels: stringArrayField(body, "allowedChannels"), deniedChannels: stringArrayField(body, "deniedChannels"), requiredRoles: stringArrayField(body, "requiredRoles"), cooldownSeconds: optionalIntegerField(body, "cooldownSeconds") ?? 0, triggerMode: "SLASH_ONLY", deleteTriggeringMessage: false }) };
+    return { data: await dependencies.community.saveCustomCommand({ guildId: requireCurrentGuildId(), name: stringField(body, "name"), description: optionalStringField(body, "description") ?? "Custom response.", responseText: stringField(body, "responseText"), enabled: optionalBooleanField(body, "enabled") ?? true, allowedChannels: stringArrayField(body, "allowedChannels"), deniedChannels: stringArrayField(body, "deniedChannels"), requiredRoles: stringArrayField(body, "requiredRoles"), cooldownSeconds: optionalIntegerField(body, "cooldownSeconds") ?? 0, triggerMode: "SLASH_ONLY", deleteTriggeringMessage: false }) };
   });
 
   server.post("/api/v1/discord/suggestions/:id/status", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.suggestions.manage");
-    return { data: await dependencies.community.updateSuggestion({ guildId: diagnostics.discordGuildId, id: param(request, "id"), status: suggestionStatusField(objectBody(request), "status") }) };
+    return { data: await dependencies.community.updateSuggestion({ guildId: requireCurrentGuildId(), id: param(request, "id"), status: suggestionStatusField(objectBody(request), "status") }) };
   });
 
   server.put("/api/v1/discord/starboard", async (request) => {
     await requireDiscordManager(request, dependencies, "discord.starboard.manage");
     const body = objectBody(request);
-    return { data: await dependencies.community.saveStarboard({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), destinationChannelId: stringField(body, "destinationChannelId"), emoji: optionalStringField(body, "emoji") ?? "\u2b50", threshold: optionalIntegerField(body, "threshold") ?? 3, allowSelfStar: optionalBooleanField(body, "allowSelfStar") ?? false, includeBotMessages: optionalBooleanField(body, "includeBotMessages") ?? false, nsfw: "BLOCK", mode: "DENYLIST", channels: stringArrayField(body, "channels"), ignoredRoles: stringArrayField(body, "ignoredRoles") }) };
+    return { data: await dependencies.community.saveStarboard({ guildId: requireCurrentGuildId(), enabled: booleanField(body, "enabled"), destinationChannelId: stringField(body, "destinationChannelId"), emoji: optionalStringField(body, "emoji") ?? "\u2b50", threshold: optionalIntegerField(body, "threshold") ?? 3, allowSelfStar: optionalBooleanField(body, "allowSelfStar") ?? false, includeBotMessages: optionalBooleanField(body, "includeBotMessages") ?? false, nsfw: "BLOCK", mode: "DENYLIST", channels: stringArrayField(body, "channels"), ignoredRoles: stringArrayField(body, "ignoredRoles") }) };
   });
 
   const featureContext: ApiFeatureContext = {
-    guildId: diagnostics.discordGuildId,
+    get guildId() {
+      return requireCurrentGuildId();
+    },
     guard: async (request, permission, options) => {
       if (options.mutation) await requireCsrf(request, dependencies);
       const { account, roleIds } = await requireDiscordManager(request, dependencies, permission);
@@ -696,7 +733,9 @@ async function requireSession(
   const secret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
   if (!secret) throw new AuthenticationRequiredApiError();
   try {
-    const verified = await dependencies.sessions.verifySession(secret);
+    const pending = verifiedSessions.get(request) ?? dependencies.sessions.verifySession(secret);
+    verifiedSessions.set(request, pending);
+    const verified = await pending;
     request.apiContext = Object.freeze({
       ...request.apiContext,
       actor: verified.actor,
@@ -709,6 +748,117 @@ async function requireSession(
   } catch {
     throw new AuthenticationRequiredApiError();
   }
+}
+
+/**
+ * Resolves the current server for this request: the `qbox_guild` cookie when
+ * the signed-in member and the bot share that server, else the configured
+ * default, else none. A cookie for a server the member no longer shares is
+ * cleared. When Discord cannot be reached the stored membership decides.
+ */
+async function resolveCurrentGuild(
+  request: FastifyRequest,
+  reply: FastifyReply,
+  dependencies: BrowserAuthenticationRouteDependencies,
+): Promise<string | undefined> {
+  const fallback = dependencies.configuration.diagnostics().defaultGuildId;
+  const cookieGuild = readCookie(request, GUILD_COOKIE_NAME);
+  if (cookieGuild === undefined) return fallback;
+  if (!SNOWFLAKE.test(cookieGuild)) {
+    deleteCookie(reply, GUILD_COOKIE_NAME);
+    return fallback;
+  }
+  let identity: ExternalIdentity;
+  try {
+    const verified = await requireSession(request, dependencies);
+    identity = (await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies)).identity;
+  } catch {
+    return fallback;
+  }
+  let listing: GuildListing;
+  try {
+    listing = await dependencies.directory.list(identity, operationContext(request), request.apiContext.signal);
+  } catch (error) {
+    request.apiContext.logger.warn(
+      { event: "api.guilds.directory-unavailable", category: safeErrorCategory(error) },
+      "Could not read the member's servers; using the stored membership instead.",
+    );
+    const membership = await dependencies.unitOfWork.run((repositories) =>
+      repositories.guildMemberships.find(identity.id, discordGuildId(cookieGuild)),
+    );
+    return membership?.status === "PRESENT" ? cookieGuild : fallback;
+  }
+  if (listing.guilds.some((guild) => guild.id === cookieGuild)) return cookieGuild;
+  deleteCookie(reply, GUILD_COOKIE_NAME);
+  return fallback;
+}
+
+/** Verifies and stores the member's current membership in one server, creating the guild row when new. */
+async function verifyMembership(
+  externalIdentityId: ExternalIdentity["id"],
+  guildDiscordId: string,
+  source: string,
+  context: ReturnType<typeof operationContext>,
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+): Promise<DiscordGuildMembership> {
+  const guild =
+    (await dependencies.guilds.findByDiscordId(guildDiscordId)) ??
+    (await dependencies.guilds.create(guildDiscordId, { source }));
+  return dependencies.memberships.verifyCurrentMembership({
+    externalIdentityId,
+    guildId: guildId(guild.id),
+    discordGuildId: discordGuildId(guildDiscordId),
+    context,
+    signal: request.apiContext.signal,
+  });
+}
+
+/**
+ * After login, records membership in the default server so a browser that has
+ * not picked a server can use it right away. Members who are not in it are
+ * not verified against it, since an ABSENT snapshot ends their sessions.
+ */
+async function verifyDefaultGuildMembership(
+  externalIdentityId: ExternalIdentity["id"],
+  defaultGuildId: string,
+  accessToken: OpaqueAuthenticationSecret,
+  context: ReturnType<typeof operationContext>,
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+): Promise<void> {
+  let inDefaultGuild = true;
+  try {
+    const guilds = await dependencies.provider.fetchGuilds(accessToken, request.apiContext.signal);
+    inDefaultGuild = guilds.some((guild) => guild.id === defaultGuildId);
+  } catch (error) {
+    dependencies.logger.warn(
+      { event: "api.auth.guild-list-failed", category: safeErrorCategory(error) },
+      "Could not list the member's servers after login.",
+    );
+  }
+  if (inDefaultGuild)
+    await verifyMembership(externalIdentityId, defaultGuildId, "api-authentication-login", context, request, dependencies);
+}
+
+async function safeDirectoryCall<T>(operation: () => Promise<T>): Promise<T> {
+  try {
+    return await operation();
+  } catch (error) {
+    if (error instanceof AuthenticationInfrastructureError) throw new DependencyUnavailableApiError();
+    if (typeof error === "object" && error !== null && "retryable" in error && "code" in error)
+      throw new DependencyUnavailableApiError();
+    throw error;
+  }
+}
+
+function queryFlag(request: FastifyRequest, name: string): boolean {
+  return Boolean(request.query && typeof request.query === "object" && Reflect.get(request.query, name) === "1");
+}
+
+/** Where a server admin adds the bot; slash commands are registered globally. */
+function inviteUrl(clientId: string): string {
+  return `https://discord.com/oauth2/authorize?client_id=${encodeURIComponent(clientId)}&scope=bot%20applications.commands&permissions=8`;
 }
 
 /** Double-submit CSRF check bound to the current browser session. */
@@ -742,13 +892,10 @@ async function requireGuildMember(
 ) {
   const verified = await requireSession(request, dependencies);
   const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
-  const guildDiscordId = dependencies.configuration.diagnostics().discordGuildId;
-  const guild = await dependencies.guilds.findByDiscordId(guildDiscordId);
-  const membership = guild
-    ? await dependencies.unitOfWork.run((repositories) =>
-        repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
-      )
-    : undefined;
+  const guildDiscordId = requireCurrentGuildId();
+  const membership = await dependencies.unitOfWork.run((repositories) =>
+    repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
+  );
   if (!membership || membership.status !== "PRESENT")
     throw new AuthorizationDeniedApiError();
   return { verified, account, roleIds: membership.roles.map((role) => role.roleId) };
@@ -760,7 +907,7 @@ async function requireDiscordManager(
   permission: Permission | readonly Permission[],
 ) {
   const { verified, account, roleIds } = await requireGuildMember(request, dependencies);
-  const guildDiscordId = dependencies.configuration.diagnostics().discordGuildId;
+  const guildDiscordId = requireCurrentGuildId();
   if (await dependencies.guildAuthority?.isManager(guildDiscordId, account.identity.providerSubjectId, roleIds))
     return { verified, account, roleIds };
   const principals: PermissionPrincipal[] = [
@@ -985,7 +1132,8 @@ async function permissionSummary(
   readonly platformOwner: PermissionAuthorizationDecision;
   readonly platformAdmin: PermissionAuthorizationDecision;
 }> {
-  if (!membership || membership.status !== "PRESENT")
+  const guildDiscordId = currentGuildId();
+  if (guildDiscordId === undefined || !membership || membership.status !== "PRESENT")
     return {
       platformOwner: denied("missing-guild-context"),
       platformAdmin: denied("missing-guild-context"),
@@ -994,12 +1142,12 @@ async function permissionSummary(
     {
       type: "discord-user",
       externalId: identity.providerSubjectId,
-      guildId: dependencies.configuration.diagnostics().discordGuildId,
+      guildId: guildDiscordId,
     },
     ...membership.roles.map((role) => ({
       type: "discord-role" as const,
       externalId: role.roleId,
-      guildId: dependencies.configuration.diagnostics().discordGuildId,
+      guildId: guildDiscordId,
     })),
   ];
   const [platformOwner, platformAdmin] = await Promise.all([
@@ -1014,7 +1162,7 @@ async function permissionSummary(
       principals,
       scope: {
         type: "discord-guild",
-        guildId: dependencies.configuration.diagnostics().discordGuildId,
+        guildId: guildDiscordId,
       },
       required: ["platform.admin" satisfies Permission],
       mode: "all",
@@ -1037,10 +1185,10 @@ function denied(reason: PermissionAuthorizationDecision["reason"]): PermissionAu
 
 function membershipSummary(
   membership: DiscordGuildMembership | undefined,
-  discordGuildIdValue: string,
+  discordGuildIdValue: string | undefined,
 ) {
   return {
-    guildId: discordGuildIdValue,
+    guildId: discordGuildIdValue ?? null,
     status: membership?.status ?? "UNKNOWN",
     verifiedAt: membership?.verifiedAt?.toISOString() ?? null,
     validUntil: membership?.validUntil?.toISOString() ?? null,

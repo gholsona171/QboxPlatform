@@ -81,7 +81,7 @@ export function applicationsApiFeature(applications: ApplicationService): ApiFea
 }
 
 function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureContext, applications: ApplicationService): void {
-  const { guildId, guard, member } = context;
+  const { guard, member } = context;
   const applicant = (identity: ApiIdentity): Applicant => ({ userId: identity.userId, displayName: identity.displayName, roleIds: identity.roleIds, source: "WEB" });
   const holds = (request: FastifyRequest, permission: "applications.manage" | readonly ("applications.review" | "applications.manage")[]) =>
     guard(request, permission, { mutation: false }).then(() => true, () => false);
@@ -90,7 +90,7 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
     const identity = await member(request, { mutation });
     const elevated = await holds(request, ["applications.review", "applications.manage"]);
     const result: Reviewer = { userId: identity.userId, displayName: identity.displayName, roleIds: identity.roleIds, elevated, source: "WEB" };
-    if (!(await applications.isReviewer(guildId, result))) throw new AuthorizationDeniedApiError();
+    if (!(await applications.isReviewer(context.guildId, result))) throw new AuthorizationDeniedApiError();
     return result;
   };
 
@@ -102,9 +102,9 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
     const self = applicant(identity);
     const elevated = await holds(request, ["applications.review", "applications.manage"]);
     const [available, mine, review, manage] = await Promise.all([
-      applications.availability(guildId, self),
-      applications.mine(guildId, identity.userId),
-      applications.isReviewer(guildId, { ...self, elevated }),
+      applications.availability(context.guildId, self),
+      applications.mine(context.guildId, identity.userId),
+      applications.isReviewer(context.guildId, { ...self, elevated }),
       holds(request, "applications.manage"),
     ]);
     return { data: { userId: identity.userId, forms: available.map(({ form, canApply, reason }) => ({ ...publicForm(form), canApply, ...(reason ? { reason } : {}) })), applications: mine, can: { review, manage } } };
@@ -113,13 +113,13 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
   server.post("/api/v1/applications/forms/:formId/submit", async (request) => {
     const identity = await member(request, { mutation: true });
     const body = parse(z.strictObject({ answers: z.record(z.string().max(64), z.string().max(4000)) }), request.body);
-    const application = await safe(() => applications.submit({ guildId, formId: param(request, "formId"), applicant: applicant(identity), answers: body.answers }));
+    const application = await safe(() => applications.submit({ guildId: context.guildId, formId: param(request, "formId"), applicant: applicant(identity), answers: body.answers }));
     return { data: { ...application, votes: [], notes: [] } };
   });
 
   server.post("/api/v1/applications/:id/withdraw", async (request) => {
     const identity = await member(request, { mutation: true });
-    const application = await safe(() => applications.withdraw(guildId, param(request, "id"), applicant(identity)));
+    const application = await safe(() => applications.withdraw(context.guildId, param(request, "id"), applicant(identity)));
     return { data: { ...application, votes: [], notes: [] } };
   });
 
@@ -128,7 +128,7 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
   server.get("/api/v1/applications/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     const staff = await reviewer(request, false);
-    const [forms, stats, manage] = await Promise.all([applications.reviewableForms(guildId, staff), applications.stats(guildId, staff), holds(request, "applications.manage")]);
+    const [forms, stats, manage] = await Promise.all([applications.reviewableForms(context.guildId, staff), applications.stats(context.guildId, staff), holds(request, "applications.manage")]);
     return { data: { forms, stats, can: { review: true, manage } } };
   });
 
@@ -139,7 +139,7 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
     const statuses = query.status?.split(",").filter((status): status is ApplicationStatus => (APPLICATION_STATUSES as readonly string[]).includes(status));
     return {
       data: await safe(() => applications.list({
-        guildId,
+        guildId: context.guildId,
         ...(statuses?.length ? { statuses } : {}),
         ...(query.formId ? { formIds: [query.formId] } : {}),
         ...(query.userId ? { applicantId: query.userId } : {}),
@@ -152,25 +152,25 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
   server.get("/api/v1/applications/:id", async (request, reply) => {
     reply.header("cache-control", "no-store");
     const staff = await reviewer(request, false);
-    return { data: await safe(() => applications.review(guildId, param(request, "id"), staff)) };
+    return { data: await safe(() => applications.review(context.guildId, param(request, "id"), staff)) };
   });
 
   server.post("/api/v1/applications/:id/vote", async (request) => {
     const staff = await reviewer(request, true);
     const body = parse(z.strictObject({ vote: z.enum(["UP", "DOWN", "NONE"]) }), request.body);
-    return { data: await safe(() => applications.vote(guildId, param(request, "id"), staff, body.vote === "NONE" ? undefined : body.vote)) };
+    return { data: await safe(() => applications.vote(context.guildId, param(request, "id"), staff, body.vote === "NONE" ? undefined : body.vote)) };
   });
 
   server.post("/api/v1/applications/:id/notes", async (request) => {
     const staff = await reviewer(request, true);
     const body = parse(z.strictObject({ body: z.string().max(1000) }), request.body);
-    return { data: await safe(() => applications.addNote(guildId, param(request, "id"), staff, body.body)) };
+    return { data: await safe(() => applications.addNote(context.guildId, param(request, "id"), staff, body.body)) };
   });
 
   server.post("/api/v1/applications/:id/decision", async (request) => {
     const staff = await reviewer(request, true);
     const body = parse(z.strictObject({ status: z.enum(["ACCEPTED", "DENIED"]), reason: z.string().max(1000).optional() }), request.body);
-    return { data: await safe(() => applications.decide(guildId, param(request, "id"), staff, body.status, body.reason)) };
+    return { data: await safe(() => applications.decide(context.guildId, param(request, "id"), staff, body.status, body.reason)) };
   });
 
   /* ---------- Setup ---------- */
@@ -178,48 +178,48 @@ function registerApplicationRoutes(server: FastifyInstance, context: ApiFeatureC
   server.get("/api/v1/applications/forms", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "applications.manage", { mutation: false });
-    const [forms, panels] = await Promise.all([applications.forms(guildId), applications.panels(guildId)]);
+    const [forms, panels] = await Promise.all([applications.forms(context.guildId), applications.panels(context.guildId)]);
     return { data: { forms, panels } };
   });
 
   server.post("/api/v1/applications/forms", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
     const body = parse(formSchema, request.body);
-    return { data: await safe(() => applications.saveForm({ ...body, guildId })) };
+    return { data: await safe(() => applications.saveForm({ ...body, guildId: context.guildId })) };
   });
 
   server.put("/api/v1/applications/forms/:formId", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
     const body = parse(formSchema, request.body);
-    return { data: await safe(() => applications.saveForm({ ...body, guildId }, param(request, "formId"))) };
+    return { data: await safe(() => applications.saveForm({ ...body, guildId: context.guildId }, param(request, "formId"))) };
   });
 
   server.delete("/api/v1/applications/forms/:formId", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
-    await safe(() => applications.deleteForm(guildId, param(request, "formId")));
+    await safe(() => applications.deleteForm(context.guildId, param(request, "formId")));
     return { success: true };
   });
 
   server.post("/api/v1/applications/panels", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
     const body = parse(panelSchema, request.body);
-    return { data: await safe(() => applications.savePanel({ ...body, guildId })) };
+    return { data: await safe(() => applications.savePanel({ ...body, guildId: context.guildId })) };
   });
 
   server.put("/api/v1/applications/panels/:panelId", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
     const body = parse(panelSchema, request.body);
-    return { data: await safe(() => applications.savePanel({ ...body, guildId }, param(request, "panelId"))) };
+    return { data: await safe(() => applications.savePanel({ ...body, guildId: context.guildId }, param(request, "panelId"))) };
   });
 
   server.post("/api/v1/applications/panels/:panelId/publish", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
-    return { data: await safe(() => applications.publishPanel(guildId, param(request, "panelId"))) };
+    return { data: await safe(() => applications.publishPanel(context.guildId, param(request, "panelId"))) };
   });
 
   server.delete("/api/v1/applications/panels/:panelId", async (request) => {
     await guard(request, "applications.manage", { mutation: true });
-    await safe(() => applications.deletePanel(guildId, param(request, "panelId")));
+    await safe(() => applications.deletePanel(context.guildId, param(request, "panelId")));
     return { success: true };
   });
 }

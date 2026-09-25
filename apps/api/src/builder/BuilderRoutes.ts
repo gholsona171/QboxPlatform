@@ -81,7 +81,7 @@ export function builderApiFeature(builder: BuilderService): ApiFeature {
 }
 
 function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureContext, builder: BuilderService): void {
-  const { guildId, guard } = context;
+  const { guard } = context;
 
   server.addHook("onReady", async () => {
     try {
@@ -95,7 +95,7 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
   server.get("/api/v1/builder/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "builder.manage", { mutation: false });
-    return { data: await safe(() => builder.overview(guildId)) };
+    return { data: await safe(() => builder.overview(context.guildId)) };
   });
 
   server.put("/api/v1/builder/draft", async (request) => {
@@ -103,7 +103,7 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
     const body = parse(draftSchema, request.body);
     return {
       data: await safe(() => builder.saveDraft({
-        guildId,
+        guildId: context.guildId,
         answers: body.answers,
         blueprint: body.blueprint,
         updatedById: identity.userId,
@@ -120,7 +120,7 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
       data: await safe(async () => {
         const plan = await builder.generate(answers);
         if (!body.save) return plan;
-        return builder.saveDraft({ guildId, answers, blueprint: plan.blueprint, updatedById: identity.userId, expectedRevision: body.expectedRevision });
+        return builder.saveDraft({ guildId: context.guildId, answers, blueprint: plan.blueprint, updatedById: identity.userId, expectedRevision: body.expectedRevision });
       }),
     };
   });
@@ -129,13 +129,13 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
     reply.header("cache-control", "no-store");
     await guard(request, "builder.manage", { mutation: false });
     const query = parse(listSchema, routeQuery(request));
-    return { data: await safe(() => builder.runs(guildId, query.limit)) };
+    return { data: await safe(() => builder.runs(context.guildId, query.limit)) };
   });
 
   server.post("/api/v1/builder/runs", async (request, reply) => {
     const identity = await guard(request, "builder.manage", { mutation: true });
     const body = parse(runSchema, request.body);
-    const run = await safe(() => builder.startRun(guildId, body, { userId: identity.userId, displayName: identity.displayName }));
+    const run = await safe(() => builder.startRun(context.guildId, body, { userId: identity.userId, displayName: identity.displayName }));
     reply.code(202);
     return { data: run };
   });
@@ -143,12 +143,12 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
   server.get("/api/v1/builder/runs/:id", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "builder.manage", { mutation: false });
-    return { data: await safe(() => builder.run(guildId, routeParam(request, "id"))) };
+    return { data: await safe(() => builder.run(context.guildId, routeParam(request, "id"))) };
   });
 
   server.post("/api/v1/builder/runs/:id/undo", async (request, reply) => {
     await guard(request, "builder.manage", { mutation: true });
-    const run = await safe(() => builder.undo(guildId, routeParam(request, "id")));
+    const run = await safe(() => builder.undo(context.guildId, routeParam(request, "id")));
     reply.code(202);
     return { data: run };
   });

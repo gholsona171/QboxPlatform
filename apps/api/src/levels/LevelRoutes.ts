@@ -47,7 +47,7 @@ export function levelsApiFeature(levels: LevelService): ApiFeature {
 }
 
 function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext, levels: LevelService): void {
-  const { guildId, guard, member } = context;
+  const { guard, member } = context;
 
   /** Leaderboard and the viewer's own rank, for any signed-in member. */
   server.get("/api/v1/levels/leaderboard", async (request, reply) => {
@@ -56,8 +56,8 @@ function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext
     const query = routeQuery(request);
     const page = query.page === undefined ? 1 : parse(pageSchema, query.page);
     const [board, me, canManage] = await Promise.all([
-      safe(() => levels.leaderboard(guildId, page)),
-      safe(() => levels.profile(guildId, identity.userId)),
+      safe(() => levels.leaderboard(context.guildId, page)),
+      safe(() => levels.profile(context.guildId, identity.userId)),
       guard(request, "levels.manage", { mutation: false }).then(() => true, () => false),
     ]);
     return { data: { ...board, me, canManage } };
@@ -66,21 +66,21 @@ function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext
   server.get("/api/v1/levels/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "levels.manage", { mutation: false });
-    return { data: { settings: await levels.settings(guildId), levelCap: LEVEL_CAP } };
+    return { data: { settings: await levels.settings(context.guildId), levelCap: LEVEL_CAP } };
   });
 
   server.get("/api/v1/levels/members", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "levels.manage", { mutation: false });
     const search = parse(z.string().min(1).max(100), routeQuery(request).search);
-    return { data: await safe(() => levels.search(guildId, search)) };
+    return { data: await safe(() => levels.search(context.guildId, search)) };
   });
 
   server.get("/api/v1/levels/members/:userId", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "levels.manage", { mutation: false });
     const userId = parse(snowflake, routeParam(request, "userId"));
-    return { data: await safe(() => levels.profile(guildId, userId)) };
+    return { data: await safe(() => levels.profile(context.guildId, userId)) };
   });
 
   server.post("/api/v1/levels/members/:userId", async (request) => {
@@ -89,15 +89,15 @@ function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext
     const body = parse(memberActionSchema, request.body);
     switch (body.action) {
       case "give":
-        return { data: await safe(() => levels.give(guildId, userId, body.xp, body.displayName)) };
+        return { data: await safe(() => levels.give(context.guildId, userId, body.xp, body.displayName)) };
       case "take":
-        return { data: await safe(() => levels.take(guildId, userId, body.xp)) };
+        return { data: await safe(() => levels.take(context.guildId, userId, body.xp)) };
       case "set-level":
-        return { data: await safe(() => levels.setLevel(guildId, userId, body.level, body.displayName)) };
+        return { data: await safe(() => levels.setLevel(context.guildId, userId, body.level, body.displayName)) };
       case "set-xp":
-        return { data: await safe(() => levels.setXp(guildId, userId, body.xp, body.displayName)) };
+        return { data: await safe(() => levels.setXp(context.guildId, userId, body.xp, body.displayName)) };
       default:
-        await safe(() => levels.reset(guildId, userId));
+        await safe(() => levels.reset(context.guildId, userId));
         return { success: true };
     }
   });
@@ -105,12 +105,12 @@ function registerLevelRoutes(server: FastifyInstance, context: ApiFeatureContext
   server.put("/api/v1/levels/settings", async (request) => {
     await guard(request, "levels.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => levels.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => levels.saveSettings({ ...body, guildId: context.guildId })) };
   });
 
   server.post("/api/v1/levels/reset", async (request) => {
     await guard(request, "levels.manage", { mutation: true });
     parse(z.strictObject({ confirm: z.literal("RESET") }), request.body);
-    return { data: await safe(() => levels.resetAll(guildId)) };
+    return { data: await safe(() => levels.resetAll(context.guildId)) };
   });
 }

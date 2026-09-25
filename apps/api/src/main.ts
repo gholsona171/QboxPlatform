@@ -67,7 +67,7 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
       discordClientId: environment.DISCORD_OAUTH_CLIENT_ID,
       discordClientSecret: environment.DISCORD_OAUTH_CLIENT_SECRET,
       discordRedirectUri: environment.DISCORD_OAUTH_REDIRECT_URI,
-      discordGuildId: environment.DISCORD_GUILD_ID,
+      ...(environment.DISCORD_GUILD_ID?.trim() ? { discordGuildId: environment.DISCORD_GUILD_ID.trim() } : {}),
       sessionHmacKey: environment.AUTH_SESSION_HMAC_KEY,
       csrfHmacKey: environment.AUTH_CSRF_HMAC_KEY,
       metadataHmacKey: environment.AUTH_METADATA_HMAC_KEY,

@@ -15,6 +15,7 @@ export interface ApiAuthenticationConfigurationInput {
   readonly discordClientId?: string | undefined;
   readonly discordClientSecret?: string | undefined;
   readonly discordRedirectUri?: string | undefined;
+  /** Optional default server; omit it for multi-server deployments. */
   readonly discordGuildId?: string | undefined;
   readonly sessionHmacKey?: string | undefined;
   readonly csrfHmacKey?: string | undefined;
@@ -31,7 +32,8 @@ export interface ApiAuthenticationConfigurationDiagnostics {
   readonly csrfCookieName: "__Host-qbox_csrf" | "qbox_csrf";
   readonly secureCookies: boolean;
   readonly keyVersion: number;
-  readonly discordGuildId: string;
+  /** Default server for browsers that have not picked one, when configured. */
+  readonly defaultGuildId: string | undefined;
   readonly dashboardUrl: string;
   readonly callbackUrl: string;
   readonly discord: ReturnType<DiscordOAuthConfiguration["diagnostics"]>;
@@ -43,7 +45,7 @@ const inputSchema = z.strictObject({
   discordClientId: z.string().trim().min(17).max(20),
   discordClientSecret: z.string().trim().min(1).max(512),
   discordRedirectUri: z.string().trim().min(1).max(2_048),
-  discordGuildId: z.string().trim().min(17).max(20),
+  discordGuildId: z.string().trim().min(17).max(20).optional(),
   sessionHmacKey: z.string().trim().min(1),
   csrfHmacKey: z.string().trim().min(1),
   metadataHmacKey: z.string().trim().min(1),
@@ -56,18 +58,18 @@ export class ApiAuthenticationConfiguration {
   readonly #diagnostics: ApiAuthenticationConfigurationDiagnostics;
   readonly #discord: DiscordOAuthConfiguration;
   readonly #keyRegistrations: readonly AuthenticationKeyRegistration[];
-  readonly #discordGuildId: ReturnType<typeof discordGuildId>;
+  readonly #defaultGuildId: ReturnType<typeof discordGuildId> | undefined;
 
   private constructor(input: {
     readonly diagnostics: ApiAuthenticationConfigurationDiagnostics;
     readonly discord: DiscordOAuthConfiguration;
     readonly keyRegistrations: readonly AuthenticationKeyRegistration[];
-    readonly discordGuildId: ReturnType<typeof discordGuildId>;
+    readonly defaultGuildId: ReturnType<typeof discordGuildId> | undefined;
   }) {
     this.#diagnostics = Object.freeze(input.diagnostics);
     this.#discord = input.discord;
     this.#keyRegistrations = Object.freeze(input.keyRegistrations);
-    this.#discordGuildId = input.discordGuildId;
+    this.#defaultGuildId = input.defaultGuildId;
   }
 
   /** Validates raw process values and builds one immutable configuration. */
@@ -95,7 +97,7 @@ export class ApiAuthenticationConfiguration {
       clientId: parsed.data.discordClientId,
       clientSecret: parsed.data.discordClientSecret,
       redirectUri: parsed.data.discordRedirectUri,
-      guildId: parsed.data.discordGuildId,
+      ...(parsed.data.discordGuildId === undefined ? {} : { defaultGuildId: parsed.data.discordGuildId }),
     });
     const diagnostics: ApiAuthenticationConfigurationDiagnostics = {
       environment: parsed.data.environment,
@@ -104,7 +106,7 @@ export class ApiAuthenticationConfiguration {
       csrfCookieName: secureCookies ? "__Host-qbox_csrf" : "qbox_csrf",
       secureCookies,
       keyVersion: version,
-      discordGuildId: parsed.data.discordGuildId,
+      defaultGuildId: parsed.data.discordGuildId,
       dashboardUrl,
       callbackUrl: callbackUrl.toString(),
       discord: discord.diagnostics(),
@@ -112,7 +114,7 @@ export class ApiAuthenticationConfiguration {
     return new ApiAuthenticationConfiguration({
       diagnostics,
       discord,
-      discordGuildId: discordGuildId(parsed.data.discordGuildId),
+      defaultGuildId: parsed.data.discordGuildId === undefined ? undefined : discordGuildId(parsed.data.discordGuildId),
       keyRegistrations: [
         registration("SESSION_HMAC", version, parsed.data.sessionHmacKey, 32),
         registration("CSRF_HMAC", version, parsed.data.csrfHmacKey, 32),
@@ -137,9 +139,9 @@ export class ApiAuthenticationConfiguration {
     return this.#keyRegistrations;
   }
 
-  /** Returns the configured Discord guild snowflake. */
-  public configuredDiscordGuildId(): ReturnType<typeof discordGuildId> {
-    return this.#discordGuildId;
+  /** Returns the default Discord guild snowflake, when one is configured. */
+  public defaultDiscordGuildId(): ReturnType<typeof discordGuildId> | undefined {
+    return this.#defaultGuildId;
   }
 }
 

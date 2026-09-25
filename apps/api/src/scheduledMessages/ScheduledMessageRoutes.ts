@@ -51,48 +51,48 @@ export function scheduledMessagesApiFeature(scheduled: ScheduledMessageService):
 }
 
 function registerScheduledMessageRoutes(server: FastifyInstance, context: ApiFeatureContext, scheduled: ScheduledMessageService): void {
-  const { guildId, guard } = context;
+  const { guard } = context;
 
   server.get("/api/v1/scheduled-messages", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "scheduled.manage", { mutation: false });
-    return { data: (await safe(() => scheduled.list(guildId))).map(view) };
+    return { data: (await safe(() => scheduled.list(context.guildId))).map(view) };
   });
 
   server.get("/api/v1/scheduled-messages/runs", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "scheduled.manage", { mutation: false });
     const query = parse(z.object({ messageId: z.string().max(64).optional(), limit: z.coerce.number().int().min(1).max(200).optional() }), routeQuery(request));
-    return { data: await safe(() => scheduled.runs(guildId, query.messageId, query.limit)) };
+    return { data: await safe(() => scheduled.runs(context.guildId, query.messageId, query.limit)) };
   });
 
   server.post("/api/v1/scheduled-messages", async (request) => {
     const identity = await guard(request, "scheduled.manage", { mutation: true });
     const body = parse(messageSchema, request.body);
-    return { data: view(await safe(() => scheduled.create({ ...body, guildId }, identity.userId))) };
+    return { data: view(await safe(() => scheduled.create({ ...body, guildId: context.guildId }, identity.userId))) };
   });
 
   server.put("/api/v1/scheduled-messages/:id", async (request) => {
     await guard(request, "scheduled.manage", { mutation: true });
     const body = parse(messageSchema, request.body);
-    return { data: view(await safe(() => scheduled.update(guildId, routeParam(request, "id"), { ...body, guildId }))) };
+    return { data: view(await safe(() => scheduled.update(context.guildId, routeParam(request, "id"), { ...body, guildId: context.guildId }))) };
   });
 
   server.delete("/api/v1/scheduled-messages/:id", async (request) => {
     await guard(request, "scheduled.manage", { mutation: true });
-    await safe(() => scheduled.delete(guildId, routeParam(request, "id")));
+    await safe(() => scheduled.delete(context.guildId, routeParam(request, "id")));
     return { success: true };
   });
 
   server.post("/api/v1/scheduled-messages/:id/send", async (request) => {
     await guard(request, "scheduled.manage", { mutation: true });
-    return { data: await safe(() => scheduled.sendNow(guildId, routeParam(request, "id"))) };
+    return { data: await safe(() => scheduled.sendNow(context.guildId, routeParam(request, "id"))) };
   });
 
   for (const [action, enabled] of [["pause", false], ["resume", true]] as const) {
     server.post(`/api/v1/scheduled-messages/:id/${action}`, async (request) => {
       await guard(request, "scheduled.manage", { mutation: true });
-      return { data: view(await safe(() => scheduled.setEnabled(guildId, routeParam(request, "id"), enabled))) };
+      return { data: view(await safe(() => scheduled.setEnabled(context.guildId, routeParam(request, "id"), enabled))) };
     });
   }
 }

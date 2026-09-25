@@ -35,7 +35,7 @@ export function birthdaysApiFeature(birthdays: BirthdayService): ApiFeature {
 }
 
 function registerBirthdayRoutes(server: FastifyInstance, context: ApiFeatureContext, birthdays: BirthdayService): void {
-  const { guildId, guard, member } = context;
+  const { guard, member } = context;
   const canManage = (request: FastifyRequest) => guard(request, "birthdays.manage", { mutation: false }).then(() => true, () => false);
   const actor = (identity: ApiIdentity, manager: boolean) => ({ userId: identity.userId, displayName: identity.displayName, manager });
 
@@ -44,9 +44,9 @@ function registerBirthdayRoutes(server: FastifyInstance, context: ApiFeatureCont
     const identity = await member(request, { mutation: false });
     const [manage, settings, me, upcoming] = await Promise.all([
       canManage(request),
-      birthdays.settings(guildId),
-      birthdays.get(guildId, identity.userId),
-      birthdays.upcoming(guildId, 30),
+      birthdays.settings(context.guildId),
+      birthdays.get(context.guildId, identity.userId),
+      birthdays.upcoming(context.guildId, 30),
     ]);
     const { guildId: _guildId, ...visibleSettings } = settings;
     return {
@@ -65,20 +65,20 @@ function registerBirthdayRoutes(server: FastifyInstance, context: ApiFeatureCont
     const identity = await member(request, { mutation: false });
     const query = parse(z.object({ search: z.string().max(100).optional() }), routeQuery(request));
     const manage = await canManage(request);
-    const list = await safe(() => birthdays.list(guildId, query.search));
+    const list = await safe(() => birthdays.list(context.guildId, query.search));
     return { data: list.map((item) => upcomingView(item, manage || item.birthday.userId === identity.userId)) };
   });
 
   server.put("/api/v1/birthdays/me", async (request) => {
     const identity = await member(request, { mutation: true });
     const body = parse(dateSchema.extend({ confirmed: z.boolean().optional() }), request.body);
-    const saved = await safe(() => birthdays.set({ guildId, userId: identity.userId, displayName: identity.displayName, ...body }, actor(identity, false)));
+    const saved = await safe(() => birthdays.set({ guildId: context.guildId, userId: identity.userId, displayName: identity.displayName, ...body }, actor(identity, false)));
     return { data: birthdayView(saved, true) };
   });
 
   server.delete("/api/v1/birthdays/me", async (request) => {
     const identity = await member(request, { mutation: true });
-    await safe(() => birthdays.remove(guildId, identity.userId, actor(identity, false)));
+    await safe(() => birthdays.remove(context.guildId, identity.userId, actor(identity, false)));
     return { success: true };
   });
 
@@ -87,27 +87,27 @@ function registerBirthdayRoutes(server: FastifyInstance, context: ApiFeatureCont
     const userId = parse(snowflake, Reflect.get(request.params as object, "userId"));
     const body = parse(dateSchema.extend({ displayName: z.string().min(1).max(100).optional() }), request.body);
     const { displayName, ...date } = body;
-    const saved = await safe(() => birthdays.set({ guildId, userId, displayName: displayName ?? userId, ...date }, actor(identity, true)));
+    const saved = await safe(() => birthdays.set({ guildId: context.guildId, userId, displayName: displayName ?? userId, ...date }, actor(identity, true)));
     return { data: birthdayView(saved, true) };
   });
 
   server.delete("/api/v1/birthdays/members/:userId", async (request) => {
     const identity = await guard(request, "birthdays.manage", { mutation: true });
     const userId = parse(snowflake, Reflect.get(request.params as object, "userId"));
-    await safe(() => birthdays.remove(guildId, userId, actor(identity, true)));
+    await safe(() => birthdays.remove(context.guildId, userId, actor(identity, true)));
     return { success: true };
   });
 
   server.put("/api/v1/birthdays/settings", async (request) => {
     await guard(request, "birthdays.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    const { guildId: _guildId, ...saved } = await safe(() => birthdays.saveSettings({ ...body, guildId }));
+    const { guildId: _guildId, ...saved } = await safe(() => birthdays.saveSettings({ ...body, guildId: context.guildId }));
     return { data: saved };
   });
 
   server.post("/api/v1/birthdays/test", async (request) => {
     const identity = await guard(request, "birthdays.manage", { mutation: true });
-    return { data: await safe(() => birthdays.sendTest(guildId, identity.userId)) };
+    return { data: await safe(() => birthdays.sendTest(context.guildId, identity.userId)) };
   });
 }
 

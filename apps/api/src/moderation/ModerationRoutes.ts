@@ -84,7 +84,7 @@ export function moderationApiFeature(moderation: ModerationService): ApiFeature 
 }
 
 function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureContext, moderation: ModerationService): void {
-  const { guildId, guard } = context;
+  const { guard } = context;
   const moderator = (identity: ApiIdentity): Moderator => ({ userId: identity.userId, displayName: identity.displayName, source: "WEB" });
   const caseNumber = (request: FastifyRequest) => {
     const value = Number(Reflect.get(request.params as object, "number"));
@@ -96,9 +96,9 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
     reply.header("cache-control", "no-store");
     await guard(request, "moderation.view", { mutation: false });
     const [settings, stats, recent, capabilities] = await Promise.all([
-      moderation.settings(guildId),
-      moderation.stats(guildId),
-      moderation.list({ guildId, limit: 25 }),
+      moderation.settings(context.guildId),
+      moderation.stats(context.guildId),
+      moderation.list({ guildId: context.guildId, limit: 25 }),
       Promise.all(CAPABILITIES.map(async ([name, permission]) => [name, await guard(request, permission, { mutation: false }).then(() => true, () => false)] as const)),
     ]);
     return { data: { settings, stats, recent, can: Object.fromEntries(capabilities), maxTimeoutMinutes: MAX_TIMEOUT_MINUTES } };
@@ -111,7 +111,7 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
     const types = query.type?.split(",").filter((type): type is CaseType => (CASE_TYPES as readonly string[]).includes(type));
     return {
       data: await safe(() => moderation.list({
-        guildId,
+        guildId: context.guildId,
         ...(types?.length ? { types } : {}),
         ...(query.userId ? { targetId: query.userId } : {}),
         ...(query.moderatorId ? { moderatorId: query.moderatorId } : {}),
@@ -126,14 +126,14 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
   server.get("/api/v1/moderation/cases/:number", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "moderation.view", { mutation: false });
-    return { data: await safe(() => moderation.getCase(guildId, caseNumber(request))) };
+    return { data: await safe(() => moderation.getCase(context.guildId, caseNumber(request))) };
   });
 
   server.get("/api/v1/moderation/members/:userId", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await guard(request, "moderation.view", { mutation: false });
     const userId = parse(snowflake, Reflect.get(request.params as object, "userId"));
-    return { data: await safe(() => moderation.history(guildId, userId)) };
+    return { data: await safe(() => moderation.history(context.guildId, userId)) };
   });
 
   server.post("/api/v1/moderation/actions", async (request) => {
@@ -141,7 +141,7 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
     const identity = await guard(request, ACTION_PERMISSIONS[body.type], { mutation: true });
     return {
       data: await safe(() => moderation.act({
-        guildId,
+        guildId: context.guildId,
         type: body.type,
         target: { userId: body.userId, displayName: body.displayName ?? body.userId },
         moderator: moderator(identity),
@@ -156,32 +156,32 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
   server.patch("/api/v1/moderation/cases/:number", async (request) => {
     const identity = await guard(request, "moderation.manage", { mutation: true });
     const body = parse(z.strictObject({ reason: z.string().min(1).max(1000) }), request.body);
-    return { data: await safe(() => moderation.updateReason(guildId, caseNumber(request), moderator(identity), body.reason)) };
+    return { data: await safe(() => moderation.updateReason(context.guildId, caseNumber(request), moderator(identity), body.reason)) };
   });
 
   server.post("/api/v1/moderation/cases/:number/pardon", async (request) => {
     const identity = await guard(request, "moderation.manage", { mutation: true });
     const body = parse(z.strictObject({ reason: z.string().max(1000).optional() }), request.body ?? {});
-    return { data: await safe(() => moderation.revoke(guildId, caseNumber(request), moderator(identity), body.reason)) };
+    return { data: await safe(() => moderation.revoke(context.guildId, caseNumber(request), moderator(identity), body.reason)) };
   });
 
   server.post("/api/v1/moderation/cases/:number/evidence", async (request) => {
     await guard(request, "moderation.manage", { mutation: true });
     const body = parse(z.strictObject({ url: z.string().max(1000) }), request.body);
-    return { data: await safe(() => moderation.addEvidence(guildId, caseNumber(request), body.url)) };
+    return { data: await safe(() => moderation.addEvidence(context.guildId, caseNumber(request), body.url)) };
   });
 
   server.put("/api/v1/moderation/settings", async (request) => {
     await guard(request, "moderation.manage", { mutation: true });
     const body = parse(settingsSchema, request.body);
-    return { data: await safe(() => moderation.saveSettings({ ...body, guildId })) };
+    return { data: await safe(() => moderation.saveSettings({ ...body, guildId: context.guildId })) };
   });
 
   server.post("/api/v1/moderation/channels/:channelId/lock", async (request) => {
     const identity = await guard(request, "moderation.messages", { mutation: true });
     const channelId = parse(snowflake, Reflect.get(request.params as object, "channelId"));
     const body = parse(z.strictObject({ locked: z.boolean(), reason: z.string().max(500).optional() }), request.body);
-    await safe(() => moderation.lock(guildId, channelId, body.locked, moderator(identity), body.reason));
+    await safe(() => moderation.lock(context.guildId, channelId, body.locked, moderator(identity), body.reason));
     return { success: true };
   });
 
@@ -189,7 +189,7 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
     const identity = await guard(request, "moderation.messages", { mutation: true });
     const channelId = parse(snowflake, Reflect.get(request.params as object, "channelId"));
     const body = parse(z.strictObject({ seconds: z.number().int() }), request.body);
-    await safe(() => moderation.slowmode(guildId, channelId, body.seconds, moderator(identity)));
+    await safe(() => moderation.slowmode(context.guildId, channelId, body.seconds, moderator(identity)));
     return { success: true };
   });
 
@@ -197,6 +197,6 @@ function registerModerationRoutes(server: FastifyInstance, context: ApiFeatureCo
     const identity = await guard(request, "moderation.messages", { mutation: true });
     const channelId = parse(snowflake, Reflect.get(request.params as object, "channelId"));
     const body = parse(z.strictObject({ count: z.number().int(), userId: snowflake.optional() }), request.body);
-    return { data: { deleted: await safe(() => moderation.purge(guildId, channelId, body.count, moderator(identity), body.userId)) } };
+    return { data: { deleted: await safe(() => moderation.purge(context.guildId, channelId, body.count, moderator(identity), body.userId)) } };
   });
 }
