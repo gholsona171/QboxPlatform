@@ -331,3 +331,4 @@ td small { color: var(--muted); }
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 .duration-row { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; }
+.answer-text { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }

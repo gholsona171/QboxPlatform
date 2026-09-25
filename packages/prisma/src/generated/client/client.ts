@@ -31,8 +31,8 @@ export * from "./enums.js"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Guilds
- * const guilds = await prisma.guild.findMany()
+ * // Fetch zero or more ApplicationCounters
+ * const applicationCounters = await prisma.applicationCounter.findMany()
  * ```
  *
  * Read more in our [docs](https://pris.ly/d/client).
@@ -41,6 +41,36 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model ApplicationCounter
+ *
+ */
+export type ApplicationCounter = Prisma.ApplicationCounterModel
+/**
+ * Model ApplicationForm
+ *
+ */
+export type ApplicationForm = Prisma.ApplicationFormModel
+/**
+ * Model ApplicationPanel
+ *
+ */
+export type ApplicationPanel = Prisma.ApplicationPanelModel
+/**
+ * Model Application
+ *
+ */
+export type Application = Prisma.ApplicationModel
+/**
+ * Model ApplicationVote
+ *
+ */
+export type ApplicationVote = Prisma.ApplicationVoteModel
+/**
+ * Model ApplicationNote
+ *
+ */
+export type ApplicationNote = Prisma.ApplicationNoteModel
 /**
  * Model Guild
  *

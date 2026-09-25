@@ -30,6 +30,8 @@ const commandNames = [
   "tickets",
   "mod",
   "verify",
+  "apply",
+  "applications",
 ];
 
 describe("featureRegistry", () => {

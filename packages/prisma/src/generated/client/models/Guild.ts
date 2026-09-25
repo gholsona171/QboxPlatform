@@ -500,22 +500,6 @@ export type GuildNullableScalarRelationFilter = {
   isNot?: Prisma.GuildWhereInput | null
 }
 
-export type StringFieldUpdateOperationsInput = {
-  set?: string
-}
-
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type GuildCreateNestedOneWithoutRoleMenusInput = {
   create?: Prisma.XOR<Prisma.GuildCreateWithoutRoleMenusInput, Prisma.GuildUncheckedCreateWithoutRoleMenusInput>
   connectOrCreate?: Prisma.GuildCreateOrConnectWithoutRoleMenusInput

@@ -18,6 +18,36 @@ export { Prisma }
 export * as $Enums from './enums.js'
 export * from './enums.js';
 /**
+ * Model ApplicationCounter
+ *
+ */
+export type ApplicationCounter = Prisma.ApplicationCounterModel
+/**
+ * Model ApplicationForm
+ *
+ */
+export type ApplicationForm = Prisma.ApplicationFormModel
+/**
+ * Model ApplicationPanel
+ *
+ */
+export type ApplicationPanel = Prisma.ApplicationPanelModel
+/**
+ * Model Application
+ *
+ */
+export type Application = Prisma.ApplicationModel
+/**
+ * Model ApplicationVote
+ *
+ */
+export type ApplicationVote = Prisma.ApplicationVoteModel
+/**
+ * Model ApplicationNote
+ *
+ */
+export type ApplicationNote = Prisma.ApplicationNoteModel
+/**
  * Model Guild
  *
  */

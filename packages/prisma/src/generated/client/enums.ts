@@ -9,6 +9,42 @@
 * 🟢 You can import this file directly.
 */
 
+export const ApplicationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DENIED: 'DENIED',
+  WITHDRAWN: 'WITHDRAWN'
+} as const
+
+export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const ApplicationSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB'
+} as const
+
+export type ApplicationSource = (typeof ApplicationSource)[keyof typeof ApplicationSource]
+
+
+export const ApplicationVoteType = {
+  UP: 'UP',
+  DOWN: 'DOWN'
+} as const
+
+export type ApplicationVoteType = (typeof ApplicationVoteType)[keyof typeof ApplicationVoteType]
+
+
+export const ApplicationButtonStyle = {
+  PRIMARY: 'PRIMARY',
+  SECONDARY: 'SECONDARY',
+  SUCCESS: 'SUCCESS',
+  DANGER: 'DANGER'
+} as const
+
+export type ApplicationButtonStyle = (typeof ApplicationButtonStyle)[keyof typeof ApplicationButtonStyle]
+
+
 export const PermissionPrincipalType = {
   DISCORD_USER: 'DISCORD_USER',
   DISCORD_ROLE: 'DISCORD_ROLE'

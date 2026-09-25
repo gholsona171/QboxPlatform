@@ -51,6 +51,12 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  ApplicationCounter: 'ApplicationCounter',
+  ApplicationForm: 'ApplicationForm',
+  ApplicationPanel: 'ApplicationPanel',
+  Application: 'Application',
+  ApplicationVote: 'ApplicationVote',
+  ApplicationNote: 'ApplicationNote',
   Guild: 'Guild',
   RoleMenu: 'RoleMenu',
   RoleMenuOption: 'RoleMenuOption',
@@ -106,6 +112,112 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 } as const)
 
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
+
+
+export const ApplicationCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationCounterScalarFieldEnum = (typeof ApplicationCounterScalarFieldEnum)[keyof typeof ApplicationCounterScalarFieldEnum]
+
+
+export const ApplicationFormScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  enabled: 'enabled',
+  questions: 'questions',
+  cooldownDays: 'cooldownDays',
+  onePending: 'onePending',
+  requiredRoleIds: 'requiredRoleIds',
+  blockedRoleIds: 'blockedRoleIds',
+  minAccountAgeDays: 'minAccountAgeDays',
+  reviewChannelId: 'reviewChannelId',
+  reviewerRoleIds: 'reviewerRoleIds',
+  pingMemberIds: 'pingMemberIds',
+  acceptRoleIds: 'acceptRoleIds',
+  removeRoleIds: 'removeRoleIds',
+  acceptMessage: 'acceptMessage',
+  denyMessage: 'denyMessage',
+  discussionChannelId: 'discussionChannelId',
+  buttonLabel: 'buttonLabel',
+  buttonEmoji: 'buttonEmoji',
+  buttonStyle: 'buttonStyle',
+  position: 'position',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationFormScalarFieldEnum = (typeof ApplicationFormScalarFieldEnum)[keyof typeof ApplicationFormScalarFieldEnum]
+
+
+export const ApplicationPanelScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  title: 'title',
+  description: 'description',
+  color: 'color',
+  formIds: 'formIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationPanelScalarFieldEnum = (typeof ApplicationPanelScalarFieldEnum)[keyof typeof ApplicationPanelScalarFieldEnum]
+
+
+export const ApplicationScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  formId: 'formId',
+  formName: 'formName',
+  applicantId: 'applicantId',
+  applicantName: 'applicantName',
+  status: 'status',
+  source: 'source',
+  answers: 'answers',
+  reviewChannelId: 'reviewChannelId',
+  reviewMessageId: 'reviewMessageId',
+  threadId: 'threadId',
+  decidedById: 'decidedById',
+  decidedByName: 'decidedByName',
+  decisionReason: 'decisionReason',
+  decidedAt: 'decidedAt',
+  dmDelivered: 'dmDelivered',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const ApplicationVoteScalarFieldEnum = {
+  applicationId: 'applicationId',
+  userId: 'userId',
+  vote: 'vote',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationVoteScalarFieldEnum = (typeof ApplicationVoteScalarFieldEnum)[keyof typeof ApplicationVoteScalarFieldEnum]
+
+
+export const ApplicationNoteScalarFieldEnum = {
+  id: 'id',
+  applicationId: 'applicationId',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  body: 'body',
+  createdAt: 'createdAt'
+} as const
+
+export type ApplicationNoteScalarFieldEnum = (typeof ApplicationNoteScalarFieldEnum)[keyof typeof ApplicationNoteScalarFieldEnum]
 
 
 export const GuildScalarFieldEnum = {

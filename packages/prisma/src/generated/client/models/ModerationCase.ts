@@ -724,10 +724,6 @@ export type ModerationCaseUpdateevidenceInput = {
   push?: string | string[]
 }
 
-export type NullableBoolFieldUpdateOperationsInput = {
-  set?: boolean | null
-}
-
 
 
 export type ModerationCaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
