@@ -226,10 +226,11 @@ export class TicketService {
     const gateway = this.requireGateway();
 
     const number = await this.repository.allocateNumber(input.guildId);
+    const categoryNumber = category ? await this.repository.allocateCategoryNumber(input.guildId, category.id) : undefined;
     const created = await this.repository.createTicket({
       guildId: input.guildId,
       number,
-      ...(category ? { categoryId: category.id } : {}),
+      ...(category ? { categoryId: category.id, categoryNumber } : {}),
       openerId: input.actor.userId,
       openerName: input.actor.displayName,
       ...(input.subject ? { subject: input.subject } : {}),
@@ -244,11 +245,11 @@ export class TicketService {
         guildId: input.guildId,
         mode: settings.mode,
         ...(parentChannelId ? { parentChannelId } : {}),
-        name: channelName(category?.nameTemplate ?? settings.nameTemplate, values),
+        name: channelName(category?.nameTemplate ?? (category ? DEFAULT_REASON_NAME_TEMPLATE : settings.nameTemplate), values),
         openerId: input.actor.userId,
         supportRoleIds,
         memberIds: (category?.alertUserIds ?? []).filter((userId) => userId !== input.actor.userId),
-        topic: `Ticket #${number} opened by ${input.actor.displayName}${category ? ` (${category.name})` : ""}`,
+        topic: `${ticketLabel(created)} opened by ${input.actor.displayName}`,
       }));
     } catch (error) {
       await this.repository.updateTicket(created.id, { status: "CLOSED", closedAt: this.now(), closeReason: "Discord channel could not be created." });
@@ -264,7 +265,7 @@ export class TicketService {
       gateway.postOpening({
         channelId,
         ticket,
-        title: `Ticket #${ticket.number}${category ? ` - ${category.name}` : ""}`,
+        title: ticketLabel(ticket),
         body: openingBody(renderText(category?.openMessage ?? settings.openMessage, values), ticket),
         color: settings.embedColor,
         mentionUserIds: unique([input.actor.userId, ...(category?.alertUserIds ?? [])]),
@@ -382,7 +383,7 @@ export class TicketService {
 
   public async rename(guildId: string, id: string, actor: TicketActor, name: string): Promise<Ticket> {
     const { ticket } = await this.staffContext(guildId, id, actor);
-    const safe = channelName(name, { number: String(ticket.number) });
+    const safe = channelName(name, placeholderValues(ticket, undefined, actor));
     if (!ticket.channelId) throw new TicketError("INVALID_STATE", "This ticket has no Discord channel.");
     await this.requireGateway().renameSpace(ticket.channelId, safe);
     await this.event(id, "renamed", actor, { name: safe });
@@ -649,7 +650,7 @@ export class TicketService {
     const ticket = await this.ticket(guildId, id);
     const messages = await this.repository.listMessages(id);
     const lines = [
-      `Ticket #${ticket.number}${ticket.categoryName ? ` - ${ticket.categoryName}` : ""}`,
+      ticketLabel(ticket),
       `Opened by ${ticket.openerName} (${ticket.openerId}) at ${ticket.createdAt.toISOString()}`,
       `Status: ${ticket.status}  Priority: ${ticket.priority}${ticket.claimedById ? `  Claimed by: ${ticket.claimedById}` : ""}`,
       ...(ticket.subject ? [`Subject: ${ticket.subject}`] : []),
@@ -799,14 +800,25 @@ function collectAnswers(category: TicketCategory | undefined, answers: Readonly<
   });
 }
 
+/** Channel name for a ticket opened under a reason that has no template of its own: "donations-5". */
+export const DEFAULT_REASON_NAME_TEMPLATE = "{reason}-{reasonNumber}";
+
 function placeholderValues(ticket: Ticket, category: TicketCategory | undefined, actor: TicketActor): Readonly<Record<string, string>> {
   return {
     user: `<@${actor.userId}>`,
     username: actor.displayName,
     number: String(ticket.number),
-    category: category?.name ?? "support",
+    category: category?.name ?? ticket.categoryName ?? "support",
+    reason: category?.name ?? ticket.categoryName ?? "support",
+    reasonNumber: String(ticket.categoryNumber ?? ticket.number),
     subject: ticket.subject ?? "",
   };
+}
+
+/** "Ticket #12 - Donations #5" (reason and its own count when the ticket has one). */
+export function ticketLabel(ticket: Ticket): string {
+  const reason = ticket.categoryName ? ` - ${ticket.categoryName}${ticket.categoryNumber ? ` #${ticket.categoryNumber}` : ""}` : "";
+  return `Ticket #${ticket.number}${reason}`;
 }
 
 function openingBody(message: string, ticket: Ticket): string {
@@ -818,7 +830,7 @@ function openingBody(message: string, ticket: Ticket): string {
 
 function closeSummary(ticket: Ticket): string {
   return [
-    `**Ticket #${ticket.number}**${ticket.categoryName ? ` - ${ticket.categoryName}` : ""}`,
+    `**${ticketLabel(ticket)}**`,
     `Opened by <@${ticket.openerId}>`,
     ticket.claimedById ? `Handled by <@${ticket.claimedById}>` : "Unclaimed",
     `Closed by ${ticket.closedById && ticket.closedById !== "0" ? `<@${ticket.closedById}>` : BRAND.name}`,

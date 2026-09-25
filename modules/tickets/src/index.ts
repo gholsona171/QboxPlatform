@@ -1,8 +1,10 @@
 export * from "./types.js";
 export { TicketError, channelName, renderText, type TicketErrorCode } from "./validation.js";
 export {
+  DEFAULT_REASON_NAME_TEMPLATE,
   TicketService,
   defaultTicketSettings,
+  ticketLabel,
   panelCategories,
   systemActor,
   type AutoCloseSweepResult,

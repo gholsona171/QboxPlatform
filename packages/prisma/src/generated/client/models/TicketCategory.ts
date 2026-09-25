@@ -29,11 +29,13 @@ export type AggregateTicketCategory = {
 export type TicketCategoryAvgAggregateOutputType = {
   position: number | null
   maxOpenPerUser: number | null
+  nextNumber: number | null
 }
 
 export type TicketCategorySumAggregateOutputType = {
   position: number | null
   maxOpenPerUser: number | null
+  nextNumber: number | null
 }
 
 export type TicketCategoryMinAggregateOutputType = {
@@ -50,6 +52,7 @@ export type TicketCategoryMinAggregateOutputType = {
   openMessage: string | null
   defaultPriority: $Enums.TicketPriority | null
   maxOpenPerUser: number | null
+  nextNumber: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -68,6 +71,7 @@ export type TicketCategoryMaxAggregateOutputType = {
   openMessage: string | null
   defaultPriority: $Enums.TicketPriority | null
   maxOpenPerUser: number | null
+  nextNumber: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -90,6 +94,7 @@ export type TicketCategoryCountAggregateOutputType = {
   questions: number
   requiredRoleIds: number
   maxOpenPerUser: number
+  nextNumber: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -99,11 +104,13 @@ export type TicketCategoryCountAggregateOutputType = {
 export type TicketCategoryAvgAggregateInputType = {
   position?: true
   maxOpenPerUser?: true
+  nextNumber?: true
 }
 
 export type TicketCategorySumAggregateInputType = {
   position?: true
   maxOpenPerUser?: true
+  nextNumber?: true
 }
 
 export type TicketCategoryMinAggregateInputType = {
@@ -120,6 +127,7 @@ export type TicketCategoryMinAggregateInputType = {
   openMessage?: true
   defaultPriority?: true
   maxOpenPerUser?: true
+  nextNumber?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -138,6 +146,7 @@ export type TicketCategoryMaxAggregateInputType = {
   openMessage?: true
   defaultPriority?: true
   maxOpenPerUser?: true
+  nextNumber?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -160,6 +169,7 @@ export type TicketCategoryCountAggregateInputType = {
   questions?: true
   requiredRoleIds?: true
   maxOpenPerUser?: true
+  nextNumber?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -269,6 +279,7 @@ export type TicketCategoryGroupByOutputType = {
   questions: runtime.JsonValue
   requiredRoleIds: string[]
   maxOpenPerUser: number | null
+  nextNumber: number
   createdAt: Date
   updatedAt: Date
   _count: TicketCategoryCountAggregateOutputType | null
@@ -314,6 +325,7 @@ export type TicketCategoryWhereInput = {
   questions?: Prisma.JsonFilter<"TicketCategory">
   requiredRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
   maxOpenPerUser?: Prisma.IntNullableFilter<"TicketCategory"> | number | null
+  nextNumber?: Prisma.IntFilter<"TicketCategory"> | number
   createdAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -338,6 +350,7 @@ export type TicketCategoryOrderByWithRelationInput = {
   questions?: Prisma.SortOrder
   requiredRoleIds?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guild?: Prisma.GuildOrderByWithRelationInput
@@ -366,6 +379,7 @@ export type TicketCategoryWhereUniqueInput = Prisma.AtLeast<{
   questions?: Prisma.JsonFilter<"TicketCategory">
   requiredRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
   maxOpenPerUser?: Prisma.IntNullableFilter<"TicketCategory"> | number | null
+  nextNumber?: Prisma.IntFilter<"TicketCategory"> | number
   createdAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -390,6 +404,7 @@ export type TicketCategoryOrderByWithAggregationInput = {
   questions?: Prisma.SortOrder
   requiredRoleIds?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.TicketCategoryCountOrderByAggregateInput
@@ -420,6 +435,7 @@ export type TicketCategoryScalarWhereWithAggregatesInput = {
   questions?: Prisma.JsonWithAggregatesFilter<"TicketCategory">
   requiredRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
   maxOpenPerUser?: Prisma.IntNullableWithAggregatesFilter<"TicketCategory"> | number | null
+  nextNumber?: Prisma.IntWithAggregatesFilter<"TicketCategory"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TicketCategory"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TicketCategory"> | Date | string
 }
@@ -441,6 +457,7 @@ export type TicketCategoryCreateInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutTicketCategoriesInput
@@ -465,6 +482,7 @@ export type TicketCategoryUncheckedCreateInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCategoryInput
@@ -487,6 +505,7 @@ export type TicketCategoryUpdateInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutTicketCategoriesNestedInput
@@ -511,6 +530,7 @@ export type TicketCategoryUncheckedUpdateInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutCategoryNestedInput
@@ -534,6 +554,7 @@ export type TicketCategoryCreateManyInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -555,6 +576,7 @@ export type TicketCategoryUpdateManyMutationInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -577,6 +599,7 @@ export type TicketCategoryUncheckedUpdateManyInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -614,6 +637,7 @@ export type TicketCategoryCountOrderByAggregateInput = {
   questions?: Prisma.SortOrder
   requiredRoleIds?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -621,6 +645,7 @@ export type TicketCategoryCountOrderByAggregateInput = {
 export type TicketCategoryAvgOrderByAggregateInput = {
   position?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
 }
 
 export type TicketCategoryMaxOrderByAggregateInput = {
@@ -637,6 +662,7 @@ export type TicketCategoryMaxOrderByAggregateInput = {
   openMessage?: Prisma.SortOrder
   defaultPriority?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -655,6 +681,7 @@ export type TicketCategoryMinOrderByAggregateInput = {
   openMessage?: Prisma.SortOrder
   defaultPriority?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -662,6 +689,7 @@ export type TicketCategoryMinOrderByAggregateInput = {
 export type TicketCategorySumOrderByAggregateInput = {
   position?: Prisma.SortOrder
   maxOpenPerUser?: Prisma.SortOrder
+  nextNumber?: Prisma.SortOrder
 }
 
 export type TicketCategoryNullableScalarRelationFilter = {
@@ -775,6 +803,7 @@ export type TicketCategoryCreateWithoutGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketCreateNestedManyWithoutCategoryInput
@@ -797,6 +826,7 @@ export type TicketCategoryUncheckedCreateWithoutGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutCategoryInput
@@ -849,6 +879,7 @@ export type TicketCategoryScalarWhereInput = {
   questions?: Prisma.JsonFilter<"TicketCategory">
   requiredRoleIds?: Prisma.StringNullableListFilter<"TicketCategory">
   maxOpenPerUser?: Prisma.IntNullableFilter<"TicketCategory"> | number | null
+  nextNumber?: Prisma.IntFilter<"TicketCategory"> | number
   createdAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketCategory"> | Date | string
 }
@@ -870,6 +901,7 @@ export type TicketCategoryCreateWithoutTicketsInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutTicketCategoriesInput
@@ -893,6 +925,7 @@ export type TicketCategoryUncheckedCreateWithoutTicketsInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -930,6 +963,7 @@ export type TicketCategoryUpdateWithoutTicketsInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutTicketCategoriesNestedInput
@@ -953,6 +987,7 @@ export type TicketCategoryUncheckedUpdateWithoutTicketsInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -974,6 +1009,7 @@ export type TicketCategoryCreateManyGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryCreaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: number | null
+  nextNumber?: number
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -995,6 +1031,7 @@ export type TicketCategoryUpdateWithoutGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUpdateManyWithoutCategoryNestedInput
@@ -1017,6 +1054,7 @@ export type TicketCategoryUncheckedUpdateWithoutGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutCategoryNestedInput
@@ -1039,6 +1077,7 @@ export type TicketCategoryUncheckedUpdateManyWithoutGuildInput = {
   questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   requiredRoleIds?: Prisma.TicketCategoryUpdaterequiredRoleIdsInput | string[]
   maxOpenPerUser?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1092,6 +1131,7 @@ export type TicketCategorySelect<ExtArgs extends runtime.Types.Extensions.Intern
   questions?: boolean
   requiredRoleIds?: boolean
   maxOpenPerUser?: boolean
+  nextNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -1117,6 +1157,7 @@ export type TicketCategorySelectCreateManyAndReturn<ExtArgs extends runtime.Type
   questions?: boolean
   requiredRoleIds?: boolean
   maxOpenPerUser?: boolean
+  nextNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -1140,6 +1181,7 @@ export type TicketCategorySelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   questions?: boolean
   requiredRoleIds?: boolean
   maxOpenPerUser?: boolean
+  nextNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -1163,11 +1205,12 @@ export type TicketCategorySelectScalar = {
   questions?: boolean
   requiredRoleIds?: boolean
   maxOpenPerUser?: boolean
+  nextNumber?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TicketCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "description" | "emoji" | "buttonStyle" | "enabled" | "position" | "supportRoleIds" | "alertUserIds" | "parentChannelId" | "nameTemplate" | "openMessage" | "defaultPriority" | "questions" | "requiredRoleIds" | "maxOpenPerUser" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketCategory"]>
+export type TicketCategoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "description" | "emoji" | "buttonStyle" | "enabled" | "position" | "supportRoleIds" | "alertUserIds" | "parentChannelId" | "nameTemplate" | "openMessage" | "defaultPriority" | "questions" | "requiredRoleIds" | "maxOpenPerUser" | "nextNumber" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketCategory"]>
 export type TicketCategoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   tickets?: boolean | Prisma.TicketCategory$ticketsArgs<ExtArgs>
@@ -1204,6 +1247,7 @@ export type $TicketCategoryPayload<ExtArgs extends runtime.Types.Extensions.Inte
     questions: runtime.JsonValue
     requiredRoleIds: string[]
     maxOpenPerUser: number | null
+    nextNumber: number
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["ticketCategory"]>
@@ -1648,6 +1692,7 @@ export interface TicketCategoryFieldRefs {
   readonly questions: Prisma.FieldRef<"TicketCategory", 'Json'>
   readonly requiredRoleIds: Prisma.FieldRef<"TicketCategory", 'String[]'>
   readonly maxOpenPerUser: Prisma.FieldRef<"TicketCategory", 'Int'>
+  readonly nextNumber: Prisma.FieldRef<"TicketCategory", 'Int'>
   readonly createdAt: Prisma.FieldRef<"TicketCategory", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TicketCategory", 'DateTime'>
 }

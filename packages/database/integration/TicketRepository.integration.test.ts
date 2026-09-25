@@ -63,6 +63,21 @@ describe("PrismaTicketRepository", () => {
     expect([...numbers].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   });
 
+  it("counts tickets per reason independently of the server-wide number", async () => {
+    await enable();
+    const reason = (name: string) =>
+      service.saveCategory({ guildId, name, buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+    const donations = await reason("Donations");
+    const appeals = await reason("Appeals");
+    const numbers = await Promise.all(Array.from({ length: 5 }, () => repository.allocateCategoryNumber(guildId, donations.id)));
+    expect([...numbers].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5]);
+    expect(await repository.allocateCategoryNumber(guildId, appeals.id)).toBe(1);
+    await expect(repository.allocateCategoryNumber(guildId, "00000000-0000-0000-0000-000000000000")).rejects.toMatchObject({ code: "NOT_FOUND" });
+    const ticket = await repository.createTicket({ guildId, number: await repository.allocateNumber(guildId), categoryId: donations.id, categoryNumber: 6, openerId: "1", openerName: "one", answers: [], priority: "NORMAL" });
+    expect(ticket.categoryNumber).toBe(6);
+    expect((await repository.getTicket(ticket.id))?.categoryNumber).toBe(6);
+  });
+
   it("persists categories with questions, panels, and the full ticket lifecycle", async () => {
     await enable();
     const category = await service.saveCategory({

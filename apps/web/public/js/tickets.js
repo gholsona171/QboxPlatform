@@ -161,7 +161,7 @@ function inboxTab() {
   const rows = view.tickets.map((ticket) => row([
     ["Ticket", `<strong>#${ticket.number}</strong><br><small>${escapeHtml(ticket.subject || ticket.categoryName || "General support")}</small>`],
     ["Member", escapeHtml(ticket.openerName)],
-    ["Reason", escapeHtml(ticket.categoryName || "General")],
+    ["Reason", escapeHtml(reasonLabel(ticket))],
     ["Priority", badge(ticket.priority.toLowerCase())],
     ["Status", badge(statusLabel(ticket.status))],
     ["Updated", escapeHtml(relative(ticket.lastActivityAt))],
@@ -179,6 +179,12 @@ function inboxTab() {
     </section>`;
 }
 
+/** "Donations #5": the reason plus this ticket's count within it. */
+function reasonLabel(ticket) {
+  if (!ticket.categoryName) return "General";
+  return ticket.categoryNumber ? `${ticket.categoryName} #${ticket.categoryNumber}` : ticket.categoryName;
+}
+
 function detailPanel() {
   if (!view.detail) return `<p class="microcopy">Select a ticket to read the conversation and act on it.</p>`;
   const { ticket, messages, events } = view.detail;
@@ -190,7 +196,7 @@ function detailPanel() {
     <div class="detail-stack">
       <div class="split-line"><h2>#${ticket.number} ${escapeHtml(ticket.subject || ticket.categoryName || "Support")}</h2>${badge(statusLabel(ticket.status))}</div>
       ${detail("Member", `${escapeHtml(ticket.openerName)} <code>${escapeHtml(ticket.openerId)}</code>`)}
-      ${detail("Reason", escapeHtml(ticket.categoryName || "General"))}
+      ${detail("Reason", escapeHtml(reasonLabel(ticket)))}
       ${detail("Assigned to", ticket.claimedById ? memberName(ticket.claimedById) : "Nobody yet")}
       ${detail("Opened", escapeHtml(new Date(ticket.createdAt).toLocaleString()))}
       ${ticket.rating ? detail("Rating", `${"★".repeat(ticket.rating)}${ticket.feedback ? ` — ${escapeHtml(ticket.feedback)}` : ""}`) : ""}
@@ -249,7 +255,8 @@ function reasonsTab() {
         ${textField("description", "Short description (dropdown panels)", c.description || "", "Questions about the server", false, "full")}
         <h4>Where tickets open</h4>
         ${channelSelect("parentChannelId", view.overview.settings.mode === "THREAD" ? "Channel for these ticket threads" : "Discord category for these tickets", c.parentChannelId, view.overview.settings.mode === "THREAD" ? "TEXT" : "CATEGORY", "Use the default from Settings")}
-        ${textField("nameTemplate", "Channel name", c.nameTemplate || "", "Default: ticket-{number}")}
+        ${textField("nameTemplate", "Channel name", c.nameTemplate || "", "Default: {reason}-{reasonNumber}", false, "full")}
+        <p class="microcopy">Each reason counts its own tickets, so the fifth ticket for this reason is number 5. Use {reasonNumber} for that count, {number} for the server-wide count, {reason} for this reason's name, {username} for the member.</p>
         <h4>Who is alerted and can help</h4>
         ${rolePicker("supportRoleIds", "Support roles for this reason", c.supportRoleIds, "Added to the support team from Settings.")}
         ${memberPicker("alertUserIds", "Alert specific members", c.alertUserIds, "They are added to the ticket and pinged when it opens.")}
@@ -258,7 +265,7 @@ function reasonsTab() {
         ${numberField("maxOpenPerUser", "Max open per member for this reason", c.maxOpenPerUser ?? "", 1, 25, false)}
         ${checkbox("enabled", "Show this reason on panels", c.enabled)}
         <h4>Opening message</h4>
-        ${textArea("openMessage", "Message posted in the ticket", c.openMessage || "", "Default from Settings. Use {user}, {number}, {category}.")}
+        ${textArea("openMessage", "Message posted in the ticket", c.openMessage || "", "Default from Settings. Use {user}, {number}, {reasonNumber}, {reason}.")}
         <h4>Form questions (optional)</h4>
         <p class="microcopy full">Members answer these in a pop-up before the ticket opens. Up to 5. Leave a question empty to skip it.</p>
         ${[0, 1, 2, 3, 4].map((index) => questionRow(index, c.questions[index])).join("")}
@@ -349,7 +356,7 @@ function settingsTab() {
       ${checkbox("pingSupportOnOpen", "Ping the support team when a ticket opens", s.pingSupportOnOpen)}
       ${numberField("maxOpenPerUser", "Open tickets allowed per member", s.maxOpenPerUser, 1, 25)}
       <h3>Messages</h3>
-      ${textField("nameTemplate", "Channel name", s.nameTemplate, "{number} {username} {category}")}
+      ${textField("nameTemplate", "Channel name", s.nameTemplate, "{number} {username} {reason}")}
       ${textField("embedColor", "Color", s.embedColor)}
       ${textArea("openMessage", "Opening message", s.openMessage, "{user} {username} {number} {category} {subject}")}
       <h3>Closing</h3>

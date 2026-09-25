@@ -1379,6 +1379,7 @@ export const TicketCategoryScalarFieldEnum = {
   questions: 'questions',
   requiredRoleIds: 'requiredRoleIds',
   maxOpenPerUser: 'maxOpenPerUser',
+  nextNumber: 'nextNumber',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1413,6 +1414,7 @@ export const TicketScalarFieldEnum = {
   guildId: 'guildId',
   number: 'number',
   categoryId: 'categoryId',
+  categoryNumber: 'categoryNumber',
   openerId: 'openerId',
   openerName: 'openerName',
   channelId: 'channelId',

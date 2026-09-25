@@ -25,6 +25,7 @@ import { TicketError } from "./validation.js";
 export class InMemoryTicketRepository implements TicketRepository {
   public readonly settingsByGuild = new Map<string, TicketSettings>();
   public readonly categories = new Map<string, TicketCategory>();
+  public readonly categoryCounters = new Map<string, number>();
   public readonly panels = new Map<string, TicketPanel>();
   public readonly tickets = new Map<string, Ticket>();
   public readonly messages: TicketMessage[] = [];
@@ -50,6 +51,12 @@ export class InMemoryTicketRepository implements TicketRepository {
     const current = this.settingsByGuild.get(guildId) ?? defaultTicketSettings(guildId);
     this.settingsByGuild.set(guildId, { ...current, nextNumber: current.nextNumber + 1 });
     return current.nextNumber;
+  }
+
+  public async allocateCategoryNumber(_guildId: string, categoryId: string): Promise<number> {
+    const next = this.categoryCounters.get(categoryId) ?? 1;
+    this.categoryCounters.set(categoryId, next + 1);
+    return next;
   }
 
   public async listCategories(guildId: string): Promise<readonly TicketCategory[]> {

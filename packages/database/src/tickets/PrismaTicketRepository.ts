@@ -76,6 +76,18 @@ export class PrismaTicketRepository implements TicketRepository {
     return row.nextNumber - 1;
   }
 
+  public async allocateCategoryNumber(guildId: string, categoryId: string): Promise<number> {
+    const guild = await this.ensureGuild(guildId);
+    const result = await this.client.ticketCategory.updateManyAndReturn({
+      where: { id: categoryId, guildId: guild.id },
+      data: { nextNumber: { increment: 1 } },
+      select: { nextNumber: true },
+    });
+    const row = result[0];
+    if (!row) throw new TicketError("NOT_FOUND", "Ticket reason was not found.");
+    return row.nextNumber - 1;
+  }
+
   public async listCategories(guildId: string): Promise<readonly TicketCategory[]> {
     const rows = await this.client.ticketCategory.findMany({
       where: { guild: { discordGuildId: guildId } },
@@ -155,6 +167,7 @@ export class PrismaTicketRepository implements TicketRepository {
         guildId: guild.id,
         number: input.number,
         categoryId: input.categoryId ?? null,
+        categoryNumber: input.categoryNumber ?? null,
         openerId: input.openerId,
         openerName: input.openerName,
         subject: input.subject ?? null,
@@ -455,6 +468,7 @@ function mapTicket(row: TicketRow): Ticket {
     number: row.number,
     ...optional("categoryId", row.categoryId),
     ...optional("categoryName", row.category?.name ?? null),
+    ...optional("categoryNumber", row.categoryNumber),
     openerId: row.openerId,
     openerName: row.openerName,
     ...optional("channelId", row.channelId),

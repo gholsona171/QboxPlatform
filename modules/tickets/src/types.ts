@@ -133,9 +133,12 @@ export interface TicketAnswer {
 export interface Ticket {
   readonly id: string;
   readonly guildId: string;
+  /** Server-wide ticket number. */
   readonly number: number;
   readonly categoryId?: string | undefined;
   readonly categoryName?: string | undefined;
+  /** Number within the ticket's reason: the fifth "Donations" ticket is 5. */
+  readonly categoryNumber?: number | undefined;
   readonly openerId: string;
   readonly openerName: string;
   readonly channelId?: string | undefined;
@@ -163,6 +166,7 @@ export interface TicketCreateData {
   readonly guildId: string;
   readonly number: number;
   readonly categoryId?: string | undefined;
+  readonly categoryNumber?: number | undefined;
   readonly openerId: string;
   readonly openerName: string;
   readonly subject?: string | undefined;
@@ -257,6 +261,8 @@ export interface TicketRepository {
   saveSettings(input: TicketSettingsInput): Promise<TicketSettings>;
   /** Atomically returns the next ticket number and increments the counter. */
   allocateNumber(guildId: string): Promise<number>;
+  /** Atomically returns the next number for one reason and increments that reason's counter. */
+  allocateCategoryNumber(guildId: string, categoryId: string): Promise<number>;
   listCategories(guildId: string): Promise<readonly TicketCategory[]>;
   saveCategory(input: TicketCategoryInput): Promise<TicketCategory>;
   deleteCategory(guildId: string, id: string): Promise<void>;

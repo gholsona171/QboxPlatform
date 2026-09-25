@@ -135,6 +135,25 @@ describe("TicketService opening", () => {
     expect(gateway.notices.some((notice) => notice.channelId === LOGS)).toBe(true);
   });
 
+  it("numbers tickets per reason and names channels after the reason by default", async () => {
+    const { service, gateway } = await setup({ maxOpenPerUser: 10 });
+    const reason = (name: string) =>
+      service.saveCategory({ guildId: GUILD, name, buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+    const donations = await reason("Donations");
+    const verification = await reason("Female Verification");
+    const first = await service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: donations.id, answers: {} });
+    const second = await service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: verification.id, answers: {} });
+    const third = await service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: donations.id, answers: {} });
+    expect([first.number, second.number, third.number]).toEqual([1, 2, 3]);
+    expect([first.categoryNumber, second.categoryNumber, third.categoryNumber]).toEqual([1, 1, 2]);
+    expect(gateway.spaces.map((space) => space.name)).toEqual(["donations-1", "female-verification-1", "donations-2"]);
+    expect(gateway.spaces[2]?.topic).toContain("Ticket #3 - Donations #2");
+    expect(gateway.openings[2]?.title).toBe("Ticket #3 - Donations #2");
+    const general = await service.openTicket({ guildId: GUILD, actor: actor(USER), answers: {} });
+    expect(general.categoryNumber).toBeUndefined();
+    expect(gateway.spaces[3]?.name).toBe("ticket-4");
+  });
+
   it("gives alerted members access, pings them, and lets them handle the ticket", async () => {
     const { service, gateway } = await setup();
     const category = await service.saveCategory({ guildId: GUILD, name: "Store", buttonStyle: "SUCCESS", enabled: true, supportRoleIds: [], alertUserIds: [STAFF_2, STAFF_2], defaultPriority: "NORMAL", parentChannelId: CLOSED_CATEGORY, questions: [], requiredRoleIds: [] });

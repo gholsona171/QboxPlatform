@@ -94,6 +94,7 @@ model TicketCategory {
   questions       Json           @default("[]") @db.JsonB
   requiredRoleIds String[]       @map("required_role_ids")
   maxOpenPerUser  Int?           @map("max_open_per_user")
+  nextNumber      Int            @default(1) @map("next_number")
   createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -134,6 +135,8 @@ model Ticket {
   guildId             String         @map("guild_id") @db.Uuid
   number              Int
   categoryId          String?        @map("category_id") @db.Uuid
+  /** Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason. */
+  categoryNumber      Int?           @map("category_number")
   openerId            String         @map("opener_id")
   openerName          String         @map("opener_name")
   channelId           String?        @map("channel_id")

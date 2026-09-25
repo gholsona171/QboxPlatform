@@ -2877,7 +2877,8 @@ CREATE TABLE "public"."ticket_categories" (
     "max_open_per_user" integer,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "alert_user_ids" "text"[]
+    "alert_user_ids" "text"[],
+    "next_number" integer DEFAULT 1 NOT NULL
 );
 
 
@@ -3009,7 +3010,8 @@ CREATE TABLE "public"."tickets" (
     "last_activity_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "closed_at" timestamp(3) with time zone,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "category_number" integer
 );
 
 
@@ -3185,6 +3187,7 @@ b15e2d92-e740-4f8b-80f9-d057036999ee	679bfaa0e2e88b46e38d0244afb92df1ff7ff5dda82
 2f7a8734-7f97-499e-90fb-7310d9fb338a	1ba342be19852a9619db62c16ee89bf82f785a9ce5b0e8dcb8e6ed886871eccf	2026-09-25 07:42:04.672059+00	20260925166000_scheduled_messages	\N	\N	2026-09-25 07:42:04.659814+00	1
 421843d3-4d53-49e5-8351-9e6a70293487	50842d0e1245f24e5cc484c5f591254bd8406884a88936df31bd2fc5b82af3f9	2026-09-25 05:10:59.204373+00	20260925090000_ticket_system	\N	\N	2026-09-25 05:10:59.167464+00	1
 f3526aac-fb47-4a86-b0cf-29d1f27bbfd2	e5f57fef98683b928643458d7375b07aa98a594e406604ec994146a8333563ac	2026-09-25 05:26:24.773511+00	20260925120000_ticket_alert_members	\N	\N	2026-09-25 05:26:24.770336+00	1
+fd370971-7d10-4420-a989-60ff74983849	f1aecc609fbe0a55f6f2079220ad90e1675e3fd6be2a9b3376d497dbcf7b0af1	2026-09-25 22:00:27.015335+00	20260925200000_ticket_reason_numbers	\N	\N	2026-09-25 22:00:26.999043+00	1
 5e4bec6e-101b-4577-9655-86c954a921dd	49afba377429152bab6293811a1303cbe84468679746f77b6f15a02051ec8a88	2026-09-25 07:01:32.660207+00	20260925150000_moderation	\N	\N	2026-09-25 07:01:32.632979+00	1
 9568dff0-ac70-4009-b8cf-0f5333b3c7b1	8d141ff4f46111b43769712ec605cd5027ac1aaed1d5afd7360b95c3ffea2e38	2026-09-25 07:42:04.681509+00	20260925167000_levels	\N	\N	2026-09-25 07:42:04.672624+00	1
 8ac6f77f-ac86-4ef9-9ea8-b4818b5a5960	0f58039eaa951051f243a7c2150f6f1f2638823740559f7b070315669ca90d43	2026-09-25 07:30:55.674063+00	20260925160000_applications	\N	\N	2026-09-25 07:30:55.591903+00	1
@@ -3718,7 +3721,7 @@ COPY "public"."suggestions" ("id", "guild_id", "submitter_id", "content", "statu
 -- Data for Name: ticket_categories; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at", "alert_user_ids") FROM stdin;
+COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at", "alert_user_ids", "next_number") FROM stdin;
 \.
 
 
@@ -3758,7 +3761,7 @@ COPY "public"."ticket_settings" ("guild_id", "enabled", "mode", "open_category_c
 -- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."tickets" ("id", "guild_id", "number", "category_id", "opener_id", "opener_name", "channel_id", "subject", "answers", "status", "priority", "claimed_by_id", "participant_ids", "tags", "closed_by_id", "close_reason", "rating", "feedback", "transcript_message_id", "auto_close_warned_at", "first_response_at", "last_activity_at", "closed_at", "created_at", "updated_at") FROM stdin;
+COPY "public"."tickets" ("id", "guild_id", "number", "category_id", "opener_id", "opener_name", "channel_id", "subject", "answers", "status", "priority", "claimed_by_id", "participant_ids", "tags", "closed_by_id", "close_reason", "rating", "feedback", "transcript_message_id", "auto_close_warned_at", "first_response_at", "last_activity_at", "closed_at", "created_at", "updated_at", "category_number") FROM stdin;
 \.
 
 

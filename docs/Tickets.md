@@ -43,7 +43,8 @@ After the first deploy that adds these commands, redeploy slash commands with th
 
 - **Ticket reasons** with their own emoji, button color, description, default priority, support roles, alerted members, required roles, per-type open limit, channel or category override, name template, opening message, and up to 5 form questions (pop-up form).
 - **Panels** as buttons (up to 25) or a dropdown menu, with title, text, color, image, and footer. Panels can be updated in place.
-- **Private channels or private threads.** Channel names come from a template (`{number}`, `{username}`, `{category}`).
+- **Private channels or private threads.** Channel names come from a template (`{number}`, `{reasonNumber}`, `{reason}`, `{username}`).
+- **Numbering per reason.** Every ticket gets a server-wide number, and every reason counts its own tickets too: the fifth "Donations" ticket is Donations #5. A reason with no channel-name template of its own names channels `{reason}-{reasonNumber}` (for example `donations-5`), so each reason numbers itself without any manual naming.
 - **Staff tools:** claim, unclaim, transfer, add/remove members, rename, priority (low/normal/high/urgent), "waiting on member" status, tags, internal notes (never shown to the member), replies from the portal, reopen, delete channel.
 - **Closing:** member close on/off, confirmation, required reason, keep (read-only, optional move to a closed category) or delete after a delay.
 - **Claim lock:** optionally only the claimer can reply after a claim (channel mode).

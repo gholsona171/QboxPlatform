@@ -28,11 +28,13 @@ export type AggregateTicket = {
 
 export type TicketAvgAggregateOutputType = {
   number: number | null
+  categoryNumber: number | null
   rating: number | null
 }
 
 export type TicketSumAggregateOutputType = {
   number: number | null
+  categoryNumber: number | null
   rating: number | null
 }
 
@@ -41,6 +43,7 @@ export type TicketMinAggregateOutputType = {
   guildId: string | null
   number: number | null
   categoryId: string | null
+  categoryNumber: number | null
   openerId: string | null
   openerName: string | null
   channelId: string | null
@@ -66,6 +69,7 @@ export type TicketMaxAggregateOutputType = {
   guildId: string | null
   number: number | null
   categoryId: string | null
+  categoryNumber: number | null
   openerId: string | null
   openerName: string | null
   channelId: string | null
@@ -91,6 +95,7 @@ export type TicketCountAggregateOutputType = {
   guildId: number
   number: number
   categoryId: number
+  categoryNumber: number
   openerId: number
   openerName: number
   channelId: number
@@ -118,11 +123,13 @@ export type TicketCountAggregateOutputType = {
 
 export type TicketAvgAggregateInputType = {
   number?: true
+  categoryNumber?: true
   rating?: true
 }
 
 export type TicketSumAggregateInputType = {
   number?: true
+  categoryNumber?: true
   rating?: true
 }
 
@@ -131,6 +138,7 @@ export type TicketMinAggregateInputType = {
   guildId?: true
   number?: true
   categoryId?: true
+  categoryNumber?: true
   openerId?: true
   openerName?: true
   channelId?: true
@@ -156,6 +164,7 @@ export type TicketMaxAggregateInputType = {
   guildId?: true
   number?: true
   categoryId?: true
+  categoryNumber?: true
   openerId?: true
   openerName?: true
   channelId?: true
@@ -181,6 +190,7 @@ export type TicketCountAggregateInputType = {
   guildId?: true
   number?: true
   categoryId?: true
+  categoryNumber?: true
   openerId?: true
   openerName?: true
   channelId?: true
@@ -296,6 +306,7 @@ export type TicketGroupByOutputType = {
   guildId: string
   number: number
   categoryId: string | null
+  categoryNumber: number | null
   openerId: string
   openerName: string
   channelId: string | null
@@ -347,6 +358,7 @@ export type TicketWhereInput = {
   guildId?: Prisma.UuidFilter<"Ticket"> | string
   number?: Prisma.IntFilter<"Ticket"> | number
   categoryId?: Prisma.UuidNullableFilter<"Ticket"> | string | null
+  categoryNumber?: Prisma.IntNullableFilter<"Ticket"> | number | null
   openerId?: Prisma.StringFilter<"Ticket"> | string
   openerName?: Prisma.StringFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableFilter<"Ticket"> | string | null
@@ -379,6 +391,7 @@ export type TicketOrderByWithRelationInput = {
   guildId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -416,6 +429,7 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   guildId?: Prisma.UuidFilter<"Ticket"> | string
   number?: Prisma.IntFilter<"Ticket"> | number
   categoryId?: Prisma.UuidNullableFilter<"Ticket"> | string | null
+  categoryNumber?: Prisma.IntNullableFilter<"Ticket"> | number | null
   openerId?: Prisma.StringFilter<"Ticket"> | string
   openerName?: Prisma.StringFilter<"Ticket"> | string
   subject?: Prisma.StringNullableFilter<"Ticket"> | string | null
@@ -447,6 +461,7 @@ export type TicketOrderByWithAggregationInput = {
   guildId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   categoryId?: Prisma.SortOrderInput | Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -483,6 +498,7 @@ export type TicketScalarWhereWithAggregatesInput = {
   guildId?: Prisma.UuidWithAggregatesFilter<"Ticket"> | string
   number?: Prisma.IntWithAggregatesFilter<"Ticket"> | number
   categoryId?: Prisma.UuidNullableWithAggregatesFilter<"Ticket"> | string | null
+  categoryNumber?: Prisma.IntNullableWithAggregatesFilter<"Ticket"> | number | null
   openerId?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   openerName?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
@@ -509,6 +525,7 @@ export type TicketScalarWhereWithAggregatesInput = {
 export type TicketCreateInput = {
   id?: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -541,6 +558,7 @@ export type TicketUncheckedCreateInput = {
   guildId: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -569,6 +587,7 @@ export type TicketUncheckedCreateInput = {
 export type TicketUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -601,6 +620,7 @@ export type TicketUncheckedUpdateInput = {
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -631,6 +651,7 @@ export type TicketCreateManyInput = {
   guildId: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -657,6 +678,7 @@ export type TicketCreateManyInput = {
 export type TicketUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -685,6 +707,7 @@ export type TicketUncheckedUpdateManyInput = {
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -728,6 +751,7 @@ export type TicketCountOrderByAggregateInput = {
   guildId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrder
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
@@ -753,6 +777,7 @@ export type TicketCountOrderByAggregateInput = {
 
 export type TicketAvgOrderByAggregateInput = {
   number?: Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrder
   rating?: Prisma.SortOrder
 }
 
@@ -761,6 +786,7 @@ export type TicketMaxOrderByAggregateInput = {
   guildId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrder
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
@@ -786,6 +812,7 @@ export type TicketMinOrderByAggregateInput = {
   guildId?: Prisma.SortOrder
   number?: Prisma.SortOrder
   categoryId?: Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrder
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
@@ -808,6 +835,7 @@ export type TicketMinOrderByAggregateInput = {
 
 export type TicketSumOrderByAggregateInput = {
   number?: Prisma.SortOrder
+  categoryNumber?: Prisma.SortOrder
   rating?: Prisma.SortOrder
 }
 
@@ -953,6 +981,7 @@ export type TicketUpdateOneRequiredWithoutEventsNestedInput = {
 export type TicketCreateWithoutGuildInput = {
   id?: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -983,6 +1012,7 @@ export type TicketUncheckedCreateWithoutGuildInput = {
   id?: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1042,6 +1072,7 @@ export type TicketScalarWhereInput = {
   guildId?: Prisma.UuidFilter<"Ticket"> | string
   number?: Prisma.IntFilter<"Ticket"> | number
   categoryId?: Prisma.UuidNullableFilter<"Ticket"> | string | null
+  categoryNumber?: Prisma.IntNullableFilter<"Ticket"> | number | null
   openerId?: Prisma.StringFilter<"Ticket"> | string
   openerName?: Prisma.StringFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableFilter<"Ticket"> | string | null
@@ -1068,6 +1099,7 @@ export type TicketScalarWhereInput = {
 export type TicketCreateWithoutCategoryInput = {
   id?: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1098,6 +1130,7 @@ export type TicketUncheckedCreateWithoutCategoryInput = {
   id?: string
   guildId: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1152,6 +1185,7 @@ export type TicketUpdateManyWithWhereWithoutCategoryInput = {
 export type TicketCreateWithoutMessagesInput = {
   id?: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1183,6 +1217,7 @@ export type TicketUncheckedCreateWithoutMessagesInput = {
   guildId: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1226,6 +1261,7 @@ export type TicketUpdateToOneWithWhereWithoutMessagesInput = {
 export type TicketUpdateWithoutMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1257,6 +1293,7 @@ export type TicketUncheckedUpdateWithoutMessagesInput = {
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1284,6 +1321,7 @@ export type TicketUncheckedUpdateWithoutMessagesInput = {
 export type TicketCreateWithoutEventsInput = {
   id?: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1315,6 +1353,7 @@ export type TicketUncheckedCreateWithoutEventsInput = {
   guildId: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1358,6 +1397,7 @@ export type TicketUpdateToOneWithWhereWithoutEventsInput = {
 export type TicketUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1389,6 +1429,7 @@ export type TicketUncheckedUpdateWithoutEventsInput = {
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1417,6 +1458,7 @@ export type TicketCreateManyGuildInput = {
   id?: string
   number: number
   categoryId?: string | null
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1443,6 +1485,7 @@ export type TicketCreateManyGuildInput = {
 export type TicketUpdateWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1473,6 +1516,7 @@ export type TicketUncheckedUpdateWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1502,6 +1546,7 @@ export type TicketUncheckedUpdateManyWithoutGuildInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
   categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1529,6 +1574,7 @@ export type TicketCreateManyCategoryInput = {
   id?: string
   guildId: string
   number: number
+  categoryNumber?: number | null
   openerId: string
   openerName: string
   channelId?: string | null
@@ -1555,6 +1601,7 @@ export type TicketCreateManyCategoryInput = {
 export type TicketUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1585,6 +1632,7 @@ export type TicketUncheckedUpdateWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1614,6 +1662,7 @@ export type TicketUncheckedUpdateManyWithoutCategoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   guildId?: Prisma.StringFieldUpdateOperationsInput | string
   number?: Prisma.IntFieldUpdateOperationsInput | number
+  categoryNumber?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1682,6 +1731,7 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   guildId?: boolean
   number?: boolean
   categoryId?: boolean
+  categoryNumber?: boolean
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
@@ -1715,6 +1765,7 @@ export type TicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   guildId?: boolean
   number?: boolean
   categoryId?: boolean
+  categoryNumber?: boolean
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
@@ -1745,6 +1796,7 @@ export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   guildId?: boolean
   number?: boolean
   categoryId?: boolean
+  categoryNumber?: boolean
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
@@ -1775,6 +1827,7 @@ export type TicketSelectScalar = {
   guildId?: boolean
   number?: boolean
   categoryId?: boolean
+  categoryNumber?: boolean
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
@@ -1798,7 +1851,7 @@ export type TicketSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "number" | "categoryId" | "openerId" | "openerName" | "channelId" | "subject" | "answers" | "status" | "priority" | "claimedById" | "participantIds" | "tags" | "closedById" | "closeReason" | "rating" | "feedback" | "transcriptMessageId" | "autoCloseWarnedAt" | "firstResponseAt" | "lastActivityAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
+export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "number" | "categoryId" | "categoryNumber" | "openerId" | "openerName" | "channelId" | "subject" | "answers" | "status" | "priority" | "claimedById" | "participantIds" | "tags" | "closedById" | "closeReason" | "rating" | "feedback" | "transcriptMessageId" | "autoCloseWarnedAt" | "firstResponseAt" | "lastActivityAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
 export type TicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.Ticket$categoryArgs<ExtArgs>
@@ -1828,6 +1881,10 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     guildId: string
     number: number
     categoryId: string | null
+    /**
+     * * Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason.
+     */
+    categoryNumber: number | null
     openerId: string
     openerName: string
     channelId: string | null
@@ -2280,6 +2337,7 @@ export interface TicketFieldRefs {
   readonly guildId: Prisma.FieldRef<"Ticket", 'String'>
   readonly number: Prisma.FieldRef<"Ticket", 'Int'>
   readonly categoryId: Prisma.FieldRef<"Ticket", 'String'>
+  readonly categoryNumber: Prisma.FieldRef<"Ticket", 'Int'>
   readonly openerId: Prisma.FieldRef<"Ticket", 'String'>
   readonly openerName: Prisma.FieldRef<"Ticket", 'String'>
   readonly channelId: Prisma.FieldRef<"Ticket", 'String'>
