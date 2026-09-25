@@ -3,6 +3,20 @@ import { appPath } from "./config.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
 
 /** Each tab: label, API path for loading settings, and the renderer. */
+const DESCRIPTIONS = {
+  welcome: "Greet new members and say goodbye when they leave.",
+  autoroles: "Give roles automatically when someone joins.",
+  rules: "Members click a button to accept the rules and get a role.",
+  roles: "Create and delete server roles.",
+  "role-menus": "Let members pick their own roles.",
+  counters: "Rename a channel to show a live member count.",
+  logs: "Record what happens in your server to a log channel.",
+  announcements: "Save embeds to send with /embed send.",
+  custom: "Your own slash commands with a saved reply.",
+  suggestions: "Review what members suggest with /suggest.",
+  starboard: "Repost popular messages to a highlight channel.",
+};
+
 const TABS = [
   ["welcome", "Welcome & goodbye", "welcome"],
   ["autoroles", "Autoroles", "autoroles"],
@@ -73,10 +87,14 @@ function render() {
   const body = view.error
     ? `<div class="empty-state">${view.error.status === 403 ? "You don't have permission to manage this feature. Ask a server admin to grant it." : escapeHtml(view.error.message)}</div>`
     : tabContent();
-  container.innerHTML = `<section class="card">
-    <nav class="tab-bar" aria-label="Discord bot features">${TABS.map(([id, label]) => `<button class="tab ${view.tab === id ? "active" : ""}" data-d-tab="${id}">${escapeHtml(label)}</button>`).join("")}</nav>
-    ${body}
-  </section>`;
+  const label = TABS.find(([id]) => id === view.tab)?.[1] ?? "";
+  container.innerHTML = `<div class="subnav-layout">
+    <nav class="subnav" aria-label="Discord bot features">${TABS.map(([id, text]) => `<button class="${view.tab === id ? "active" : ""}" data-d-tab="${id}" ${view.tab === id ? 'aria-current="page"' : ""}>${escapeHtml(text)}</button>`).join("")}</nav>
+    <section class="grid">
+      <div class="section-head"><h2>${escapeHtml(label)}</h2><p class="microcopy">${escapeHtml(DESCRIPTIONS[view.tab] ?? "")}</p></div>
+      ${body}
+    </section>
+  </div>`;
   bind();
 }
 

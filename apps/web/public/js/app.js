@@ -6,11 +6,13 @@ import { renderTicketsPage } from "./tickets.js";
 import { escapeHtml, initializeModal, notify, signInCard } from "./ui.js";
 import { renderOverviewPage, renderSettingsPage } from "./views.js";
 
+const icon = (path) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+
 const pages = [
-  { id: "overview", icon: "◎", label: "Overview", render: renderOverviewPage },
-  { id: "tickets", icon: "✉", label: "Tickets", render: renderTicketsPage },
-  { id: "discord", icon: "⚙", label: "Discord Bot", render: renderDiscordPage },
-  { id: "settings", icon: "☰", label: "Account", render: renderSettingsPage },
+  { id: "overview", label: "Overview", description: "Your server at a glance.", icon: icon('<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>'), render: renderOverviewPage },
+  { id: "tickets", label: "Tickets", description: "Answer tickets and set up how members open them.", icon: icon('<path d="M3 8a2 2 0 0 0 2-2h14a2 2 0 0 0 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 0-2 2H5a2 2 0 0 0-2-2v-2a2 2 0 0 0 0-4Z"/><path d="M9 6v12" stroke-dasharray="2 2"/>'), render: renderTicketsPage },
+  { id: "discord", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
+  { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },
 ];
 
 initializeModal();
@@ -68,7 +70,8 @@ export function navigate(pageId, tab) {
 function renderCurrentRoute() {
   const current = pages.find((page) => page.id === currentRoutePage()) ?? pages[0];
   document.getElementById("pageTitle").textContent = current.label;
-  document.getElementById("breadcrumbs").textContent = `QboxPlatform / ${current.label}`;
+  document.getElementById("breadcrumbs").textContent = current.description;
+  document.title = `${current.label} · QboxPlatform`;
   document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.route === current.id));
   const content = document.getElementById("content");
   if (!signedIn() && current.id !== "overview") {

@@ -202,7 +202,7 @@ function reasonsTab() {
   const c = editing ?? { name: "", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], requiredRoleIds: [], defaultPriority: "NORMAL", questions: [] };
   return `
     <section class="grid editor-layout">
-      <div>${list}${editing ? `<button class="button full" data-t-action="new-reason">+ New ticket reason</button>` : ""}</div>
+      <div class="grid">${list}${editing ? `<button class="button full" data-t-action="new-reason">+ New ticket reason</button>` : ""}</div>
       <form class="card form-grid" data-t-form="reason">
         <h3>${editing ? `Edit “${escapeHtml(editing.name)}”` : "New ticket reason"}</h3>
         ${textField("name", "Button text", c.name, "General Support", true)}
@@ -254,8 +254,8 @@ function panelsTab() {
   const p = editing ?? { name: "Support", title: "Need help?", description: "Pick a reason below and our team will be with you shortly.", color: view.overview.settings.embedColor, style: "BUTTONS", placeholder: "Select a reason", categoryIds: categories.filter((category) => category.enabled).map((category) => category.id) };
   return `
     <section class="grid editor-layout">
-      <div>${list}${editing ? `<button class="button full" data-t-action="new-panel">+ New panel</button>` : ""}
-        <h3>Preview</h3><div id="panelPreview">${panelPreview(p)}</div></div>
+      <div class="grid">${list}${editing ? `<button class="button full" data-t-action="new-panel">+ New panel</button>` : ""}
+        <h3>Preview in Discord</h3><div id="panelPreview">${panelPreview(p)}</div></div>
       <form class="card form-grid" data-t-form="panel">
         <h3>${editing ? `Edit “${escapeHtml(editing.name)}”` : "New panel"}</h3>
         ${textField("name", "Panel name (only you see this)", p.name, "", true)}
