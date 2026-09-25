@@ -24,6 +24,7 @@
     "@qbox/scheduled-messages": "workspace:*",
     "@qbox/server-builder": "workspace:*",
     "@qbox/staff": "workspace:*",
+    "@qbox/streams": "workspace:*",
     "@qbox/tickets": "workspace:*",
     "@qbox/verification": "workspace:*",
     "@qbox/voice-rooms": "workspace:*"

@@ -1,0 +1,56 @@
+// Stream announcements (see docs/Streams.md). guildId is the Discord guild snowflake.
+
+enum StreamsPlatform {
+  TWITCH  @map("twitch")
+  KICK    @map("kick")
+  YOUTUBE @map("youtube")
+}
+
+enum StreamsEndedBehavior {
+  KEEP   @map("keep")
+  EDIT   @map("edit")
+  DELETE @map("delete")
+}
+
+model StreamsSettings {
+  guildId              String               @id @map("guild_id")
+  enabled              Boolean              @default(true)
+  defaultChannelId     String?              @map("default_channel_id")
+  endedBehavior        StreamsEndedBehavior @default(EDIT) @map("ended_behavior")
+  checkIntervalSeconds Int                  @default(90) @map("check_interval_seconds")
+  revision             Int                  @default(1)
+  createdAt            DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("streams_settings")
+}
+
+model StreamsSubscription {
+  id                        String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId                   String          @map("guild_id")
+  platform                  StreamsPlatform
+  handle                    String
+  displayName               String          @map("display_name")
+  avatarUrl                 String?         @map("avatar_url")
+  platformId                String          @map("platform_id")
+  announceChannelId         String?         @map("announce_channel_id")
+  pingRoleId                String?         @map("ping_role_id")
+  messageText               String?         @map("message_text")
+  announceVideos            Boolean         @default(false) @map("announce_videos")
+  enabled                   Boolean         @default(true)
+  lastStreamId              String?         @map("last_stream_id")
+  liveSince                 DateTime?       @map("live_since") @db.Timestamptz(3)
+  lastAnnouncementChannelId String?         @map("last_announcement_channel_id")
+  lastAnnouncementMessageId String?         @map("last_announcement_message_id")
+  lastVideoId               String?         @map("last_video_id")
+  lastCheckedAt             DateTime?       @map("last_checked_at") @db.Timestamptz(3)
+  offlineStreak             Int             @default(0) @map("offline_streak")
+  failureStreak             Int             @default(0) @map("failure_streak")
+  lastError                 String?         @map("last_error")
+  createdAt                 DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                 DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, platform, platformId], map: "streams_subscriptions_guild_creator_key")
+  @@index([enabled, guildId], map: "streams_subscriptions_active_idx")
+  @@map("streams_subscriptions")
+}
