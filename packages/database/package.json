@@ -15,6 +15,7 @@
     "@qbox/giveaways": "workspace:*",
     "@qbox/knowledge-base": "workspace:*",
     "@qbox/levels": "workspace:*",
+    "@qbox/messages": "workspace:*",
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/polls": "workspace:*",

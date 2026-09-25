@@ -12,7 +12,7 @@ Everything below works from both the web portal and Discord:
 - **Safety:** moderation (cases, automod, automatic punishments), verification
 - **Team:** staff roster, ranks, strikes, leave, and shifts
 - **Community:** levels and rewards, giveaways, polls, birthdays, voice rooms, scheduled messages
-- **Server:** Server Builder (plans and creates roles and channels), and game server integrations (FiveM today: status, players, alerts, and restart warnings)
+- **Server:** Server Builder (plans and creates roles and channels), Look & Messages (one look for every embed, custom text and embeds per message), and game server integrations (FiveM today: status, players, alerts, and restart warnings)
 - **Discord bot basics:** role management, role menus, welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard
 
 Each feature has its own guide in `docs/` (for example `docs/Tickets.md`). `docs/DiscordFeatureParity.md` lists every command, route, and permission. To add a feature, follow `docs/FeatureDevelopment.md`.

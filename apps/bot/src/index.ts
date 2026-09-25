@@ -14,7 +14,7 @@ import {
 } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
-import { botFeatures, templates } from "./features.js";
+import { botFeatures, createTemplates } from "./features.js";
 import { composePermissionCompatibility } from "./permissionCompatibility.js";
 import { PermissionPersistenceModule } from "./PermissionPersistenceModule.js";
 
@@ -57,12 +57,13 @@ kernel.registerModule(
     compatibilityPersistence,
   ),
 );
+const templates = createTemplates(persistence);
 kernel.registerModule(
   new DiscordModule(authorizer, compatibility, {
     roleMenuRepository: persistence.repositories.roleMenus,
     communityRepository: persistence.repositories.discordCommunity,
     roleDependencyRepository: persistence.repositories.discordRoles,
-    features: botFeatures(persistence, authorizer),
+    features: botFeatures(persistence, authorizer, templates),
     templates,
   }),
 );

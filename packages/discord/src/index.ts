@@ -34,3 +34,5 @@ export { knowledgeFeature, type KnowledgeFeatureOptions } from "./knowledge/Know
 export { fivemFeature } from "./fivem/FivemFeature.js";
 export { builderFeature } from "./builder/BuilderFeature.js";
 export { guildOnboardingFeature, type GuildOwnerGrant } from "./onboarding/GuildOnboardingFeature.js";
+export { messagesFeature } from "./messages/MessagesFeature.js";
+export { InteractionGuildMap } from "./messages/InteractionGuildMap.js";

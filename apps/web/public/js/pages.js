@@ -6,6 +6,7 @@ import { renderGiveawaysPage } from "./giveaways.js";
 import { renderLevelsPage } from "./levels.js";
 import { renderFivemPage } from "./fivem.js";
 import { renderKnowledgePage } from "./knowledge.js";
+import { renderMessagesPage } from "./messages.js";
 import { renderModerationPage } from "./moderation.js";
 import { renderStaffPage } from "./staff.js";
 import { renderPollsPage } from "./polls.js";
@@ -38,6 +39,7 @@ export const pages = [
   { id: "scheduled", group: "Community", label: "Scheduled", description: "Messages that post on a schedule.", icon: icon('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'), render: renderScheduledPage },
   { id: "builder", group: "Server", label: "Server Builder", description: `Plan your channels and roles, then let ${BRAND.name} build them.`, icon: icon('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/>'), render: renderBuilderPage },
   { id: "fivem", group: "Server", label: "FiveM Server", description: "Live server status, players, alerts, and restarts.", icon: icon('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'), render: renderFivemPage },
+  { id: "messages", group: "Server", label: "Look & Messages", description: "How the bot's messages and embeds look.", icon: icon('<path d="M4 5h16v11H9l-5 4Z"/><path d="M8 9h8M8 12h5"/>'), render: renderMessagesPage },
   { id: "discord", group: "Server", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
   { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },
 ];
