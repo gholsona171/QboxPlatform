@@ -78,6 +78,9 @@ importers:
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -108,6 +111,9 @@ importers:
       '@qbox/verification':
         specifier: workspace:*
         version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
       discord.js:
         specifier: ^14
         version: 14.27.0
@@ -172,6 +178,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/levels:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/moderation:
     dependencies:
       '@qbox/shared':
@@ -210,6 +222,12 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
+  modules/voice-rooms:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   packages/authentication: {}
 
   packages/core:
@@ -238,6 +256,9 @@ importers:
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
       '@qbox/moderation':
         specifier: workspace:*
         version: link:../../modules/moderation
@@ -265,6 +286,9 @@ importers:
       '@qbox/verification':
         specifier: workspace:*
         version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
 
   packages/discord:
     dependencies:
@@ -286,6 +310,9 @@ importers:
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/levels':
+        specifier: workspace:*
+        version: link:../../modules/levels
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger
@@ -316,6 +343,9 @@ importers:
       '@qbox/verification':
         specifier: workspace:*
         version: link:../../modules/verification
+      '@qbox/voice-rooms':
+        specifier: workspace:*
+        version: link:../../modules/voice-rooms
       discord.js:
         specifier: ^14
         version: 14.27.0

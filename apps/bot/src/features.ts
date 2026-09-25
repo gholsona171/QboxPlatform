@@ -1,5 +1,5 @@
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaGiveawayRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, giveawaysFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, type DiscordFeatureFactory } from "@qbox/discord";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaGiveawayRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, giveawaysFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
 
 /**
  * Every pluggable Discord feature the bot runs. Add one line per feature;
@@ -16,5 +16,7 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient): rea
     giveawaysFeature(new PrismaGiveawayRepository(persistence.prisma)),
     birthdaysFeature(new PrismaBirthdayRepository(persistence.prisma)),
     scheduledMessagesFeature(new PrismaScheduledMessageRepository(persistence.prisma)),
+    levelsFeature(new PrismaLevelRepository(persistence.prisma)),
+    voiceRoomsFeature(new PrismaVoiceRepository(persistence.prisma)),
   ];
 }

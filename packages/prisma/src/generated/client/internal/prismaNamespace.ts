@@ -436,6 +436,8 @@ export const ModelName = {
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
+  LevelSettings: 'LevelSettings',
+  LevelMember: 'LevelMember',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
   PollCounter: 'PollCounter',
@@ -458,7 +460,10 @@ export const ModelName = {
   TicketEvent: 'TicketEvent',
   VerificationSettings: 'VerificationSettings',
   VerificationAttempt: 'VerificationAttempt',
-  VerificationPendingMember: 'VerificationPendingMember'
+  VerificationPendingMember: 'VerificationPendingMember',
+  VoiceSettings: 'VoiceSettings',
+  VoiceHub: 'VoiceHub',
+  VoiceRoom: 'VoiceRoom'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -474,7 +479,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3364,6 +3369,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LevelSettings: {
+      payload: Prisma.$LevelSettingsPayload<ExtArgs>
+      fields: Prisma.LevelSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LevelSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LevelSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.LevelSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LevelSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.LevelSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.LevelSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.LevelSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LevelSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.LevelSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        update: {
+          args: Prisma.LevelSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.LevelSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LevelSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LevelSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.LevelSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.LevelSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLevelSettings>
+        }
+        groupBy: {
+          args: Prisma.LevelSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LevelSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    LevelMember: {
+      payload: Prisma.$LevelMemberPayload<ExtArgs>
+      fields: Prisma.LevelMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LevelMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LevelMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.LevelMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LevelMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        findMany: {
+          args: Prisma.LevelMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>[]
+        }
+        create: {
+          args: Prisma.LevelMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        createMany: {
+          args: Prisma.LevelMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LevelMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.LevelMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        update: {
+          args: Prisma.LevelMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.LevelMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LevelMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LevelMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.LevelMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LevelMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.LevelMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLevelMember>
+        }
+        groupBy: {
+          args: Prisma.LevelMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LevelMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LevelMemberCountAggregateOutputType> | number
+        }
+      }
+    }
     ModerationSettings: {
       payload: Prisma.$ModerationSettingsPayload<ExtArgs>
       fields: Prisma.ModerationSettingsFieldRefs
@@ -5066,6 +5219,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VoiceSettings: {
+      payload: Prisma.$VoiceSettingsPayload<ExtArgs>
+      fields: Prisma.VoiceSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VoiceSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VoiceSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.VoiceSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VoiceSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.VoiceSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.VoiceSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.VoiceSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VoiceSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.VoiceSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        update: {
+          args: Prisma.VoiceSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.VoiceSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VoiceSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VoiceSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.VoiceSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.VoiceSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVoiceSettings>
+        }
+        groupBy: {
+          args: Prisma.VoiceSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VoiceSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    VoiceHub: {
+      payload: Prisma.$VoiceHubPayload<ExtArgs>
+      fields: Prisma.VoiceHubFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VoiceHubFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VoiceHubFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        findFirst: {
+          args: Prisma.VoiceHubFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VoiceHubFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        findMany: {
+          args: Prisma.VoiceHubFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>[]
+        }
+        create: {
+          args: Prisma.VoiceHubCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        createMany: {
+          args: Prisma.VoiceHubCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VoiceHubCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>[]
+        }
+        delete: {
+          args: Prisma.VoiceHubDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        update: {
+          args: Prisma.VoiceHubUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        deleteMany: {
+          args: Prisma.VoiceHubDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VoiceHubUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VoiceHubUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>[]
+        }
+        upsert: {
+          args: Prisma.VoiceHubUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceHubPayload>
+        }
+        aggregate: {
+          args: Prisma.VoiceHubAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVoiceHub>
+        }
+        groupBy: {
+          args: Prisma.VoiceHubGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceHubGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VoiceHubCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceHubCountAggregateOutputType> | number
+        }
+      }
+    }
+    VoiceRoom: {
+      payload: Prisma.$VoiceRoomPayload<ExtArgs>
+      fields: Prisma.VoiceRoomFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VoiceRoomFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VoiceRoomFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        findFirst: {
+          args: Prisma.VoiceRoomFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VoiceRoomFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        findMany: {
+          args: Prisma.VoiceRoomFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>[]
+        }
+        create: {
+          args: Prisma.VoiceRoomCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        createMany: {
+          args: Prisma.VoiceRoomCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VoiceRoomCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>[]
+        }
+        delete: {
+          args: Prisma.VoiceRoomDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        update: {
+          args: Prisma.VoiceRoomUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        deleteMany: {
+          args: Prisma.VoiceRoomDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VoiceRoomUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VoiceRoomUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>[]
+        }
+        upsert: {
+          args: Prisma.VoiceRoomUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VoiceRoomPayload>
+        }
+        aggregate: {
+          args: Prisma.VoiceRoomAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVoiceRoom>
+        }
+        groupBy: {
+          args: Prisma.VoiceRoomGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceRoomGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VoiceRoomCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VoiceRoomCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -5833,6 +6208,51 @@ export const GiveawayEntryScalarFieldEnum = {
 export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
 
 
+export const LevelSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  messageXpMin: 'messageXpMin',
+  messageXpMax: 'messageXpMax',
+  cooldownSeconds: 'cooldownSeconds',
+  voiceXpPerMinute: 'voiceXpPerMinute',
+  curveBase: 'curveBase',
+  curveExponent: 'curveExponent',
+  curveLinear: 'curveLinear',
+  roleMultipliers: 'roleMultipliers',
+  channelMultipliers: 'channelMultipliers',
+  noXpRoleIds: 'noXpRoleIds',
+  noXpChannelIds: 'noXpChannelIds',
+  levelUpMode: 'levelUpMode',
+  levelUpChannelId: 'levelUpChannelId',
+  levelUpMessage: 'levelUpMessage',
+  rewards: 'rewards',
+  rewardMode: 'rewardMode',
+  removeRewardsOnReset: 'removeRewardsOnReset',
+  maxLevel: 'maxLevel',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelSettingsScalarFieldEnum = (typeof LevelSettingsScalarFieldEnum)[keyof typeof LevelSettingsScalarFieldEnum]
+
+
+export const LevelMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  xp: 'xp',
+  level: 'level',
+  messages: 'messages',
+  voiceMinutes: 'voiceMinutes',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelMemberScalarFieldEnum = (typeof LevelMemberScalarFieldEnum)[keyof typeof LevelMemberScalarFieldEnum]
+
+
 export const ModerationSettingsScalarFieldEnum = {
   guildId: 'guildId',
   logChannelId: 'logChannelId',
@@ -6299,6 +6719,56 @@ export const VerificationPendingMemberScalarFieldEnum = {
 } as const
 
 export type VerificationPendingMemberScalarFieldEnum = (typeof VerificationPendingMemberScalarFieldEnum)[keyof typeof VerificationPendingMemberScalarFieldEnum]
+
+
+export const VoiceSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  controlPanel: 'controlPanel',
+  allowClaim: 'allowClaim',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceSettingsScalarFieldEnum = (typeof VoiceSettingsScalarFieldEnum)[keyof typeof VoiceSettingsScalarFieldEnum]
+
+
+export const VoiceHubScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  categoryId: 'categoryId',
+  nameTemplate: 'nameTemplate',
+  userLimit: 'userLimit',
+  bitrateKbps: 'bitrateKbps',
+  privateByDefault: 'privateByDefault',
+  deleteDelaySeconds: 'deleteDelaySeconds',
+  allowedRoleIds: 'allowedRoleIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceHubScalarFieldEnum = (typeof VoiceHubScalarFieldEnum)[keyof typeof VoiceHubScalarFieldEnum]
+
+
+export const VoiceRoomScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  hubId: 'hubId',
+  channelId: 'channelId',
+  ownerId: 'ownerId',
+  name: 'name',
+  locked: 'locked',
+  hidden: 'hidden',
+  panelMessageId: 'panelMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceRoomScalarFieldEnum = (typeof VoiceRoomScalarFieldEnum)[keyof typeof VoiceRoomScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -6951,6 +7421,48 @@ export type ListEnumGiveawayStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+
+
+
+/**
+ * Reference to a field of type 'LevelUpMode'
+ */
+export type EnumLevelUpModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LevelUpMode'>
+
+
+
+/**
+ * Reference to a field of type 'LevelUpMode[]'
+ */
+export type ListEnumLevelUpModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LevelUpMode[]'>
+
+
+
+/**
+ * Reference to a field of type 'LevelRewardMode'
+ */
+export type EnumLevelRewardModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LevelRewardMode'>
+
+
+
+/**
+ * Reference to a field of type 'LevelRewardMode[]'
+ */
+export type ListEnumLevelRewardModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LevelRewardMode[]'>
+
+
+
+/**
  * Reference to a field of type 'ModerationCaseType'
  */
 export type EnumModerationCaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseType'>
@@ -7201,20 +7713,6 @@ export type EnumVerificationAttemptSourceFieldRefInput<$PrismaModel> = FieldRefI
 export type ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAttemptSource[]'>
 
 
-
-/**
- * Reference to a field of type 'Float'
- */
-export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-
-
-
-/**
- * Reference to a field of type 'Float[]'
- */
-export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-
-
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -7405,6 +7903,8 @@ export type GlobalOmitConfig = {
   giveawayCounter?: Prisma.GiveawayCounterOmit
   giveaway?: Prisma.GiveawayOmit
   giveawayEntry?: Prisma.GiveawayEntryOmit
+  levelSettings?: Prisma.LevelSettingsOmit
+  levelMember?: Prisma.LevelMemberOmit
   moderationSettings?: Prisma.ModerationSettingsOmit
   moderationCase?: Prisma.ModerationCaseOmit
   pollCounter?: Prisma.PollCounterOmit
@@ -7428,6 +7928,9 @@ export type GlobalOmitConfig = {
   verificationSettings?: Prisma.VerificationSettingsOmit
   verificationAttempt?: Prisma.VerificationAttemptOmit
   verificationPendingMember?: Prisma.VerificationPendingMemberOmit
+  voiceSettings?: Prisma.VoiceSettingsOmit
+  voiceHub?: Prisma.VoiceHubOmit
+  voiceRoom?: Prisma.VoiceRoomOmit
 }
 
 /* Types for Logging */

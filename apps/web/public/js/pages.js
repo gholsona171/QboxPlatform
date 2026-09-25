@@ -2,12 +2,14 @@ import { renderApplicationsPage } from "./applications.js";
 import { renderBirthdaysPage } from "./birthdays.js";
 import { renderDiscordPage } from "./discord.js";
 import { renderGiveawaysPage } from "./giveaways.js";
+import { renderLevelsPage } from "./levels.js";
 import { renderModerationPage } from "./moderation.js";
 import { renderStaffPage } from "./staff.js";
 import { renderPollsPage } from "./polls.js";
 import { renderScheduledPage } from "./scheduled.js";
 import { renderTicketsPage } from "./tickets.js";
 import { renderVerificationPage } from "./verification.js";
+import { renderVoicePage } from "./voice.js";
 import { renderOverviewPage, renderSettingsPage } from "./views.js";
 
 /**
@@ -27,6 +29,8 @@ export const pages = [
   { id: "giveaways", label: "Giveaways", description: "Run giveaways and pick winners fairly.", icon: icon('<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8"/><path d="M12 8v12"/><path d="M12 8c-2-3-6-3-6-1s3 1 6 1c3 0 6 1 6-1s-4-2-6 1Z"/>'), render: renderGiveawaysPage },
   { id: "birthdays", label: "Birthdays", description: "Birthday messages, roles, and the member calendar.", icon: icon('<path d="M4 21h16"/><path d="M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 5 0"/><path d="M12 12V8"/><path d="M12 5.5c.8-.8.8-1.7 0-2.5-.8.8-.8 1.7 0 2.5Z"/>'), render: renderBirthdaysPage },
   { id: "scheduled", label: "Scheduled", description: "Messages that post on a schedule.", icon: icon('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'), render: renderScheduledPage },
+  { id: "levels", label: "Levels", description: "XP, the leaderboard, and reward roles.", icon: icon('<path d="M4 20V14"/><path d="M10 20V9"/><path d="M16 20V4"/><path d="M3 20h18"/>'), render: renderLevelsPage },
+  { id: "voice", label: "Voice Rooms", description: "Join-to-create voice channels members control.", icon: icon('<path d="M4 10v4"/><path d="M8 7v10"/><path d="M12 4v16"/><path d="M16 7v10"/><path d="M20 10v4"/>'), render: renderVoicePage },
   { id: "discord", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
   { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },
 ];

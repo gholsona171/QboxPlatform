@@ -28,3 +28,5 @@ export { pollsFeature } from "./polls/PollsFeature.js";
 export { giveawaysFeature } from "./giveaways/GiveawaysFeature.js";
 export { birthdaysFeature } from "./birthdays/BirthdaysFeature.js";
 export { scheduledMessagesFeature } from "./scheduledMessages/ScheduledMessagesFeature.js";
+export { levelsFeature } from "./levels/LevelsFeature.js";
+export { voiceRoomsFeature } from "./voiceRooms/VoiceRoomsFeature.js";

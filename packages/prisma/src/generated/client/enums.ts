@@ -404,6 +404,24 @@ export const GiveawayStatus = {
 export type GiveawayStatus = (typeof GiveawayStatus)[keyof typeof GiveawayStatus]
 
 
+export const LevelUpMode = {
+  CURRENT: 'CURRENT',
+  CHANNEL: 'CHANNEL',
+  DM: 'DM',
+  OFF: 'OFF'
+} as const
+
+export type LevelUpMode = (typeof LevelUpMode)[keyof typeof LevelUpMode]
+
+
+export const LevelRewardMode = {
+  STACK: 'STACK',
+  HIGHEST: 'HIGHEST'
+} as const
+
+export type LevelRewardMode = (typeof LevelRewardMode)[keyof typeof LevelRewardMode]
+
+
 export const ModerationCaseType = {
   WARN: 'WARN',
   TIMEOUT: 'TIMEOUT',

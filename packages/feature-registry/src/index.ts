@@ -39,8 +39,8 @@ export const featureRegistry = [
   live("giveaways", "Giveaways", ["giveaway"], ["giveaway enter button"], ["giveaway end timer"], ["/api/v1/giveaways", "/api/v1/giveaways/overview", "/api/v1/giveaways/:id/end", "/api/v1/giveaways/:id/reroll", "/api/v1/giveaways/:id/cancel", "/api/v1/giveaways/:id/pause", "/api/v1/giveaways/:id/resume"], "/giveaways", ["giveaways.manage"], ["GiveawayCounter", "Giveaway", "GiveawayEntry"], true, true),
   live("birthdays", "Birthdays", ["birthday"], ["birthday confirmation buttons"], ["birthday timer"], ["/api/v1/birthdays", "/api/v1/birthdays/overview", "/api/v1/birthdays/me", "/api/v1/birthdays/members", "/api/v1/birthdays/settings"], "/birthdays", ["birthdays.manage"], ["BirthdaySettings", "Birthday"], true, true),
   live("scheduled-messages", "Scheduled Messages", ["schedule"], [], ["scheduled message timer"], ["/api/v1/scheduled-messages", "/api/v1/scheduled-messages/runs"], "/scheduled", ["scheduled.manage"], ["ScheduledMessage", "ScheduledMessageRun"], true, true),
-  planned("levels-rewards", "Levels and Rewards", "/discord?tab=levels"),
-  planned("voice-rooms", "Voice Rooms", "/discord?tab=voice"),
+  live("levels-rewards", "Levels and Rewards", ["rank", "leaderboard", "levels"], [], ["messageCreate", "voiceStateUpdate", "voice XP timer"], ["/api/v1/levels/leaderboard", "/api/v1/levels/overview", "/api/v1/levels/members", "/api/v1/levels/settings", "/api/v1/levels/reset"], "/levels", ["levels.manage"], ["LevelSettings", "LevelMember"], true, true),
+  live("voice-rooms", "Voice Rooms", ["voice"], ["voice room control panel buttons", "member pickers", "rename and limit forms"], ["voiceStateUpdate", "channelDelete", "empty room timer", "startup cleanup"], ["/api/v1/voice/overview", "/api/v1/voice/settings", "/api/v1/voice/hubs", "/api/v1/voice/rooms"], "/voice", ["voice.manage"], ["VoiceSettings", "VoiceHub", "VoiceRoom"], true, true),
 ] as const satisfies readonly FeatureRegistryRecord[];
 
 function live(

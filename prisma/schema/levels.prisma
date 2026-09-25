@@ -1,0 +1,58 @@
+// Levels and rewards (see docs/Levels.md). guildId is the Discord guild snowflake.
+
+enum LevelUpMode {
+  CURRENT @map("current")
+  CHANNEL @map("channel")
+  DM      @map("dm")
+  OFF     @map("off")
+}
+
+enum LevelRewardMode {
+  STACK   @map("stack")
+  HIGHEST @map("highest")
+}
+
+model LevelSettings {
+  guildId              String          @id @map("guild_id")
+  enabled              Boolean         @default(false)
+  messageXpMin         Int             @default(15) @map("message_xp_min")
+  messageXpMax         Int             @default(25) @map("message_xp_max")
+  cooldownSeconds      Int             @default(60) @map("cooldown_seconds")
+  voiceXpPerMinute     Int             @default(5) @map("voice_xp_per_minute")
+  curveBase            Float           @default(50) @map("curve_base")
+  curveExponent        Float           @default(2) @map("curve_exponent")
+  curveLinear          Float           @default(50) @map("curve_linear")
+  roleMultipliers      Json            @default("[]") @map("role_multipliers") @db.JsonB
+  channelMultipliers   Json            @default("[]") @map("channel_multipliers") @db.JsonB
+  noXpRoleIds          String[]        @map("no_xp_role_ids")
+  noXpChannelIds       String[]        @map("no_xp_channel_ids")
+  levelUpMode          LevelUpMode     @default(CURRENT) @map("level_up_mode")
+  levelUpChannelId     String?         @map("level_up_channel_id")
+  levelUpMessage       String          @default("GG {user}, you reached level {level}!") @map("level_up_message")
+  rewards              Json            @default("[]") @db.JsonB
+  rewardMode           LevelRewardMode @default(STACK) @map("reward_mode")
+  removeRewardsOnReset Boolean         @default(true) @map("remove_rewards_on_reset")
+  maxLevel             Int             @default(0) @map("max_level")
+  revision             Int             @default(1)
+  createdAt            DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("level_settings")
+}
+
+model LevelMember {
+  guildId       String    @map("guild_id")
+  userId        String    @map("user_id")
+  displayName   String    @default("") @map("display_name")
+  xp            Int       @default(0)
+  level         Int       @default(0)
+  messages      Int       @default(0)
+  voiceMinutes  Int       @default(0) @map("voice_minutes")
+  lastMessageAt DateTime? @map("last_message_at") @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@id([guildId, userId], map: "level_members_pkey")
+  @@index([guildId, xp(sort: Desc)], map: "level_members_guild_xp_idx")
+  @@map("level_members")
+}

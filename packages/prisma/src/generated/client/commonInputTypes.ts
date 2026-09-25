@@ -1102,6 +1102,67 @@ export type EnumGiveawayStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
 }
 
+export type FloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number
+}
+
+export type EnumLevelUpModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelUpMode | Prisma.EnumLevelUpModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel> | $Enums.LevelUpMode
+}
+
+export type EnumLevelRewardModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelRewardMode | Prisma.EnumLevelRewardModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel> | $Enums.LevelRewardMode
+}
+
+export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type EnumLevelUpModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelUpMode | Prisma.EnumLevelUpModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelUpModeWithAggregatesFilter<$PrismaModel> | $Enums.LevelUpMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel>
+}
+
+export type EnumLevelRewardModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelRewardMode | Prisma.EnumLevelRewardModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelRewardModeWithAggregatesFilter<$PrismaModel> | $Enums.LevelRewardMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
+}
+
 export type EnumModerationCaseTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
@@ -2449,6 +2510,56 @@ export type NestedEnumGiveawayStatusWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumLevelUpModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelUpMode | Prisma.EnumLevelUpModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel> | $Enums.LevelUpMode
+}
+
+export type NestedEnumLevelRewardModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelRewardMode | Prisma.EnumLevelRewardModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel> | $Enums.LevelRewardMode
+}
+
+export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>
+}
+
+export type NestedEnumLevelUpModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelUpMode | Prisma.EnumLevelUpModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelUpMode[] | Prisma.ListEnumLevelUpModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelUpModeWithAggregatesFilter<$PrismaModel> | $Enums.LevelUpMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLevelUpModeFilter<$PrismaModel>
+}
+
+export type NestedEnumLevelRewardModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.LevelRewardMode | Prisma.EnumLevelRewardModeFieldRefInput<$PrismaModel>
+  in?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.LevelRewardMode[] | Prisma.ListEnumLevelRewardModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumLevelRewardModeWithAggregatesFilter<$PrismaModel> | $Enums.LevelRewardMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumLevelRewardModeFilter<$PrismaModel>
 }
 
 export type NestedEnumModerationCaseTypeFilter<$PrismaModel = never> = {

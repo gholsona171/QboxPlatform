@@ -12,6 +12,7 @@
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
     "@qbox/giveaways": "workspace:*",
+    "@qbox/levels": "workspace:*",
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/polls": "workspace:*",
@@ -20,7 +21,8 @@
     "@qbox/scheduled-messages": "workspace:*",
     "@qbox/staff": "workspace:*",
     "@qbox/tickets": "workspace:*",
-    "@qbox/verification": "workspace:*"
+    "@qbox/verification": "workspace:*",
+    "@qbox/voice-rooms": "workspace:*"
   },
   "scripts": {
     "build": "tsc",

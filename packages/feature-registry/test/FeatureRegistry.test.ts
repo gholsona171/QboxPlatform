@@ -37,6 +37,10 @@ const commandNames = [
   "giveaway",
   "birthday",
   "schedule",
+  "rank",
+  "leaderboard",
+  "levels",
+  "voice",
 ];
 
 describe("featureRegistry", () => {

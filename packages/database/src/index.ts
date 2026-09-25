@@ -21,3 +21,5 @@ export * from "./polls/PrismaPollRepository.js";
 export * from "./giveaways/PrismaGiveawayRepository.js";
 export * from "./birthdays/PrismaBirthdayRepository.js";
 export * from "./scheduledMessages/PrismaScheduledMessageRepository.js";
+export * from "./levels/PrismaLevelRepository.js";
+export * from "./voiceRooms/PrismaVoiceRepository.js";

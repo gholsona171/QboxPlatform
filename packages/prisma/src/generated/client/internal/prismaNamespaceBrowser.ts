@@ -90,6 +90,8 @@ export const ModelName = {
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
+  LevelSettings: 'LevelSettings',
+  LevelMember: 'LevelMember',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
   PollCounter: 'PollCounter',
@@ -112,7 +114,10 @@ export const ModelName = {
   TicketEvent: 'TicketEvent',
   VerificationSettings: 'VerificationSettings',
   VerificationAttempt: 'VerificationAttempt',
-  VerificationPendingMember: 'VerificationPendingMember'
+  VerificationPendingMember: 'VerificationPendingMember',
+  VoiceSettings: 'VoiceSettings',
+  VoiceHub: 'VoiceHub',
+  VoiceRoom: 'VoiceRoom'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -859,6 +864,51 @@ export const GiveawayEntryScalarFieldEnum = {
 export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
 
 
+export const LevelSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  messageXpMin: 'messageXpMin',
+  messageXpMax: 'messageXpMax',
+  cooldownSeconds: 'cooldownSeconds',
+  voiceXpPerMinute: 'voiceXpPerMinute',
+  curveBase: 'curveBase',
+  curveExponent: 'curveExponent',
+  curveLinear: 'curveLinear',
+  roleMultipliers: 'roleMultipliers',
+  channelMultipliers: 'channelMultipliers',
+  noXpRoleIds: 'noXpRoleIds',
+  noXpChannelIds: 'noXpChannelIds',
+  levelUpMode: 'levelUpMode',
+  levelUpChannelId: 'levelUpChannelId',
+  levelUpMessage: 'levelUpMessage',
+  rewards: 'rewards',
+  rewardMode: 'rewardMode',
+  removeRewardsOnReset: 'removeRewardsOnReset',
+  maxLevel: 'maxLevel',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelSettingsScalarFieldEnum = (typeof LevelSettingsScalarFieldEnum)[keyof typeof LevelSettingsScalarFieldEnum]
+
+
+export const LevelMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  displayName: 'displayName',
+  xp: 'xp',
+  level: 'level',
+  messages: 'messages',
+  voiceMinutes: 'voiceMinutes',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type LevelMemberScalarFieldEnum = (typeof LevelMemberScalarFieldEnum)[keyof typeof LevelMemberScalarFieldEnum]
+
+
 export const ModerationSettingsScalarFieldEnum = {
   guildId: 'guildId',
   logChannelId: 'logChannelId',
@@ -1325,6 +1375,56 @@ export const VerificationPendingMemberScalarFieldEnum = {
 } as const
 
 export type VerificationPendingMemberScalarFieldEnum = (typeof VerificationPendingMemberScalarFieldEnum)[keyof typeof VerificationPendingMemberScalarFieldEnum]
+
+
+export const VoiceSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  controlPanel: 'controlPanel',
+  allowClaim: 'allowClaim',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceSettingsScalarFieldEnum = (typeof VoiceSettingsScalarFieldEnum)[keyof typeof VoiceSettingsScalarFieldEnum]
+
+
+export const VoiceHubScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  enabled: 'enabled',
+  channelId: 'channelId',
+  categoryId: 'categoryId',
+  nameTemplate: 'nameTemplate',
+  userLimit: 'userLimit',
+  bitrateKbps: 'bitrateKbps',
+  privateByDefault: 'privateByDefault',
+  deleteDelaySeconds: 'deleteDelaySeconds',
+  allowedRoleIds: 'allowedRoleIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceHubScalarFieldEnum = (typeof VoiceHubScalarFieldEnum)[keyof typeof VoiceHubScalarFieldEnum]
+
+
+export const VoiceRoomScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  hubId: 'hubId',
+  channelId: 'channelId',
+  ownerId: 'ownerId',
+  name: 'name',
+  locked: 'locked',
+  hidden: 'hidden',
+  panelMessageId: 'panelMessageId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoiceRoomScalarFieldEnum = (typeof VoiceRoomScalarFieldEnum)[keyof typeof VoiceRoomScalarFieldEnum]
 
 
 export const SortOrder = {

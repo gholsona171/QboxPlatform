@@ -25,6 +25,10 @@ describe("community command discovery", () => {
       "suggest",
       "starboard",
       "verify",
+      "rank",
+      "leaderboard",
+      "levels",
+      "voice",
     ]));
     expect(new Set(names).size).toBe(names.length);
   });

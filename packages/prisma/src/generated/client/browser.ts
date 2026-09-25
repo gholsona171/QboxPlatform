@@ -213,6 +213,16 @@ export type Giveaway = Prisma.GiveawayModel
  */
 export type GiveawayEntry = Prisma.GiveawayEntryModel
 /**
+ * Model LevelSettings
+ *
+ */
+export type LevelSettings = Prisma.LevelSettingsModel
+/**
+ * Model LevelMember
+ *
+ */
+export type LevelMember = Prisma.LevelMemberModel
+/**
  * Model ModerationSettings
  *
  */
@@ -327,3 +337,18 @@ export type VerificationAttempt = Prisma.VerificationAttemptModel
  *
  */
 export type VerificationPendingMember = Prisma.VerificationPendingMemberModel
+/**
+ * Model VoiceSettings
+ *
+ */
+export type VoiceSettings = Prisma.VoiceSettingsModel
+/**
+ * Model VoiceHub
+ *
+ */
+export type VoiceHub = Prisma.VoiceHubModel
+/**
+ * Model VoiceRoom
+ *
+ */
+export type VoiceRoom = Prisma.VoiceRoomModel
