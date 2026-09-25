@@ -83,27 +83,27 @@ model ApplicationPanel {
 }
 
 model Application {
-  id              String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  guildId         String              @map("guild_id")
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String            @map("guild_id")
   number          Int
-  formId          String?             @map("form_id") @db.Uuid
-  form            ApplicationForm?    @relation(fields: [formId], references: [id], onDelete: SetNull)
-  formName        String              @map("form_name")
-  applicantId     String              @map("applicant_id")
-  applicantName   String              @map("applicant_name")
-  status          ApplicationStatus   @default(PENDING)
-  source          ApplicationSource   @default(DISCORD)
-  answers         Json                @default("[]") @db.JsonB
-  reviewChannelId String?             @map("review_channel_id")
-  reviewMessageId String?             @map("review_message_id")
-  threadId        String?             @map("thread_id")
-  decidedById     String?             @map("decided_by_id")
-  decidedByName   String?             @map("decided_by_name")
-  decisionReason  String?             @map("decision_reason")
-  decidedAt       DateTime?           @map("decided_at") @db.Timestamptz(3)
-  dmDelivered     Boolean?            @map("dm_delivered")
-  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  formId          String?           @map("form_id") @db.Uuid
+  form            ApplicationForm?  @relation(fields: [formId], references: [id], onDelete: SetNull)
+  formName        String            @map("form_name")
+  applicantId     String            @map("applicant_id")
+  applicantName   String            @map("applicant_name")
+  status          ApplicationStatus @default(PENDING)
+  source          ApplicationSource @default(DISCORD)
+  answers         Json              @default("[]") @db.JsonB
+  reviewChannelId String?           @map("review_channel_id")
+  reviewMessageId String?           @map("review_message_id")
+  threadId        String?           @map("thread_id")
+  decidedById     String?           @map("decided_by_id")
+  decidedByName   String?           @map("decided_by_name")
+  decisionReason  String?           @map("decision_reason")
+  decidedAt       DateTime?         @map("decided_at") @db.Timestamptz(3)
+  dmDelivered     Boolean?          @map("dm_delivered")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
   votes           ApplicationVote[]
   notes           ApplicationNote[]
 
