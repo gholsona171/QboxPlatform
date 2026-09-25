@@ -62,10 +62,6 @@ class FakeGateway implements TicketDiscordGateway {
   public async deletePanelMessage() {}
   public async postTranscript(input: TicketTranscriptPost) { this.transcripts.push(input); return { messageId: "900000000000000001" }; }
   public async directMessage(input: TicketDirectMessage) { this.dms.push(input); return true; }
-  public async listChannels() { return []; }
-  public async listRoles() { return []; }
-  public async searchMembers() { return []; }
-  public async getMembers() { return []; }
 }
 
 function actor(userId: string, roleIds: readonly string[] = [], elevated = false): TicketActor {

@@ -24,7 +24,7 @@ function handlerWith() {
   const roleMenus = { handleComponent: vi.fn(async () => undefined) };
   const handler = new DiscordInteractionHandler(new CommandRegistry(createTestAuthorizer()), {
     executionTimeoutMs: 100,
-    ticketInteractions: tickets,
+    featureInteractions: [{ prefixes: ["qbox:ticket:"], handle: tickets.handle }],
     roleMenuInteractions: roleMenus as never,
     log: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
   });

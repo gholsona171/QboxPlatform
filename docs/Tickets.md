@@ -9,7 +9,7 @@ with `/ticket open`. Staff handle them in Discord or in the portal at `/tickets`
 | --- | --- |
 | Rules, validation, Discord REST adapter | `modules/tickets` (`@qbox/tickets`) |
 | PostgreSQL persistence | `packages/database/src/tickets/PrismaTicketRepository.ts` |
-| Database models | `TicketSettings`, `TicketCategory`, `TicketPanel`, `Ticket`, `TicketMessage`, `TicketEvent` in `prisma/schema.prisma` |
+| Database models | `TicketSettings`, `TicketCategory`, `TicketPanel`, `Ticket`, `TicketMessage`, `TicketEvent` in `prisma/schema/tickets.prisma` |
 | Discord commands | `packages/discord/src/commands/Ticket.command.ts`, `Tickets.command.ts` |
 | Buttons, dropdowns, forms | `packages/discord/src/tickets/DiscordTicketInteractionHandler.ts` |
 | Message recording, deleted channels, auto-close | `packages/discord/src/tickets/DiscordTicketEventHandler.ts` |

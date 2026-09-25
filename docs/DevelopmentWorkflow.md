@@ -131,7 +131,7 @@ pnpm --filter @qbox/shared dev
 
 ## Prisma tooling
 
-`@qbox/prisma` owns the Prisma 7 toolchain while the canonical schema remains at `prisma/schema.prisma`. Supply a non-secret PostgreSQL-format `DATABASE_URL` for tooling, then run:
+`@qbox/prisma` owns the Prisma 7 toolchain while the canonical schema remains at `prisma/schema/*.prisma`. Supply a non-secret PostgreSQL-format `DATABASE_URL` for tooling, then run:
 
 ```bash
 pnpm --filter @qbox/prisma prisma:format

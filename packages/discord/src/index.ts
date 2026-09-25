@@ -17,3 +17,5 @@ export * from "./roleMenus/DiscordRoleMenuInteractionHandler.js";
 export * from "./community/DiscordCommunityGateway.js";
 export * from "./community/DiscordCommunityEventHandler.js";
 export * from "./roles/DiscordRoleManagementGateway.js";
+export * from "./features/DiscordFeature.js";
+export { ticketsFeature } from "./tickets/TicketsFeature.js";

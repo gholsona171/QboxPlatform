@@ -4,7 +4,8 @@ import { InMemoryTicketRepository, TicketService, defaultTicketSettings, type Ti
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
 import { createApiServer } from "../src/createApiServer.js";
 import { AuthorizationDeniedApiError } from "../src/errors/ApiError.js";
-import { registerTicketRoutes, type TicketRouteGuard } from "../src/tickets/TicketRoutes.js";
+import type { ApiPermissionGuard } from "../src/features/ApiFeature.js";
+import { registerTicketRoutes } from "../src/tickets/TicketRoutes.js";
 
 const GUILD = "100000000000000001";
 const STAFF = "300000000000000001";
@@ -23,19 +24,15 @@ const gateway: TicketDiscordGateway = {
   deletePanelMessage: async () => undefined,
   postTranscript: async () => ({ messageId: "900000000000000001" }),
   directMessage: async () => true,
-  listChannels: async () => [],
-  listRoles: async () => [],
-  searchMembers: async () => [],
-  getMembers: async () => [],
 };
 
 function setup(allowed: readonly string[] = ["tickets.handle", "tickets.manage"]) {
   const tickets = new TicketService(new InMemoryTicketRepository(), gateway);
   const calls: { permission: string; mutation: boolean }[] = [];
-  const guard: TicketRouteGuard = async (_request, permission, options) => {
+  const guard: ApiPermissionGuard = async (_request, permission, options) => {
     calls.push({ permission, mutation: options.mutation });
     if (!allowed.includes(permission)) throw new AuthorizationDeniedApiError();
-    return { userId: STAFF, displayName: "Staff" };
+    return { userId: STAFF, displayName: "Staff", roleIds: [] };
   };
   const server = createApiServer({
     configuration: ApiConfiguration.from({ environment: "test", publicBaseUrl: "http://127.0.0.1:3000", buildVersion: "tickets-test" }),
@@ -56,8 +53,8 @@ describe("ticket routes", () => {
     const { server, calls } = setup();
     const response = await server.inject({ method: "GET", url: "/api/v1/tickets/overview", headers: host });
     expect(response.statusCode).toBe(200);
-    expect(response.json().data).toMatchObject({ settings: { enabled: false }, categories: [], panels: [], stats: { total: 0 } });
-    expect(calls).toEqual([{ permission: "tickets.handle", mutation: false }]);
+    expect(response.json().data).toMatchObject({ settings: { enabled: false }, categories: [], panels: [], stats: { total: 0 }, canManage: true });
+    expect(calls).toEqual([{ permission: "tickets.handle", mutation: false }, { permission: "tickets.manage", mutation: false }]);
   });
 
   it("requires tickets.manage and CSRF for configuration", async () => {

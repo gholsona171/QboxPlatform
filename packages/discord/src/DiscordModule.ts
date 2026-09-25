@@ -5,7 +5,7 @@ import type { PermissionAuthorizer } from "@qbox/permissions";
 import type { RoleMenuRepository } from "@qbox/role-menus";
 import type { CommunityRepository } from "@qbox/discord-community";
 import type { RoleDependencyRepository } from "@qbox/discord-roles";
-import type { TicketRepository } from "@qbox/tickets";
+import type { DiscordFeatureFactory } from "./features/DiscordFeature.js";
 import { env } from "@qbox/shared";
 
 import { RoleMenuCommand } from "./commands/RoleMenu.command.js";
@@ -21,8 +21,6 @@ import { CustomCommand } from "./commands/Custom.command.js";
 import { SuggestCommand } from "./commands/Suggest.command.js";
 import { StarboardCommand } from "./commands/Starboard.command.js";
 import { RolesCommand } from "./commands/Roles.command.js";
-import { TicketCommand } from "./commands/Ticket.command.js";
-import { TicketsCommand } from "./commands/Tickets.command.js";
 import { DiscordService } from "./DiscordService.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
 import { CommandLoadError, CommandLoader } from "./loaders/CommandLoader.js";
@@ -47,11 +45,11 @@ export class DiscordModule implements PlatformModule {
       readonly roleMenuRepository?: RoleMenuRepository;
       readonly communityRepository?: CommunityRepository;
       readonly roleDependencyRepository?: RoleDependencyRepository;
-      readonly ticketRepository?: TicketRepository;
+      readonly features?: readonly DiscordFeatureFactory[];
     } = {},
   ) {
     this.discordService =
-      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository, dependencies.ticketRepository);
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository, dependencies.features);
     this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
   }
 
@@ -155,6 +153,8 @@ export class DiscordModule implements PlatformModule {
   }
 
   private replaceCommand(command: DiscordCommand): DiscordCommand {
+    const featureCommand = this.discordService.featureCommand(command.data.name);
+    if (featureCommand) return featureCommand;
     switch (command.data.name) {
       case "role-menu": return new RoleMenuCommand(this.discordService.roleMenus);
       case "welcome": return new WelcomeCommand(this.discordService.community);
@@ -169,8 +169,6 @@ export class DiscordModule implements PlatformModule {
       case "suggest": return new SuggestCommand(this.discordService.community);
       case "starboard": return new StarboardCommand(this.discordService.community);
       case "roles": return new RolesCommand(this.discordService.roles);
-      case "ticket": return new TicketCommand(this.discordService.tickets, this.discordService.ticketElevation);
-      case "tickets": return new TicketsCommand(this.discordService.tickets);
       default: return command;
     }
   }

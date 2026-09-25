@@ -3,9 +3,6 @@ import type {
   TicketButtonStyle,
   TicketCloseSpaceInput,
   TicketDirectMessage,
-  TicketDirectoryChannel,
-  TicketDirectoryMember,
-  TicketDirectoryRole,
   TicketDiscordGateway,
   TicketNotice,
   TicketOpeningMessage,
@@ -295,77 +292,10 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
     }
   }
 
-  public async listChannels(guildId: string): Promise<readonly TicketDirectoryChannel[]> {
-    const channels = (await this.rest.get(`/guilds/${guildId}/channels`)) as readonly ApiChannel[];
-    return channels
-      .map((channel) => ({
-        id: channel.id,
-        name: channel.name ?? channel.id,
-        type: CHANNEL_TYPES[channel.type] ?? "OTHER",
-        ...(channel.parent_id ? { parentId: channel.parent_id } : {}),
-        position: channel.position ?? 0,
-      }))
-      .sort((left, right) => left.position - right.position);
-  }
-
-  public async listRoles(guildId: string): Promise<readonly TicketDirectoryRole[]> {
-    const roles = (await this.rest.get(`/guilds/${guildId}/roles`)) as readonly ApiRole[];
-    return roles
-      .filter((role) => role.id !== guildId && !role.managed)
-      .map((role) => ({ id: role.id, name: role.name, color: `#${role.color.toString(16).padStart(6, "0")}`, position: role.position }))
-      .sort((left, right) => right.position - left.position);
-  }
-
-  public async searchMembers(guildId: string, query: string): Promise<readonly TicketDirectoryMember[]> {
-    const members = (await this.rest.get(`/guilds/${guildId}/members/search?query=${encodeURIComponent(query)}&limit=10`)) as readonly ApiMember[];
-    return members.map(mapMember);
-  }
-
-  public async getMembers(guildId: string, userIds: readonly string[]): Promise<readonly TicketDirectoryMember[]> {
-    const members = await Promise.all(
-      userIds.map((userId) => (this.rest.get(`/guilds/${guildId}/members/${userId}`) as Promise<ApiMember>).catch(() => undefined)),
-    );
-    return members.flatMap((member) => (member ? [mapMember(member)] : []));
-  }
-
   private async selfId(): Promise<string> {
     if (!this.botUserId) this.botUserId = ((await this.rest.get("/users/@me")) as IdResponse).id;
     return this.botUserId;
   }
-}
-
-interface ApiChannel {
-  readonly id: string;
-  readonly name?: string;
-  readonly type: number;
-  readonly parent_id?: string | null;
-  readonly position?: number;
-}
-
-interface ApiRole {
-  readonly id: string;
-  readonly name: string;
-  readonly color: number;
-  readonly position: number;
-  readonly managed: boolean;
-}
-
-interface ApiMember {
-  readonly nick?: string | null;
-  readonly avatar?: string | null;
-  readonly user: { readonly id: string; readonly username: string; readonly global_name?: string | null; readonly avatar?: string | null };
-}
-
-const CHANNEL_TYPES: Readonly<Record<number, TicketDirectoryChannel["type"]>> = { 0: "TEXT", 4: "CATEGORY", 5: "ANNOUNCEMENT", 15: "FORUM" };
-
-function mapMember(member: ApiMember): TicketDirectoryMember {
-  const avatar = member.user.avatar;
-  return {
-    id: member.user.id,
-    username: member.user.username,
-    displayName: member.nick ?? member.user.global_name ?? member.user.username,
-    ...(avatar ? { avatarUrl: `https://cdn.discordapp.com/avatars/${member.user.id}/${avatar}.png?size=64` } : {}),
-  };
 }
 
 function button(customId: string, label: string, style: TicketButtonStyle, emojiText?: string | undefined) {

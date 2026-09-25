@@ -44,12 +44,26 @@ export function ticketsOverview() {
   return requestJson("/api/v1/tickets/overview");
 }
 
-export function ticketDirectory(memberIds = []) {
-  return requestJson(`/api/v1/tickets/directory${memberIds.length ? `?members=${memberIds.map(encodeURIComponent).join(",")}` : ""}`);
+export function loadDirectoryData() {
+  return requestJson("/api/v1/directory");
 }
 
-export function searchTicketMembers(query) {
-  return requestJson(`/api/v1/tickets/directory/members?query=${encodeURIComponent(query)}`);
+export function searchMembers(query) {
+  return requestJson(`/api/v1/directory/members?query=${encodeURIComponent(query)}`);
+}
+
+export function lookupMembers(ids) {
+  return requestJson(`/api/v1/directory/members?ids=${ids.map(encodeURIComponent).join(",")}`);
+}
+
+/** GET a feature API path under /api/v1. */
+export function getJson(path) {
+  return requestJson(`/api/v1/${path}`);
+}
+
+/** Change data under /api/v1 with the CSRF header. */
+export function sendJson(path, method, body) {
+  return mutateJson(`/api/v1/${path}`, method, body);
 }
 
 export function listTickets(filters = {}) {

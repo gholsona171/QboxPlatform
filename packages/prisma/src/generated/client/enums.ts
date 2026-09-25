@@ -293,59 +293,6 @@ export const StarboardNsfwMode = {
 export type StarboardNsfwMode = (typeof StarboardNsfwMode)[keyof typeof StarboardNsfwMode]
 
 
-export const TicketMode = {
-  CHANNEL: 'CHANNEL',
-  THREAD: 'THREAD'
-} as const
-
-export type TicketMode = (typeof TicketMode)[keyof typeof TicketMode]
-
-
-export const TicketStatus = {
-  OPEN: 'OPEN',
-  CLAIMED: 'CLAIMED',
-  PENDING: 'PENDING',
-  CLOSED: 'CLOSED'
-} as const
-
-export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
-
-
-export const TicketPriority = {
-  LOW: 'LOW',
-  NORMAL: 'NORMAL',
-  HIGH: 'HIGH',
-  URGENT: 'URGENT'
-} as const
-
-export type TicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority]
-
-
-export const TicketPanelStyle = {
-  BUTTONS: 'BUTTONS',
-  SELECT_MENU: 'SELECT_MENU'
-} as const
-
-export type TicketPanelStyle = (typeof TicketPanelStyle)[keyof typeof TicketPanelStyle]
-
-
-export const TicketMessageSource = {
-  DISCORD: 'DISCORD',
-  WEB: 'WEB',
-  SYSTEM: 'SYSTEM'
-} as const
-
-export type TicketMessageSource = (typeof TicketMessageSource)[keyof typeof TicketMessageSource]
-
-
-export const TicketCloseAction = {
-  ARCHIVE: 'ARCHIVE',
-  DELETE: 'DELETE'
-} as const
-
-export type TicketCloseAction = (typeof TicketCloseAction)[keyof typeof TicketCloseAction]
-
-
 export const AuthenticationAuditAction = {
   LOGIN_START: 'LOGIN_START',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
@@ -409,3 +356,56 @@ export const AuthenticationAuditActorType = {
 } as const
 
 export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]
+
+
+export const TicketMode = {
+  CHANNEL: 'CHANNEL',
+  THREAD: 'THREAD'
+} as const
+
+export type TicketMode = (typeof TicketMode)[keyof typeof TicketMode]
+
+
+export const TicketStatus = {
+  OPEN: 'OPEN',
+  CLAIMED: 'CLAIMED',
+  PENDING: 'PENDING',
+  CLOSED: 'CLOSED'
+} as const
+
+export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
+
+
+export const TicketPriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+} as const
+
+export type TicketPriority = (typeof TicketPriority)[keyof typeof TicketPriority]
+
+
+export const TicketPanelStyle = {
+  BUTTONS: 'BUTTONS',
+  SELECT_MENU: 'SELECT_MENU'
+} as const
+
+export type TicketPanelStyle = (typeof TicketPanelStyle)[keyof typeof TicketPanelStyle]
+
+
+export const TicketMessageSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  SYSTEM: 'SYSTEM'
+} as const
+
+export type TicketMessageSource = (typeof TicketMessageSource)[keyof typeof TicketMessageSource]
+
+
+export const TicketCloseAction = {
+  ARCHIVE: 'ARCHIVE',
+  DELETE: 'DELETE'
+} as const
+
+export type TicketCloseAction = (typeof TicketCloseAction)[keyof typeof TicketCloseAction]

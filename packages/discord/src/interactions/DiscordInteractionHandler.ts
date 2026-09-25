@@ -34,7 +34,8 @@ export interface DiscordInteractionHandlerOptions {
   readonly log?: InteractionLogger;
   readonly roleMenuInteractions?: DiscordRoleMenuInteractionHandler;
   readonly community?: DiscordCommunityService;
-  readonly ticketInteractions?: { handle(interaction: Interaction): Promise<void> };
+  /** Feature handlers for components and modals, matched by custom ID prefix. */
+  readonly featureInteractions?: readonly FeatureInteractionHandler[];
 }
 
 export class CommandExecutionTimeoutError extends Error {
@@ -67,7 +68,7 @@ export class DiscordInteractionHandler {
   private readonly log: InteractionLogger;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly community: DiscordCommunityService | undefined;
-  private readonly ticketInteractions: { handle(interaction: Interaction): Promise<void> } | undefined;
+  private readonly featureInteractions: readonly FeatureInteractionHandler[];
   private readonly activeExecutions = new Set<Promise<void>>();
   private readonly activeControllers = new Set<AbortController>();
   private acceptingExecutions = true;
@@ -87,12 +88,14 @@ export class DiscordInteractionHandler {
     this.log = options.log ?? logger;
     this.roleMenuInteractions = options.roleMenuInteractions;
     this.community = options.community;
-    this.ticketInteractions = options.ticketInteractions;
+    this.featureInteractions = options.featureInteractions ?? [];
   }
 
   public async handle(interaction: Interaction): Promise<void> {
-    if (this.ticketInteractions && isTicketComponent(interaction)) {
-      await this.ticketInteractions.handle(interaction);
+    const customId = componentCustomId(interaction);
+    const feature = customId === undefined ? undefined : this.featureInteractions.find((handler) => handler.prefixes.some((prefix) => customId.startsWith(prefix)));
+    if (feature) {
+      await feature.handle(interaction);
       return;
     }
 
@@ -388,10 +391,16 @@ export class DiscordInteractionHandler {
   }
 }
 
-function isTicketComponent(interaction: Interaction): boolean {
+export interface FeatureInteractionHandler {
+  readonly prefixes: readonly string[];
+  handle(interaction: Interaction): Promise<void>;
+}
+
+function componentCustomId(interaction: Interaction): string | undefined {
   const component =
     (typeof interaction.isButton === "function" && interaction.isButton()) ||
     (typeof interaction.isStringSelectMenu === "function" && interaction.isStringSelectMenu()) ||
+    (typeof interaction.isAnySelectMenu === "function" && interaction.isAnySelectMenu()) ||
     (typeof interaction.isModalSubmit === "function" && interaction.isModalSubmit());
-  return component && "customId" in interaction && typeof interaction.customId === "string" && interaction.customId.startsWith("qbox:ticket:");
+  return component && "customId" in interaction && typeof interaction.customId === "string" ? interaction.customId : undefined;
 }

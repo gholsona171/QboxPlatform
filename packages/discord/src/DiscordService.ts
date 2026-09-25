@@ -7,7 +7,6 @@ import type { PermissionAuthorizer } from "@qbox/permissions";
 import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
 import { DiscordCommunityService, type CommunityRepository } from "@qbox/discord-community";
 import { RoleManagementService, type RoleDependencyRepository } from "@qbox/discord-roles";
-import { DiscordRestTicketGateway, TicketService, type TicketRepository } from "@qbox/tickets";
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
@@ -17,9 +16,7 @@ import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuIn
 import { DiscordCommunityGatewayAdapter } from "./community/DiscordCommunityGateway.js";
 import { DiscordCommunityEventHandler } from "./community/DiscordCommunityEventHandler.js";
 import { DiscordRoleManagementGateway } from "./roles/DiscordRoleManagementGateway.js";
-import { DiscordTicketEventHandler } from "./tickets/DiscordTicketEventHandler.js";
-import { DiscordTicketInteractionHandler } from "./tickets/DiscordTicketInteractionHandler.js";
-import { TicketElevation } from "./tickets/ticketActor.js";
+import type { DiscordFeature, DiscordFeatureFactory } from "./features/DiscordFeature.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -68,10 +65,8 @@ export class DiscordService {
   public readonly roleMenus: RoleMenuService | undefined;
   public readonly community: DiscordCommunityService | undefined;
   public readonly roles: RoleManagementService | undefined;
-  public readonly tickets: TicketService | undefined;
-  public readonly ticketElevation: TicketElevation;
-  private readonly ticketInteractions: DiscordTicketInteractionHandler | undefined;
-  private readonly ticketEvents: DiscordTicketEventHandler | undefined;
+  /** Pluggable features (tickets, moderation, ...) composed at startup. */
+  public readonly features: readonly DiscordFeature[];
   private readonly interactions: DiscordInteractionHandler;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly communityEvents: DiscordCommunityEventHandler | undefined;
@@ -104,15 +99,10 @@ export class DiscordService {
     roleMenuRepository?: RoleMenuRepository,
     communityRepository?: CommunityRepository,
     roleDependencyRepository?: RoleDependencyRepository,
-    ticketRepository?: TicketRepository,
+    featureFactories: readonly DiscordFeatureFactory[] = [],
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
-    this.ticketElevation = new TicketElevation(permissionAuthorizer);
-    if (ticketRepository) {
-      this.tickets = new TicketService(ticketRepository, new DiscordRestTicketGateway(this.client.rest));
-      this.ticketInteractions = new DiscordTicketInteractionHandler(this.tickets, this.ticketElevation);
-      this.ticketEvents = new DiscordTicketEventHandler(this.tickets);
-    }
+    this.features = featureFactories.map((create) => create({ client: this.client, authorizer: permissionAuthorizer }));
     if (roleMenuRepository) {
       this.roleMenus = new RoleMenuService(
         roleMenuRepository,
@@ -139,8 +129,21 @@ export class DiscordService {
       executionTimeoutMs: readExecutionTimeout(),
       ...(this.roleMenuInteractions ? { roleMenuInteractions: this.roleMenuInteractions } : {}),
       ...(this.community ? { community: this.community } : {}),
-      ...(this.ticketInteractions ? { ticketInteractions: this.ticketInteractions } : {}),
+      featureInteractions: this.features.flatMap((feature) =>
+        feature.handleInteraction && feature.interactionPrefixes
+          ? [{ prefixes: feature.interactionPrefixes, handle: feature.handleInteraction.bind(feature) }]
+          : [],
+      ),
     });
+  }
+
+  /** Live command instance provided by a feature for this command name. */
+  public featureCommand(name: string): DiscordCommand | undefined {
+    for (const feature of this.features) {
+      const command = feature.commands().find((candidate) => candidate.data.name === name);
+      if (command) return command;
+    }
+    return undefined;
   }
 
   public registerCommands(commands: readonly DiscordCommand[]): number {
@@ -160,7 +163,7 @@ export class DiscordService {
     this.client.on(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.on(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.attach(this.client);
-    this.ticketEvents?.attach(this.client);
+    for (const feature of this.features) feature.attach?.(this.client);
 
     logger.info(
       {
@@ -176,7 +179,7 @@ export class DiscordService {
       this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
       this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
       this.communityEvents?.detach();
-      this.ticketEvents?.detach();
+      for (const feature of this.features) feature.detach?.();
       this.client.destroy();
       throw error;
     }
@@ -285,7 +288,7 @@ export class DiscordService {
     this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.detach();
-    this.ticketEvents?.detach();
+    for (const feature of this.features) feature.detach?.();
     this.client.destroy();
   }
 }

@@ -698,62 +698,6 @@ export type GuildUpdateOneRequiredWithoutStarboardEntriesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutStarboardEntriesInput, Prisma.GuildUpdateWithoutStarboardEntriesInput>, Prisma.GuildUncheckedUpdateWithoutStarboardEntriesInput>
 }
 
-export type GuildCreateNestedOneWithoutTicketSettingsInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketSettingsInput
-  connect?: Prisma.GuildWhereUniqueInput
-}
-
-export type GuildUpdateOneRequiredWithoutTicketSettingsNestedInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketSettingsInput
-  upsert?: Prisma.GuildUpsertWithoutTicketSettingsInput
-  connect?: Prisma.GuildWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketSettingsInput, Prisma.GuildUpdateWithoutTicketSettingsInput>, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
-}
-
-export type GuildCreateNestedOneWithoutTicketCategoriesInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketCategoriesInput
-  connect?: Prisma.GuildWhereUniqueInput
-}
-
-export type GuildUpdateOneRequiredWithoutTicketCategoriesNestedInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketCategoriesInput
-  upsert?: Prisma.GuildUpsertWithoutTicketCategoriesInput
-  connect?: Prisma.GuildWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketCategoriesInput, Prisma.GuildUpdateWithoutTicketCategoriesInput>, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
-}
-
-export type GuildCreateNestedOneWithoutTicketPanelsInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketPanelsInput
-  connect?: Prisma.GuildWhereUniqueInput
-}
-
-export type GuildUpdateOneRequiredWithoutTicketPanelsNestedInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketPanelsInput
-  upsert?: Prisma.GuildUpsertWithoutTicketPanelsInput
-  connect?: Prisma.GuildWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketPanelsInput, Prisma.GuildUpdateWithoutTicketPanelsInput>, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
-}
-
-export type GuildCreateNestedOneWithoutTicketsInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketsInput
-  connect?: Prisma.GuildWhereUniqueInput
-}
-
-export type GuildUpdateOneRequiredWithoutTicketsNestedInput = {
-  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
-  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketsInput
-  upsert?: Prisma.GuildUpsertWithoutTicketsInput
-  connect?: Prisma.GuildWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketsInput, Prisma.GuildUpdateWithoutTicketsInput>, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
-}
-
 export type GuildCreateNestedOneWithoutPrincipalsInput = {
   create?: Prisma.XOR<Prisma.GuildCreateWithoutPrincipalsInput, Prisma.GuildUncheckedCreateWithoutPrincipalsInput>
   connectOrCreate?: Prisma.GuildCreateOrConnectWithoutPrincipalsInput
@@ -812,6 +756,62 @@ export type GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput = {
   upsert?: Prisma.GuildUpsertWithoutAuthMembershipsInput
   connect?: Prisma.GuildWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutAuthMembershipsInput, Prisma.GuildUpdateWithoutAuthMembershipsInput>, Prisma.GuildUncheckedUpdateWithoutAuthMembershipsInput>
+}
+
+export type GuildCreateNestedOneWithoutTicketSettingsInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketSettingsInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutTicketSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketSettingsInput
+  upsert?: Prisma.GuildUpsertWithoutTicketSettingsInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketSettingsInput, Prisma.GuildUpdateWithoutTicketSettingsInput>, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
+}
+
+export type GuildCreateNestedOneWithoutTicketCategoriesInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketCategoriesInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutTicketCategoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketCategoriesInput
+  upsert?: Prisma.GuildUpsertWithoutTicketCategoriesInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketCategoriesInput, Prisma.GuildUpdateWithoutTicketCategoriesInput>, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
+}
+
+export type GuildCreateNestedOneWithoutTicketPanelsInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketPanelsInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutTicketPanelsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketPanelsInput
+  upsert?: Prisma.GuildUpsertWithoutTicketPanelsInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketPanelsInput, Prisma.GuildUpdateWithoutTicketPanelsInput>, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
+}
+
+export type GuildCreateNestedOneWithoutTicketsInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketsInput
+  connect?: Prisma.GuildWhereUniqueInput
+}
+
+export type GuildUpdateOneRequiredWithoutTicketsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
+  connectOrCreate?: Prisma.GuildCreateOrConnectWithoutTicketsInput
+  upsert?: Prisma.GuildUpsertWithoutTicketsInput
+  connect?: Prisma.GuildWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuildUpdateToOneWithWhereWithoutTicketsInput, Prisma.GuildUpdateWithoutTicketsInput>, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
 }
 
 export type GuildCreateWithoutRoleMenusInput = {
@@ -2582,550 +2582,6 @@ export type GuildUncheckedUpdateWithoutStarboardEntriesInput = {
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
 }
 
-export type GuildCreateWithoutTicketSettingsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
-}
-
-export type GuildUncheckedCreateWithoutTicketSettingsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
-}
-
-export type GuildCreateOrConnectWithoutTicketSettingsInput = {
-  where: Prisma.GuildWhereUniqueInput
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
-}
-
-export type GuildUpsertWithoutTicketSettingsInput = {
-  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketSettingsInput, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
-  where?: Prisma.GuildWhereInput
-}
-
-export type GuildUpdateToOneWithWhereWithoutTicketSettingsInput = {
-  where?: Prisma.GuildWhereInput
-  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketSettingsInput, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
-}
-
-export type GuildUpdateWithoutTicketSettingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildUncheckedUpdateWithoutTicketSettingsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildCreateWithoutTicketCategoriesInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
-}
-
-export type GuildUncheckedCreateWithoutTicketCategoriesInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
-}
-
-export type GuildCreateOrConnectWithoutTicketCategoriesInput = {
-  where: Prisma.GuildWhereUniqueInput
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
-}
-
-export type GuildUpsertWithoutTicketCategoriesInput = {
-  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketCategoriesInput, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
-  where?: Prisma.GuildWhereInput
-}
-
-export type GuildUpdateToOneWithWhereWithoutTicketCategoriesInput = {
-  where?: Prisma.GuildWhereInput
-  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketCategoriesInput, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
-}
-
-export type GuildUpdateWithoutTicketCategoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildUncheckedUpdateWithoutTicketCategoriesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildCreateWithoutTicketPanelsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
-}
-
-export type GuildUncheckedCreateWithoutTicketPanelsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
-  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
-}
-
-export type GuildCreateOrConnectWithoutTicketPanelsInput = {
-  where: Prisma.GuildWhereUniqueInput
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
-}
-
-export type GuildUpsertWithoutTicketPanelsInput = {
-  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketPanelsInput, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
-  where?: Prisma.GuildWhereInput
-}
-
-export type GuildUpdateToOneWithWhereWithoutTicketPanelsInput = {
-  where?: Prisma.GuildWhereInput
-  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketPanelsInput, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
-}
-
-export type GuildUpdateWithoutTicketPanelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildUncheckedUpdateWithoutTicketPanelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
-  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildCreateWithoutTicketsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
-}
-
-export type GuildUncheckedCreateWithoutTicketsInput = {
-  id?: string
-  discordGuildId: string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: boolean
-  disabledAt?: Date | string | null
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
-  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
-  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
-  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
-  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
-  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
-  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
-  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
-}
-
-export type GuildCreateOrConnectWithoutTicketsInput = {
-  where: Prisma.GuildWhereUniqueInput
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
-}
-
-export type GuildUpsertWithoutTicketsInput = {
-  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketsInput, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
-  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
-  where?: Prisma.GuildWhereInput
-}
-
-export type GuildUpdateToOneWithWhereWithoutTicketsInput = {
-  where?: Prisma.GuildWhereInput
-  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketsInput, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
-}
-
-export type GuildUpdateWithoutTicketsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
-}
-
-export type GuildUncheckedUpdateWithoutTicketsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
-  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
-  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
-  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
-  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
-  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
-  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
-  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
-  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
-  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
-  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
-  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
-  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
-  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
-  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
-  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
-  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
-  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
-  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
-  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
-}
-
 export type GuildCreateWithoutPrincipalsInput = {
   id?: string
   discordGuildId: string
@@ -3668,6 +3124,550 @@ export type GuildUncheckedUpdateWithoutAuthMembershipsInput = {
   ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
   ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
   tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutTicketSettingsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
+}
+
+export type GuildUncheckedCreateWithoutTicketSettingsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
+}
+
+export type GuildCreateOrConnectWithoutTicketSettingsInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
+}
+
+export type GuildUpsertWithoutTicketSettingsInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketSettingsInput, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketSettingsInput, Prisma.GuildUncheckedCreateWithoutTicketSettingsInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutTicketSettingsInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketSettingsInput, Prisma.GuildUncheckedUpdateWithoutTicketSettingsInput>
+}
+
+export type GuildUpdateWithoutTicketSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutTicketSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutTicketCategoriesInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
+}
+
+export type GuildUncheckedCreateWithoutTicketCategoriesInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
+}
+
+export type GuildCreateOrConnectWithoutTicketCategoriesInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
+}
+
+export type GuildUpsertWithoutTicketCategoriesInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketCategoriesInput, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketCategoriesInput, Prisma.GuildUncheckedCreateWithoutTicketCategoriesInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutTicketCategoriesInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketCategoriesInput, Prisma.GuildUncheckedUpdateWithoutTicketCategoriesInput>
+}
+
+export type GuildUpdateWithoutTicketCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutTicketCategoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutTicketPanelsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketCreateNestedManyWithoutGuildInput
+}
+
+export type GuildUncheckedCreateWithoutTicketPanelsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
+  tickets?: Prisma.TicketUncheckedCreateNestedManyWithoutGuildInput
+}
+
+export type GuildCreateOrConnectWithoutTicketPanelsInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
+}
+
+export type GuildUpsertWithoutTicketPanelsInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketPanelsInput, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketPanelsInput, Prisma.GuildUncheckedCreateWithoutTicketPanelsInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutTicketPanelsInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketPanelsInput, Prisma.GuildUncheckedUpdateWithoutTicketPanelsInput>
+}
+
+export type GuildUpdateWithoutTicketPanelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutTicketPanelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
+  tickets?: Prisma.TicketUncheckedUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildCreateWithoutTicketsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsCreateNestedOneWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryCreateNestedManyWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelCreateNestedManyWithoutGuildInput
+}
+
+export type GuildUncheckedCreateWithoutTicketsInput = {
+  id?: string
+  discordGuildId: string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: boolean
+  disabledAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedCreateNestedManyWithoutGuildInput
+  assignments?: Prisma.PermissionAssignmentUncheckedCreateNestedManyWithoutGuildInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput
+  roleMenus?: Prisma.RoleMenuUncheckedCreateNestedManyWithoutGuildInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedCreateNestedManyWithoutGuildInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedCreateNestedManyWithoutGuildInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedCreateNestedManyWithoutGuildInput
+  counters?: Prisma.CommunityCounterUncheckedCreateNestedManyWithoutGuildInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedCreateNestedManyWithoutGuildInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedCreateNestedManyWithoutGuildInput
+  customCommands?: Prisma.CustomCommandUncheckedCreateNestedManyWithoutGuildInput
+  suggestions?: Prisma.SuggestionUncheckedCreateNestedManyWithoutGuildInput
+  starboards?: Prisma.StarboardConfigUncheckedCreateNestedManyWithoutGuildInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedCreateNestedManyWithoutGuildInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedCreateNestedManyWithoutGuildInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedCreateNestedOneWithoutGuildInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedCreateNestedManyWithoutGuildInput
+  ticketPanels?: Prisma.TicketPanelUncheckedCreateNestedManyWithoutGuildInput
+}
+
+export type GuildCreateOrConnectWithoutTicketsInput = {
+  where: Prisma.GuildWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
+}
+
+export type GuildUpsertWithoutTicketsInput = {
+  update: Prisma.XOR<Prisma.GuildUpdateWithoutTicketsInput, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
+  create: Prisma.XOR<Prisma.GuildCreateWithoutTicketsInput, Prisma.GuildUncheckedCreateWithoutTicketsInput>
+  where?: Prisma.GuildWhereInput
+}
+
+export type GuildUpdateToOneWithWhereWithoutTicketsInput = {
+  where?: Prisma.GuildWhereInput
+  data: Prisma.XOR<Prisma.GuildUpdateWithoutTicketsInput, Prisma.GuildUncheckedUpdateWithoutTicketsInput>
+}
+
+export type GuildUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUpdateOneWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUpdateManyWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUpdateManyWithoutGuildNestedInput
+}
+
+export type GuildUncheckedUpdateWithoutTicketsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  discordGuildId?: Prisma.StringFieldUpdateOperationsInput | string
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  disabledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  principals?: Prisma.PermissionPrincipalUncheckedUpdateManyWithoutGuildNestedInput
+  assignments?: Prisma.PermissionAssignmentUncheckedUpdateManyWithoutGuildNestedInput
+  auditScopeEvents?: Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput
+  authMemberships?: Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput
+  roleMenus?: Prisma.RoleMenuUncheckedUpdateManyWithoutGuildNestedInput
+  welcomeGoodbye?: Prisma.WelcomeGoodbyeConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleConfigs?: Prisma.AutoroleConfigUncheckedUpdateManyWithoutGuildNestedInput
+  autoroleRules?: Prisma.AutoroleRuleUncheckedUpdateManyWithoutGuildNestedInput
+  rulesConfigs?: Prisma.RulesConfigUncheckedUpdateManyWithoutGuildNestedInput
+  counters?: Prisma.CommunityCounterUncheckedUpdateManyWithoutGuildNestedInput
+  logConfigs?: Prisma.ServerLogConfigUncheckedUpdateManyWithoutGuildNestedInput
+  embedTemplates?: Prisma.EmbedTemplateUncheckedUpdateManyWithoutGuildNestedInput
+  customCommands?: Prisma.CustomCommandUncheckedUpdateManyWithoutGuildNestedInput
+  suggestions?: Prisma.SuggestionUncheckedUpdateManyWithoutGuildNestedInput
+  starboards?: Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput
+  starboardEntries?: Prisma.StarboardEntryUncheckedUpdateManyWithoutGuildNestedInput
+  roleAuditEvents?: Prisma.DiscordRoleAuditEventUncheckedUpdateManyWithoutGuildNestedInput
+  ticketSettings?: Prisma.TicketSettingsUncheckedUpdateOneWithoutGuildNestedInput
+  ticketCategories?: Prisma.TicketCategoryUncheckedUpdateManyWithoutGuildNestedInput
+  ticketPanels?: Prisma.TicketPanelUncheckedUpdateManyWithoutGuildNestedInput
 }
 
 

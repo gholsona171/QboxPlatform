@@ -30,7 +30,6 @@ import type {
 import { RoleMenuError, type RoleMenuService } from "@qbox/role-menus";
 import { CommunityFeatureError, type CounterType, type DiscordCommunityService, type SuggestionStatus } from "@qbox/discord-community";
 import { RoleManagementError, type RoleManagementService } from "@qbox/discord-roles";
-import type { TicketService } from "@qbox/tickets";
 import {
   AuthenticationRequiredApiError,
   AuthorizationDeniedApiError,
@@ -40,7 +39,7 @@ import {
 } from "../errors/ApiError.js";
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { cookieSecret, type ApiAuthenticationConfiguration } from "./ApiAuthenticationConfiguration.js";
-import { registerTicketRoutes } from "../tickets/TicketRoutes.js";
+import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 
 /** Dependencies for browser-visible authentication and dashboard routes. */
 export interface BrowserAuthenticationRouteDependencies {
@@ -56,7 +55,8 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly roleMenus: RoleMenuService;
   readonly community: DiscordCommunityService;
   readonly roles: RoleManagementService;
-  readonly tickets?: TicketService;
+  /** Pluggable features that register their own routes. */
+  readonly features?: readonly ApiFeature[];
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
 }
@@ -636,19 +636,20 @@ export async function registerBrowserAuthenticationRoutes(
     return { data: await dependencies.community.saveStarboard({ guildId: diagnostics.discordGuildId, enabled: booleanField(body, "enabled"), destinationChannelId: stringField(body, "destinationChannelId"), emoji: optionalStringField(body, "emoji") ?? "\u2b50", threshold: optionalIntegerField(body, "threshold") ?? 3, allowSelfStar: optionalBooleanField(body, "allowSelfStar") ?? false, includeBotMessages: optionalBooleanField(body, "includeBotMessages") ?? false, nsfw: "BLOCK", mode: "DENYLIST", channels: stringArrayField(body, "channels"), ignoredRoles: stringArrayField(body, "ignoredRoles") }) };
   });
 
-  if (dependencies.tickets)
-    registerTicketRoutes(server, {
-      tickets: dependencies.tickets,
-      guildId: diagnostics.discordGuildId,
-      guard: async (request, permission, options) => {
-        if (options.mutation) await requireCsrf(request, dependencies);
-        const { account } = await requireDiscordManager(request, dependencies, permission);
-        return {
-          userId: account.identity.providerSubjectId,
-          displayName: account.identity.profile.globalName ?? account.identity.profile.username ?? "Support team",
-        };
-      },
-    });
+  const featureContext: ApiFeatureContext = {
+    guildId: diagnostics.discordGuildId,
+    guard: async (request, permission, options) => {
+      if (options.mutation) await requireCsrf(request, dependencies);
+      const { account, roleIds } = await requireDiscordManager(request, dependencies, permission);
+      return identityOf(account, roleIds);
+    },
+    member: async (request, options) => {
+      if (options.mutation) await requireCsrf(request, dependencies);
+      const { account, roleIds } = await requireGuildMember(request, dependencies);
+      return identityOf(account, roleIds);
+    },
+  };
+  for (const feature of dependencies.features ?? []) feature.register(server, featureContext);
 
   server.post("/auth/logout", async (request, reply) => {
     validateSameOrigin(request, diagnostics.dashboardUrl);
@@ -721,50 +722,55 @@ async function requireRoleMenuManager(
   return requireDiscordManager(request, dependencies, "discord.role-menus.manage");
 }
 
-async function requireDiscordManager(
+async function requireGuildMember(
   request: FastifyRequest,
   dependencies: BrowserAuthenticationRouteDependencies,
-  permission: Permission,
 ) {
   const verified = await requireSession(request, dependencies);
   const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
-  const guild = await dependencies.guilds.findByDiscordId(
-    dependencies.configuration.diagnostics().discordGuildId,
-  );
+  const guildDiscordId = dependencies.configuration.diagnostics().discordGuildId;
+  const guild = await dependencies.guilds.findByDiscordId(guildDiscordId);
   const membership = guild
     ? await dependencies.unitOfWork.run((repositories) =>
-        repositories.guildMemberships.find(
-          account.identity.id,
-          discordGuildId(dependencies.configuration.diagnostics().discordGuildId),
-        ),
+        repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
       )
     : undefined;
   if (!membership || membership.status !== "PRESENT")
     throw new AuthorizationDeniedApiError();
+  return { verified, account, roleIds: membership.roles.map((role) => role.roleId) };
+}
+
+async function requireDiscordManager(
+  request: FastifyRequest,
+  dependencies: BrowserAuthenticationRouteDependencies,
+  permission: Permission | readonly Permission[],
+) {
+  const { verified, account, roleIds } = await requireGuildMember(request, dependencies);
+  const guildDiscordId = dependencies.configuration.diagnostics().discordGuildId;
   const principals: PermissionPrincipal[] = [
-    {
-      type: "discord-user",
-      externalId: account.identity.providerSubjectId,
-      guildId: dependencies.configuration.diagnostics().discordGuildId,
-    },
-    ...membership.roles.map((role) => ({
-      type: "discord-role" as const,
-      externalId: role.roleId,
-      guildId: dependencies.configuration.diagnostics().discordGuildId,
-    })),
+    { type: "discord-user", externalId: account.identity.providerSubjectId, guildId: guildDiscordId },
+    ...roleIds.map((roleId) => ({ type: "discord-role" as const, externalId: roleId, guildId: guildDiscordId })),
   ];
   const decision = await dependencies.authorizer.authorize({
     principals,
-    scope: {
-      type: "discord-guild",
-      guildId: dependencies.configuration.diagnostics().discordGuildId,
-    },
-    required: [permission],
-    mode: "all",
+    scope: { type: "discord-guild", guildId: guildDiscordId },
+    required: typeof permission === "string" ? [permission] : [...permission],
+    mode: typeof permission === "string" ? "all" : "any",
     administratorOverride: true,
   });
   if (!decision.allowed) throw new AuthorizationDeniedApiError();
-  return { verified, account };
+  return { verified, account, roleIds };
+}
+
+function identityOf(
+  account: Awaited<ReturnType<typeof loadAccountSummary>>,
+  roleIds: readonly string[],
+) {
+  return {
+    userId: account.identity.providerSubjectId,
+    displayName: account.identity.profile.globalName ?? account.identity.profile.username ?? "Member",
+    roleIds,
+  };
 }
 
 async function safeRoleMenuCall<T>(operation: () => Promise<T>): Promise<T> {

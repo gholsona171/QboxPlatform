@@ -117,36 +117,6 @@ export type StarboardConfig = Prisma.StarboardConfigModel
  */
 export type StarboardEntry = Prisma.StarboardEntryModel
 /**
- * Model TicketSettings
- *
- */
-export type TicketSettings = Prisma.TicketSettingsModel
-/**
- * Model TicketCategory
- *
- */
-export type TicketCategory = Prisma.TicketCategoryModel
-/**
- * Model TicketPanel
- *
- */
-export type TicketPanel = Prisma.TicketPanelModel
-/**
- * Model Ticket
- *
- */
-export type Ticket = Prisma.TicketModel
-/**
- * Model TicketMessage
- *
- */
-export type TicketMessage = Prisma.TicketMessageModel
-/**
- * Model TicketEvent
- *
- */
-export type TicketEvent = Prisma.TicketEventModel
-/**
  * Model PermissionPrincipal
  *
  */
@@ -211,3 +181,33 @@ export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
  *
  */
 export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel
+/**
+ * Model TicketSettings
+ *
+ */
+export type TicketSettings = Prisma.TicketSettingsModel
+/**
+ * Model TicketCategory
+ *
+ */
+export type TicketCategory = Prisma.TicketCategoryModel
+/**
+ * Model TicketPanel
+ *
+ */
+export type TicketPanel = Prisma.TicketPanelModel
+/**
+ * Model Ticket
+ *
+ */
+export type Ticket = Prisma.TicketModel
+/**
+ * Model TicketMessage
+ *
+ */
+export type TicketMessage = Prisma.TicketMessageModel
+/**
+ * Model TicketEvent
+ *
+ */
+export type TicketEvent = Prisma.TicketEventModel

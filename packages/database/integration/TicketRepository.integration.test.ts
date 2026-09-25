@@ -33,10 +33,6 @@ const gateway: TicketDiscordGateway = {
   deletePanelMessage: async () => undefined,
   postTranscript: async () => ({ messageId: "1432100000000000003" }),
   directMessage: async () => true,
-  listChannels: async () => [],
-  listRoles: async () => [],
-  searchMembers: async () => [],
-  getMembers: async () => [],
 };
 const service = new TicketService(repository, gateway);
 

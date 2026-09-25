@@ -7,14 +7,31 @@ import {
   saveTicketCategory,
   saveTicketPanel,
   saveTicketSettings,
-  searchTicketMembers,
   ticketAction,
   ticketDetail,
-  ticketDirectory,
   ticketTranscriptUrl,
   ticketsOverview,
 } from "./api.js";
 import { appPath } from "./config.js";
+import {
+  bindPickers,
+  channelLabel,
+  channelSelect,
+  checkbox,
+  detail,
+  loadDirectory,
+  memberName,
+  memberPicker,
+  minutes,
+  numberField,
+  optionalValue as optionalId,
+  relative,
+  roleNames,
+  rolePicker,
+  selectField,
+  textArea,
+  textField,
+} from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
 
 const TABS = [
@@ -37,7 +54,6 @@ const view = {
   detail: undefined,
   editingReason: undefined,
   editingPanel: undefined,
-  directory: { channels: [], roles: [], members: [] },
   canManage: false,
   error: undefined,
 };
@@ -63,13 +79,11 @@ async function load() {
     view.error = error;
     return;
   }
-  const memberIds = [...new Set(view.overview.categories.flatMap((category) => category.alertUserIds))];
-  try {
-    view.directory = (await ticketDirectory(memberIds)).data;
-    view.canManage = true;
-  } catch {
-    view.canManage = false;
-  }
+  view.canManage = view.overview.canManage === true;
+  await loadDirectory([
+    ...view.overview.categories.flatMap((category) => category.alertUserIds),
+    ...view.tickets.flatMap((ticket) => [ticket.openerId, ...(ticket.claimedById ? [ticket.claimedById] : [])]),
+  ]);
   if (view.selectedId) view.detail = (await ticketDetail(view.selectedId).catch(() => undefined))?.data;
 }
 
@@ -380,58 +394,11 @@ function bind() {
     event.preventDefault();
     void submit(form.dataset.tForm, form);
   }));
-  container.querySelectorAll(".chip-picker").forEach(bindChipPicker);
+  bindPickers(container);
   const panelForm = container.querySelector('form[data-t-form="panel"]');
   panelForm?.addEventListener("input", () => {
     document.getElementById("panelPreview").innerHTML = panelPreview(panelPayload(new FormData(panelForm)));
   });
-}
-
-function bindChipPicker(picker) {
-  const name = picker.dataset.name;
-  const chips = picker.querySelector(".chip-row");
-  const add = (id, label) => {
-    if (!id || picker.querySelector(`input[type=hidden][value="${CSS.escape(id)}"]`)) return;
-    chips.insertAdjacentHTML("beforeend", chip(name, id, label));
-  };
-  chips.addEventListener("click", (event) => {
-    const remove = event.target.closest("[data-chip-remove]");
-    if (remove) remove.closest(".chip").remove();
-  });
-  const select = picker.querySelector("select[data-chip-add]");
-  select?.addEventListener("change", () => {
-    add(select.value, select.selectedOptions[0]?.textContent ?? select.value);
-    select.value = "";
-  });
-  const search = picker.querySelector("input[data-member-search]");
-  const results = picker.querySelector(".member-results");
-  let timer;
-  search?.addEventListener("input", () => {
-    clearTimeout(timer);
-    const query = search.value.trim();
-    if (/^\d{17,20}$/.test(query)) {
-      results.innerHTML = `<button type="button" class="member-result" data-id="${query}" data-label="${query}">Add ID ${query}</button>`;
-      return;
-    }
-    if (query.length < 2) { results.innerHTML = ""; return; }
-    timer = setTimeout(async () => {
-      try {
-        const members = (await searchTicketMembers(query)).data;
-        for (const member of members) if (!view.directory.members.some((item) => item.id === member.id)) view.directory.members.push(member);
-        results.innerHTML = members.map((member) => `<button type="button" class="member-result" data-id="${escapeHtml(member.id)}" data-label="${escapeHtml(member.displayName)}">${member.avatarUrl ? `<img alt="" src="${escapeHtml(member.avatarUrl)}">` : ""}<span>${escapeHtml(member.displayName)}</span><small>@${escapeHtml(member.username)}</small></button>`).join("") || `<p class="microcopy">No members found.</p>`;
-      } catch (error) {
-        results.innerHTML = `<p class="microcopy">${escapeHtml(error.message)}</p>`;
-      }
-    }, 250);
-  });
-  results?.addEventListener("click", (event) => {
-    const result = event.target.closest(".member-result");
-    if (!result) return;
-    add(result.dataset.id, result.dataset.label);
-    results.innerHTML = "";
-    search.value = "";
-  });
-  search?.addEventListener("keydown", (event) => { if (event.key === "Enter") event.preventDefault(); });
 }
 
 async function selectTicket(id) {
@@ -596,109 +563,8 @@ function panelPayload(data) {
   };
 }
 
-/* ---------- Form helpers ---------- */
-
-function optionalId(data, name) {
-  const value = String(data.get(name) ?? "").trim();
-  return value ? { [name]: value } : {};
-}
-
-function detail(label, value) {
-  return `<div class="detail-row"><span>${label}</span><strong>${value}</strong></div>`;
-}
-
-function checkbox(name, label, checked) {
-  return `<label class="checkbox full"><input type="checkbox" name="${escapeHtml(name)}" ${checked ? "checked" : ""}> ${escapeHtml(label)}</label>`;
-}
-
-function textField(name, label, value, hint = "", required = false, width = "") {
-  return `<label class="${width}">${escapeHtml(label)}<input name="${escapeHtml(name)}" value="${escapeHtml(value ?? "")}" ${hint ? `placeholder="${escapeHtml(hint)}"` : ""} ${required ? "required" : ""}></label>`;
-}
-
-function textArea(name, label, value, hint = "") {
-  return `<label class="full">${escapeHtml(label)}<textarea name="${escapeHtml(name)}" ${hint ? `placeholder="${escapeHtml(hint)}"` : ""}>${escapeHtml(value ?? "")}</textarea></label>`;
-}
-
-function numberField(name, label, value, min, max, required = true) {
-  return `<label>${escapeHtml(label)}<input type="number" name="${escapeHtml(name)}" value="${escapeHtml(value)}" min="${min}" max="${max}" ${required ? "required" : ""}></label>`;
-}
-
-function selectField(name, label, options, selected) {
-  return `<label>${escapeHtml(label)}<select name="${escapeHtml(name)}">${options.map(([value, text]) => `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(text)}</option>`).join("")}</select></label>`;
-}
-
-/** Channel dropdown from the live server. `kind` is "CATEGORY" or "TEXT". */
-function channelSelect(name, label, selected, kind, emptyLabel, required = false) {
-  const channels = view.directory.channels.filter((channel) => (kind === "CATEGORY" ? channel.type === "CATEGORY" : channel.type === "TEXT" || channel.type === "ANNOUNCEMENT"));
-  const known = !selected || channels.some((channel) => channel.id === selected);
-  return `<label>${escapeHtml(label)}<select name="${escapeHtml(name)}" ${required ? "required" : ""}>
-    <option value="">${escapeHtml(emptyLabel)}</option>
-    ${known ? "" : `<option value="${escapeHtml(selected)}" selected>Unknown channel ${escapeHtml(selected)}</option>`}
-    ${channels.map((channel) => `<option value="${escapeHtml(channel.id)}" ${channel.id === selected ? "selected" : ""}>${kind === "CATEGORY" ? "📁 " : "# "}${escapeHtml(channel.name)}</option>`).join("")}
-  </select></label>`;
-}
-
-function rolePicker(name, label, selected, help) {
-  const chips = selected.map((id) => chip(name, id, roleName(id))).join("");
-  return `<div class="chip-picker full" data-name="${escapeHtml(name)}">
-    <span class="picker-label">${escapeHtml(label)}</span>
-    <div class="chip-row">${chips}</div>
-    <select data-chip-add aria-label="Add a role to ${escapeHtml(label)}"><option value="">+ Add a role</option>${view.directory.roles.map((role) => `<option value="${escapeHtml(role.id)}">${escapeHtml(role.name)}</option>`).join("")}</select>
-    ${help ? `<small class="microcopy">${escapeHtml(help)}</small>` : ""}
-  </div>`;
-}
-
-function memberPicker(name, label, selected, help) {
-  const chips = selected.map((id) => chip(name, id, memberText(id))).join("");
-  return `<div class="chip-picker full" data-name="${escapeHtml(name)}">
-    <span class="picker-label">${escapeHtml(label)}</span>
-    <div class="chip-row">${chips}</div>
-    <input data-member-search placeholder="Search members by name, or paste a Discord ID" aria-label="Search members">
-    <div class="member-results"></div>
-    ${help ? `<small class="microcopy">${escapeHtml(help)}</small>` : ""}
-  </div>`;
-}
-
-function chip(name, id, label) {
-  return `<span class="chip">${escapeHtml(label)}<input type="hidden" name="${escapeHtml(name)}" value="${escapeHtml(id)}"><button type="button" aria-label="Remove ${escapeHtml(label)}" data-chip-remove>×</button></span>`;
-}
-
-function roleName(id) {
-  return view.directory.roles.find((role) => role.id === id)?.name ?? id;
-}
-
-function roleNames(ids) {
-  return ids.map((id) => `@${roleName(id)}`).join(", ");
-}
-
-function memberText(id) {
-  return view.directory.members.find((member) => member.id === id)?.displayName ?? id;
-}
-
-function memberName(id) {
-  const member = view.directory.members.find((item) => item.id === id);
-  return member ? escapeHtml(member.displayName) : `<code>${escapeHtml(id)}</code>`;
-}
-
-function channelLabel(id) {
-  if (!id) return "";
-  const channel = view.directory.channels.find((item) => item.id === id);
-  return channel ? (channel.type === "CATEGORY" ? `📁 ${channel.name}` : `#${channel.name}`) : id;
-}
 
 function statusLabel(status) {
   return { OPEN: "open", CLAIMED: "claimed", PENDING: "waiting", CLOSED: "closed" }[status] ?? status.toLowerCase();
 }
 
-function relative(value) {
-  const minutesAgo = Math.round((Date.now() - new Date(value).getTime()) / 60000);
-  if (minutesAgo < 1) return "just now";
-  if (minutesAgo < 60) return `${minutesAgo}m ago`;
-  if (minutesAgo < 1440) return `${Math.round(minutesAgo / 60)}h ago`;
-  return `${Math.round(minutesAgo / 1440)}d ago`;
-}
-
-function minutes(value) {
-  if (value === undefined || value === null) return "—";
-  return value >= 120 ? `${Math.round(value / 60)}h` : `${value}m`;
-}

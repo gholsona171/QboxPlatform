@@ -1,5 +1,6 @@
-import { discordMutation, listDiscordChannels, listDiscordRoles, listRoleMenus, loadDiscordFeature, ticketDirectory } from "./api.js";
+import { discordMutation, listDiscordRoles, listRoleMenus, loadDiscordFeature } from "./api.js";
 import { appPath } from "./config.js";
+import { channelLabel, channelSelect, checkbox, loadDirectory, numberField, roleName, roleSelect, selectField, textArea, textField } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
 
 /** Each tab: label, API path for loading settings, and the renderer. */
@@ -43,7 +44,7 @@ const LOG_EVENTS = [
 ];
 const COUNTER_TYPES = [["TOTAL_MEMBERS", "All members"], ["HUMANS", "Humans"], ["BOTS", "Bots"], ["ONLINE", "Online"], ["ROLE", "Members with a role"]];
 
-const view = { tab: "welcome", settings: undefined, roles: [], channels: [], menus: [], error: undefined };
+const view = { tab: "welcome", settings: undefined, roles: [], menus: [], error: undefined };
 let container;
 
 export async function renderDiscordPage(target) {
@@ -54,20 +55,6 @@ export async function renderDiscordPage(target) {
   await loadDirectory();
   await load();
   render();
-}
-
-async function loadDirectory() {
-  const [roles, channels] = await Promise.allSettled([listDiscordRoles(), listDiscordChannels()]);
-  if (roles.status === "fulfilled") view.roles = roles.value.data.filter((role) => !role.managed && role.name !== "@everyone");
-  if (channels.status === "fulfilled") view.channels = channels.value.data;
-  if (view.roles.length && view.channels.length) return;
-  try {
-    const directory = (await ticketDirectory()).data;
-    if (!view.roles.length) view.roles = directory.roles;
-    if (!view.channels.length) view.channels = directory.channels;
-  } catch {
-    // Pickers fall back to ID fields when the directory is not available to this user.
-  }
 }
 
 async function load() {
@@ -124,7 +111,7 @@ function welcomeTab() {
     <form class="card form-grid" data-d-form="welcome">
       <h3>Welcome message ${badge(welcome.enabled ? "on" : "off")}</h3>
       ${checkbox("enabled", "Send a welcome message", welcome.enabled)}
-      ${channelSelect("channelId", "Channel", welcome.channelId, "TEXT", true)}
+      ${channelSelect("channelId", "Channel", welcome.channelId, "TEXT", "Choose a channel", true)}
       ${textArea("messageText", "Message", welcome.messageText)}
       ${checkbox("embedEnabled", "Show as an embed", welcome.embedEnabled)}
       ${textField("embedTitle", "Embed title", welcome.embedTitle ?? "")}
@@ -137,7 +124,7 @@ function welcomeTab() {
     <form class="card form-grid" data-d-form="goodbye">
       <h3>Goodbye message ${badge(goodbye.enabled ? "on" : "off")}</h3>
       ${checkbox("enabled", "Send a goodbye message", goodbye.enabled)}
-      ${channelSelect("channelId", "Channel", goodbye.channelId, "TEXT", true)}
+      ${channelSelect("channelId", "Channel", goodbye.channelId, "TEXT", "Choose a channel", true)}
       ${textArea("messageText", "Message", goodbye.messageText)}
       ${checkbox("embedEnabled", "Show as an embed", goodbye.embedEnabled)}
       ${checkbox("thumbnailAvatar", "Show the member's avatar", goodbye.thumbnailAvatar)}
@@ -171,7 +158,7 @@ function rulesTab() {
   return `<form class="card form-grid readable-form" data-d-form="rules">
     <h3>Rules acceptance ${badge(rules.enabled ? "on" : "off")}</h3>
     ${checkbox("enabled", "Rules button is on", rules.enabled)}
-    ${channelSelect("channelId", "Rules channel", rules.channelId, "TEXT", true)}
+    ${channelSelect("channelId", "Rules channel", rules.channelId, "TEXT", "Choose a channel", true)}
     ${textArea("messageText", "Rules text", rules.messageText)}
     ${textField("buttonLabel", "Button text", rules.buttonLabel)}
     ${roleSelect("acceptedRoleId", "Role given after accepting", rules.acceptedRoleId, true)}
@@ -221,7 +208,7 @@ function roleMenusTab() {
     <form class="card form-grid" data-d-form="menu-create">
       <h3>New role menu</h3>
       ${textField("title", "Title", "", "Pick your roles", true)}
-      ${channelSelect("channelId", "Channel", "", "TEXT", true)}
+      ${channelSelect("channelId", "Channel", "", "TEXT", "Choose a channel", true)}
       ${textArea("description", "Description", "")}
       ${selectField("presentationType", "Style", [["BUTTONS", "Buttons"], ["SELECT_MENU", "Dropdown"], ["REACTIONS", "Reactions"]], "BUTTONS")}
       ${selectField("assignmentMode", "How roles work", [["TOGGLE", "Click to add or remove"], ["ADD_ONLY", "Add only"], ["REMOVE_ONLY", "Remove only"], ["EXCLUSIVE", "Only one at a time"]], "TOGGLE")}
@@ -241,7 +228,7 @@ function countersTab() {
     <div>${table(["Channel", "Shows", "Counts", "Last value"], rows, "No counters yet. A counter renames a channel to show a live number, like \"Members: 1,204\".")}</div>
     <form class="card form-grid" data-d-form="counter">
       <h3>New counter</h3>
-      ${channelSelect("channelId", "Channel to rename (voice channels work best)", "", "ANY", true)}
+      ${channelSelect("channelId", "Channel to rename (voice channels work best)", "", "ANY", "Choose a channel", true)}
       ${textField("labelTemplate", "Name", "Members: {count}", "", true)}
       ${selectField("type", "Count", COUNTER_TYPES, "TOTAL_MEMBERS")}
       ${roleSelect("roleId", "Role (for role counters)", "")}
@@ -257,7 +244,7 @@ function logsTab() {
   return `<form class="card form-grid readable-form" data-d-form="logs">
     <h3>Server logs ${badge(logs.enabled ? "on" : "off")}</h3>
     ${checkbox("enabled", "Logging is on", logs.enabled)}
-    ${channelSelect("destination", "Send logs to", destination, "TEXT", true)}
+    ${channelSelect("destination", "Send logs to", destination, "TEXT", "Choose a channel", true)}
     <fieldset class="full"><legend>What to log</legend>${LOG_EVENTS.map(([id, label]) => checkbox(`event-${id}`, label, logs.events.includes(id))).join("")}</fieldset>
     ${checkbox("includeBots", "Include bot activity", logs.includeBots)}
     <button class="button primary full">Save logs</button>
@@ -310,7 +297,7 @@ function starboardTab() {
   return `<form class="card form-grid readable-form" data-d-form="starboard">
     <h3>Starboard ${badge(star.enabled ? "on" : "off")}</h3>
     ${checkbox("enabled", "Starboard is on", star.enabled)}
-    ${channelSelect("destinationChannelId", "Starboard channel", star.destinationChannelId, "TEXT", true)}
+    ${channelSelect("destinationChannelId", "Starboard channel", star.destinationChannelId, "TEXT", "Choose a channel", true)}
     ${textField("emoji", "Emoji", star.emoji)}
     ${numberField("threshold", "Reactions needed", star.threshold, 1, 1000)}
     ${checkbox("allowSelfStar", "People can star their own messages", star.allowSelfStar)}
@@ -405,45 +392,4 @@ async function action(button) {
   }
 }
 
-/* ---------- Helpers ---------- */
 
-function checkbox(name, label, checked) {
-  return `<label class="checkbox full"><input type="checkbox" name="${escapeHtml(name)}" ${checked ? "checked" : ""}> ${escapeHtml(label)}</label>`;
-}
-
-function textField(name, label, value, hint = "", required = false) {
-  return `<label>${escapeHtml(label)}<input name="${escapeHtml(name)}" value="${escapeHtml(value ?? "")}" ${hint ? `placeholder="${escapeHtml(hint)}"` : ""} ${required ? "required" : ""}></label>`;
-}
-
-function textArea(name, label, value) {
-  return `<label class="full">${escapeHtml(label)}<textarea name="${escapeHtml(name)}">${escapeHtml(value ?? "")}</textarea></label>`;
-}
-
-function numberField(name, label, value, min, max) {
-  return `<label>${escapeHtml(label)}<input type="number" name="${escapeHtml(name)}" value="${escapeHtml(value)}" min="${min}" max="${max}" required></label>`;
-}
-
-function selectField(name, label, options, selected) {
-  return `<label>${escapeHtml(label)}<select name="${escapeHtml(name)}">${options.map(([value, text]) => `<option value="${escapeHtml(value)}" ${value === selected ? "selected" : ""}>${escapeHtml(text)}</option>`).join("")}</select></label>`;
-}
-
-function channelSelect(name, label, selected, kind, required = false) {
-  const channels = view.channels.filter((channel) => kind === "ANY" ? channel.type !== "CATEGORY" : channel.type === "TEXT" || channel.type === "ANNOUNCEMENT");
-  if (!channels.length) return `<label>${escapeHtml(label)} (channel ID)<input name="${escapeHtml(name)}" value="${escapeHtml(selected ?? "")}" pattern="\\d{17,20}" ${required ? "required" : ""}></label>`;
-  return `<label>${escapeHtml(label)}<select name="${escapeHtml(name)}" ${required ? "required" : ""}><option value="">Choose a channel</option>${channels.map((channel) => `<option value="${escapeHtml(channel.id)}" ${channel.id === selected ? "selected" : ""}>${channel.type === "VOICE" ? "🔊 " : "# "}${escapeHtml(channel.name)}</option>`).join("")}</select></label>`;
-}
-
-function roleSelect(name, label, selected, required = false) {
-  const roles = view.roles.filter((role) => !role.managed);
-  if (!roles.length) return `<label>${escapeHtml(label)} (role ID)<input name="${escapeHtml(name)}" value="${escapeHtml(selected ?? "")}" pattern="\\d{17,20}" ${required ? "required" : ""}></label>`;
-  return `<label>${escapeHtml(label)}<select name="${escapeHtml(name)}" ${required ? "required" : ""}><option value="">${required ? "Choose a role" : "None"}</option>${roles.map((role) => `<option value="${escapeHtml(role.id)}" ${role.id === selected ? "selected" : ""}>@${escapeHtml(role.name)}</option>`).join("")}</select></label>`;
-}
-
-function roleName(id) {
-  return view.roles.find((role) => role.id === id)?.name ?? id;
-}
-
-function channelLabel(id) {
-  const channel = view.channels.find((item) => item.id === id);
-  return channel ? `#${channel.name}` : id ?? "";
-}

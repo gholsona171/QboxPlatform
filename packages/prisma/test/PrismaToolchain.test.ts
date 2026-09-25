@@ -28,7 +28,10 @@ describe("Prisma 7 toolchain", () => {
     vi.stubEnv("DATABASE_URL", placeholderUrl);
     const configuration = await import("../prisma.config.js");
     expect(configuration.PRISMA_SCHEMA_PATH).toBe(
-      resolve(repositoryRoot, "prisma/schema.prisma"),
+      resolve(repositoryRoot, "prisma/schema"),
+    );
+    expect(configuration.PRISMA_MIGRATIONS_PATH).toBe(
+      resolve(repositoryRoot, "prisma/migrations"),
     );
     expect(configuration.default.schema).toBe(configuration.PRISMA_SCHEMA_PATH);
     expect(configuration.default.datasource?.url).toBe(placeholderUrl);
@@ -36,7 +39,7 @@ describe("Prisma 7 toolchain", () => {
 
   it("uses PostgreSQL and only the approved infrastructure models", async () => {
     const schema = await readFile(
-      resolve(repositoryRoot, "prisma/schema.prisma"),
+      resolve(repositoryRoot, "prisma/schema/base.prisma"),
       "utf8",
     );
     expect(schema).toContain('provider = "postgresql"');
@@ -61,12 +64,6 @@ describe("Prisma 7 toolchain", () => {
       "Suggestion",
       "StarboardConfig",
       "StarboardEntry",
-      "TicketSettings",
-      "TicketCategory",
-      "TicketPanel",
-      "Ticket",
-      "TicketMessage",
-      "TicketEvent",
       "PermissionPrincipal",
       "PermissionDefinition",
       "PermissionAssignment",
@@ -81,9 +78,23 @@ describe("Prisma 7 toolchain", () => {
       "DiscordGuildMembershipRole",
       "AuthenticationAuditEvent",
     ]);
-    expect(schema).not.toMatch(
-      /^model\s+(?:FiveM|ServiceIdentity|ServiceCredential|ApiService|ResourceScope)/m,
-    );
+  });
+
+  it("keeps each feature schema file limited to its own prefixed models and enums", async () => {
+    const directory = resolve(repositoryRoot, "prisma/schema");
+    const files = (await readdir(directory)).filter((file) => file.endsWith(".prisma") && file !== "base.prisma");
+    for (const file of files) {
+      const prefix = file
+        .replace(/\.prisma$/, "")
+        .split("-")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join("")
+        .replace(/s$/, "");
+      const schema = await readFile(resolve(directory, file), "utf8");
+      expect(schema, file).not.toMatch(/^(generator|datasource)\s/m);
+      for (const [, name] of schema.matchAll(/^(?:model|enum)\s+(\w+)/gm))
+        expect(name.startsWith(prefix), `${file}: ${name} must start with ${prefix}`).toBe(true);
+    }
   });
 
   it("exports the generated client through an ESM-compatible package source", () => {

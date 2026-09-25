@@ -1,6 +1,5 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
-import type { Permission } from "@qbox/permissions";
 import {
   TICKET_PRIORITIES,
   TICKET_STATUSES,
@@ -15,27 +14,20 @@ import {
   NotFoundApiError,
   ValidationApiError,
 } from "../errors/ApiError.js";
-
-/** Identity of the signed-in portal user after a permission check. */
-export interface TicketStaffIdentity {
-  readonly userId: string;
-  readonly displayName: string;
-}
-
-/**
- * Authorizes a portal request. Mutations must also pass the CSRF check.
- * Implemented by the browser authentication routes.
- */
-export type TicketRouteGuard = (
-  request: FastifyRequest,
-  permission: Permission,
-  options: { readonly mutation: boolean },
-) => Promise<TicketStaffIdentity>;
+import type { ApiFeature, ApiIdentity, ApiPermissionGuard } from "../features/ApiFeature.js";
 
 export interface TicketRouteDependencies {
   readonly tickets: TicketService;
   readonly guildId: string;
-  readonly guard: TicketRouteGuard;
+  readonly guard: ApiPermissionGuard;
+}
+
+/** Tickets as a pluggable API feature. */
+export function ticketsApiFeature(tickets: TicketService): ApiFeature {
+  return {
+    name: "tickets",
+    register: (server, context) => registerTicketRoutes(server, { tickets, guildId: context.guildId, guard: context.guard }),
+  };
 }
 
 const snowflake = z.string().regex(/^\d{17,20}$/);
@@ -138,7 +130,7 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
   const { tickets, guildId, guard } = dependencies;
   const handler = (request: FastifyRequest, options = { mutation: false }) => guard(request, "tickets.handle", options);
   const manager = (request: FastifyRequest, mutation = true) => guard(request, "tickets.manage", { mutation });
-  const actor = (identity: TicketStaffIdentity): TicketActor => ({
+  const actor = (identity: ApiIdentity): TicketActor => ({
     userId: identity.userId,
     displayName: identity.displayName,
     roleIds: [],
@@ -155,22 +147,8 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
       tickets.panels(guildId),
       tickets.stats(guildId),
     ]);
-    return { data: { settings, categories, panels, stats } };
-  });
-
-  server.get("/api/v1/tickets/directory", async (request, reply) => {
-    noStore(reply);
-    await manager(request, false);
-    const query = request.query && typeof request.query === "object" ? Reflect.get(request.query, "members") : undefined;
-    const memberIds = typeof query === "string" ? query.split(",").filter((id) => /^\d{17,20}$/.test(id)) : [];
-    return { data: await safe(() => tickets.directory(guildId, memberIds)) };
-  });
-
-  server.get("/api/v1/tickets/directory/members", async (request, reply) => {
-    noStore(reply);
-    await manager(request, false);
-    const query = request.query && typeof request.query === "object" ? Reflect.get(request.query, "query") : undefined;
-    return { data: await safe(() => tickets.searchMembers(guildId, typeof query === "string" ? query : "")) };
+    const canManage = await manager(request, false).then(() => true, () => false);
+    return { data: { settings, categories, panels, stats, canManage } };
   });
 
   server.put("/api/v1/tickets/settings", async (request) => {

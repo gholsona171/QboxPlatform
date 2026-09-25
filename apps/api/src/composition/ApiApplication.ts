@@ -19,7 +19,6 @@ import { logger } from "@qbox/logger";
 import { RoleMenuService } from "@qbox/role-menus";
 import { DiscordCommunityService } from "@qbox/discord-community";
 import { RoleManagementService } from "@qbox/discord-roles";
-import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
 import { REST } from "discord.js";
 import {
   InMemoryPermissionCache,
@@ -38,6 +37,7 @@ import { ApiLifecycleHealth } from "../lifecycle/ApiLifecycleHealth.js";
 import { ApiModule } from "../lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersistenceModule.js";
 import { registerPortalStaticRoutes } from "../portal/PortalStaticRoutes.js";
+import { apiFeatures } from "../features.js";
 
 /** Validated composition input supplied by the executable environment layer. */
 export interface ApiApplicationInput {
@@ -134,12 +134,10 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       ? new DiscordRestRoleGateway(input.discord.token, input.discord.applicationId)
       : undefined,
   );
-  const tickets = new TicketService(
-    persistence.repositories.tickets,
-    input.discord?.token
-      ? new DiscordRestTicketGateway(new REST({ version: "10" }).setToken(input.discord.token))
-      : undefined,
-  );
+  const features = apiFeatures({
+    persistence,
+    discordRest: input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined,
+  });
   const keyRing = new AuthenticationKeyRing(
     authenticationConfiguration.keyRegistrations(),
   );
@@ -206,7 +204,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         roleMenus,
         community,
         roles,
-        tickets,
+        features,
         unitOfWork: persistence.authentication.unitOfWork,
         logger,
       });

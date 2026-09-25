@@ -187,25 +187,6 @@ export class TicketService {
     await this.repository.deletePanel(guildId, id);
   }
 
-  /** Channels, roles, and (optionally) members for setup pickers. */
-  public async directory(guildId: string, memberIds: readonly string[] = []) {
-    requireSnowflake("guildId", guildId);
-    const gateway = this.requireGateway();
-    const ids = unique(memberIds).slice(0, 50);
-    const [channels, roles, members] = await Promise.all([
-      gateway.listChannels(guildId),
-      gateway.listRoles(guildId),
-      ids.length ? gateway.getMembers(guildId, ids) : Promise.resolve([]),
-    ]);
-    return { channels, roles, members };
-  }
-
-  public async searchMembers(guildId: string, query: string) {
-    requireSnowflake("guildId", guildId);
-    requireLength("query", query.trim(), 1, 32);
-    return this.requireGateway().searchMembers(guildId, query.trim());
-  }
-
   /** True when the actor may handle tickets in this category. */
   public isStaff(settings: TicketSettings, category: TicketCategory | undefined, actor: TicketActor): boolean {
     if (actor.elevated) return true;

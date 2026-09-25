@@ -49,6 +49,14 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
   private readonly client: PrismaClient;
   private started = false;
 
+  /**
+   * Shared lifecycle-owned Prisma client for feature repositories composed
+   * outside this class (for example `new PrismaModerationRepository(persistence.prisma)`).
+   */
+  public get prisma(): PrismaClient {
+    return this.client;
+  }
+
   public constructor(
     configuration: DatabaseConfiguration,
     dependencies: {
