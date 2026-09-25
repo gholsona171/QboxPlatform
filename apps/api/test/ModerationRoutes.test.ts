@@ -13,6 +13,7 @@ const host = { host: "127.0.0.1:3000" };
 const json = (method: "POST" | "PUT" | "PATCH", url: string, payload: unknown) => ({ method, url, payload: payload as Record<string, unknown>, headers: { ...host, "content-type": "application/json" } });
 
 const gateway: ModerationGateway = {
+  guildName: async () => "Qbox",
   checkHierarchy: async () => ({ allowed: true, targetRoleIds: [], targetIsMember: true }),
   timeout: async () => undefined,
   kick: async () => undefined,
@@ -20,6 +21,7 @@ const gateway: ModerationGateway = {
   unban: async () => undefined,
   directMessage: async () => true,
   postEmbed: async () => ({ messageId: "700000000000000001" }),
+  postMessage: async () => ({ messageId: "700000000000000001" }),
   purge: async (_channel, count) => count,
   setLocked: async () => undefined,
   setSlowmode: async () => undefined,

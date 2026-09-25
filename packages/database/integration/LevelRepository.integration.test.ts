@@ -17,6 +17,7 @@ const reward = "1262656532902842425";
 const roles = new Map<string, Set<string>>();
 
 const gateway: LevelGateway = {
+  guildName: async () => "Qbox",
   memberRoleIds: async (_guild, userId) => [...(roles.get(userId) ?? [])],
   addRole: async (_guild, userId, roleId) => void roles.set(userId, new Set([...(roles.get(userId) ?? []), roleId])),
   removeRole: async (_guild, userId, roleId) => void roles.get(userId)?.delete(roleId),

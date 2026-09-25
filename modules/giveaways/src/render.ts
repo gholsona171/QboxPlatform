@@ -1,3 +1,5 @@
+import { colorValue } from "@qbox/shared/discord-rest";
+
 import type { Giveaway, GiveawayMessage } from "./types.js";
 import { GIVEAWAY_CUSTOM_ID } from "./types.js";
 
@@ -34,20 +36,20 @@ export function giveawayMessage(giveaway: Giveaway, entrantCount: number): Givea
   const fields = [
     { name: giveaway.status === "ENDED" ? "Winners" : "Number of winners", value: giveaway.status === "ENDED" ? (giveaway.winnerIds.length ? mentions(giveaway.winnerIds) : "No valid entries").slice(0, 1024) : String(giveaway.winnerCount), inline: true },
     { name: "Entries", value: String(entrantCount), inline: true },
-    ...(requirements.length ? [{ name: "Requirements", value: requirements.join("\n").slice(0, 1024) }] : []),
-    ...(giveaway.bonusEntries.length ? [{ name: "Bonus entries", value: giveaway.bonusEntries.map((bonus) => `<@&${bonus.roleId}>: +${bonus.entries}`).join("\n").slice(0, 1024) }] : []),
+    ...(requirements.length ? [{ name: "Requirements", value: requirements.join("\n").slice(0, 1024), inline: false }] : []),
+    ...(giveaway.bonusEntries.length ? [{ name: "Bonus entries", value: giveaway.bonusEntries.map((bonus) => `<@&${bonus.roleId}>: +${bonus.entries}`).join("\n").slice(0, 1024), inline: false }] : []),
   ];
   return {
     ...(giveaway.pingRoleId ? { content: `<@&${giveaway.pingRoleId}>` } : {}),
     mentionUserIds: [],
     mentionRoleIds: giveaway.pingRoleId ? [giveaway.pingRoleId] : [],
-    embed: {
+    embeds: [{
       title: `🎉 ${giveaway.prize}${suffix}`.slice(0, 256),
       description: lines.join("\n").slice(0, 4096),
-      color: COLORS[giveaway.status],
+      color: colorValue(COLORS[giveaway.status]),
       fields,
-      footer: `Giveaway #${giveaway.number}`,
-    },
+      footer: { text: `Giveaway #${giveaway.number}` },
+    }],
     ...(giveaway.status === "RUNNING" ? { enterButton: { customId: `${GIVEAWAY_CUSTOM_ID.enter}${giveaway.id}`, label: "Enter" } } : {}),
   };
 }
@@ -69,12 +71,11 @@ export function winnerDirectMessage(giveaway: Giveaway): GiveawayMessage {
   return {
     mentionUserIds: [],
     mentionRoleIds: [],
-    embed: {
+    embeds: [{
       title: "You won a giveaway! 🎉",
       description: `You won **${giveaway.prize}**.\nContact <@${giveaway.hostId}> to claim it.\n${link}`,
-      color: COLORS.RUNNING,
-      fields: [],
-      footer: `Giveaway #${giveaway.number}`,
-    },
+      color: colorValue(COLORS.RUNNING),
+      footer: { text: `Giveaway #${giveaway.number}` },
+    }],
   };
 }

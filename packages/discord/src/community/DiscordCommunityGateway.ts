@@ -3,15 +3,19 @@ import {
   type Client,
   type Guild,
   type GuildMember,
+  type APIEmbed,
   type GuildTextBasedChannel,
+  type Message,
 } from "discord.js";
 import { BRAND } from "@qbox/shared/brand";
+import type { OutgoingEmbed } from "@qbox/shared/messages";
 import type {
   ChannelRenameInput,
   CommunityRoleMutation,
   CommunityRoleMutationResult,
   CommunityRoleQuery,
   CommunityRoleValidation,
+  CommunityPostMessage,
   CommunitySendMessage,
   CommunitySentMessage,
   CounterCountInput,
@@ -28,8 +32,22 @@ export class DiscordCommunityGatewayAdapter implements DiscordCommunityGateway {
       ...(input.embed ? { embeds: [embed(input.embed)] } : {}),
       allowedMentions: { parse: [], roles: roleMentions(input.content) },
     });
-    if (input.deleteAfterSeconds) {
-      setTimeout(() => void message.delete().catch(() => undefined), input.deleteAfterSeconds * 1000).unref?.();
+    return this.sent(message, input.deleteAfterSeconds);
+  }
+
+  public async postMessage(input: CommunityPostMessage): Promise<CommunitySentMessage> {
+    const channel = await this.resolveTextChannel(input.guildId, input.channelId);
+    const message = await channel.send({
+      ...(input.message.content ? { content: input.message.content } : {}),
+      ...(input.message.embeds?.length ? { embeds: input.message.embeds.map(apiEmbed) } : {}),
+      allowedMentions: { parse: [], roles: roleMentions(input.message.content) },
+    });
+    return this.sent(message, input.deleteAfterSeconds);
+  }
+
+  private sent(message: Message, deleteAfterSeconds: number | undefined): CommunitySentMessage {
+    if (deleteAfterSeconds) {
+      setTimeout(() => void message.delete().catch(() => undefined), deleteAfterSeconds * 1000).unref?.();
     }
     return {
       channelId: message.channelId,
@@ -113,6 +131,11 @@ function embed(input: NonNullable<CommunitySendMessage["embed"]>): EmbedBuilder 
   if (input.timestamp) builder.setTimestamp();
   if (input.fields) builder.addFields(input.fields.map((field) => ({ name: field.name, value: field.value, inline: field.inline })));
   return builder;
+}
+
+/** Embed JSON as discord.js types it: the same shape without undefined keys or readonly arrays. */
+function apiEmbed(embed: OutgoingEmbed): APIEmbed {
+  return JSON.parse(JSON.stringify(embed)) as APIEmbed;
 }
 
 function roleMentions(content: string | undefined): string[] {

@@ -21,6 +21,8 @@ import type {
 } from "./types.js";
 import { TICKET_PRIORITIES } from "./types.js";
 import { BRAND } from "@qbox/shared/brand";
+import { colorValue } from "@qbox/shared/discord-rest";
+import { passthroughTemplates, type MessageTemplates, type OutgoingMessage } from "@qbox/shared/messages";
 import {
   TicketError,
   channelName,
@@ -104,6 +106,7 @@ export class TicketService {
     private readonly repository: TicketRepository,
     private readonly gateway?: TicketDiscordGateway,
     private readonly now: () => Date = () => new Date(),
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public async settings(guildId: string): Promise<TicketSettings> {
@@ -261,13 +264,21 @@ export class TicketService {
       category: category?.name ?? null,
       priority: ticket.priority,
     });
+    const server = await gateway.guildName(input.guildId).catch(() => "the server");
+    const opening = await this.templates.apply(input.guildId, "tickets.opened", { ...values, server }, {
+      embeds: [{
+        title: ticketLabel(ticket),
+        description: openingBody(renderText(category?.openMessage ?? settings.openMessage, values), ticket),
+        color: colorValue(settings.embedColor),
+        footer: { text: `Priority: ${ticket.priority.toLowerCase()} | Ticket ID ${ticket.id}` },
+        timestamp: ticket.createdAt.toISOString(),
+      }],
+    });
     await this.attempt(ticket.id, input.actor, "post-opening", () =>
       gateway.postOpening({
         channelId,
         ticket,
-        title: ticketLabel(ticket),
-        body: openingBody(renderText(category?.openMessage ?? settings.openMessage, values), ticket),
-        color: settings.embedColor,
+        message: opening,
         mentionUserIds: unique([input.actor.userId, ...(category?.alertUserIds ?? [])]),
         mentionRoleIds: settings.pingSupportOnOpen ? supportRoleIds : [],
         claimButton: settings.claimEnabled,
@@ -555,10 +566,11 @@ export class TicketService {
     }
     if (settings.transcriptDmUser || settings.feedbackEnabled) {
       const publicTranscript = settings.transcriptDmUser ? await this.transcript(guildId, id, false) : undefined;
+      const message = await this.closedDirectMessage(closed, trimmed, settings.feedbackEnabled);
       await this.attempt(id, actor, "direct-message", () =>
         gateway.directMessage({
           userId: closed.openerId,
-          content: `Your ticket #${closed.number} was closed${trimmed ? `: ${trimmed}` : "."}${settings.feedbackEnabled ? "\nHow did we do? Rate your support experience below." : ""}`,
+          message,
           ...(publicTranscript ? { file: publicTranscript } : {}),
           ...(settings.feedbackEnabled ? { feedbackTicketId: id } : {}),
         }).then(() => undefined),
@@ -742,6 +754,25 @@ export class TicketService {
     const panel = (await this.panels(guildId)).find((item) => item.id === id);
     if (!panel) throw new TicketError("NOT_FOUND", "Ticket panel was not found.");
     return panel;
+  }
+
+  /** The `tickets.closed-dm` message for the member who opened the ticket. */
+  private closedDirectMessage(ticket: Ticket, closeReason: string | undefined, feedback: boolean): Promise<OutgoingMessage> {
+    const ratingPrompt = feedback ? "How did we do? Rate your support experience below." : "";
+    return this.templates.apply(
+      ticket.guildId,
+      "tickets.closed-dm",
+      {
+        user: `<@${ticket.openerId}>`,
+        username: ticket.openerName,
+        number: ticket.number,
+        reason: ticket.categoryName ?? "support",
+        reasonNumber: ticket.categoryNumber ?? ticket.number,
+        closeReason: closeReason ?? "",
+        ratingPrompt,
+      },
+      { content: `Your ticket #${ticket.number} was closed${closeReason ? `: ${closeReason}` : "."}${ratingPrompt ? `\n${ratingPrompt}` : ""}` },
+    );
   }
 
   private requireGateway(): TicketDiscordGateway {

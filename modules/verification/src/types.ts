@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 export type VerificationMode = "BUTTON" | "CAPTCHA" | "QUESTION";
 /** What happens to accounts younger than the minimum age. */
 export type VerificationAgeAction = "DENY" | "KICK" | "FLAG";
@@ -154,8 +156,8 @@ export interface VerificationGateway {
   removeRole(guildId: string, userId: string, roleId: string, reason: string): Promise<void>;
   kick(guildId: string, userId: string, reason: string): Promise<void>;
   directMessage(userId: string, content: string): Promise<boolean>;
-  /** Posts a plain message that may mention `mentionUserId`. */
-  sendMessage(channelId: string, content: string, mentionUserId: string): Promise<void>;
+  /** Posts the rendered `verification.welcome` message; it may mention `mentionUserId`. */
+  sendMessage(channelId: string, message: OutgoingMessage, mentionUserId: string): Promise<void>;
   postEmbed(channelId: string, embed: VerificationEmbed): Promise<void>;
   /** Edits the panel message when it still exists, otherwise posts a new one. */
   publishPanel(channelId: string, panel: VerificationPanel, existingMessageId?: string): Promise<{ readonly messageId: string }>;

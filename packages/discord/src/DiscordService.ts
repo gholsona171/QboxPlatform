@@ -2,6 +2,7 @@ import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import type { Interaction, MessageReaction, PartialMessageReaction, PartialUser, User } from "discord.js";
 
 import { env } from "@qbox/shared";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { logger } from "@qbox/logger";
 import type { PermissionAuthorizer } from "@qbox/permissions";
 import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
@@ -100,6 +101,7 @@ export class DiscordService {
     communityRepository?: CommunityRepository,
     roleDependencyRepository?: RoleDependencyRepository,
     featureFactories: readonly DiscordFeatureFactory[] = [],
+    templates: MessageTemplates = passthroughTemplates,
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
     this.features = featureFactories.map((create) => create({ client: this.client, authorizer: permissionAuthorizer }));
@@ -116,6 +118,7 @@ export class DiscordService {
       this.community = new DiscordCommunityService(
         communityRepository,
         new DiscordCommunityGatewayAdapter(this.client),
+        templates,
       );
       this.communityEvents = new DiscordCommunityEventHandler(this.community);
     }

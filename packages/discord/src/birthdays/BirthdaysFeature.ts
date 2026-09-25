@@ -1,5 +1,6 @@
 import { MessageFlags, type ButtonInteraction, type Interaction } from "discord.js";
 import { BirthdayError, BirthdayService, DiscordRestBirthdayGateway, type BirthdayRepository } from "@qbox/birthdays";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { logger } from "@qbox/logger";
 
 import { BIRTHDAY_CUSTOM_ID, BirthdayCommand, birthdayText } from "../commands/Birthday.command.js";
@@ -11,9 +12,9 @@ const TICK_INTERVAL_MS = 5 * 60_000;
  * Birthdays: `/birthday`, the confirmation buttons, and a timer that posts
  * birthday messages and gives and removes the birthday role.
  */
-export function birthdaysFeature(repository: BirthdayRepository): DiscordFeatureFactory {
+export function birthdaysFeature(repository: BirthdayRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client, authorizer }) => {
-    const birthdays = new BirthdayService(repository, new DiscordRestBirthdayGateway(client.rest));
+    const birthdays = new BirthdayService(repository, new DiscordRestBirthdayGateway(client.rest), undefined, templates);
     let timer: ReturnType<typeof setInterval> | undefined;
     const tick = async (): Promise<void> => {
       try {

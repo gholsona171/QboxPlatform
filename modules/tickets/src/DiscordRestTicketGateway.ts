@@ -11,7 +11,7 @@ import type {
   TicketSpaceInput,
   TicketTranscriptPost,
 } from "./types.js";
-import { colorValue, emojiObject, type DiscordRestClient, type DiscordRestFile } from "@qbox/shared/discord-rest";
+import { GuildNameCache, colorValue, emojiObject, type DiscordRestClient, type DiscordRestFile } from "@qbox/shared/discord-rest";
 import { BRAND } from "@qbox/shared/brand";
 
 export type { DiscordRestClient, DiscordRestFile, DiscordRestRequest } from "@qbox/shared/discord-rest";
@@ -60,11 +60,18 @@ interface IdResponse {
 /** Discord adapter for tickets built on the Discord REST API (v10). */
 export class DiscordRestTicketGateway implements TicketDiscordGateway {
   private botUserId: string | undefined;
+  private readonly guildNames: GuildNameCache;
 
   public constructor(
     private readonly rest: DiscordRestClient,
     private readonly schedule: (callback: () => void, delayMs: number) => void = defaultSchedule,
-  ) {}
+  ) {
+    this.guildNames = new GuildNameCache(rest);
+  }
+
+  public guildName(guildId: string): Promise<string> {
+    return this.guildNames.name(guildId);
+  }
 
   public async createTicketSpace(input: TicketSpaceInput): Promise<{ readonly channelId: string }> {
     if (input.mode === "THREAD") {
@@ -102,16 +109,11 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
       button(`${TICKET_CUSTOM_ID.close}${input.ticket.id}`, "Close", "DANGER", "🔒"),
       ...(input.claimButton ? [button(`${TICKET_CUSTOM_ID.claim}${input.ticket.id}`, "Claim", "SUCCESS", "🙋")] : []),
     ];
+    const mentions = [...input.mentionUserIds.map((id) => `<@${id}>`), ...input.mentionRoleIds.map((id) => `<@&${id}>`)].join(" ");
     await this.rest.post(`/channels/${input.channelId}/messages`, {
       body: {
-        content: [...input.mentionUserIds.map((id) => `<@${id}>`), ...input.mentionRoleIds.map((id) => `<@&${id}>`)].join(" ") || undefined,
-        embeds: [{
-          title: input.title,
-          description: input.body,
-          color: colorValue(input.color),
-          footer: { text: `Priority: ${input.ticket.priority.toLowerCase()} | Ticket ID ${input.ticket.id}` },
-          timestamp: input.ticket.createdAt.toISOString(),
-        }],
+        content: [mentions, input.message.content ?? ""].filter(Boolean).join("\n") || undefined,
+        embeds: input.message.embeds ?? [],
         components: [{ type: 1, components: buttons }],
         allowed_mentions: { parse: [], users: [...input.mentionUserIds], roles: [...input.mentionRoleIds] },
       },
@@ -257,7 +259,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
       const channel = (await this.rest.post("/users/@me/channels", { body: { recipient_id: input.userId } })) as IdResponse;
       await this.rest.post(`/channels/${channel.id}/messages`, {
         body: {
-          content: input.content,
+          ...input.message,
           ...(input.feedbackTicketId
             ? { components: [{ type: 1, components: [1, 2, 3, 4, 5].map((stars) => button(`${TICKET_CUSTOM_ID.rate}${input.feedbackTicketId}:${stars}`, `${stars}`, "SECONDARY", "⭐")) }] }
             : {}),

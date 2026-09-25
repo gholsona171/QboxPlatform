@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 export type CaseType = "WARN" | "TIMEOUT" | "UNTIMEOUT" | "KICK" | "BAN" | "UNBAN" | "SOFTBAN" | "NOTE";
 export type CaseSource = "DISCORD" | "WEB" | "AUTOMOD" | "EXTERNAL";
 export type AutomodAction = "DELETE" | "WARN" | "TIMEOUT";
@@ -173,8 +175,12 @@ export interface ModerationGateway {
   kick(guildId: string, userId: string, reason: string): Promise<void>;
   ban(guildId: string, userId: string, deleteMessageSeconds: number, reason: string): Promise<void>;
   unban(guildId: string, userId: string, reason: string): Promise<void>;
-  directMessage(userId: string, embed: ModerationEmbed): Promise<boolean>;
+  guildName(guildId: string): Promise<string>;
+  /** Sends the rendered `moderation.warn-dm` message. */
+  directMessage(userId: string, message: OutgoingMessage): Promise<boolean>;
   postEmbed(channelId: string, embed: ModerationEmbed): Promise<{ readonly messageId: string }>;
+  /** Posts the rendered `moderation.case-log` message. */
+  postMessage(channelId: string, message: OutgoingMessage): Promise<{ readonly messageId: string }>;
   /** Bulk-deletes up to `count` recent messages (optionally from one user). Returns the number deleted. */
   purge(channelId: string, count: number, userId?: string): Promise<number>;
   setLocked(guildId: string, channelId: string, locked: boolean, reason: string): Promise<void>;

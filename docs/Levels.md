@@ -47,6 +47,7 @@ Send the message in the channel where the member leveled up (for voice XP,
 the voice channel's chat), in a specific channel, in a DM, or not at all.
 `{user}` becomes a mention and `{level}` the new level. Messages are only
 sent when XP is earned by chatting or voice, not when staff change XP.
+Customize this message under Look & Messages (key `levels.level-up`).
 
 ## Reward roles
 

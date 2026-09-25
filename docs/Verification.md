@@ -48,7 +48,7 @@ Discord administrators can do everything.
 - **Wrong tries before a cooldown:** after this many failures within the cooldown window, the member must wait. 0 means unlimited.
 - **Kick after N minutes:** members who joined and still have not verified are kicked (checked every minute, with a DM telling them they can rejoin). 0 turns it off.
 - **Log channel** receives successes, failures, flagged and kicked accounts, and staff changes.
-- **DM on success** with optional custom text, and a **welcome message** in a channel after verifying. Both support `{user}` (mention) and `{server}` (server name).
+- **DM on success** with optional custom text, and a **welcome message** in a channel after verifying. Both support `{user}` (mention) and `{server}` (server name). Customize the welcome message under Look & Messages (key `verification.welcome`).
 - **Panel:** title, text, color, and button label, with a live preview and a post/update button.
 
 ## Attempts

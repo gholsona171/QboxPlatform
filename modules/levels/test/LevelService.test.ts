@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, OutgoingMessage, TemplateValues } from "@qbox/shared/messages";
 
 import {
   InMemoryLevelRepository,
@@ -29,14 +30,15 @@ const REWARD_3 = "400000000000000011";
 
 class FakeGateway implements LevelGateway {
   public readonly roles = new Map<string, Set<string>>();
-  public readonly messages: { channelId: string; content: string }[] = [];
-  public readonly dms: string[] = [];
+  public readonly messages: { channelId: string; message: OutgoingMessage }[] = [];
+  public readonly dms: OutgoingMessage[] = [];
 
   public async memberRoleIds(_guildId: string, userId: string) { return [...(this.roles.get(userId) ?? [])]; }
   public async addRole(_guildId: string, userId: string, roleId: string) { this.roleSet(userId).add(roleId); }
   public async removeRole(_guildId: string, userId: string, roleId: string) { this.roleSet(userId).delete(roleId); }
-  public async sendMessage(channelId: string, content: string) { this.messages.push({ channelId, content }); }
-  public async directMessage(_userId: string, content: string) { this.dms.push(content); return true; }
+  public async guildName() { return "Guildhall HQ"; }
+  public async sendMessage(channelId: string, message: OutgoingMessage) { this.messages.push({ channelId, message }); }
+  public async directMessage(_userId: string, message: OutgoingMessage) { this.dms.push(message); return true; }
 
   public roleSet(userId: string): Set<string> {
     const set = this.roles.get(userId) ?? new Set<string>();
@@ -50,11 +52,16 @@ function settings(overrides: Partial<LevelSettingsInput> = {}): LevelSettingsInp
   return { ...defaults, enabled: true, messageXpMin: 20, messageXpMax: 20, cooldownSeconds: 60, curve: { base: 50, exponent: 2, linear: 50 }, ...overrides };
 }
 
-async function setup(overrides: Partial<LevelSettingsInput> = {}) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+async function setup(overrides: Partial<LevelSettingsInput> = {}, templates?: MessageTemplates) {
   let clock = new Date("2026-09-25T12:00:00.000Z");
   const gateway = new FakeGateway();
   const repository = new InMemoryLevelRepository(() => clock);
-  const service = new LevelService(repository, gateway, () => clock, () => 0);
+  const service = new LevelService(repository, gateway, () => clock, () => 0, templates);
   await service.saveSettings(settings(overrides));
   const message = (userId = ALEX, extra: Partial<LevelMessage> = {}): LevelMessage => ({ guildId: GUILD, channelId: CHANNEL, userId, displayName: "Alex", roleIds: [...gateway.roleSet(userId)], at: clock, ...extra });
   return { service, gateway, repository, message, advance: (seconds: number) => { clock = new Date(clock.getTime() + seconds * 1000); } };
@@ -97,7 +104,7 @@ describe("LevelService XP", () => {
     const profile = await service.profile(GUILD, ALEX);
     expect(profile.member).toMatchObject({ xp: 100, level: 1, messages: 5 });
     expect(profile.rank).toBe(1);
-    expect(gateway.messages).toEqual([{ channelId: CHANNEL, content: `<@${ALEX}> is now level 1` }]);
+    expect(gateway.messages).toEqual([{ channelId: CHANNEL, message: { content: `<@${ALEX}> is now level 1` } }]);
   });
 
   it("applies role and channel multipliers and skips no-XP roles and channels", async () => {
@@ -146,6 +153,25 @@ describe("LevelService XP", () => {
     await expect(service.saveSettings(settings({ rewards: [{ level: 2, roleId: REWARD_2 }, { level: 3, roleId: REWARD_2 }] }))).rejects.toThrow(/once/);
     await expect(service.saveSettings(settings({ curve: { base: 50, exponent: 9, linear: 0 } }))).rejects.toMatchObject({ code: "INVALID_INPUT" });
     await expect(service.saveSettings({ ...settings(), expectedRevision: 0 })).rejects.toMatchObject({ code: "CONFLICT" });
+  });
+});
+
+describe("LevelService message templates", () => {
+  it("sends the built-in level-up message when nothing is customized", async () => {
+    const { service, gateway } = await setup();
+    await service.awardVoice([{ guildId: GUILD, channelId: CHANNEL, userId: ALEX, displayName: "Alex", roleIds: [], minutes: 30 }]);
+    expect(gateway.messages).toEqual([{ channelId: CHANNEL, message: { content: `GG <@${ALEX}>, you reached level 1!` } }]);
+  });
+
+  it("sends the server's custom level-up message to the channel or as a DM", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const channel = await setup({}, markedTemplates(seen));
+    await channel.service.awardVoice([{ guildId: GUILD, channelId: CHANNEL, userId: ALEX, displayName: "Alex", roleIds: [], minutes: 30 }]);
+    expect(channel.gateway.messages).toEqual([{ channelId: CHANNEL, message: { content: "custom levels.level-up" } }]);
+    expect(seen).toEqual([{ key: "levels.level-up", values: { user: `<@${ALEX}>`, username: "Alex", level: 1, xp: 150, rank: 1, server: "Guildhall HQ" } }]);
+    const dm = await setup({ levelUpMode: "DM" }, markedTemplates(seen));
+    await dm.service.awardVoice([{ guildId: GUILD, channelId: CHANNEL, userId: ALEX, displayName: "Alex", roleIds: [], minutes: 30 }]);
+    expect(dm.gateway.dms).toEqual([{ content: "custom levels.level-up" }]);
   });
 });
 

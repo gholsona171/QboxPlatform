@@ -1,4 +1,5 @@
-import { DISCORD_PERMISSION, colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import { DISCORD_PERMISSION, GuildNameCache, colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import type { OutgoingMessage } from "@qbox/shared/messages";
 
 import type { HierarchyCheck, ModerationEmbed, ModerationGateway } from "./types.js";
 import { BRAND } from "@qbox/shared/brand";
@@ -18,11 +19,14 @@ const LOCK_BITS = DISCORD_PERMISSION.sendMessages | DISCORD_PERMISSION.sendMessa
 export class DiscordRestModerationGateway implements ModerationGateway {
   private botUserId: string | undefined;
   private readonly guilds = new Map<string, { readonly guild: ApiGuild; readonly at: number }>();
+  private readonly guildNames: GuildNameCache;
 
   public constructor(
     private readonly rest: DiscordRestClient,
     private readonly now: () => number = Date.now,
-  ) {}
+  ) {
+    this.guildNames = new GuildNameCache(rest, now);
+  }
 
   public async checkHierarchy(guildId: string, moderatorId: string | undefined, targetId: string): Promise<HierarchyCheck> {
     const guild = await this.guild(guildId);
@@ -60,10 +64,14 @@ export class DiscordRestModerationGateway implements ModerationGateway {
     await this.rest.delete(`/guilds/${guildId}/bans/${userId}`, { reason });
   }
 
-  public async directMessage(userId: string, embed: ModerationEmbed): Promise<boolean> {
+  public guildName(guildId: string): Promise<string> {
+    return this.guildNames.name(guildId);
+  }
+
+  public async directMessage(userId: string, message: OutgoingMessage): Promise<boolean> {
     try {
       const channel = (await this.rest.post("/users/@me/channels", { body: { recipient_id: userId } })) as { readonly id: string };
-      await this.rest.post(`/channels/${channel.id}/messages`, { body: { embeds: [toEmbed(embed)], allowed_mentions: { parse: [] } } });
+      await this.rest.post(`/channels/${channel.id}/messages`, { body: { ...message, allowed_mentions: { parse: [] } } });
       return true;
     } catch {
       return false;
@@ -71,8 +79,12 @@ export class DiscordRestModerationGateway implements ModerationGateway {
   }
 
   public async postEmbed(channelId: string, embed: ModerationEmbed): Promise<{ readonly messageId: string }> {
-    const message = (await this.rest.post(`/channels/${channelId}/messages`, { body: { embeds: [toEmbed(embed)], allowed_mentions: { parse: [] } } })) as { readonly id: string };
-    return { messageId: message.id };
+    return this.postMessage(channelId, { embeds: [toEmbed(embed)] });
+  }
+
+  public async postMessage(channelId: string, message: OutgoingMessage): Promise<{ readonly messageId: string }> {
+    const posted = (await this.rest.post(`/channels/${channelId}/messages`, { body: { ...message, allowed_mentions: { parse: [] } } })) as { readonly id: string };
+    return { messageId: posted.id };
   }
 
   public async purge(channelId: string, count: number, userId?: string): Promise<number> {

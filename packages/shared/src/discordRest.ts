@@ -34,6 +34,26 @@ export function colorValue(hex: string): number {
   return Number.parseInt(hex.replace("#", ""), 16);
 }
 
+const GUILD_NAME_CACHE_MS = 10 * 60_000;
+
+/** Guild names for `{server}` placeholders, fetched through GET /guilds/:id and cached for ten minutes. */
+export class GuildNameCache {
+  private readonly names = new Map<string, { readonly name: string; readonly at: number }>();
+
+  public constructor(
+    private readonly rest: DiscordRestClient,
+    private readonly now: () => number = Date.now,
+  ) {}
+
+  public async name(guildId: string): Promise<string> {
+    const cached = this.names.get(guildId);
+    if (cached && this.now() - cached.at < GUILD_NAME_CACHE_MS) return cached.name;
+    const guild = (await this.rest.get(`/guilds/${guildId}`)) as { readonly name: string };
+    this.names.set(guildId, { name: guild.name, at: this.now() });
+    return guild.name;
+  }
+}
+
 /** Parses `<:name:id>`, `<a:name:id>`, or a unicode emoji into a Discord emoji object. */
 export function emojiObject(value: string): { readonly id?: string; readonly name: string; readonly animated?: boolean } {
   const custom = /^<(a?):(\w{2,32}):(\d{17,20})>$/.exec(value.trim());

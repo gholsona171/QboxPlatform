@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 /** Where ticket conversations live in Discord. */
 export type TicketMode = "CHANNEL" | "THREAD";
 /** Lifecycle status of one ticket. `PENDING` means waiting on the requester. */
@@ -302,9 +304,8 @@ export interface TicketSpaceInput {
 export interface TicketOpeningMessage {
   readonly channelId: string;
   readonly ticket: Ticket;
-  readonly title: string;
-  readonly body: string;
-  readonly color: string;
+  /** The rendered opening message (`tickets.opened`); mentions are added in front of its content. */
+  readonly message: OutgoingMessage;
   readonly mentionUserIds: readonly string[];
   readonly mentionRoleIds: readonly string[];
   readonly claimButton: boolean;
@@ -364,7 +365,8 @@ export interface TicketTranscriptPost {
 
 export interface TicketDirectMessage {
   readonly userId: string;
-  readonly content: string;
+  /** The rendered message (`tickets.closed-dm`). */
+  readonly message: OutgoingMessage;
   readonly file?: TicketTranscriptFile | undefined;
   /** Adds 1-5 star rating buttons for this ticket. */
   readonly feedbackTicketId?: string | undefined;
@@ -372,6 +374,7 @@ export interface TicketDirectMessage {
 
 /** Discord operations the ticket service needs. */
 export interface TicketDiscordGateway {
+  guildName(guildId: string): Promise<string>;
   createTicketSpace(input: TicketSpaceInput): Promise<{ readonly channelId: string }>;
   postOpening(input: TicketOpeningMessage): Promise<void>;
   postNotice(input: TicketNotice): Promise<{ readonly messageId: string }>;

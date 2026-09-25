@@ -38,6 +38,7 @@ export class DiscordCommunityEventHandler {
       server: member.guild.name,
       memberCount: member.guild.memberCount,
       joinedAt: member.joinedAt ?? new Date(),
+      avatarUrl: member.displayAvatarURL(),
     };
     await this.service.deliverLog({ guildId: member.guild.id, event: "memberJoin", title: "Member joined", description: `<@${member.id}> (${member.user.tag}) joined. Account created <t:${Math.floor(member.user.createdTimestamp / 1000)}:R>.`, userId: member.id, isBot: member.user.bot });
     await this.service.deliverWelcomeGoodbye("WELCOME", member.guild.id, context);
@@ -57,6 +58,7 @@ export class DiscordCommunityEventHandler {
       server: member.guild.name,
       memberCount: member.guild.memberCount,
       joinedAt: member.joinedAt ?? new Date(),
+      avatarUrl: member.displayAvatarURL(),
     });
     await this.refreshCounters(member.guild.id);
   }

@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 export interface BirthdaySettings {
   readonly guildId: string;
   readonly enabled: boolean;
@@ -77,10 +79,8 @@ export interface BirthdayRepository {
   update(id: string, patch: BirthdayPatch): Promise<Birthday>;
 }
 
-export interface BirthdayAnnouncement {
-  readonly content: string;
-  readonly description: string;
-  readonly color: string;
+/** The rendered `birthdays.announcement` message plus who it may ping. */
+export interface BirthdayAnnouncement extends OutgoingMessage {
   readonly mentionUserIds: readonly string[];
   readonly mentionRoleIds: readonly string[];
 }

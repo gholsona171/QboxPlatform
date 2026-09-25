@@ -1,5 +1,6 @@
 import { AuditLogEvent, Events, PermissionFlagsBits, type Client, type GuildBan, type GuildMember, type Message, type PartialGuildMember } from "discord.js";
 import { DiscordRestModerationGateway, ModerationService, type ModerationRepository } from "@qbox/moderation";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { logger } from "@qbox/logger";
 
 import { ModCommand } from "../commands/Mod.command.js";
@@ -12,9 +13,9 @@ const AUDIT_WINDOW_MS = 10_000;
  * Moderation: `/mod`, automod on every message, recording bans, unbans, and
  * kicks done directly in Discord, and lifting expired temporary bans.
  */
-export function moderationFeature(repository: ModerationRepository): DiscordFeatureFactory {
+export function moderationFeature(repository: ModerationRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client, authorizer }) => {
-    const moderation = new ModerationService(repository, new DiscordRestModerationGateway(client.rest));
+    const moderation = new ModerationService(repository, new DiscordRestModerationGateway(client.rest), undefined, templates);
     const events = new ModerationEvents(moderation);
     return {
       name: "moderation",

@@ -1,5 +1,6 @@
 import { Events, type Client, type Message, type VoiceBasedChannel, type VoiceState } from "discord.js";
 import { DiscordRestLevelGateway, LevelService, VoiceTracker, type LevelRepository, type VoiceParticipant } from "@qbox/levels";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { logger } from "@qbox/logger";
 
 import { LeaderboardCommand } from "../commands/Leaderboard.command.js";
@@ -10,9 +11,9 @@ import type { DiscordFeatureFactory } from "../features/DiscordFeature.js";
 const VOICE_FLUSH_MS = 60_000;
 
 /** Levels and rewards: `/rank`, `/leaderboard`, `/levels`, message XP, and voice XP. */
-export function levelsFeature(repository: LevelRepository): DiscordFeatureFactory {
+export function levelsFeature(repository: LevelRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client, authorizer }) => {
-    const levels = new LevelService(repository, new DiscordRestLevelGateway(client.rest));
+    const levels = new LevelService(repository, new DiscordRestLevelGateway(client.rest), undefined, undefined, templates);
     const events = new LevelEvents(levels);
     return {
       name: "levels",

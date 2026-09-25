@@ -1,6 +1,7 @@
 import { MessageFlags, type ButtonInteraction, type Interaction } from "discord.js";
 import { logger } from "@qbox/logger";
 import { DiscordRestGiveawayGateway, GIVEAWAY_CUSTOM_ID, GiveawayError, GiveawayService, type GiveawayEntrant, type GiveawayRepository } from "@qbox/giveaways";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 
 import { GiveawayCommand } from "../commands/Giveaway.command.js";
 import type { DiscordFeatureFactory } from "../features/DiscordFeature.js";
@@ -8,9 +9,9 @@ import type { DiscordFeatureFactory } from "../features/DiscordFeature.js";
 const SWEEP_INTERVAL_MS = 30_000;
 
 /** Giveaways: `/giveaway`, the Enter button, and drawing winners when time is up. */
-export function giveawaysFeature(repository: GiveawayRepository): DiscordFeatureFactory {
+export function giveawaysFeature(repository: GiveawayRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client }) => {
-    const giveaways = new GiveawayService(repository, new DiscordRestGiveawayGateway(client.rest));
+    const giveaways = new GiveawayService(repository, new DiscordRestGiveawayGateway(client.rest), undefined, { templates });
     let timer: ReturnType<typeof setInterval> | undefined;
     return {
       name: "giveaways",

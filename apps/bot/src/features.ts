@@ -2,6 +2,10 @@ import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthday
 import { applicationsFeature, birthdaysFeature, builderFeature, guildOnboardingFeature, fivemFeature, giveawaysFeature, knowledgeFeature, levelsFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, ticketsFeature, verificationFeature, voiceRoomsFeature, type DiscordFeatureFactory } from "@qbox/discord";
 import type { PersistentPermissionService } from "@qbox/permissions";
 import { env } from "@qbox/shared";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
+
+/** Custom message templates for every feature that posts to Discord. */
+export const templates: MessageTemplates = passthroughTemplates;
 
 /**
  * Every pluggable Discord feature the bot runs. Add one line per feature;
@@ -18,16 +22,16 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
     guildOnboardingFeature({
       ensureOwner: async (guildId, ownerId) => ({ created: (await bootstrap.applyOwner(guildId, ownerId)).createdAssignments > 0 }),
     }),
-    ticketsFeature(persistence.repositories.tickets),
-    moderationFeature(new PrismaModerationRepository(persistence.prisma)),
-    verificationFeature(new PrismaVerificationRepository(persistence.prisma)),
+    ticketsFeature(persistence.repositories.tickets, templates),
+    moderationFeature(new PrismaModerationRepository(persistence.prisma), templates),
+    verificationFeature(new PrismaVerificationRepository(persistence.prisma), templates),
     applicationsFeature(new PrismaApplicationRepository(persistence.prisma)),
     staffFeature(new PrismaStaffRepository(persistence.prisma)),
     pollsFeature(new PrismaPollRepository(persistence.prisma)),
-    giveawaysFeature(new PrismaGiveawayRepository(persistence.prisma)),
-    birthdaysFeature(new PrismaBirthdayRepository(persistence.prisma)),
+    giveawaysFeature(new PrismaGiveawayRepository(persistence.prisma), templates),
+    birthdaysFeature(new PrismaBirthdayRepository(persistence.prisma), templates),
     scheduledMessagesFeature(new PrismaScheduledMessageRepository(persistence.prisma)),
-    levelsFeature(new PrismaLevelRepository(persistence.prisma)),
+    levelsFeature(new PrismaLevelRepository(persistence.prisma), templates),
     voiceRoomsFeature(new PrismaVoiceRepository(persistence.prisma)),
     knowledgeFeature(new PrismaKnowledgeRepository(persistence.prisma), { openAiApiKey: env.OPENAI_API_KEY, openAiModel: env.OPENAI_MODEL }),
     fivemFeature(new PrismaFivemRepository(persistence.prisma)),

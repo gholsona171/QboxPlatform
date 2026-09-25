@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 export type GiveawayStatus = "RUNNING" | "PAUSED" | "ENDED" | "CANCELLED";
 
 export const GIVEAWAY_STATUSES: readonly GiveawayStatus[] = ["RUNNING", "PAUSED", "ENDED", "CANCELLED"];
@@ -116,22 +118,16 @@ export interface GiveawayRepository {
 }
 
 /** A rendered message; the gateway turns it into a Discord message. */
-export interface GiveawayMessage {
-  readonly content?: string | undefined;
+/** A giveaway message: Discord message JSON plus who it may ping and the Enter button. */
+export interface GiveawayMessage extends OutgoingMessage {
   readonly mentionUserIds: readonly string[];
   readonly mentionRoleIds: readonly string[];
-  readonly embed?: {
-    readonly title: string;
-    readonly description: string;
-    readonly color: string;
-    readonly fields: readonly { readonly name: string; readonly value: string; readonly inline?: boolean }[];
-    readonly footer?: string | undefined;
-  } | undefined;
   readonly enterButton?: { readonly customId: string; readonly label: string } | undefined;
 }
 
 /** Discord operations giveaways need. */
 export interface GiveawayGateway {
+  guildName(guildId: string): Promise<string>;
   postMessage(channelId: string, message: GiveawayMessage, replyToMessageId?: string): Promise<{ readonly messageId: string }>;
   editMessage(channelId: string, messageId: string, message: GiveawayMessage): Promise<void>;
   /** Returns false when the member's DMs are closed. */

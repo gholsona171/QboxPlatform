@@ -42,7 +42,7 @@ When **Require confirmation** is on, `/birthday set` shows the date with
 
 - **Dates:** month and day, optional year (turn off **Allow year** to never store years), optional "show age", and the member's time zone. February 29 birthdays are celebrated on February 28 in other years.
 - **Announcements:** a timer runs every 5 minutes. When it is the member's birthday in their time zone and the configured hour has passed, Guildhall posts the message once for that year (`lastAnnouncedYear`). Changing the date resets this.
-- **Message:** a template with `{user}` (mention), `{age}` (only when the member shows their age), and `{server}`, in an embed with your color. An optional role is pinged too.
+- **Message:** a template with `{user}` (mention), `{age}` (only when the member shows their age), and `{server}`, in an embed with your color. An optional role is pinged too. Customize this message under Look & Messages (key `birthdays.announcement`).
 - **Birthday role:** given with the announcement and removed when the member's day ends in their time zone.
 - **Portal:** upcoming birthdays (next 30 days), a month calendar, all birthdays with search, your own birthday form, and settings with a test message.
 

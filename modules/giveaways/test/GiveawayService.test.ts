@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, TemplateValues } from "@qbox/shared/messages";
 
 import {
   DiscordRestGiveawayGateway,
@@ -35,6 +36,7 @@ class FakeGateway implements GiveawayGateway {
   public readonly dms: string[] = [];
   public failPost = false;
 
+  public async guildName() { return "Guildhall HQ"; }
   public async postMessage(_c: string, message: GiveawayMessage, replyTo?: string) {
     if (this.failPost) throw new Error("Missing Access");
     this.posts.push({ message, replyTo });
@@ -47,12 +49,17 @@ class FakeGateway implements GiveawayGateway {
 /** Always picks the first remaining ticket. */
 const firstTicket = () => 0;
 
-function setup(random = firstTicket) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+function setup(random = firstTicket, templates?: MessageTemplates) {
   let clock = new Date("2026-09-25T12:00:00.000Z");
   const now = () => clock;
   const gateway = new FakeGateway();
   const repository = new InMemoryGiveawayRepository(now);
-  const service = new GiveawayService(repository, gateway, now, { refreshDelayMs: 0, random });
+  const service = new GiveawayService(repository, gateway, now, { refreshDelayMs: 0, random, templates });
   return { service, gateway, repository, advance: (minutes: number) => { clock = new Date(clock.getTime() + minutes * 60_000); } };
 }
 
@@ -66,7 +73,7 @@ describe("GiveawayService", () => {
     const message = gateway.posts[0]?.message;
     expect(message?.content).toBe(`<@&${VIP}>`);
     expect(message?.enterButton?.customId).toBe(`qbox:giveaways:enter:${giveaway.id}`);
-    expect(message?.embed?.fields.map((field) => field.name)).toEqual(["Number of winners", "Entries", "Bonus entries"]);
+    expect(message?.embeds?.[0]?.fields?.map((field) => field.name)).toEqual(["Number of winners", "Entries", "Bonus entries"]);
   });
 
   it("validates input and rolls back when the message cannot be posted", async () => {
@@ -138,9 +145,53 @@ describe("GiveawayService", () => {
     expect(resumed.endsAt.toISOString()).toBe("2026-09-25T15:00:00.000Z");
     const cancelled = await service.cancel(GUILD, paused.id, STAFF);
     expect(cancelled.status).toBe("CANCELLED");
-    expect(gateway.edits.at(-1)?.embed?.title).toBe("🎉 Nitro (cancelled)");
+    expect(gateway.edits.at(-1)?.embeds?.[0]?.title).toBe("🎉 Nitro (cancelled)");
     expect((await service.list(GUILD, "ended")).map((item) => item.number)).toEqual([2, 1]);
     expect(await service.list(GUILD, "active")).toEqual([]);
+  });
+});
+
+describe("GiveawayService message templates", () => {
+  it("posts the built-in giveaway and winner messages when nothing is customized", async () => {
+    const { service, gateway, advance } = setup();
+    const giveaway = await service.start(base, STAFF);
+    expect(gateway.posts[0]?.message).toEqual({
+      mentionUserIds: [],
+      mentionRoleIds: [],
+      embeds: [{
+        title: "🎉 Nitro",
+        description: `Press **Enter** to join. Press it again to leave.\nEnds <t:1790341200:R> (<t:1790341200:f>)\nHosted by <@${STAFF.userId}>`,
+        color: 0xf47fff,
+        fields: [{ name: "Number of winners", value: "1", inline: true }, { name: "Entries", value: "0", inline: true }],
+        footer: { text: "Giveaway #1" },
+      }],
+      enterButton: { customId: `qbox:giveaways:enter:${giveaway.id}`, label: "Enter" },
+    });
+    await service.toggleEntry(GUILD, giveaway.id, member(OLD_USER));
+    advance(61);
+    await service.sweepDue();
+    expect(gateway.posts.at(-1)?.message).toEqual({
+      content: `🎉 Congratulations: <@${OLD_USER}>! You won **Nitro**. Contact <@${STAFF.userId}> to claim it.`,
+      embeds: undefined,
+      mentionUserIds: [OLD_USER],
+      mentionRoleIds: [],
+    });
+  });
+
+  it("posts the server's custom giveaway and winner messages, keeping pings and the Enter button", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const { service, gateway, advance } = setup(firstTicket, markedTemplates(seen));
+    const giveaway = await service.start({ ...base, pingRoleId: VIP }, STAFF);
+    expect(gateway.posts[0]?.message).toEqual({ content: "custom giveaways.started", embeds: undefined, mentionUserIds: [], mentionRoleIds: [VIP], enterButton: { customId: `qbox:giveaways:enter:${giveaway.id}`, label: "Enter" } });
+    expect(seen[0]).toEqual({ key: "giveaways.started", values: { prize: "Nitro", host: `<@${STAFF.userId}>`, entries: 0, server: "Guildhall HQ", winners: 1, endsAt: new Date("2026-09-25T13:00:00.000Z") } });
+    await service.toggleEntry(GUILD, giveaway.id, member(OLD_USER));
+    expect(gateway.edits.at(-1)?.content).toBe("custom giveaways.started");
+    expect(seen.at(-1)?.values.entries).toBe(1);
+    advance(61);
+    await service.sweepDue();
+    expect(gateway.edits.at(-1)?.embeds?.[0]?.title).toBe("🎉 Nitro (ended)");
+    expect(gateway.posts.at(-1)?.message).toEqual({ content: "custom giveaways.ended", embeds: undefined, mentionUserIds: [OLD_USER], mentionRoleIds: [] });
+    expect(seen.at(-1)).toEqual({ key: "giveaways.ended", values: { prize: "Nitro", host: `<@${STAFF.userId}>`, entries: 1, server: "Guildhall HQ", winners: `<@${OLD_USER}>`, endsAt: new Date("2026-09-25T13:01:00.000Z") } });
   });
 });
 

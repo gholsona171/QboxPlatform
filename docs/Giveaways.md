@@ -47,6 +47,7 @@ are available in the portal.
 - **Fair drawing:** winners are drawn with Node's cryptographic random generator, weighted by entries, and no member can win twice in one draw.
 - **End time:** a timer checks every 30 seconds, draws the winners, updates the message, posts the winners as a reply, and DMs them (optional).
 - **Reroll:** pick new winners for an ended giveaway. Current winners are skipped.
+- **Custom messages:** customize the giveaway post under Look & Messages (key `giveaways.started`) and the winners announcement (key `giveaways.ended`). Pings and the Enter button stay.
 - **End early, pause, cancel:** pausing stops entries and the timer; resuming moves the end time back by the paused time.
 - **Portal:** running and ended lists, a start form with every option, and details with all entries, entry counts, and each member's chance to win.
 

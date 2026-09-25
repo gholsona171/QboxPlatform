@@ -21,6 +21,7 @@ const staff: TicketActor = { userId: "804859666655739997", displayName: "Staff",
 
 let channelCounter = 1262656532902842500n;
 const gateway: TicketDiscordGateway = {
+  guildName: async () => "Qbox",
   createTicketSpace: async () => ({ channelId: String((channelCounter += 1n)) }),
   postOpening: async () => undefined,
   postNotice: async () => ({ messageId: "1432100000000000001" }),
