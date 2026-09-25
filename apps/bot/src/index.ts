@@ -62,6 +62,7 @@ kernel.registerModule(
     roleMenuRepository: persistence.repositories.roleMenus,
     communityRepository: persistence.repositories.discordCommunity,
     roleDependencyRepository: persistence.repositories.discordRoles,
+    ticketRepository: persistence.repositories.tickets,
   }),
 );
 

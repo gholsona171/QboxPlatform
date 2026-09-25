@@ -34,6 +34,7 @@ export interface DiscordInteractionHandlerOptions {
   readonly log?: InteractionLogger;
   readonly roleMenuInteractions?: DiscordRoleMenuInteractionHandler;
   readonly community?: DiscordCommunityService;
+  readonly ticketInteractions?: { handle(interaction: Interaction): Promise<void> };
 }
 
 export class CommandExecutionTimeoutError extends Error {
@@ -66,6 +67,7 @@ export class DiscordInteractionHandler {
   private readonly log: InteractionLogger;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly community: DiscordCommunityService | undefined;
+  private readonly ticketInteractions: { handle(interaction: Interaction): Promise<void> } | undefined;
   private readonly activeExecutions = new Set<Promise<void>>();
   private readonly activeControllers = new Set<AbortController>();
   private acceptingExecutions = true;
@@ -85,9 +87,15 @@ export class DiscordInteractionHandler {
     this.log = options.log ?? logger;
     this.roleMenuInteractions = options.roleMenuInteractions;
     this.community = options.community;
+    this.ticketInteractions = options.ticketInteractions;
   }
 
   public async handle(interaction: Interaction): Promise<void> {
+    if (this.ticketInteractions && isTicketComponent(interaction)) {
+      await this.ticketInteractions.handle(interaction);
+      return;
+    }
+
     if (typeof interaction.isButton === "function" && interaction.isButton() && interaction.customId.startsWith("qbox:rules:")) {
       if (!this.community || !interaction.guildId || !interaction.member || !("user" in interaction.member)) return;
       await interaction.deferReply({ ephemeral: true });
@@ -378,4 +386,12 @@ export class DiscordInteractionHandler {
       );
     }
   }
+}
+
+function isTicketComponent(interaction: Interaction): boolean {
+  const component =
+    (typeof interaction.isButton === "function" && interaction.isButton()) ||
+    (typeof interaction.isStringSelectMenu === "function" && interaction.isStringSelectMenu()) ||
+    (typeof interaction.isModalSubmit === "function" && interaction.isModalSubmit());
+  return component && "customId" in interaction && typeof interaction.customId === "string" && interaction.customId.startsWith("qbox:ticket:");
 }

@@ -25,6 +25,8 @@ export const env = {
   REDIS_URL: process.env.REDIS_URL ?? "",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
   DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
+  DISCORD_MESSAGE_CONTENT_INTENT:
+    (process.env.DISCORD_MESSAGE_CONTENT_INTENT ?? "false") === "true",
   PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED:
     (process.env.PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED ?? "true") !==
     "false",

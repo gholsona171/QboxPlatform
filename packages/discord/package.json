@@ -19,6 +19,7 @@
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/shared": "workspace:*",
+    "@qbox/tickets": "workspace:*",
     "discord.js": "^14"
   }
 }

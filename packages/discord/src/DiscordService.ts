@@ -7,6 +7,7 @@ import type { PermissionAuthorizer } from "@qbox/permissions";
 import { RoleMenuService, type RoleMenuRepository } from "@qbox/role-menus";
 import { DiscordCommunityService, type CommunityRepository } from "@qbox/discord-community";
 import { RoleManagementService, type RoleDependencyRepository } from "@qbox/discord-roles";
+import { DiscordRestTicketGateway, TicketService, type TicketRepository } from "@qbox/tickets";
 
 import { CommandRegistry } from "./commands/CommandRegistry.js";
 import type { DiscordCommand } from "./commands/DiscordCommand.js";
@@ -16,6 +17,9 @@ import { DiscordRoleMenuInteractionHandler } from "./roleMenus/DiscordRoleMenuIn
 import { DiscordCommunityGatewayAdapter } from "./community/DiscordCommunityGateway.js";
 import { DiscordCommunityEventHandler } from "./community/DiscordCommunityEventHandler.js";
 import { DiscordRoleManagementGateway } from "./roles/DiscordRoleManagementGateway.js";
+import { DiscordTicketEventHandler } from "./tickets/DiscordTicketEventHandler.js";
+import { DiscordTicketInteractionHandler } from "./tickets/DiscordTicketInteractionHandler.js";
+import { TicketElevation } from "./tickets/ticketActor.js";
 
 export interface CommandDeploymentResult {
   readonly commandCount: number;
@@ -54,6 +58,7 @@ export class DiscordService {
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildVoiceStates,
+      ...(env.DISCORD_MESSAGE_CONTENT_INTENT ? [GatewayIntentBits.MessageContent] : []),
     ],
     partials: [Partials.Message, Partials.Channel, Partials.Reaction],
   });
@@ -62,6 +67,10 @@ export class DiscordService {
   public readonly roleMenus: RoleMenuService | undefined;
   public readonly community: DiscordCommunityService | undefined;
   public readonly roles: RoleManagementService | undefined;
+  public readonly tickets: TicketService | undefined;
+  public readonly ticketElevation: TicketElevation;
+  private readonly ticketInteractions: DiscordTicketInteractionHandler | undefined;
+  private readonly ticketEvents: DiscordTicketEventHandler | undefined;
   private readonly interactions: DiscordInteractionHandler;
   private readonly roleMenuInteractions: DiscordRoleMenuInteractionHandler | undefined;
   private readonly communityEvents: DiscordCommunityEventHandler | undefined;
@@ -94,8 +103,15 @@ export class DiscordService {
     roleMenuRepository?: RoleMenuRepository,
     communityRepository?: CommunityRepository,
     roleDependencyRepository?: RoleDependencyRepository,
+    ticketRepository?: TicketRepository,
   ) {
     this.commands = new CommandRegistry(permissionAuthorizer, logger);
+    this.ticketElevation = new TicketElevation(permissionAuthorizer);
+    if (ticketRepository) {
+      this.tickets = new TicketService(ticketRepository, new DiscordRestTicketGateway(this.client.rest));
+      this.ticketInteractions = new DiscordTicketInteractionHandler(this.tickets, this.ticketElevation);
+      this.ticketEvents = new DiscordTicketEventHandler(this.tickets);
+    }
     if (roleMenuRepository) {
       this.roleMenus = new RoleMenuService(
         roleMenuRepository,
@@ -122,6 +138,7 @@ export class DiscordService {
       executionTimeoutMs: readExecutionTimeout(),
       ...(this.roleMenuInteractions ? { roleMenuInteractions: this.roleMenuInteractions } : {}),
       ...(this.community ? { community: this.community } : {}),
+      ...(this.ticketInteractions ? { ticketInteractions: this.ticketInteractions } : {}),
     });
   }
 
@@ -142,6 +159,7 @@ export class DiscordService {
     this.client.on(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.on(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.attach(this.client);
+    this.ticketEvents?.attach(this.client);
 
     logger.info(
       {
@@ -157,6 +175,7 @@ export class DiscordService {
       this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
       this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
       this.communityEvents?.detach();
+      this.ticketEvents?.detach();
       this.client.destroy();
       throw error;
     }
@@ -265,6 +284,7 @@ export class DiscordService {
     this.client.off(Events.MessageReactionAdd, this.reactionAddListener);
     this.client.off(Events.MessageReactionRemove, this.reactionRemoveListener);
     this.communityEvents?.detach();
+    this.ticketEvents?.detach();
     this.client.destroy();
   }
 }

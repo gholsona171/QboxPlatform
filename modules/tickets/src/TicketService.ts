@@ -662,6 +662,15 @@ export class TicketService {
     return { fileName: `ticket-${ticket.number}-transcript.txt`, content: `${lines.join("\n")}\n` };
   }
 
+  /** Transcript for a member: staff get internal notes, the opener gets the public copy. */
+  public async transcriptFor(guildId: string, id: string, actor: TicketActor): Promise<TicketTranscriptFile> {
+    const ticket = await this.ticket(guildId, id);
+    const staff = this.isStaff(await this.settings(guildId), await this.categoryFor(ticket), actor);
+    if (!staff && ticket.openerId !== actor.userId)
+      throw new TicketError("FORBIDDEN", "Only the support team or the ticket opener can download the transcript.");
+    return this.transcript(guildId, id, staff);
+  }
+
   /** Warns about and closes inactive tickets for every guild with auto-close enabled. */
   public async sweepAutoClose(): Promise<AutoCloseSweepResult> {
     let warned = 0;

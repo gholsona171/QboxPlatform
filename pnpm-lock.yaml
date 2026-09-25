@@ -186,6 +186,9 @@ importers:
       '@qbox/shared':
         specifier: workspace:*
         version: link:../shared
+      '@qbox/tickets':
+        specifier: workspace:*
+        version: link:../../modules/tickets
       discord.js:
         specifier: ^14
         version: 14.27.0

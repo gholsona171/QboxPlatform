@@ -7,7 +7,7 @@ export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:affdcef1acab3bf55504d5b7a854fb48e3e521bdde1f622250fadc5353d644b6" as const;
+  "sha256:b40dbf794bdcb5d9f49349a1f9a026ed61fea0607a6e4ceabedcbcb50dabbb36" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -22,6 +22,7 @@ export const PERMISSIONS = [
   "moderation.kick",
   "moderation.ban",
   "tickets.manage",
+  "tickets.handle",
   "applications.review",
   "staff.manage",
   "knowledge.manage",
