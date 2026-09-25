@@ -35,7 +35,7 @@ Discord administrators can do everything.
 `/mod warn | timeout | untimeout | kick | ban | unban | softban | note | history | case | reason | pardon | purge | lock | unlock | slowmode`
 
 Durations accept `10m`, `2h`, `3d`, `1w`, or plain minutes. Timeouts can last up
-to 28 days (a Discord limit). Bans can be temporary; Qbox lifts them when they
+to 28 days (a Discord limit). Bans can be temporary; Guildhall lifts them when they
 expire.
 
 ## Features
@@ -52,7 +52,7 @@ expire.
 
 ## Setup
 
-1. Give the bot **Kick Members**, **Ban Members**, **Moderate Members**, **Manage Messages**, **Manage Channels**, **Manage Roles**, and **View Audit Log**. Put the Qbox role above the roles it should moderate.
+1. Give the bot **Kick Members**, **Ban Members**, **Moderate Members**, **Manage Messages**, **Manage Channels**, **Manage Roles**, and **View Audit Log**. Put the Guildhall role above the roles it should moderate.
 2. In the portal, open **Moderation > Settings** and choose a log channel.
 3. Grant the moderation permissions to your staff roles.
 4. Optionally configure **Automod** and automatic punishments.

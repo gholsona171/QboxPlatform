@@ -1,7 +1,7 @@
 # Knowledge Base
 
 Write help articles once and let members find them in the portal
-(`/knowledge`) and in Discord (`/faq`, `/ask`). Qbox can also answer common
+(`/knowledge`) and in Discord (`/faq`, `/ask`). Guildhall can also answer common
 questions automatically in chosen channels.
 
 ## Where the code lives
@@ -58,7 +58,7 @@ Search is keyword based and runs in `@qbox/knowledge-base` (`search.ts`):
 
 In **Knowledge Base > Settings**, turn on automatic answers and choose
 channels. When a message there has at least two search words and its best
-article's match is at or above the threshold (default 70), Qbox replies with
+article's match is at or above the threshold (default 70), Guildhall replies with
 the article. Each channel then waits for the cooldown (default 5 minutes)
 before answering again.
 
@@ -69,7 +69,7 @@ text and never suggests anything.
 
 ## AI answers
 
-Set `OPENAI_API_KEY` on the bot to let `/ask` write answers. Qbox sends the
+Set `OPENAI_API_KEY` on the bot to let `/ask` write answers. Guildhall sends the
 question and the top 3 matching articles to the OpenAI chat completions API
 (model `OPENAI_MODEL`, default `gpt-4o-mini`) and tells it to answer only from
 those articles. The reply lists the articles it used. Without a key, or if the

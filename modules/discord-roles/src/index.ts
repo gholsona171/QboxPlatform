@@ -1,3 +1,5 @@
+import { BRAND } from "@qbox/shared/brand";
+
 export type RoleOperationSource = "DISCORD" | "WEB" | "SYSTEM";
 export type RoleActorType = "discord-user" | "platform-user" | "system";
 
@@ -217,7 +219,7 @@ export class RoleManagementService {
       throw new RoleManagementError("INVALID_INPUT", "Role deletion requires a matching confirmation.");
     const dependencies = await this.dependencies.listDependencies(input.guildId, input.roleId);
     if (dependencies.length > 0)
-      throw new RoleManagementError("DEPENDENCY_CONFLICT", "Role has Qbox feature dependencies. Replace or remove dependencies before deleting it.");
+      throw new RoleManagementError("DEPENDENCY_CONFLICT", `Role has ${BRAND.name} feature dependencies. Replace or remove dependencies before deleting it.`);
     await this.requireGateway().deleteRole(input);
     await this.audit({ guildId: input.guildId, roleId: input.roleId, operation: "delete", source: input.source, actor: input.actor, summary: `Deleted role ${existing.name}.`, result: "SUCCESS" });
   }

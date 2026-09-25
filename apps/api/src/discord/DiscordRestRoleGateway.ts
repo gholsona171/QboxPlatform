@@ -1,4 +1,5 @@
 import { REST, Routes, PermissionsBitField } from "discord.js";
+import { BRAND } from "@qbox/shared/brand";
 import type {
   DiscordChannelResource,
   DiscordRoleResource,
@@ -86,12 +87,12 @@ export class DiscordRestRoleGateway implements RoleManagementGateway {
         hoist: input.hoist ?? false,
         mentionable: input.mentionable ?? false,
       },
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     }) as DiscordApiRole;
     if (input.position !== undefined) {
       await this.rest.patch(guildRolePositionsRoute(input.guildId), {
         body: [{ id: created.id, position: input.position }],
-        reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+        reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
       });
     }
     const current = await this.getRole(input.guildId, created.id);
@@ -107,12 +108,12 @@ export class DiscordRestRoleGateway implements RoleManagementGateway {
         ...(input.hoist === undefined ? {} : { hoist: input.hoist }),
         ...(input.mentionable === undefined ? {} : { mentionable: input.mentionable }),
       },
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     });
     if (input.position !== undefined) {
       await this.rest.patch(guildRolePositionsRoute(input.guildId), {
         body: [{ id: input.roleId, position: input.position }],
-        reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+        reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
       });
     }
     const current = await this.getRole(input.guildId, input.roleId);
@@ -122,14 +123,14 @@ export class DiscordRestRoleGateway implements RoleManagementGateway {
 
   public async deleteRole(input: { readonly guildId: string; readonly roleId: string; readonly actor: { readonly type: string; readonly id: string } }): Promise<void> {
     await this.rest.delete(Routes.guildRole(input.guildId, input.roleId), {
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     });
   }
 
   public async moveRole(input: RoleMoveInput): Promise<DiscordRoleResource> {
     await this.rest.patch(guildRolePositionsRoute(input.guildId), {
       body: [{ id: input.roleId, position: input.position }],
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     });
     const current = await this.getRole(input.guildId, input.roleId);
     if (!current) throw new Error("Moved role could not be read back from Discord.");

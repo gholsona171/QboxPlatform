@@ -1,6 +1,6 @@
 # Giveaways
 
-Run giveaways where members press **Enter** to join and Qbox picks the winners
+Run giveaways where members press **Enter** to join and Guildhall picks the winners
 when time is up. Start them from the portal (`/giveaways`) or from Discord
 (`/giveaway start`).
 

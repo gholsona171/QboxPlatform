@@ -5,6 +5,7 @@ import type { PermissionAuthorizer } from "@qbox/permissions";
 import type { CommandExecutionContext, CommandExecutionPolicy, DiscordCommand } from "./DiscordCommand.js";
 import { memberHasPermission } from "../features/featureAuthorization.js";
 import { toEmbedBuilder } from "../features/featureEmbeds.js";
+import { BRAND } from "@qbox/shared/brand";
 
 const STATUS: Readonly<Record<BuilderRunStatus, { readonly label: string; readonly color: string }>> = {
   QUEUED: { label: "Waiting to start", color: "#99AAB5" },
@@ -52,7 +53,7 @@ export class BuilderCommand implements DiscordCommand {
     }
     const last = await this.builder.lastRun(guildId);
     if (!last) {
-      await context.editReply({ content: "No builds yet. Open **Server Builder** in the Qbox portal to plan and build your server." });
+      await context.editReply({ content: `No builds yet. Open **Server Builder** in the ${BRAND.name} portal to plan and build your server.` });
       return;
     }
     const { run, items } = last;
@@ -71,7 +72,7 @@ export class BuilderCommand implements DiscordCommand {
           ...(problems.length ? [{ name: "Problems", value: problems.join("\n").slice(0, 1024) }] : []),
           ...(run.warnings.length ? [{ name: "Warnings", value: run.warnings.join("\n").slice(0, 1024) }] : []),
         ],
-        footer: "Manage builds in the Qbox portal under Server Builder.",
+        footer: `Manage builds in the ${BRAND.name} portal under Server Builder.`,
         timestamp: run.createdAt,
       })],
     });

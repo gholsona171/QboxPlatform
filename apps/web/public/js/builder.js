@@ -2,6 +2,7 @@ import { getJson, sendJson } from "./api.js";
 import { appPath } from "./config.js";
 import { checkbox, dateTime, detail, numberField, relative, selectField, textArea, textField } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["questions", "Questions"],
@@ -219,7 +220,7 @@ function buildTab() {
   const active = activeRun();
   const status = `<div class="card">
     <div class="split-line"><h3>Bot check</h3>${badge(preflight.ready ? "ready" : "not ready")}</div>
-    ${preflight.messages.length ? `<ul class="checklist">${preflight.messages.map((message) => `<li>${escapeHtml(message)}</li>`).join("")}</ul>` : `<p class="microcopy">Qbox can create roles and channels.</p>`}
+    ${preflight.messages.length ? `<ul class="checklist">${preflight.messages.map((message) => `<li>${escapeHtml(message)}</li>`).join("")}</ul>` : `<p class="microcopy">${BRAND.name} can create roles and channels.</p>`}
   </div>`;
   if (active) return `${status}${runProgress(view.selected)}`;
   if (!draft) return `${status}${noDraft()}`;
@@ -230,7 +231,7 @@ function buildTab() {
       <label class="checkbox full"><input type="radio" name="mode" value="ADD" checked> Add to my server: skip roles and channels that already exist with the same name</label>
       <label class="checkbox full"><input type="radio" name="mode" value="FRESH"> Fresh layout: create everything, even if the names already exist</label>
       <p class="microcopy full">Nothing already in your server is ever deleted. You can undo a build later; that only removes what the build created.</p>
-      <h3>Connect Qbox features</h3>
+      <h3>Connect ${BRAND.name} features</h3>
       ${links.map((link) => `<label class="checkbox full"><input type="checkbox" name="links" value="${escapeHtml(link.link)}" ${link.available ? "checked" : "disabled"}> <strong>${escapeHtml(link.label)}</strong>&nbsp;<span class="microcopy">${escapeHtml(link.available ? link.description : "Not in this blueprint.")}</span></label>`).join("")}
       <p class="microcopy full">This saves the new channels and roles into each feature's settings. Your other settings are kept.</p>
       <button class="button primary full" ${preflight.ready ? "" : "disabled"}>Build ${summary.roles} roles and ${summary.totalChannels} channels</button>
@@ -410,7 +411,7 @@ async function submit(form) {
       const { summary } = view.overview.draft;
       const ok = await confirmAction({
         title: "Build your server now?",
-        body: `Qbox will create up to ${summary.roles} roles and ${summary.totalChannels} channels and categories${links.length ? `, then connect ${links.length} features` : ""}. ${mode === "ADD" ? "Items that already exist are skipped." : "Everything is created new."} Nothing is deleted.`,
+        body: `${BRAND.name} will create up to ${summary.roles} roles and ${summary.totalChannels} channels and categories${links.length ? `, then connect ${links.length} features` : ""}. ${mode === "ADD" ? "Items that already exist are skipped." : "Everything is created new."} Nothing is deleted.`,
         confirmText: "Build",
       });
       if (!ok) return undefined;

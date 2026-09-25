@@ -4,6 +4,7 @@ import { chooseServerView, initializeGuildPicker, renderServerHeader } from "./g
 import { currentGuild, refreshSession, session, signedIn } from "./session.js";
 import { escapeHtml, initializeModal, notify, signInCard } from "./ui.js";
 import { pages } from "./pages.js";
+import { BRAND } from "./brand.js";
 
 
 initializeModal();
@@ -73,7 +74,7 @@ function renderCurrentRoute() {
   const current = pages.find((page) => page.id === currentRoutePage()) ?? pages[0];
   document.getElementById("pageTitle").textContent = current.label;
   document.getElementById("breadcrumbs").textContent = current.description;
-  document.title = `${current.label} · QboxPlatform`;
+  document.title = `${current.label} · ${BRAND.name}`;
   document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.route === current.id));
   const content = document.getElementById("content");
   if (!signedIn() && current.id !== "overview") {
@@ -106,7 +107,7 @@ function renderChrome() {
     ? "Sign in on the live platform to manage your server."
     : session.health.available
       ? profile ? (currentGuild() ? `Changes here apply to ${currentGuild().name}.` : "Choose a server to get started.") : "Sign in with Discord to continue."
-      : "The Qbox API is not reachable right now.";
+      : `The ${BRAND.name} API is not reachable right now.`;
 
   const name = document.getElementById("profileName");
   const avatar = document.getElementById("profileAvatar");

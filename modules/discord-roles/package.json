@@ -10,5 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run test",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
+  },
+  "dependencies": {
+    "@qbox/shared": "workspace:*"
   }
 }

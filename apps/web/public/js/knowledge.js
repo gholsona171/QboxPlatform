@@ -3,6 +3,7 @@ import { appPath } from "./config.js";
 import { bindPickers, boolValue, channelPicker, channelSelect, checkbox, dateTime, detail, intValue, loadDirectory, numberField, relative, selectField, textField } from "./forms.js";
 import { renderMarkdown } from "./markdown.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["articles", "Articles", false],
@@ -176,7 +177,7 @@ function settingsTab() {
   const s = view.overview.settings;
   return `<form class="form-grid readable-form" data-k-form="settings">
     <h3>Automatic answers</h3>
-    <p class="microcopy full">When a message in these channels closely matches an article, Qbox replies with it. This needs the Message Content intent on the bot.</p>
+    <p class="microcopy full">When a message in these channels closely matches an article, ${BRAND.name} replies with it. This needs the Message Content intent on the bot.</p>
     ${checkbox("autoAnswerEnabled", "Suggest articles automatically", s.autoAnswerEnabled)}
     ${channelPicker("autoAnswerChannelIds", "Channels to watch", s.autoAnswerChannelIds, "TEXT")}
     ${numberField("autoAnswerThreshold", "Match needed (1-100, higher is stricter)", s.autoAnswerThreshold, 1, 100)}

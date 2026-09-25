@@ -14,6 +14,7 @@ import type {
 } from "./types.js";
 import { MAX_GIVEAWAY_MINUTES, MAX_GIVEAWAY_WINNERS } from "./types.js";
 import { GiveawayError, invalid, requireIds, requireLength, requireRange, requireSnowflake } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 export interface GiveawayServiceOptions {
   /** Delay before the entry count on the message is refreshed. 0 refreshes right away. */
@@ -30,7 +31,7 @@ export interface EntryResult {
 /** "active" is running or paused; "ended" is ended or cancelled. */
 export type GiveawayListState = "active" | "ended";
 
-const QBOX: GiveawayActor = { userId: "0", displayName: "Qbox" };
+const QBOX: GiveawayActor = { userId: "0", displayName: BRAND.name };
 const DAY_MS = 86_400_000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const STATES: Readonly<Record<GiveawayListState, readonly GiveawayStatus[]>> = { active: ["RUNNING", "PAUSED"], ended: ["ENDED", "CANCELLED"] };
@@ -104,7 +105,7 @@ export class GiveawayService {
       return await this.repository.update(giveaway.id, { messageId: posted.messageId });
     } catch {
       await this.repository.delete(giveaway.id);
-      throw new GiveawayError("INVALID_STATE", `Could not post the giveaway in <#${giveaway.channelId}>. Check that Qbox can see and send messages there.`);
+      throw new GiveawayError("INVALID_STATE", `Could not post the giveaway in <#${giveaway.channelId}>. Check that ${BRAND.name} can see and send messages there.`);
     }
   }
 

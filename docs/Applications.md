@@ -43,14 +43,14 @@ on or decide their own application.
 - **Applying in Discord:** Discord forms show five questions at a time. After each page the member presses **Continue**. Answers from earlier pages are kept for 30 minutes.
 - **Applying in the portal:** the Apply tab lists open forms and your own applications, where you can also withdraw a pending one.
 - **Review message:** each application is numbered per server and posted to the form's review channel with every answer, the member's account age, and **Accept**, **Deny**, 👍, and 👎 buttons. Pressing a vote button again removes your vote. Accept and Deny ask for a reason (required to deny). Chosen members are pinged on each new application.
-- **Discussion thread (optional):** when a discussion channel is set, Qbox opens a private thread there with the member and the pinged members, and mentions the reviewer roles.
+- **Discussion thread (optional):** when a discussion channel is set, Guildhall opens a private thread there with the member and the pinged members, and mentions the reviewer roles.
 - **Decisions:** accepting gives and removes the form's roles, then DMs the member. If roles can't be changed, the application stays pending and the reviewer is told why. DMs use the form's templates with `{user}`, `{form}`, `{number}`, `{reason}`, and `{server}`; the reason is added below the message when the template doesn't include it.
 - **Portal review:** filter by status, form, or search (`#number`, member name or ID, form). The detail view shows answers, who voted, private staff notes, and accept or deny.
 - **Statistics:** totals, applications by status and per form, last 7 days, and average time from submission to decision.
 
 ## Setup
 
-1. Give the bot **Manage Roles** (with the Qbox role above the roles it gives), **Send Messages**, and **Create Private Threads** in the review and discussion channels.
+1. Give the bot **Manage Roles** (with the Guildhall role above the roles it gives), **Send Messages**, and **Create Private Threads** in the review and discussion channels.
 2. In the portal, open **Applications > Forms** and create a form: questions, review channel, reviewer roles, and roles to give on accept.
 3. Open **Applications > Panels**, create a panel for your applications channel, and press **Post in Discord**. You can also run `/applications panel`.
 4. Grant `applications.review` to staff who review every form, and `applications.manage` to those who set up forms.

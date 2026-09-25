@@ -46,11 +46,11 @@ administrators can do everything.
 - **Leave of absence:** members request leave; the request is posted in the staff log with Approve and Deny buttons, and appears under **Leave requests** in the portal. Approved leave starts on its start date: the member's status becomes "on leave", the optional leave role is added, and any open shift ends. Leave ends automatically (or early) and the role is removed.
 - **Shifts:** clock in and out, with a shift log and weekly totals (Monday to Sunday, UTC) and a leaderboard. Shifts end automatically after a set number of hours and are marked "auto".
 - **Staff log:** hires, promotions, demotions, removals, strikes, leave, and strike removals are posted to a channel.
-- **Roster message:** choose a channel and Qbox keeps one message listing every rank and member, updated after every change. If the message is deleted a new one is posted.
+- **Roster message:** choose a channel and Guildhall keeps one message listing every rank and member, updated after every change. If the message is deleted a new one is posted.
 
 ## Setup
 
-1. Give the bot **Manage Roles** and put the Qbox role above the rank roles and the leave role.
+1. Give the bot **Manage Roles** and put the Guildhall role above the rank roles and the leave role.
 2. In the portal, open **Staff > Ranks** and add your ranks, highest first, with their Discord roles.
 3. In **Staff > Settings**, choose the staff log channel, the roster channel, the leave role, the auto clock-out limit, and the longest leave allowed.
 4. Grant `staff.view`, `staff.manage`, and `staff.shifts` to the right roles.

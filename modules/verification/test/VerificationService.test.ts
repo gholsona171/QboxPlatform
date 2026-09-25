@@ -198,7 +198,7 @@ describe("VerificationService flows", () => {
   it("explains role problems", async () => {
     const { service, gateway, member } = await setup();
     gateway.failRoles = true;
-    await expect(service.verifyByButton(GUILD, member())).rejects.toThrow("Qbox role is above");
+    await expect(service.verifyByButton(GUILD, member())).rejects.toThrow("Guildhall role (the bot's role) is above");
   });
 
   it("kicks members who stay unverified and reports stats", async () => {

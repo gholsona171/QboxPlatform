@@ -1,6 +1,6 @@
 # Birthdays
 
-Members save their birthday, and Qbox posts a message and gives a birthday
+Members save their birthday, and Guildhall posts a message and gives a birthday
 role on the day, in each member's own time zone. Everything works from the
 portal (`/birthdays`) and from Discord (`/birthday`).
 
@@ -41,14 +41,14 @@ When **Require confirmation** is on, `/birthday set` shows the date with
 ## Features
 
 - **Dates:** month and day, optional year (turn off **Allow year** to never store years), optional "show age", and the member's time zone. February 29 birthdays are celebrated on February 28 in other years.
-- **Announcements:** a timer runs every 5 minutes. When it is the member's birthday in their time zone and the configured hour has passed, Qbox posts the message once for that year (`lastAnnouncedYear`). Changing the date resets this.
+- **Announcements:** a timer runs every 5 minutes. When it is the member's birthday in their time zone and the configured hour has passed, Guildhall posts the message once for that year (`lastAnnouncedYear`). Changing the date resets this.
 - **Message:** a template with `{user}` (mention), `{age}` (only when the member shows their age), and `{server}`, in an embed with your color. An optional role is pinged too.
 - **Birthday role:** given with the announcement and removed when the member's day ends in their time zone.
 - **Portal:** upcoming birthdays (next 30 days), a month calendar, all birthdays with search, your own birthday form, and settings with a test message.
 
 ## Setup
 
-1. Give the bot **Send Messages**, **Embed Links**, and **Manage Roles**. Put the Qbox role above the birthday role.
+1. Give the bot **Send Messages**, **Embed Links**, and **Manage Roles**. Put the Guildhall role above the birthday role.
 2. In the portal, open **Birthdays > Settings**, choose a channel and/or a birthday role, and turn birthdays on.
 3. Ask members to use `/birthday set` or the **My birthday** tab.
 

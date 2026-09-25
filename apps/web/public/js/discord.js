@@ -2,6 +2,7 @@ import { discordMutation, listDiscordRoles, listRoleMenus, loadDiscordFeature } 
 import { appPath } from "./config.js";
 import { channelLabel, channelSelect, checkbox, loadDirectory, numberField, roleName, roleSelect, selectField, textArea, textField } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 /** Each tab: label, API path for loading settings, and the renderer. */
 const DESCRIPTIONS = {
@@ -174,11 +175,11 @@ function rolesTab() {
   const rows = view.roles.map((role) => row([
     ["Role", `<span class="role-dot" style="background:${escapeHtml(role.color && role.color !== "#000000" ? role.color : "#99aab5")}"></span> ${escapeHtml(role.name)}`],
     ["Members", String(role.memberCount ?? "—")],
-    ["Used by Qbox", String(role.dependencyCount ?? 0)],
+    [`Used by ${BRAND.name}`, String(role.dependencyCount ?? 0)],
     ["", role.editable ? `<button class="button compact danger" data-d-action="delete-role" data-value="${escapeHtml(role.id)}" data-name="${escapeHtml(role.name)}">Delete</button>` : `<small class="microcopy">${escapeHtml(role.unavailableReason || (role.managed ? "Managed by an integration" : "Above the bot"))}</small>`],
   ]));
   return `<section class="grid editor-layout">
-    <div>${table(["Role", "Members", "Used by Qbox", ""], rows, "No roles found.")}</div>
+    <div>${table(["Role", "Members", `Used by ${BRAND.name}`, ""], rows, "No roles found.")}</div>
     <form class="card form-grid" data-d-form="role-create">
       <h3>Create a role</h3>
       ${textField("name", "Name", "", "", true)}

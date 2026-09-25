@@ -1,6 +1,7 @@
 import { listGuilds, loginUrl, selectGuild } from "./api.js";
 import { currentGuild, knownGuilds, session, signedIn } from "./session.js";
 import { escapeHtml, notify } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 /**
  * Server picker: the sidebar header shows the current server, the picker
@@ -49,7 +50,7 @@ function guildTags(guild) {
 function guildList() {
   const guilds = knownGuilds();
   if (!guilds.length) {
-    return `<div class="empty-state">No servers yet. Add Qbox to a server you are in, then refresh the list.</div>`;
+    return `<div class="empty-state">No servers yet. Add ${BRAND.name} to a server you are in, then refresh the list.</div>`;
   }
   const current = currentGuild()?.id;
   return `<ul class="guild-list">${guilds
@@ -63,7 +64,7 @@ function guildList() {
 function inviteButton(extraClass = "") {
   const url = session.account?.inviteUrl;
   if (typeof url !== "string" || !url.startsWith("https://discord.com/")) return "";
-  return `<a class="button ${extraClass}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Add Qbox to a server</a>`;
+  return `<a class="button ${extraClass}" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Add ${BRAND.name} to a server</a>`;
 }
 
 /* ---------- Sidebar header ---------- */
@@ -72,11 +73,11 @@ export function renderServerHeader() {
   const header = document.getElementById("serverHeader");
   const guild = currentGuild();
   if (!signedIn()) {
-    header.innerHTML = `<div class="brand"><div class="brand-mark">QB</div><div><strong>QboxPlatform</strong><span>Community control panel</span></div></div>`;
+    header.innerHTML = `<div class="brand"><div class="brand-mark">GH</div><div><strong>${BRAND.name}</strong><span>Community control panel</span></div></div>`;
     return;
   }
   if (!guild) {
-    header.innerHTML = `<div class="brand"><div class="brand-mark">QB</div><div><strong>QboxPlatform</strong><span>No server chosen</span></div></div>
+    header.innerHTML = `<div class="brand"><div class="brand-mark">GH</div><div><strong>${BRAND.name}</strong><span>No server chosen</span></div></div>
       <button type="button" class="button compact full" data-guild-picker>Choose a server</button>`;
     return;
   }
@@ -96,7 +97,7 @@ export function chooseServerView() {
     return `<section class="card sign-in-card">
       <div class="brand-mark large">QB</div>
       <h2>Sign in again to see your servers</h2>
-      <p class="microcopy">Your Discord sign-in needs to be refreshed before Qbox can list the servers you are in.</p>
+      <p class="microcopy">Your Discord sign-in needs to be refreshed before ${BRAND.name} can list the servers you are in.</p>
       <a class="button primary" href="${escapeHtml(loginUrl())}">Sign in with Discord</a>
     </section>`;
   }

@@ -4,6 +4,7 @@ import { MAX_HUBS, VoiceError, type VoiceRoomService } from "@qbox/voice-rooms";
 
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 import { errorOf, featureCall, parseInput as parse, routeParam, snowflakeSchema as snowflake } from "../features/routeHelpers.js";
+import { BRAND } from "@qbox/shared/brand";
 
 const isVoiceError = errorOf(VoiceError);
 const safe = <T>(operation: () => Promise<T>) => featureCall(operation, isVoiceError);
@@ -69,7 +70,7 @@ function registerVoiceRoutes(server: FastifyInstance, context: ApiFeatureContext
 
   server.delete("/api/v1/voice/rooms/:roomId", async (request) => {
     const identity = await guard(request, "voice.manage", { mutation: true });
-    await safe(() => voice.deleteRoom(context.guildId, routeParam(request, "roomId"), `Deleted by ${identity.displayName} via Qbox portal`));
+    await safe(() => voice.deleteRoom(context.guildId, routeParam(request, "roomId"), `Deleted by ${identity.displayName} via ${BRAND.name} portal`));
     return { success: true };
   });
 }

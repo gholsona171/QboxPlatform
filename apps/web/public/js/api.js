@@ -1,4 +1,5 @@
 import { appPath, liveUrl, staticHosting } from "./config.js";
+import { BRAND } from "./brand.js";
 
 const csrfCookieName = document.cookie.includes("__Host-qbox_csrf=") ? "__Host-qbox_csrf" : "qbox_csrf";
 
@@ -11,7 +12,7 @@ export async function loadHealth() {
     ]);
     return { available: true, live, ready };
   } catch {
-    return { available: false, message: "Discord or the Qbox API is not reachable right now." };
+    return { available: false, message: `Discord or the ${BRAND.name} API is not reachable right now.` };
   }
 }
 
@@ -184,8 +185,8 @@ function userMessage(code, fallback) {
     GUILD_REQUIRED: "Choose a server first.",
     DISCORD_GUILD_MEMBERSHIP_PENDING: "Membership screening is still pending.",
     OAUTH_STATE_INVALID: "OAuth state expired. Start Discord login again.",
-    DEPENDENCY_UNAVAILABLE: "Discord or the Qbox API is not reachable right now.",
+    DEPENDENCY_UNAVAILABLE: `Discord or the ${BRAND.name} API is not reachable right now.`,
     RESOURCE_CONFLICT: "This configuration changed in Discord or another browser while you were editing.",
   };
-  return messages[code] || fallback || "Discord or the Qbox API is not reachable right now.";
+  return messages[code] || fallback || `Discord or the ${BRAND.name} API is not reachable right now.`;
 }

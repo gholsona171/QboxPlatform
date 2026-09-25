@@ -6,6 +6,7 @@ import {
   type Guild,
   type Role,
 } from "discord.js";
+import { BRAND } from "@qbox/shared/brand";
 import type {
   DiscordChannelResource,
   DiscordRoleResource,
@@ -52,9 +53,9 @@ export class DiscordRoleManagementGateway implements RoleManagementGateway {
       ...(input.color === undefined ? {} : { color: normalizeColor(input.color) }),
       hoist: input.hoist ?? false,
       mentionable: input.mentionable ?? false,
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     });
-    if (input.position !== undefined) await role.setPosition(input.position, { reason: `Qbox role management by ${input.actor.type}:${input.actor.id}` });
+    if (input.position !== undefined) await role.setPosition(input.position, { reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}` });
     return mapRole(guild.id, role, await this.botHighestPosition(guild));
   }
 
@@ -67,9 +68,9 @@ export class DiscordRoleManagementGateway implements RoleManagementGateway {
       ...(input.color === undefined ? {} : { color: normalizeColor(input.color) }),
       ...(input.hoist === undefined ? {} : { hoist: input.hoist }),
       ...(input.mentionable === undefined ? {} : { mentionable: input.mentionable }),
-      reason: `Qbox role management by ${input.actor.type}:${input.actor.id}`,
+      reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`,
     });
-    if (input.position !== undefined) await edited.setPosition(input.position, { reason: `Qbox role management by ${input.actor.type}:${input.actor.id}` });
+    if (input.position !== undefined) await edited.setPosition(input.position, { reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}` });
     return mapRole(guild.id, edited, await this.botHighestPosition(guild));
   }
 
@@ -77,14 +78,14 @@ export class DiscordRoleManagementGateway implements RoleManagementGateway {
     const guild = await this.guild(input.guildId);
     const role = await guild.roles.fetch(input.roleId);
     if (!role) throw new Error("Role was not found.");
-    await role.delete(`Qbox role management by ${input.actor.type}:${input.actor.id}`);
+    await role.delete(`${BRAND.name} role management by ${input.actor.type}:${input.actor.id}`);
   }
 
   public async moveRole(input: RoleMoveInput): Promise<DiscordRoleResource> {
     const guild = await this.guild(input.guildId);
     const role = await guild.roles.fetch(input.roleId);
     if (!role) throw new Error("Role was not found.");
-    const moved = await role.setPosition(input.position, { reason: `Qbox role management by ${input.actor.type}:${input.actor.id}` });
+    const moved = await role.setPosition(input.position, { reason: `${BRAND.name} role management by ${input.actor.type}:${input.actor.id}` });
     return mapRole(guild.id, moved, await this.botHighestPosition(guild));
   }
 

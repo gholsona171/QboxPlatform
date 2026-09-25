@@ -1,13 +1,14 @@
 import { SlashCommandBuilder } from "discord.js";
 import { RoleManagementError, type RoleManagementService } from "@qbox/discord-roles";
 import type { CommandExecutionContext, DiscordCommand } from "./DiscordCommand.js";
+import { BRAND } from "@qbox/shared/brand";
 
 export class RolesCommand implements DiscordCommand {
   public readonly type = "chat-input" as const;
 
   public readonly data = new SlashCommandBuilder()
     .setName("roles")
-    .setDescription("Manage Discord roles through Qbox role-management rules.")
+    .setDescription(`Manage Discord roles through ${BRAND.name} role-management rules.`)
     .addSubcommand((sub) => sub.setName("list").setDescription("List manageable Discord roles."))
     .addSubcommand((sub) =>
       sub.setName("inspect").setDescription("Inspect a Discord role.").addRoleOption((option) => option.setName("role").setDescription("Role.").setRequired(true)),
@@ -47,12 +48,12 @@ export class RolesCommand implements DiscordCommand {
     )
     .addSubcommand((sub) => sub.setName("hierarchy").setDescription("Inspect bot role-management capability."))
     .addSubcommand((sub) =>
-      sub.setName("dependencies").setDescription("List Qbox feature dependencies for a role.").addRoleOption((option) => option.setName("role").setDescription("Role.").setRequired(true)),
+      sub.setName("dependencies").setDescription(`List ${BRAND.name} feature dependencies for a role.`).addRoleOption((option) => option.setName("role").setDescription("Role.").setRequired(true)),
     )
     .addSubcommand((sub) =>
       sub
         .setName("replace-dependency")
-        .setDescription("Replace Qbox references from one role to another.")
+        .setDescription(`Replace ${BRAND.name} references from one role to another.`)
         .addRoleOption((option) => option.setName("old-role").setDescription("Existing role.").setRequired(true))
         .addRoleOption((option) => option.setName("new-role").setDescription("Replacement role.").setRequired(true)),
     );
@@ -94,7 +95,7 @@ export class RolesCommand implements DiscordCommand {
       content: roles
         .filter((role) => role.id !== role.guildId)
         .slice(0, 25)
-        .map((role) => `${role.assignable ? "OK" : "BLOCKED"} <@&${role.id}> position ${role.position}${role.dependencyCount ? `, ${role.dependencyCount} Qbox dependencies` : ""}${role.unavailableReason ? ` - ${role.unavailableReason}` : ""}`)
+        .map((role) => `${role.assignable ? "OK" : "BLOCKED"} <@&${role.id}> position ${role.position}${role.dependencyCount ? `, ${role.dependencyCount} ${BRAND.name} dependencies` : ""}${role.unavailableReason ? ` - ${role.unavailableReason}` : ""}`)
         .join("\n") || "No Discord roles were found.",
     });
   }
@@ -166,7 +167,7 @@ export class RolesCommand implements DiscordCommand {
 
   private async dependencies(context: CommandExecutionContext): Promise<void> {
     const dependencies = await this.service().listDependencies(this.guildId(context), context.options.requiredRole("role").id);
-    await context.editReply({ content: dependencies.map((dependency) => `${dependency.feature}: ${dependency.label} (${dependency.field})`).join("\n") || "No Qbox dependencies reference that role." });
+    await context.editReply({ content: dependencies.map((dependency) => `${dependency.feature}: ${dependency.label} (${dependency.field})`).join("\n") || `No ${BRAND.name} dependencies reference that role.` });
   }
 
   private async replaceDependency(context: CommandExecutionContext): Promise<void> {
@@ -177,7 +178,7 @@ export class RolesCommand implements DiscordCommand {
       actor: { type: "discord-user", id: context.interaction.user.id },
       source: "DISCORD",
     });
-    await context.editReply({ content: `Replaced ${changed} Qbox role dependency record(s).` });
+    await context.editReply({ content: `Replaced ${changed} ${BRAND.name} role dependency record(s).` });
   }
 
   private service(): RoleManagementService {

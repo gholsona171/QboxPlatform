@@ -67,7 +67,7 @@ The portal shows the server picker when it sees `GUILD_REQUIRED`.
   `null`. `membership.guildId` is `null` in that case too.
 - `guilds` are the servers the member and the bot share. `canManage` is true
   for the Discord owner, Administrator or Manage Server members, and anyone
-  holding any Qbox permission in that server.
+  holding any Guildhall permission in that server.
 - `reauthRequired` is true when the stored OAuth grant predates the `guilds`
   scope; `guilds` is then empty and the member must sign in again.
 - `?refresh=1` re-verifies membership in the current server (only when the

@@ -23,6 +23,10 @@
     "./time-zones": {
       "types": "./dist/timeZones.d.ts",
       "import": "./dist/timeZones.js"
+    },
+    "./brand": {
+      "types": "./dist/brand.d.ts",
+      "import": "./dist/brand.js"
     }
   }
 }

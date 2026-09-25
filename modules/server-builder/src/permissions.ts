@@ -2,6 +2,7 @@ import { DISCORD_PERMISSION } from "@qbox/shared/discord-rest";
 
 import type { BuilderBlueprint, BuilderCategory, BuilderChannel, BuilderAccess, BuilderOverwrite, BuilderPermission } from "./types.js";
 import { BOT, EVERYONE } from "./types.js";
+import { BRAND } from "@qbox/shared/brand";
 
 /** Discord bit for each builder permission name. */
 export const PERMISSION_BITS: Readonly<Record<BuilderPermission, bigint>> = {
@@ -153,7 +154,7 @@ export function describeAccess(blueprint: BuilderBlueprint): Readonly<Record<str
         ? roles.filter((overwrite) => overwrite.allow.includes(postPermission)).map((overwrite) => overwrite.target)
         : viewers;
       const see = `${label(viewers)}${blockedViewers.length ? ` (not ${label(blockedViewers)})` : ""}`;
-      const post = postBlocked && posters.length === 0 ? (overwrites.some((overwrite) => overwrite.target === BOT) ? "Qbox only" : "admins only") : label(posters);
+      const post = postBlocked && posters.length === 0 ? (overwrites.some((overwrite) => overwrite.target === BOT) ? `${BRAND.name} only` : "admins only") : label(posters);
       result[channel.key] = { see, post: VOICE_TYPES.has(channel.type) ? `join: ${post}` : post };
     }
   return result;

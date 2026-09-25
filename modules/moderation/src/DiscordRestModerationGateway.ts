@@ -1,6 +1,7 @@
 import { DISCORD_PERMISSION, colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
 
 import type { HierarchyCheck, ModerationEmbed, ModerationGateway } from "./types.js";
+import { BRAND } from "@qbox/shared/brand";
 
 interface ApiGuild { readonly owner_id: string; readonly roles: readonly ApiRole[] }
 interface ApiRole { readonly id: string; readonly position: number }
@@ -34,7 +35,7 @@ export class DiscordRestModerationGateway implements ModerationGateway {
     const bot = await this.member(guildId, botId);
     const targetTop = topPosition(guild, targetRoleIds);
     if (topPosition(guild, bot?.roles ?? []) <= targetTop)
-      return { allowed: false, reason: "My highest role must be above theirs. Move the Qbox role higher in Server Settings > Roles.", targetRoleIds, targetIsMember: true };
+      return { allowed: false, reason: `My highest role must be above theirs. Move the ${BRAND.name} role (the bot's role) higher in Server Settings > Roles.`, targetRoleIds, targetIsMember: true };
     if (moderatorId && moderatorId !== guild.owner_id) {
       const moderator = await this.member(guildId, moderatorId);
       if (topPosition(guild, moderator?.roles ?? []) <= targetTop)

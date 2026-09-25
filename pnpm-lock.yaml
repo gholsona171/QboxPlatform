@@ -177,9 +177,17 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
-  modules/discord-community: {}
+  modules/discord-community:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
-  modules/discord-roles: {}
+  modules/discord-roles:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   modules/fivem:
     dependencies:
@@ -217,7 +225,11 @@ importers:
         specifier: workspace:*
         version: link:../../packages/shared
 
-  modules/role-menus: {}
+  modules/role-menus:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
 
   modules/scheduled-messages:
     dependencies:

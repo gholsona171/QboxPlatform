@@ -20,6 +20,7 @@ import type {
   TicketTranscriptFile,
 } from "./types.js";
 import { TICKET_PRIORITIES } from "./types.js";
+import { BRAND } from "@qbox/shared/brand";
 import {
   TicketError,
   channelName,
@@ -775,7 +776,7 @@ export class TicketService {
 }
 
 export function systemActor(): TicketActor {
-  return { userId: "0", displayName: "Qbox", roleIds: [], elevated: true, source: "SYSTEM" };
+  return { userId: "0", displayName: BRAND.name, roleIds: [], elevated: true, source: "SYSTEM" };
 }
 
 /** Categories a panel offers: its chosen list in order, or every enabled category. */
@@ -820,7 +821,7 @@ function closeSummary(ticket: Ticket): string {
     `**Ticket #${ticket.number}**${ticket.categoryName ? ` - ${ticket.categoryName}` : ""}`,
     `Opened by <@${ticket.openerId}>`,
     ticket.claimedById ? `Handled by <@${ticket.claimedById}>` : "Unclaimed",
-    `Closed by ${ticket.closedById && ticket.closedById !== "0" ? `<@${ticket.closedById}>` : "Qbox"}`,
+    `Closed by ${ticket.closedById && ticket.closedById !== "0" ? `<@${ticket.closedById}>` : BRAND.name}`,
     ...(ticket.closeReason ? [`Reason: ${ticket.closeReason}`] : []),
   ].join("\n");
 }

@@ -1,3 +1,5 @@
+> The product is called **Guildhall**. "Qbox" and "QboxPlatform" below are the code name, still used for package, service, and repository names.
+
 # QboxPlatform Roadmap
 
 ## Status and estimation notes
