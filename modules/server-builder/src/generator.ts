@@ -7,6 +7,7 @@ import type {
   BuilderChannel,
   BuilderChannelPurpose,
   BuilderChannelType,
+  BuilderForumSetup,
   BuilderOverwrite,
   BuilderPermission,
   BuilderRole,
@@ -15,7 +16,7 @@ import type {
   BuilderTemplate,
 } from "./types.js";
 import { BUILDER_SECTIONS, EVERYONE } from "./types.js";
-import { channelSlug, isTextType, keyOf, validateAnswers } from "./validation.js";
+import { channelSlug, isForumType, isTextType, keyOf, validateAnswers } from "./validation.js";
 
 const DEFAULT_STAFF = ["Owner", "Admin", "Senior Moderator", "Moderator", "Trial Moderator"];
 const STAFF_COLORS = ["#E74C3C", "#E67E22", "#F1C40F", "#2ECC71", "#1ABC9C", "#3498DB", "#9B59B6"];
@@ -43,6 +44,59 @@ const DEPARTMENT_EMOJI: readonly (readonly [RegExp, string])[] = [
   [/design|art|creative/i, "🎨"],
 ];
 
+const READ_ME = "Read me first";
+const HOW_TO_POST = "Start a new post with the button above. Give it a clear title, pick a tag, and keep one topic per post.";
+
+/** Ready-made forum setups by channel name. */
+const FORUM_SETUPS: Readonly<Record<string, BuilderForumSetup>> = {
+  help: {
+    guidelines: "One post per problem. Say what you tried and include screenshots.",
+    tags: [{ name: "Question", emoji: "❓" }, { name: "Solved", emoji: "✅" }, { name: "Bug", emoji: "🐛" }],
+    defaultReactionEmoji: "👍",
+    firstPost: { title: READ_ME, content: `${HOW_TO_POST} Say what you tried and include screenshots. When your problem is fixed, add the Solved tag.`, pin: true },
+  },
+  feedback: {
+    guidelines: "Tell us what to improve. One idea per post.",
+    tags: [{ name: "Idea", emoji: "💡" }, { name: "Bug", emoji: "🐛" }, { name: "Praise", emoji: "🎉" }],
+    defaultReactionEmoji: "👍",
+    firstPost: { title: READ_ME, content: `${HOW_TO_POST} Ideas, bugs, and praise are all welcome. Vote with 👍 on posts you agree with.`, pin: true },
+  },
+  "character-bios": {
+    guidelines: "One post per character. Name, job, and backstory.",
+    tags: [{ name: "Civilian", emoji: "🧑" }, { name: "Police", emoji: "🚓" }, { name: "EMS", emoji: "🚑" }, { name: "Criminal", emoji: "🕶️" }],
+    defaultReactionEmoji: "👋",
+    firstPost: { title: READ_ME, content: `${HOW_TO_POST} Use your character's name as the title and tag their side of the city.`, pin: true },
+  },
+  "bug-reports": {
+    guidelines: "One bug per post. What happened, what you expected, and how to repeat it.",
+    tags: [{ name: "Open", emoji: "🔴" }, { name: "Fixed", emoji: "✅" }, { name: "Cannot reproduce", emoji: "❔" }],
+    defaultReactionEmoji: "👀",
+    firstPost: { title: READ_ME, content: `${HOW_TO_POST} Say what happened, what you expected, and the steps to repeat it. Staff update the tag when it is fixed.`, pin: true },
+  },
+  screenshots: { guidelines: "Photos and screenshots only.", tags: [{ name: "Screenshot", emoji: "📷" }, { name: "Event", emoji: "🎉" }], defaultReactionEmoji: "❤️" },
+  clips: { guidelines: "Video clips only.", tags: [{ name: "Clip", emoji: "🎬" }, { name: "Funny", emoji: "😂" }, { name: "Highlight", emoji: "🔥" }], defaultReactionEmoji: "🔥" },
+  art: { guidelines: "Share your creations.", tags: [{ name: "Art", emoji: "🎨" }, { name: "Work in progress", emoji: "✏️" }], defaultReactionEmoji: "❤️" },
+};
+
+/**
+ * Sensible forum setup for a channel: a ready-made one by name, or a plain
+ * one. Media channels need an attachment in every post, so they get no first post.
+ */
+export function defaultForumSetup(name: string, type: BuilderChannelType = "FORUM"): BuilderForumSetup {
+  const ready = FORUM_SETUPS[channelSlug(name)];
+  const setup: BuilderForumSetup = ready ?? {
+    guidelines: "One topic per post. Give it a clear title.",
+    tags: [{ name: "Question", emoji: "❓" }, { name: "Discussion", emoji: "💬" }, { name: "Solved", emoji: "✅" }],
+    defaultReactionEmoji: "👍",
+    firstPost: { title: READ_ME, content: HOW_TO_POST, pin: true },
+  };
+  if (type === "MEDIA") {
+    const { firstPost: _firstPost, ...rest } = setup;
+    return rest;
+  }
+  return setup;
+}
+
 /** Answers with every section on, used as the base for templates. */
 function allOn(): Record<BuilderSection, boolean> {
   return Object.fromEntries(BUILDER_SECTIONS.map((section) => [section, section !== "ageRestricted"])) as Record<BuilderSection, boolean>;
@@ -51,7 +105,7 @@ function allOn(): Record<BuilderSection, boolean> {
 function answers(serverType: BuilderServerType, serverName: string, overrides: Partial<BuilderAnswers>, off: readonly BuilderSection[]): BuilderAnswers {
   const include = allOn();
   for (const section of off) include[section] = false;
-  return { serverType, serverName, staffRanks: DEFAULT_STAFF, departments: [], include, voiceLounges: 3, useMediaChannels: false, emojiCategories: true, ...overrides };
+  return { serverType, serverName, staffRanks: DEFAULT_STAFF, departments: [], staffAccess: "ALL", include, voiceLounges: 3, useMediaChannels: false, emojiCategories: true, ...overrides };
 }
 
 /** Ready-made answer sets. */
@@ -129,6 +183,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
       overwrites: options.overwrites ?? [],
       ...(options.topic ? { topic: options.topic } : {}),
       ...(options.purpose ? { purpose: options.purpose } : {}),
+      ...(isForumType(type) ? { forum: defaultForumSetup(finalName, type) } : {}),
     };
   };
   const categories: BuilderCategory[] = [];
@@ -276,7 +331,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
       channel("TEXT", `${slug}-training`, { topic: `${department.name} training.` }),
       channel("VOICE", `${department.name} ${fivem ? "Radio" : "Room"}`),
       channel("VOICE", `${department.name} Briefing Room`),
-    ], PRESETS.DEPARTMENT_ONLY(department.key));
+    ], PRESETS.DEPARTMENT_ONLY(department.key, input.staffAccess === "NONE" ? [] : staffKeys));
   }
 
   /* Staff. */

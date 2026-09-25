@@ -3,6 +3,8 @@ export {
   BUILDER_LIMITS,
   BuilderError,
   channelSlug,
+  isEmoji,
+  isForumType,
   keyOf,
   normalizeBlueprint,
   summarize,
@@ -11,7 +13,7 @@ export {
   type BuilderErrorCode,
 } from "./validation.js";
 export { PERMISSION_BITS, PRESETS, describeAccess, effectiveOverwrites, mergeOverwrites, permissionBits } from "./permissions.js";
-export { BUILDER_TEMPLATES, generateBlueprint, templateFor } from "./generator.js";
+export { BUILDER_TEMPLATES, defaultForumSetup, generateBlueprint, templateFor } from "./generator.js";
 export { linkLabel, linkOptions } from "./links.js";
 export {
   BuilderService,

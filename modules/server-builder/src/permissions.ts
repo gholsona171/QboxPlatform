@@ -80,10 +80,11 @@ export const PRESETS = {
     ...staffKeys.map((key) => ({ target: key, allow: [...CHAT], deny: [] })),
     { target: BOT, allow: [...BOT_WRITE], deny: [] },
   ],
-  /** Hidden from everyone except one department role. */
-  DEPARTMENT_ONLY: (roleKey: string): readonly BuilderOverwrite[] => [
+  /** Hidden from everyone except one department role, plus any staff ranks given. */
+  DEPARTMENT_ONLY: (roleKey: string, staffKeys: readonly string[] = []): readonly BuilderOverwrite[] => [
     { target: EVERYONE, allow: [], deny: ["ViewChannel"] },
     { target: roleKey, allow: [...CHAT], deny: [] },
+    ...staffKeys.map((key) => ({ target: key, allow: [...CHAT], deny: [] })),
     { target: BOT, allow: [...BOT_WRITE], deny: [] },
   ],
   /** Hidden from @everyone until they have the Verified role. */
@@ -128,7 +129,11 @@ export function effectiveOverwrites(category: BuilderCategory, channel: BuilderC
 
 const VOICE_TYPES = new Set(["VOICE", "STAGE"]);
 
-/** Plain "who can see / who can post" text for every channel, keyed by channel key. */
+/**
+ * Plain "who can see / who can post" text for every channel, keyed by channel
+ * key. Works for any overwrites, including ones edited by hand: a role that
+ * is denied a permission shows as "(not Role)".
+ */
 export function describeAccess(blueprint: BuilderBlueprint): Readonly<Record<string, BuilderAccess>> {
   const names = new Map(blueprint.roles.map((role) => [role.key, role.name]));
   const staff = blueprint.roles.filter((role) => role.purpose === "staff").map((role) => role.key);
@@ -139,23 +144,31 @@ export function describeAccess(blueprint: BuilderBlueprint): Readonly<Record<str
     const parts = [...(allStaff ? ["staff"] : []), ...rest.map((key) => (key === EVERYONE ? "everyone" : names.get(key) ?? key))];
     return parts.join(", ") || "admins only";
   };
+  const withExceptions = (who: readonly string[], not: readonly string[]) => `${label(who)}${not.length ? ` (not ${label(not)})` : ""}`;
   const result: Record<string, BuilderAccess> = {};
   for (const category of blueprint.categories)
     for (const channel of category.channels) {
+      const voice = VOICE_TYPES.has(channel.type);
       const overwrites = effectiveOverwrites(category, channel);
       const everyone = overwrites.find((overwrite) => overwrite.target === EVERYONE);
       const roles = overwrites.filter((overwrite) => overwrite.target !== EVERYONE && overwrite.target !== BOT);
       const hidden = everyone?.deny.includes("ViewChannel") ?? false;
       const viewers = hidden ? roles.filter((overwrite) => overwrite.allow.includes("ViewChannel")).map((overwrite) => overwrite.target) : [EVERYONE];
       const blockedViewers = roles.filter((overwrite) => overwrite.deny.includes("ViewChannel")).map((overwrite) => overwrite.target);
-      const postPermission: BuilderPermission = VOICE_TYPES.has(channel.type) ? "Connect" : "SendMessages";
+      const postPermission: BuilderPermission = voice ? "Connect" : "SendMessages";
       const postBlocked = everyone?.deny.includes(postPermission) ?? false;
+      const deniesPost = (overwrite: BuilderOverwrite) => overwrite.deny.includes(postPermission) || overwrite.deny.includes("ViewChannel");
       const posters = postBlocked
-        ? roles.filter((overwrite) => overwrite.allow.includes(postPermission)).map((overwrite) => overwrite.target)
-        : viewers;
-      const see = `${label(viewers)}${blockedViewers.length ? ` (not ${label(blockedViewers)})` : ""}`;
-      const post = postBlocked && posters.length === 0 ? (overwrites.some((overwrite) => overwrite.target === BOT) ? `${BRAND.name} only` : "admins only") : label(posters);
-      result[channel.key] = { see, post: VOICE_TYPES.has(channel.type) ? `join: ${post}` : post };
+        ? roles.filter((overwrite) => overwrite.allow.includes(postPermission) && !overwrite.deny.includes("ViewChannel")).map((overwrite) => overwrite.target)
+        : hidden
+          ? roles.filter((overwrite) => overwrite.allow.includes("ViewChannel") && !deniesPost(overwrite)).map((overwrite) => overwrite.target)
+          : [EVERYONE];
+      const blockedPosters = postBlocked || hidden ? [] : roles.filter(deniesPost).map((overwrite) => overwrite.target);
+      const see = withExceptions(viewers, hidden ? [] : blockedViewers);
+      const post = postBlocked && posters.length === 0
+        ? (overwrites.some((overwrite) => overwrite.target === BOT) ? `${BRAND.name} only` : "admins only")
+        : withExceptions(posters, blockedPosters);
+      result[channel.key] = { see, post: voice ? `join: ${post}` : post };
     }
   return result;
 }

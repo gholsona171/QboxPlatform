@@ -26,6 +26,8 @@ function gateway(): BuilderGateway {
     createRole: async () => String(next++),
     setRolePositions: async () => undefined,
     createChannel: async () => String(next++),
+    createForumPost: async () => ({ threadId: String(next++) }),
+    pinForumPost: async () => undefined,
     deleteChannel: async () => undefined,
     deleteRole: async () => undefined,
   };
@@ -85,6 +87,36 @@ describe("server builder routes", () => {
     const invalid = await server.inject(json("PUT", "/api/v1/builder/draft", { answers, blueprint: broken, expectedRevision: 2 }));
     expect(invalid.statusCode).toBe(400);
     expect(invalid.json().errors[0].message).toContain("not in the blueprint");
+  });
+
+  it("accepts edited access, forum setup, and the staff access answer", async () => {
+    const { server } = setup();
+    const { staffAccess: _staffAccess, ...legacy } = templateFor("FIVEM_RP").answers;
+    const saved = (await server.inject(json("POST", "/api/v1/builder/generate", { answers: legacy, save: true, expectedRevision: 0 }))).json().data;
+    expect(saved.answers.staffAccess).toBe("ALL");
+    const help = saved.blueprint.categories.flatMap((category: { channels: { name: string; type: string }[] }) => category.channels).find((channel: { name: string }) => channel.name === "help");
+    expect(help.forum.firstPost.pin).toBe(true);
+    const edited = {
+      ...saved.blueprint,
+      categories: saved.blueprint.categories.map((category: { channels: { name: string; overwrites: unknown[]; forum?: unknown }[] }) => ({
+        ...category,
+        channels: category.channels.map((channel) => channel.name === "help"
+          ? {
+            ...channel,
+            overwrites: [{ target: "@everyone", allow: [], deny: ["ViewChannel"] }, { target: "dept-ems", allow: ["ViewChannel", "SendMessages"], deny: [] }],
+            forum: { guidelines: "Be kind.", tags: [{ name: "Question", emoji: "❓" }, { name: "Custom", emoji: "pepe:123456789012345678" }], defaultReactionEmoji: "👍", firstPost: { title: "Hi", content: "Read this.", pin: false } },
+          }
+          : channel),
+      })),
+    };
+    const answers = { ...legacy, staffAccess: "NONE" };
+    const updated = await server.inject(json("PUT", "/api/v1/builder/draft", { answers, blueprint: edited, expectedRevision: 1 }));
+    expect(updated.statusCode).toBe(200);
+    expect(updated.json().data.answers.staffAccess).toBe("NONE");
+    expect(updated.json().data.access.help).toEqual({ see: "Verified, EMS", post: "Verified, EMS" });
+    const tooMany = { ...edited, categories: edited.categories.map((category: { channels: { name: string; forum?: { tags: unknown[] } }[] }) => ({ ...category, channels: category.channels.map((channel) => channel.name === "help" ? { ...channel, forum: { ...channel.forum, tags: Array.from({ length: 21 }, (_, index) => ({ name: `t${index}` })) } } : channel) })) };
+    expect((await server.inject(json("PUT", "/api/v1/builder/draft", { answers, blueprint: tooMany, expectedRevision: 2 }))).statusCode).toBe(400);
+    expect((await server.inject(json("PUT", "/api/v1/builder/draft", { answers: { ...answers, staffAccess: "SOME" }, blueprint: edited, expectedRevision: 2 }))).statusCode).toBe(400);
   });
 
   it("starts a run in the background, reports progress, and undoes it", async () => {

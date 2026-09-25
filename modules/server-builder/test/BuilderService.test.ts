@@ -16,6 +16,7 @@ import {
   type ChannelCreateInput,
   type ExistingChannel,
   type ExistingRole,
+  type ForumPostInput,
   type RoleCreateInput,
 } from "../src/index.js";
 
@@ -31,6 +32,10 @@ class MemoryGateway implements BuilderGateway {
   public rejectTypes = new Set<number>();
   public deleted: string[] = [];
   public positions: { id: string; position: number }[] = [];
+  public posts: { channelId: string; threadId: string; input: ForumPostInput }[] = [];
+  public pinned: string[] = [];
+  public failPosts = false;
+  public failPins = false;
   private next = 1000;
 
   public async listRoles() { return [...this.roles]; }
@@ -48,6 +53,16 @@ class MemoryGateway implements BuilderGateway {
     const id = this.id();
     this.channels.push({ id, name: input.name, type: input.type, ...(input.parentId ? { parentId: input.parentId } : {}), input });
     return id;
+  }
+  public async createForumPost(channelId: string, input: ForumPostInput) {
+    if (this.failPosts) throw new Error("Missing Access");
+    const threadId = this.id();
+    this.posts.push({ channelId, threadId, input });
+    return { threadId };
+  }
+  public async pinForumPost(threadId: string) {
+    if (this.failPins) throw new Error("Cannot pin");
+    this.pinned.push(threadId);
   }
   public async deleteChannel(channelId: string) {
     this.deleted.push(channelId);
@@ -83,7 +98,10 @@ const small: BuilderBlueprint = {
       channels: [
         { key: "news", name: "news", type: "ANNOUNCEMENT", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: PRESETS.READ_ONLY(["staff-admin"]), purpose: "announcements" },
         { key: "general", name: "general", type: "TEXT", topic: "Chat", slowmodeSeconds: 5, nsfw: false, userLimit: 0, overwrites: [] },
-        { key: "help", name: "help", type: "FORUM", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
+        {
+          key: "help", name: "help", type: "FORUM", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [],
+          forum: { guidelines: "One post per problem.", tags: [{ name: "Question", emoji: "❓" }, { name: "Solved" }], defaultReactionEmoji: "👍", firstPost: { title: "Read me first", content: "How to post.", pin: true } },
+        },
         { key: "stage", name: "Stage", type: "STAGE", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
       ],
     },
@@ -118,6 +136,11 @@ describe("BuilderService builds", () => {
     await settle();
     const detail = await service.run(GUILD, run.id);
     expect(detail.run).toMatchObject({ status: "SUCCEEDED", done: 10, skipped: 0, failed: 0 });
+    const help = gateway.channels.find((channel) => channel.name === "help");
+    expect(help?.input).toMatchObject({ type: 15, topic: "One post per problem.", tags: [{ name: "Question", emoji: "❓" }, { name: "Solved" }], defaultReactionEmoji: "👍" });
+    expect(gateway.posts).toEqual([{ channelId: help?.id, threadId: expect.any(String), input: { title: "Read me first", content: "How to post." } }]);
+    expect(gateway.pinned).toEqual([gateway.posts[0]?.threadId]);
+    expect(detail.items.find((item) => item.name === "help")).toMatchObject({ status: "CREATED", note: "First post pinned." });
     expect(gateway.positions.map((item) => item.position)).toEqual([9, 8]);
     const modLog = gateway.channels.find((channel) => channel.name === "mod-log");
     const logs = gateway.channels.find((channel) => channel.name === "LOGS");
@@ -162,6 +185,32 @@ describe("BuilderService builds", () => {
     expect(types).toMatchObject({ news: 0, help: 0, Stage: 2 });
     const notes = (await service.run(GUILD, run.id)).items.filter((item) => item.note?.startsWith("Made as")).map((item) => item.name);
     expect(notes).toEqual(["news", "help", "Stage"]);
+    expect(gateway.posts).toEqual([]);
+    expect(gateway.channels.find((channel) => channel.name === "help")?.input?.tags).toBeUndefined();
+  });
+
+  it("notes a first post that could not be created or pinned without failing the channel", async () => {
+    const failing = await setup();
+    failing.gateway.failPosts = true;
+    const run = await failing.service.startRun(GUILD, { mode: "ADD", links: [] }, starter);
+    await failing.settle();
+    const detail = await failing.service.run(GUILD, run.id);
+    expect(detail.run).toMatchObject({ status: "SUCCEEDED", failed: 0 });
+    expect(detail.items.find((item) => item.name === "help")).toMatchObject({ status: "CREATED", note: "First post could not be created: Missing Access" });
+    const unpinned = await setup();
+    unpinned.gateway.failPins = true;
+    const second = await unpinned.service.startRun(GUILD, { mode: "ADD", links: [] }, starter);
+    await unpinned.settle();
+    expect((await unpinned.service.run(GUILD, second.id)).items.find((item) => item.name === "help")?.note).toBe("First post created but could not be pinned: Cannot pin");
+    expect(unpinned.gateway.posts).toHaveLength(1);
+  });
+
+  it("gives an existing forum no first post when adding to a server", async () => {
+    const { service, gateway, settle } = await setup();
+    gateway.channels.push({ id: "600000000000000009", name: "help", type: 15 });
+    await service.startRun(GUILD, { mode: "ADD", links: [] }, starter);
+    await settle();
+    expect(gateway.posts).toEqual([]);
   });
 
   it("keeps going on failures and marks the run PARTIAL", async () => {
@@ -251,5 +300,27 @@ describe("DiscordRestBuilderGateway", () => {
     expect(await gateway.botStatus(GUILD)).toEqual({ userId: BOT_ID, permissions: 1024n | 268435472n, topRolePosition: 4, highestRolePosition: 7, community: true });
     await expect(gateway.deleteChannel("1", "undo")).resolves.toBeUndefined();
     expect(await gateway.createChannel(GUILD, { name: "x", type: 0, overwrites: [] }, "r")).toBe("42");
+  });
+
+  it("sends forum tags, the default reaction, and creates and pins the first post", async () => {
+    const calls: { method: string; route: string; body: unknown }[] = [];
+    const rest = {
+      get: async () => ({}),
+      post: async (route: string, options?: { body?: unknown }) => { calls.push({ method: "POST", route, body: options?.body }); return { id: "77" }; },
+      patch: async (route: string, options?: { body?: unknown }) => { calls.push({ method: "PATCH", route, body: options?.body }); return undefined; },
+      put: async () => undefined,
+      delete: async () => undefined,
+    };
+    const gateway = new DiscordRestBuilderGateway(rest);
+    await gateway.createChannel(GUILD, { name: "help", type: 15, overwrites: [], topic: "Rules", tags: [{ name: "Question", emoji: "❓" }, { name: "Custom", emoji: "pepe:123456789012345678" }, { name: "Plain" }], defaultReactionEmoji: "👍" }, "r");
+    expect(calls[0]?.body).toMatchObject({
+      topic: "Rules",
+      available_tags: [{ name: "Question", moderated: false, emoji_name: "❓", emoji_id: null }, { name: "Custom", moderated: false, emoji_id: "123456789012345678", emoji_name: null }, { name: "Plain", moderated: false }],
+      default_reaction_emoji: { emoji_name: "👍", emoji_id: null },
+    });
+    expect(await gateway.createForumPost("77", { title: "Read me", content: "Hi" }, "r")).toEqual({ threadId: "77" });
+    expect(calls[1]).toEqual({ method: "POST", route: "/channels/77/threads", body: { name: "Read me", message: { content: "Hi" }, applied_tags: [] } });
+    await gateway.pinForumPost("77", "r");
+    expect(calls[2]).toEqual({ method: "PATCH", route: "/channels/77", body: { flags: 2 } });
   });
 });

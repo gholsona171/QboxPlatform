@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   BUILDER_LIMITS,
   BUILDER_TEMPLATES,
+  defaultForumSetup,
   generateBlueprint,
   linkOptions,
   summarize,
@@ -77,9 +78,41 @@ describe("generateBlueprint", () => {
     expect(textMedia).toMatchObject({ type: "TEXT", slowmodeSeconds: 10 });
   });
 
+  it("lets staff into department channels unless staffAccess is NONE", () => {
+    const base = templateFor("FIVEM_RP").answers;
+    const staffKeys = generateBlueprint(base).roles.filter((role) => role.purpose === "staff").map((role) => role.key);
+    const ems = (blueprint: BuilderBlueprint) => blueprint.categories.find((category) => category.name.includes("EMS"));
+    const all = ems(generateBlueprint({ ...base, staffAccess: "ALL" }));
+    for (const key of staffKeys) expect(all?.overwrites.find((overwrite) => overwrite.target === key)?.allow).toEqual(expect.arrayContaining(["ViewChannel", "SendMessages", "Connect", "Speak"]));
+    expect(all?.overwrites.find((overwrite) => overwrite.target === "dept-ems")?.allow).toContain("ViewChannel");
+    const none = ems(generateBlueprint({ ...base, staffAccess: "NONE" }));
+    expect(none?.overwrites.map((overwrite) => overwrite.target)).toEqual(["@everyone", "dept-ems", "@bot"]);
+    expect(templateFor("COMMUNITY").answers.staffAccess).toBe("ALL");
+  });
+
+  it("sets up every forum with guidelines, tags, a default reaction, and a pinned first post", () => {
+    const blueprint = generateBlueprint(templateFor("FIVEM_RP").answers);
+    const forums = channels(blueprint).filter((channel) => channel.type === "FORUM");
+    expect(forums.map((channel) => channel.name)).toEqual(["character-bios", "bug-reports", "help", "feedback"]);
+    for (const forum of forums) {
+      expect(forum.forum?.guidelines).toBeTruthy();
+      expect(forum.forum?.tags.length).toBeGreaterThanOrEqual(3);
+      expect(forum.forum?.defaultReactionEmoji).toBeTruthy();
+      expect(forum.forum?.firstPost).toMatchObject({ title: "Read me first", pin: true });
+    }
+    expect(forums.find((channel) => channel.name === "help")?.forum?.tags.map((tag) => tag.name)).toEqual(["Question", "Solved", "Bug"]);
+    expect(forums.find((channel) => channel.name === "bug-reports")?.forum?.tags.map((tag) => tag.name)).toEqual(["Open", "Fixed", "Cannot reproduce"]);
+    expect(channels(blueprint).filter((channel) => channel.type !== "FORUM" && channel.type !== "MEDIA").every((channel) => channel.forum === undefined)).toBe(true);
+    const media = channels(generateBlueprint({ ...templateFor("COMMUNITY").answers, useMediaChannels: true })).find((channel) => channel.name === "clips");
+    expect(media?.forum?.tags.length).toBeGreaterThan(0);
+    expect(media?.forum?.firstPost).toBeUndefined();
+    expect(defaultForumSetup("random-topic")).toMatchObject({ tags: expect.any(Array), firstPost: { pin: true } });
+  });
+
   it("rejects bad answers with plain messages", () => {
     const base = templateFor("BUSINESS").answers;
     expect(() => generateBlueprint({ ...base, serverName: " " })).toThrow("Server name");
+    expect(() => generateBlueprint({ ...base, staffAccess: "SOME" as "ALL" })).toThrow("department channel");
     expect(() => generateBlueprint({ ...base, staffRanks: ["Admin", "admin"] })).toThrow("listed twice");
     expect(() => generateBlueprint({ ...base, voiceLounges: 11 })).toThrow("Voice lounges");
   });

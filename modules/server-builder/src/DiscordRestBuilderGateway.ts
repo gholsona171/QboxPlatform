@@ -1,11 +1,20 @@
 import type { DiscordRestClient } from "@qbox/shared/discord-rest";
 
-import type { BotStatus, BuilderGateway, ChannelCreateInput, ExistingChannel, ExistingRole, RoleCreateInput } from "./types.js";
+import type { BotStatus, BuilderGateway, ChannelCreateInput, ExistingChannel, ExistingRole, ForumPostInput, RoleCreateInput } from "./types.js";
 
 interface ApiRole { readonly id: string; readonly name: string; readonly position: number; readonly permissions: string; readonly managed?: boolean }
 interface ApiChannel { readonly id: string; readonly name: string; readonly type: number; readonly parent_id?: string | null }
 interface ApiGuild { readonly features?: readonly string[] }
 interface ApiMember { readonly roles: readonly string[] }
+
+/** Discord's PINNED flag for forum posts. */
+const PINNED = 2;
+
+/** `name:id` becomes a custom emoji; anything else is a unicode emoji. */
+function emojiFields(emoji: string): { emoji_id: string | null; emoji_name: string | null } {
+  const custom = /^[a-zA-Z0-9_]{2,32}:(\d{17,20})$/.exec(emoji);
+  return custom ? { emoji_id: custom[1] as string, emoji_name: null } : { emoji_id: null, emoji_name: emoji };
+}
 
 /** Server builder operations through the Discord REST API (v10). */
 export class DiscordRestBuilderGateway implements BuilderGateway {
@@ -63,10 +72,24 @@ export class DiscordRestBuilderGateway implements BuilderGateway {
         ...(input.slowmodeSeconds ? { rate_limit_per_user: input.slowmodeSeconds } : {}),
         ...(input.nsfw ? { nsfw: true } : {}),
         ...(input.userLimit ? { user_limit: input.userLimit } : {}),
+        ...(input.tags?.length ? { available_tags: input.tags.map((tag) => ({ name: tag.name, moderated: false, ...(tag.emoji ? emojiFields(tag.emoji) : {}) })) } : {}),
+        ...(input.defaultReactionEmoji ? { default_reaction_emoji: emojiFields(input.defaultReactionEmoji) } : {}),
       },
       reason,
     })) as { readonly id: string };
     return channel.id;
+  }
+
+  public async createForumPost(channelId: string, input: ForumPostInput, reason: string): Promise<{ readonly threadId: string }> {
+    const thread = (await this.rest.post(`/channels/${channelId}/threads`, {
+      body: { name: input.title, message: { content: input.content }, applied_tags: [] },
+      reason,
+    })) as { readonly id: string };
+    return { threadId: thread.id };
+  }
+
+  public async pinForumPost(threadId: string, reason: string): Promise<void> {
+    await this.rest.patch(`/channels/${threadId}`, { body: { flags: PINNED }, reason });
   }
 
   /** Deleting something that is already gone counts as done. */

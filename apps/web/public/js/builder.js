@@ -33,11 +33,22 @@ const SECTIONS = [
 const CHANNEL_TYPES = [["TEXT", "Text"], ["ANNOUNCEMENT", "Announcement"], ["FORUM", "Forum"], ["MEDIA", "Media"], ["VOICE", "Voice"], ["STAGE", "Stage"]];
 const TYPE_ICONS = { TEXT: "#", ANNOUNCEMENT: "📢", FORUM: "💬", MEDIA: "🖼️", VOICE: "🔊", STAGE: "🎙️" };
 const TEXT_TYPES = new Set(["TEXT", "ANNOUNCEMENT", "FORUM", "MEDIA"]);
+const FORUM_TYPES = new Set(["FORUM", "MEDIA"]);
+const EVERYONE = "@everyone";
+const BOT = "@bot";
+const VIEW = ["ViewChannel", "ReadMessageHistory"];
+const TEXT_POST = ["SendMessages", "SendMessagesInThreads", "CreatePublicThreads"];
+const VOICE_POST = ["Connect", "Speak"];
+const TEXT_MANAGE = ["ManageMessages", "ManageThreads"];
+const VOICE_MANAGE = ["MuteMembers", "MoveMembers"];
+const ACCESS_CHOICES = [["default", "Default"], ["hidden", "Hidden"], ["see", "See only"], ["post", "See & post"]];
+const FORUM_LIMITS = { guidelines: 4096, tags: 20, tagName: 20, postTitle: 100, postContent: 2000 };
 const STATUS_LABELS = { QUEUED: "waiting", RUNNING: "running", SUCCEEDED: "finished", PARTIAL: "finished with problems", FAILED: "failed", UNDONE: "undone" };
 const ITEM_LABELS = { ROLE: "Role", CATEGORY: "Category", CHANNEL: "Channel", LINK: "Feature" };
 const POLL_MS = 2000;
 
-const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined };
+/** `panel` is the one open inline editor on the blueprint: an access editor or a forum setup editor. */
+const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined, panel: undefined };
 let container;
 let pollTimer;
 
@@ -101,6 +112,7 @@ function questionsTab() {
       ${textField("serverName", "Server name", a.serverName, "My City", true)}
       ${textArea("staffRanks", "Staff ranks, highest first (one per line)", a.staffRanks.join("\n"))}
       ${textArea("departments", "Departments, each gets a role and private channels (one per line)", a.departments.join("\n"), "Police\nEMS")}
+      ${checkbox("staffAccess", "Staff can see every department channel", a.staffAccess !== "NONE")}
       ${numberField("voiceLounges", "Voice lounges", a.voiceLounges, 0, view.overview.limits.voiceLounges)}
       <fieldset class="full"><legend>Include</legend>
         ${SECTIONS.map(([key, label]) => checkbox(`include.${key}`, label, a.include[key])).join("")}
@@ -120,6 +132,7 @@ function answersFromForm(form) {
     serverName: String(data.get("serverName") ?? "").trim(),
     staffRanks: lines("staffRanks"),
     departments: lines("departments"),
+    staffAccess: form.elements.staffAccess?.checked === true ? "ALL" : "NONE",
     include: Object.fromEntries(SECTIONS.map(([key]) => [key, form.elements[`include.${key}`]?.checked === true])),
     voiceLounges: Number.parseInt(String(data.get("voiceLounges") ?? "0"), 10) || 0,
     useMediaChannels: form.elements.useMediaChannels?.checked === true,
@@ -160,21 +173,32 @@ function blueprintTab() {
 }
 
 function categoryCard(category, access) {
+  const blueprint = view.overview.draft.blueprint;
   const channels = category.channels.map((channel) => {
     const who = access[channel.key];
+    const panel = view.panel?.key === channel.key ? view.panel : undefined;
     return `<li class="builder-channel">
-      <span class="builder-type" title="${escapeHtml(channel.type.toLowerCase())}">${TYPE_ICONS[channel.type]}</span>
+      <select class="builder-type" data-b-retype-channel="${escapeHtml(channel.key)}" aria-label="Channel type" title="${escapeHtml(channel.type.toLowerCase())}">${CHANNEL_TYPES.map(([value, label]) => `<option value="${value}" ${value === channel.type ? "selected" : ""}>${TYPE_ICONS[value]} ${label}</option>`).join("")}</select>
       <input class="inline-name" data-b-rename-channel="${escapeHtml(channel.key)}" value="${escapeHtml(channel.name)}" aria-label="Channel name">
       <span>${channel.purpose ? badge(channel.purpose) : ""}</span>
-      <button type="button" class="button compact" data-b-remove-channel="${escapeHtml(channel.key)}">Remove</button>
-      <small class="microcopy">${who ? `Sees: ${escapeHtml(who.see)} · ${isVoice(channel.type) ? "Joins" : "Posts"}: ${escapeHtml(who.post.replace(/^join: /, ""))}` : ""}</small>
-    </li>`;
+      <span class="builder-actions">
+        <button type="button" class="button compact ${panel?.kind === "access" ? "primary" : ""}" data-b-open-access="${escapeHtml(channel.key)}">Access</button>
+        ${FORUM_TYPES.has(channel.type) ? `<button type="button" class="button compact ${panel?.kind === "forum" ? "primary" : ""}" data-b-open-forum="${escapeHtml(channel.key)}">Forum setup</button>` : ""}
+        <button type="button" class="button compact" data-b-remove-channel="${escapeHtml(channel.key)}">Remove</button>
+      </span>
+      <small class="microcopy">${who ? accessLine(channel.type, who) : ""}</small>
+    </li>${panel ? `<li class="builder-panel">${panel.kind === "access" ? accessEditor(blueprint, category, channel) : forumEditor(channel)}</li>` : ""}`;
   }).join("");
+  const panel = view.panel?.key === category.key && view.panel.kind === "access" ? `<div class="builder-panel">${accessEditor(blueprint, category, undefined)}</div>` : "";
   return `<div class="card">
     <div class="split-line">
       <input class="inline-name strong" data-b-rename-category="${escapeHtml(category.key)}" value="${escapeHtml(category.name)}" aria-label="Category name">
-      <button type="button" class="button compact danger" data-b-remove-category="${escapeHtml(category.key)}">Remove category</button>
+      <span class="builder-actions">
+        <button type="button" class="button compact ${panel ? "primary" : ""}" data-b-open-access="${escapeHtml(category.key)}">Access</button>
+        <button type="button" class="button compact danger" data-b-remove-category="${escapeHtml(category.key)}">Remove category</button>
+      </span>
     </div>
+    ${panel}
     <ul class="builder-channels">${channels || `<li class="microcopy">No channels.</li>`}</ul>
     <form class="toolbar" data-b-form="add-channel" data-category="${escapeHtml(category.key)}">
       <input name="name" placeholder="New channel name" maxlength="100" required>
@@ -188,6 +212,221 @@ function isVoice(type) {
   return type === "VOICE" || type === "STAGE";
 }
 
+function accessLine(type, who) {
+  return `Sees: ${escapeHtml(who.see)} · ${isVoice(type) ? "Joins" : "Posts"}: ${escapeHtml(who.post.replace(/^join: /, ""))}`;
+}
+
+/* ---------- Access editor ---------- */
+
+/** Which permissions "post" and "manage" mean for a channel type; a category covers both text and voice. */
+function permissionSets(type) {
+  if (!type) return { post: [...TEXT_POST, ...VOICE_POST], manage: [...TEXT_MANAGE, ...VOICE_MANAGE], primary: ["SendMessages", "Connect"] };
+  return isVoice(type) ? { post: VOICE_POST, manage: VOICE_MANAGE, primary: ["Connect"] } : { post: TEXT_POST, manage: TEXT_MANAGE, primary: ["SendMessages"] };
+}
+
+/** Reads the editor choice an overwrite stands for. */
+function choiceOf(overwrite, sets) {
+  if (!overwrite) return { access: "default", manage: false };
+  const manage = sets.manage.some((name) => overwrite.allow.includes(name));
+  if (overwrite.deny.includes("ViewChannel")) return { access: "hidden", manage };
+  if (sets.primary.some((name) => overwrite.deny.includes(name))) return { access: "see", manage };
+  if (overwrite.allow.includes("ViewChannel") || sets.primary.some((name) => overwrite.allow.includes(name))) return { access: "post", manage };
+  return { access: "default", manage };
+}
+
+/** Writes a choice for one target into a copy of `overwrites`, keeping any other permissions that target had. */
+function applyChoice(overwrites, target, choice, sets) {
+  const touched = new Set([...VIEW, ...sets.post, ...sets.manage, ...TEXT_MANAGE, ...VOICE_MANAGE]);
+  const existing = overwrites.find((overwrite) => overwrite.target === target) ?? { target, allow: [], deny: [] };
+  const allow = existing.allow.filter((name) => !touched.has(name));
+  const deny = existing.deny.filter((name) => !touched.has(name));
+  if (choice.access === "hidden") deny.push("ViewChannel");
+  else if (choice.access === "see") allow.push(...VIEW), deny.push(...sets.post);
+  else if (choice.access === "post") allow.push(...VIEW, ...sets.post);
+  if (choice.manage && choice.access !== "hidden") allow.push(...sets.manage);
+  const rest = overwrites.filter((overwrite) => overwrite.target !== target);
+  return allow.length || deny.length ? [...rest, { target, allow, deny }] : rest;
+}
+
+/** @everyone, then staff ranks, departments, and the rest. The bot itself is left alone. */
+function accessTargets(blueprint) {
+  const rank = { staff: 0, department: 1 };
+  const roles = blueprint.roles.map((role, index) => ({ role, index })).sort((a, b) => (rank[a.role.purpose] ?? 2) - (rank[b.role.purpose] ?? 2) || a.index - b.index);
+  return [{ key: EVERYONE, name: "@everyone" }, ...roles.map(({ role }) => ({ key: role.key, name: role.name }))];
+}
+
+function openAccessEditor(key) {
+  const blueprint = view.overview.draft.blueprint;
+  const found = findTarget(blueprint, key);
+  if (!found) return;
+  const sets = permissionSets(found.channel?.type);
+  const choices = Object.fromEntries(accessTargets(blueprint).map((target) => [target.key, choiceOf(found.item.overwrites.find((overwrite) => overwrite.target === target.key), sets)]));
+  view.panel = { kind: "access", key, choices, touched: new Set() };
+  render();
+}
+
+function findTarget(blueprint, key) {
+  for (const category of blueprint.categories) {
+    if (category.key === key) return { category, item: category };
+    for (const channel of category.channels) if (channel.key === key) return { category, channel, item: channel };
+  }
+  return undefined;
+}
+
+/** The overwrites the open access editor would save. */
+function editedOverwrites(item, type) {
+  const sets = permissionSets(type);
+  let overwrites = structuredClone(item.overwrites);
+  for (const target of view.panel.touched) overwrites = applyChoice(overwrites, target, view.panel.choices[target], sets);
+  return overwrites;
+}
+
+function accessEditor(blueprint, category, channel) {
+  const item = channel ?? category;
+  const panel = view.panel;
+  const targets = accessTargets(blueprint);
+  const postLabel = channel && isVoice(channel.type) ? "See & join" : "See & post";
+  const rows = targets.map((target) => {
+    const choice = panel.choices[target.key];
+    return `<div class="access-row">
+      <span class="access-target">${escapeHtml(target.name)}</span>
+      <span class="segmented compact" role="group" aria-label="Access for ${escapeHtml(target.name)}">${ACCESS_CHOICES.map(([value, label]) => `<button type="button" class="${choice.access === value ? "active" : ""}" data-b-access="${escapeHtml(target.key)}" data-value="${value}">${value === "post" ? postLabel : label}</button>`).join("")}</span>
+      ${target.key === EVERYONE ? "<span></span>" : `<label class="checkbox"><input type="checkbox" data-b-manage="${escapeHtml(target.key)}" ${choice.manage ? "checked" : ""} ${choice.access === "hidden" ? "disabled" : ""}> Manage</label>`}
+    </div>`;
+  }).join("");
+  const preview = structuredClone(blueprint);
+  const found = findTarget(preview, item.key);
+  found.item.overwrites = editedOverwrites(item, channel?.type);
+  const access = describeAccessLocally(preview);
+  const summary = channel
+    ? `<p class="microcopy">${accessLine(channel.type, access[channel.key])}</p>`
+    : `<ul class="access-summary">${found.category.channels.map((each) => `<li><strong>${escapeHtml(each.name)}</strong> <span class="microcopy">${accessLine(each.type, access[each.key])}</span></li>`).join("") || "<li class=\"microcopy\">No channels.</li>"}</ul>`;
+  return `<div class="split-line"><strong>Who can ${channel ? (isVoice(channel.type) ? "see and join" : "see and post in") : "see"} ${escapeHtml(item.name)}</strong><button type="button" class="button compact ghost" data-b-panel-close>Close</button></div>
+    <p class="microcopy">Default keeps what the ${channel ? "category" : "server"} gives. Hidden, See only, and ${postLabel} set it for this ${channel ? "channel" : "category and its channels"}. Manage lets that role delete posts${channel && isVoice(channel.type) ? " and move or mute members" : " and manage threads"}.</p>
+    <div class="access-rows">${rows}</div>
+    ${summary}
+    <div class="toolbar">
+      <button type="button" class="button compact primary" data-b-access-save>Save</button>
+      ${channel ? "" : `<button type="button" class="button compact" data-b-access-apply>Apply to all channels in this category</button>`}
+      <button type="button" class="button compact" data-b-panel-close>Cancel</button>
+    </div>`;
+}
+
+/** Same rules as the API's describeAccess, so the summary can update before saving. */
+function mergeOverwrites(...lists) {
+  const merged = new Map();
+  for (const list of lists)
+    for (const overwrite of list) {
+      const entry = merged.get(overwrite.target) ?? { allow: new Set(), deny: new Set() };
+      for (const name of overwrite.allow) { entry.deny.delete(name); entry.allow.add(name); }
+      for (const name of overwrite.deny) { entry.allow.delete(name); entry.deny.add(name); }
+      merged.set(overwrite.target, entry);
+    }
+  return [...merged].map(([target, entry]) => ({ target, allow: [...entry.allow], deny: [...entry.deny] }));
+}
+
+function describeAccessLocally(blueprint) {
+  const names = new Map(blueprint.roles.map((role) => [role.key, role.name]));
+  const staff = blueprint.roles.filter((role) => role.purpose === "staff").map((role) => role.key);
+  const label = (keys) => {
+    const shown = keys.filter((key) => key !== BOT);
+    const allStaff = staff.length > 1 && staff.every((key) => shown.includes(key));
+    const rest = allStaff ? shown.filter((key) => !staff.includes(key)) : shown;
+    return [...(allStaff ? ["staff"] : []), ...rest.map((key) => (key === EVERYONE ? "everyone" : names.get(key) ?? key))].join(", ") || "admins only";
+  };
+  const withExceptions = (who, not) => `${label(who)}${not.length ? ` (not ${label(not)})` : ""}`;
+  const result = {};
+  for (const category of blueprint.categories)
+    for (const channel of category.channels) {
+      const voice = isVoice(channel.type);
+      const overwrites = mergeOverwrites(category.overwrites, channel.overwrites);
+      const everyone = overwrites.find((overwrite) => overwrite.target === EVERYONE);
+      const roles = overwrites.filter((overwrite) => overwrite.target !== EVERYONE && overwrite.target !== BOT);
+      const hidden = everyone?.deny.includes("ViewChannel") ?? false;
+      const viewers = hidden ? roles.filter((overwrite) => overwrite.allow.includes("ViewChannel")).map((overwrite) => overwrite.target) : [EVERYONE];
+      const blockedViewers = roles.filter((overwrite) => overwrite.deny.includes("ViewChannel")).map((overwrite) => overwrite.target);
+      const postPermission = voice ? "Connect" : "SendMessages";
+      const postBlocked = everyone?.deny.includes(postPermission) ?? false;
+      const deniesPost = (overwrite) => overwrite.deny.includes(postPermission) || overwrite.deny.includes("ViewChannel");
+      const posters = postBlocked
+        ? roles.filter((overwrite) => overwrite.allow.includes(postPermission) && !overwrite.deny.includes("ViewChannel")).map((overwrite) => overwrite.target)
+        : hidden ? roles.filter((overwrite) => overwrite.allow.includes("ViewChannel") && !deniesPost(overwrite)).map((overwrite) => overwrite.target) : [EVERYONE];
+      const blockedPosters = postBlocked || hidden ? [] : roles.filter(deniesPost).map((overwrite) => overwrite.target);
+      const see = withExceptions(viewers, hidden ? [] : blockedViewers);
+      const post = postBlocked && posters.length === 0 ? (overwrites.some((overwrite) => overwrite.target === BOT) ? `${BRAND.name} only` : "admins only") : withExceptions(posters, blockedPosters);
+      result[channel.key] = { see, post: voice ? `join: ${post}` : post };
+    }
+  return result;
+}
+
+/* ---------- Forum setup editor ---------- */
+
+/** A plain forum setup for a channel that just became a forum. Media channels need an attachment per post, so no first post. */
+function defaultForum(type) {
+  return {
+    guidelines: "One topic per post. Give it a clear title.",
+    tags: [{ name: "Question", emoji: "❓" }, { name: "Discussion", emoji: "💬" }, { name: "Solved", emoji: "✅" }],
+    defaultReactionEmoji: "👍",
+    ...(type === "MEDIA" ? {} : { firstPost: { title: "Read me first", content: "Start a new post with the button above. Give it a clear title, pick a tag, and keep one topic per post.", pin: true } }),
+  };
+}
+
+function openForumEditor(key) {
+  const found = findTarget(view.overview.draft.blueprint, key);
+  if (!found?.channel) return;
+  view.panel = { kind: "forum", key, forum: structuredClone(found.channel.forum ?? defaultForum(found.channel.type)) };
+  render();
+}
+
+function forumEditor(channel) {
+  const forum = view.panel.forum;
+  const media = channel.type === "MEDIA";
+  const tags = forum.tags.map((tag, index) => `<div class="forum-tag">
+      <input name="tagName" value="${escapeHtml(tag.name)}" maxlength="${FORUM_LIMITS.tagName}" placeholder="Tag name" aria-label="Tag name" required>
+      <input name="tagEmoji" value="${escapeHtml(tag.emoji ?? "")}" maxlength="100" placeholder="Emoji" aria-label="Tag emoji">
+      <button type="button" class="button compact" data-b-tag-remove="${index}">Remove</button>
+    </div>`).join("");
+  const post = forum.firstPost;
+  return `<form class="form-grid" data-b-form="forum" data-channel="${escapeHtml(channel.key)}">
+    <div class="split-line full"><strong>Forum setup for ${escapeHtml(channel.name)}</strong><button type="button" class="button compact ghost" data-b-panel-close>Close</button></div>
+    <label class="full">Post guidelines<textarea name="guidelines" maxlength="${FORUM_LIMITS.guidelines}" placeholder="One post per problem. Say what you tried.">${escapeHtml(forum.guidelines ?? "")}</textarea></label>
+    <div class="full">
+      <div class="split-line"><strong>Tags</strong><span class="microcopy">${forum.tags.length} / ${FORUM_LIMITS.tags}</span></div>
+      <div class="forum-tags">${tags || `<p class="microcopy">No tags yet.</p>`}</div>
+      ${forum.tags.length < FORUM_LIMITS.tags ? `<button type="button" class="button compact" data-b-tag-add>Add tag</button>` : ""}
+    </div>
+    ${textField("defaultReactionEmoji", "Default reaction (an emoji, or name:id for a custom one)", forum.defaultReactionEmoji ?? "", "👍")}
+    ${media
+      ? `<p class="microcopy full">Media channels need a photo or video in every post, so ${BRAND.name} does not make a first post here.</p>`
+      : `<h4>First post</h4>
+        ${checkbox("postOn", "Make a first post after the channel is created", Boolean(post))}
+        ${textField("postTitle", "Title", post?.title ?? "", "Read me first")}
+        ${checkbox("postPin", "Pin it to the top", post?.pin ?? true)}
+        <label class="full">Content<textarea name="postContent" maxlength="${FORUM_LIMITS.postContent}" placeholder="How to post here.">${escapeHtml(post?.content ?? "")}</textarea></label>`}
+    <div class="toolbar full">
+      <button class="button compact primary">Save</button>
+      <button type="button" class="button compact" data-b-panel-close>Cancel</button>
+    </div>
+  </form>`;
+}
+
+/** Reads the forum editor form into a forum setup block. */
+function forumFromForm(form, media) {
+  const data = new FormData(form);
+  const names = data.getAll("tagName").map((value) => String(value).trim());
+  const emojis = data.getAll("tagEmoji").map((value) => String(value).trim());
+  const tags = names.map((name, index) => ({ name, ...(emojis[index] ? { emoji: emojis[index] } : {}) }));
+  const guidelines = String(data.get("guidelines") ?? "").trim();
+  const reaction = String(data.get("defaultReactionEmoji") ?? "").trim();
+  const on = !media && form.elements.postOn?.checked === true;
+  return {
+    tags,
+    ...(guidelines ? { guidelines } : {}),
+    ...(reaction ? { defaultReactionEmoji: reaction } : {}),
+    ...(on ? { firstPost: { title: String(data.get("postTitle") ?? "").trim(), content: String(data.get("postContent") ?? "").trim(), pin: form.elements.postPin?.checked === true } } : {}),
+  };
+}
+
 /** Applies `change` to a copy of the blueprint and saves it. */
 async function editBlueprint(change, message) {
   const draft = view.overview.draft;
@@ -196,6 +435,7 @@ async function editBlueprint(change, message) {
   try {
     const saved = (await sendJson("builder/draft", "PUT", { answers: draft.answers, blueprint, expectedRevision: draft.revision })).data;
     view.overview.draft = saved;
+    view.panel = undefined;
     if (message) notify(message);
   } catch (error) {
     notify(error.message || "That did not work.", "error");
@@ -332,6 +572,72 @@ function bind() {
   rename("[data-b-rename-channel]", "bRenameChannel", (blueprint, key, value) => {
     for (const category of blueprint.categories) for (const channel of category.channels) if (channel.key === key) channel.name = value;
   });
+  container.querySelectorAll("[data-b-retype-channel]").forEach((select) => select.addEventListener("change", () => {
+    const key = select.dataset.bRetypeChannel;
+    const type = select.value;
+    void editBlueprint((blueprint) => {
+      const found = findTarget(blueprint, key);
+      if (!found?.channel) return;
+      const channel = found.channel;
+      const wasForum = FORUM_TYPES.has(channel.type);
+      channel.type = type;
+      if (FORUM_TYPES.has(type)) {
+        if (!wasForum || !channel.forum) channel.forum = defaultForum(type);
+        else if (type === "MEDIA") delete channel.forum.firstPost;
+      } else delete channel.forum;
+      if (TEXT_TYPES.has(type)) channel.name = channel.name.toLowerCase().replace(/\s+/g, "-");
+    }, "Saved.");
+  }));
+  container.querySelectorAll("[data-b-open-access]").forEach((button) => button.addEventListener("click", () => {
+    const key = button.dataset.bOpenAccess;
+    if (view.panel?.kind === "access" && view.panel.key === key) { view.panel = undefined; return render(); }
+    return openAccessEditor(key);
+  }));
+  container.querySelectorAll("[data-b-open-forum]").forEach((button) => button.addEventListener("click", () => {
+    const key = button.dataset.bOpenForum;
+    if (view.panel?.kind === "forum" && view.panel.key === key) { view.panel = undefined; return render(); }
+    return openForumEditor(key);
+  }));
+  container.querySelectorAll("[data-b-panel-close]").forEach((button) => button.addEventListener("click", () => {
+    view.panel = undefined;
+    render();
+  }));
+  container.querySelectorAll("[data-b-access]").forEach((button) => button.addEventListener("click", () => {
+    const target = button.dataset.bAccess;
+    view.panel.choices[target] = { ...view.panel.choices[target], access: button.dataset.value };
+    view.panel.touched.add(target);
+    render();
+  }));
+  container.querySelectorAll("[data-b-manage]").forEach((input) => input.addEventListener("change", () => {
+    const target = input.dataset.bManage;
+    view.panel.choices[target] = { ...view.panel.choices[target], manage: input.checked };
+    view.panel.touched.add(target);
+    render();
+  }));
+  container.querySelectorAll("[data-b-access-save], [data-b-access-apply]").forEach((button) => button.addEventListener("click", () => {
+    const applyToChannels = "bAccessApply" in button.dataset;
+    const key = view.panel.key;
+    void editBlueprint((blueprint) => {
+      const found = findTarget(blueprint, key);
+      if (!found) return;
+      found.item.overwrites = editedOverwrites(found.item, found.channel?.type);
+      if (!applyToChannels || found.channel) return;
+      for (const channel of found.category.channels) {
+        const sets = permissionSets(channel.type);
+        for (const [target, choice] of Object.entries(view.panel.choices)) channel.overwrites = applyChoice(channel.overwrites, target, choice, sets);
+      }
+    }, applyToChannels ? "Access applied to every channel in the category." : "Access saved.");
+  }));
+  container.querySelectorAll("[data-b-tag-add], [data-b-tag-remove]").forEach((button) => button.addEventListener("click", () => {
+    const form = button.closest("form");
+    const found = findTarget(view.overview.draft.blueprint, view.panel.key);
+    const forum = forumFromForm(form, found?.channel?.type === "MEDIA");
+    if ("bTagRemove" in button.dataset) forum.tags.splice(Number(button.dataset.bTagRemove), 1);
+    else forum.tags.push({ name: "" });
+    view.panel.forum = forum;
+    render();
+    container.querySelector(".forum-tags input[name=tagName]:placeholder-shown")?.focus();
+  }));
   container.querySelectorAll("[data-b-remove-role]").forEach((button) => button.addEventListener("click", () => {
     const key = button.dataset.bRemoveRole;
     void editBlueprint((blueprint) => {
@@ -401,8 +707,19 @@ async function submit(form) {
       const name = TEXT_TYPES.has(type) ? raw.toLowerCase().replace(/\s+/g, "-") : raw;
       return editBlueprint((blueprint) => {
         const category = blueprint.categories.find((item) => item.key === form.dataset.category);
-        category.channels.push({ key: uniqueKey(blueprint, name), name, type, slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] });
+        category.channels.push({ key: uniqueKey(blueprint, name), name, type, slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [], ...(FORUM_TYPES.has(type) ? { forum: defaultForum(type) } : {}) });
       }, "Channel added.");
+    }
+    case "forum": {
+      const key = form.dataset.channel;
+      const found = findTarget(view.overview.draft.blueprint, key);
+      const forum = forumFromForm(form, found?.channel?.type === "MEDIA");
+      if (forum.tags.some((tag) => !tag.name)) return notify("Every tag needs a name.", "error");
+      if (forum.firstPost && (!forum.firstPost.title || !forum.firstPost.content)) return notify("The first post needs a title and content.", "error");
+      return editBlueprint((blueprint) => {
+        const target = findTarget(blueprint, key);
+        if (target?.channel) target.channel.forum = forum;
+      }, "Forum setup saved.");
     }
     case "build": {
       const data = new FormData(form);

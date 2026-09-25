@@ -31,11 +31,12 @@ import type {
   BuilderStarter,
   BuilderSummary,
   BuilderTemplate,
+  ChannelCreateInput,
   DiscordOverwrite,
   ExistingChannel,
 } from "./types.js";
 import { BOT, BUILDER_LINKS, BUILDER_RUN_MODES, DISCORD_CHANNEL_TYPE, EVERYONE } from "./types.js";
-import { BUILDER_LIMITS, BuilderError, normalizeBlueprint, requireSnowflake, summarize, validateAnswers, validateBlueprint } from "./validation.js";
+import { BUILDER_LIMITS, BuilderError, isForumType, normalizeBlueprint, requireSnowflake, summarize, validateAnswers, validateBlueprint } from "./validation.js";
 import { BRAND } from "@qbox/shared/brand";
 
 /** A blueprint with its counts, warnings, access summary, and feature links. */
@@ -316,22 +317,23 @@ export class BuilderService {
         if (existing) await record("CHANNEL", channel.key, channel.name, "SKIPPED", { discordId: existing.id, note: "Already in the server." });
         else {
           const overwrites = resolve(effectiveOverwrites(category, channel));
-          const create = (type: BuilderChannelType) => gateway.createChannel(guildId, channelInput(channel, type, parentId, overwrites), reason);
+          const create = async (type: BuilderChannelType, note?: string) => ({ id: await gateway.createChannel(guildId, channelInput(channel, type, parentId, overwrites), reason), type, note });
           const note = (type: BuilderChannelType) => `Made as a ${type === "VOICE" ? "voice" : "text"} channel because ${channel.type.toLowerCase()} channels ${NEEDS_COMMUNITY.has(channel.type) ? "need Community turned on" : "could not be created"}.`;
           try {
-            if (fallback && NEEDS_COMMUNITY.has(channel.type) && !bot.community) {
-              id = await create(fallback);
-              await record("CHANNEL", channel.key, channel.name, "CREATED", { discordId: id, note: note(fallback) });
-            } else {
+            let made: { id: string; type: BuilderChannelType; note?: string | undefined };
+            if (fallback && NEEDS_COMMUNITY.has(channel.type) && !bot.community) made = await create(fallback, note(fallback));
+            else {
               try {
-                id = await create(channel.type);
-                await record("CHANNEL", channel.key, channel.name, "CREATED", { discordId: id, ...(parentId ? {} : { note: "Created outside a category because its category failed." }) });
+                made = await create(channel.type, parentId ? undefined : "Created outside a category because its category failed.");
               } catch (error) {
                 if (!fallback) throw error;
-                id = await create(fallback);
-                await record("CHANNEL", channel.key, channel.name, "CREATED", { discordId: id, note: note(fallback) });
+                made = await create(fallback, note(fallback));
               }
             }
+            id = made.id;
+            const post = isForumType(made.type) ? await this.firstPost(channel, made.id, reason) : undefined;
+            const notes = [made.note, post].filter(Boolean).join(" ");
+            await record("CHANNEL", channel.key, channel.name, "CREATED", { discordId: id, ...(notes ? { note: notes } : {}) });
           } catch (error) {
             await record("CHANNEL", channel.key, channel.name, "FAILED", { error: messageOf(error) });
           }
@@ -372,6 +374,25 @@ export class BuilderService {
 
     const status = counts.failed === 0 ? "SUCCEEDED" : counts.done + counts.skipped > 0 ? "PARTIAL" : "FAILED";
     await this.repository.updateRun(run.id, { ...counts, status, finishedAt: this.now(), ...(status === "FAILED" ? { error: "Nothing could be created. Check the errors below." } : {}) });
+  }
+
+  /** Creates (and pins) the first post in a new forum channel. Returns a plain note; a failure is a note too, since the channel exists. */
+  private async firstPost(channel: BuilderChannel, channelId: string, reason: string): Promise<string | undefined> {
+    const post = channel.forum?.firstPost;
+    if (!post || !this.gateway) return undefined;
+    let threadId: string;
+    try {
+      ({ threadId } = await this.gateway.createForumPost(channelId, { title: post.title, content: post.content }, reason));
+    } catch (error) {
+      return `First post could not be created: ${messageOf(error)}`;
+    }
+    if (!post.pin) return "First post created.";
+    try {
+      await this.gateway.pinForumPost(threadId, reason);
+      return "First post pinned.";
+    } catch (error) {
+      return `First post created but could not be pinned: ${messageOf(error)}`;
+    }
   }
 
   private async removeCreated(run: BuilderRun, items: readonly BuilderRunItem[], gateway: BuilderGateway): Promise<void> {
@@ -433,15 +454,19 @@ function roleIdFor(blueprint: BuilderBlueprint, roleIds: ReadonlyMap<string, str
   return role ? roleIds.get(role.key) : undefined;
 }
 
-function channelInput(channel: BuilderChannel, type: BuilderChannelType, parentId: string | undefined, overwrites: readonly DiscordOverwrite[]) {
+function channelInput(channel: BuilderChannel, type: BuilderChannelType, parentId: string | undefined, overwrites: readonly DiscordOverwrite[]): ChannelCreateInput {
   const voice = VOICE_TYPES.has(type);
+  const forum = isForumType(type) ? channel.forum : undefined;
+  const topic = forum?.guidelines ?? channel.topic;
   return {
     name: channel.name,
     type: discordChannelType(type),
     overwrites,
     ...(parentId ? { parentId } : {}),
     ...(channel.nsfw ? { nsfw: true } : {}),
-    ...(!voice && channel.topic ? { topic: channel.topic } : {}),
+    ...(!voice && topic ? { topic } : {}),
+    ...(forum?.tags.length ? { tags: forum.tags } : {}),
+    ...(forum?.defaultReactionEmoji ? { defaultReactionEmoji: forum.defaultReactionEmoji } : {}),
     ...(!voice && channel.slowmodeSeconds > 0 ? { slowmodeSeconds: channel.slowmodeSeconds } : {}),
     ...(type === "VOICE" && channel.userLimit > 0 ? { userLimit: channel.userLimit } : {}),
   };

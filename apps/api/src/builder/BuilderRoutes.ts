@@ -11,6 +11,7 @@ import {
   BUILDER_RUN_MODES,
   BUILDER_SECTIONS,
   BUILDER_SERVER_TYPES,
+  BUILDER_STAFF_ACCESS,
   BuilderError,
   type BuilderService,
 } from "@qbox/server-builder";
@@ -28,6 +29,14 @@ const name = z.string().min(1).max(100);
 
 const overwriteSchema = z.strictObject({ target: z.string().min(1).max(60), allow: z.array(permission).max(40), deny: z.array(permission).max(40) });
 
+const emoji = z.string().min(1).max(100);
+const forumSchema = z.strictObject({
+  guidelines: z.string().max(4096).optional(),
+  tags: z.array(z.strictObject({ name: z.string().min(1).max(20), emoji: emoji.optional() })).max(20),
+  defaultReactionEmoji: emoji.optional(),
+  firstPost: z.strictObject({ title: z.string().min(1).max(100), content: z.string().min(1).max(2000), pin: z.boolean() }).optional(),
+});
+
 const channelSchema = z.strictObject({
   key,
   name,
@@ -38,6 +47,7 @@ const channelSchema = z.strictObject({
   userLimit: z.number().int(),
   overwrites: z.array(overwriteSchema).max(100),
   purpose: enumOf(BUILDER_CHANNEL_PURPOSES).optional(),
+  forum: forumSchema.optional(),
 });
 
 const blueprintSchema = z.strictObject({
@@ -64,6 +74,7 @@ const answersSchema = z.strictObject({
   serverName: z.string().max(100),
   staffRanks: z.array(z.string().max(60)).max(15),
   departments: z.array(z.string().max(60)).max(20),
+  staffAccess: enumOf(BUILDER_STAFF_ACCESS).default("ALL"),
   include: z.strictObject(Object.fromEntries(BUILDER_SECTIONS.map((section) => [section, z.boolean()])) as Record<(typeof BUILDER_SECTIONS)[number], z.ZodBoolean>),
   voiceLounges: z.number().int(),
   useMediaChannels: z.boolean(),

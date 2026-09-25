@@ -100,6 +100,31 @@ export interface BuilderRole {
   readonly purpose?: BuilderRolePurpose | undefined;
 }
 
+export interface BuilderForumTag {
+  /** 1-20 characters. */
+  readonly name: string;
+  /** A unicode emoji, or `name:id` for a custom emoji. */
+  readonly emoji?: string | undefined;
+}
+
+export interface BuilderForumPost {
+  readonly title: string;
+  readonly content: string;
+  /** Pin the post to the top of the forum. */
+  readonly pin: boolean;
+}
+
+/** Forum and media channel setup: guidelines, tags, default reaction, and a first post. */
+export interface BuilderForumSetup {
+  /** Shown as the channel's post guidelines (Discord's forum topic, up to 4096 characters). */
+  readonly guidelines?: string | undefined;
+  readonly tags: readonly BuilderForumTag[];
+  /** A unicode emoji, or `name:id` for a custom emoji. */
+  readonly defaultReactionEmoji?: string | undefined;
+  /** Posted after the channel is created. Media channels need an attachment per post, so they get no first post. */
+  readonly firstPost?: BuilderForumPost | undefined;
+}
+
 export interface BuilderChannel {
   /** Stable slug, unique among categories and channels. */
   readonly key: string;
@@ -113,6 +138,8 @@ export interface BuilderChannel {
   /** Added to the category's overwrites. */
   readonly overwrites: readonly BuilderOverwrite[];
   readonly purpose?: BuilderChannelPurpose | undefined;
+  /** FORUM and MEDIA channels only. */
+  readonly forum?: BuilderForumSetup | undefined;
 }
 
 export interface BuilderCategory {
@@ -155,6 +182,10 @@ export const BUILDER_SECTIONS = [
 ] as const;
 export type BuilderSection = (typeof BUILDER_SECTIONS)[number];
 
+/** ALL: every staff rank can see and post in department channels. NONE: department roles only. */
+export type BuilderStaffAccess = "ALL" | "NONE";
+export const BUILDER_STAFF_ACCESS: readonly BuilderStaffAccess[] = ["ALL", "NONE"];
+
 export interface BuilderAnswers {
   readonly serverType: BuilderServerType;
   readonly serverName: string;
@@ -162,6 +193,8 @@ export interface BuilderAnswers {
   readonly staffRanks: readonly string[];
   /** Each department gets a role and a private category. */
   readonly departments: readonly string[];
+  /** Whether staff ranks can see every department channel. Default ALL. */
+  readonly staffAccess: BuilderStaffAccess;
   readonly include: Readonly<Record<BuilderSection, boolean>>;
   /** Public voice lounges (0-10). */
   readonly voiceLounges: number;
@@ -390,6 +423,15 @@ export interface ChannelCreateInput {
   readonly nsfw?: boolean | undefined;
   readonly userLimit?: number | undefined;
   readonly overwrites: readonly DiscordOverwrite[];
+  /** Forum and media channels: post tags. */
+  readonly tags?: readonly BuilderForumTag[] | undefined;
+  /** Forum and media channels: the reaction added to every new post. */
+  readonly defaultReactionEmoji?: string | undefined;
+}
+
+export interface ForumPostInput {
+  readonly title: string;
+  readonly content: string;
 }
 
 /** Discord operations the builder needs. */
@@ -400,6 +442,10 @@ export interface BuilderGateway {
   createRole(guildId: string, input: RoleCreateInput, reason: string): Promise<string>;
   setRolePositions(guildId: string, positions: readonly { readonly id: string; readonly position: number }[], reason: string): Promise<void>;
   createChannel(guildId: string, input: ChannelCreateInput, reason: string): Promise<string>;
+  /** Starts a post (thread) in a forum or media channel. */
+  createForumPost(channelId: string, input: ForumPostInput, reason: string): Promise<{ readonly threadId: string }>;
+  /** Pins a forum post to the top of its channel. */
+  pinForumPost(threadId: string, reason: string): Promise<void>;
   deleteChannel(channelId: string, reason: string): Promise<void>;
   deleteRole(guildId: string, roleId: string, reason: string): Promise<void>;
 }

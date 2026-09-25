@@ -1,6 +1,7 @@
-import type { BuilderAnswers, BuilderBlueprint, BuilderChannelType, BuilderOverwrite, BuilderSummary } from "./types.js";
+import type { BuilderAnswers, BuilderBlueprint, BuilderChannel, BuilderChannelType, BuilderForumSetup, BuilderOverwrite, BuilderSummary } from "./types.js";
 import {
   BOT,
+  BUILDER_STAFF_ACCESS,
   BUILDER_CATEGORY_PURPOSES,
   BUILDER_CHANNEL_PURPOSES,
   BUILDER_CHANNEL_TYPES,
@@ -39,12 +40,22 @@ export const BUILDER_LIMITS = {
   staffRanks: 15,
   departments: 20,
   voiceLounges: 10,
+  /** Forum guidelines (Discord's forum topic). */
+  forumGuidelines: 4096,
+  forumTags: 20,
+  forumTagName: 20,
+  forumPostTitle: 100,
+  forumPostContent: 2000,
 } as const;
 
 const SNOWFLAKE = /^\d{17,20}$/;
 const KEY = /^[a-z0-9][a-z0-9-]{0,59}$/;
 const HEX = /^#[0-9a-f]{6}$/i;
 const TEXT_TYPES = new Set<BuilderChannelType>(["TEXT", "ANNOUNCEMENT", "FORUM", "MEDIA"]);
+const FORUM_TYPES = new Set<BuilderChannelType>(["FORUM", "MEDIA"]);
+const CUSTOM_EMOJI = /^[a-zA-Z0-9_]{2,32}:\d{17,20}$/;
+/** One unicode emoji: a pictograph with optional skin tone, variation selector, and ZWJ parts, a keycap, or a flag. */
+const UNICODE_EMOJI = /^(?:\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3|(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})(?:\uFE0F|\p{Emoji_Modifier}|\u200D(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})\uFE0F?\p{Emoji_Modifier}?)*)$/u;
 
 export function invalid(message: string): never {
   throw new BuilderError("INVALID_INPUT", message);
@@ -75,6 +86,27 @@ export function isTextType(type: BuilderChannelType): boolean {
   return TEXT_TYPES.has(type);
 }
 
+/** Forum and media channels: posts with tags instead of one chat. */
+export function isForumType(type: BuilderChannelType): boolean {
+  return FORUM_TYPES.has(type);
+}
+
+/** A unicode emoji such as 👍, or a custom emoji as `name:id`. */
+export function isEmoji(value: string): boolean {
+  return CUSTOM_EMOJI.test(value) || UNICODE_EMOJI.test(value);
+}
+
+function normalizeForum(forum: BuilderForumSetup): BuilderForumSetup {
+  const guidelines = forum.guidelines?.trim();
+  const reaction = forum.defaultReactionEmoji?.trim();
+  return {
+    tags: forum.tags.map((tag) => ({ name: tag.name.trim(), ...(tag.emoji?.trim() ? { emoji: tag.emoji.trim() } : {}) })),
+    ...(guidelines ? { guidelines } : {}),
+    ...(reaction ? { defaultReactionEmoji: reaction } : {}),
+    ...(forum.firstPost ? { firstPost: { title: forum.firstPost.title.trim(), content: forum.firstPost.content.trim(), pin: forum.firstPost.pin } } : {}),
+  };
+}
+
 /** Trims names and turns text channel names into Discord style. */
 export function normalizeBlueprint(blueprint: BuilderBlueprint): BuilderBlueprint {
   return {
@@ -86,6 +118,7 @@ export function normalizeBlueprint(blueprint: BuilderBlueprint): BuilderBlueprin
         ...channel,
         name: isTextType(channel.type) ? channelSlug(channel.name) : channel.name.trim(),
         ...(channel.topic?.trim() ? { topic: channel.topic.trim() } : { topic: undefined }),
+        ...(channel.forum ? { forum: normalizeForum(channel.forum) } : {}),
       })),
     })),
   };
@@ -109,6 +142,28 @@ function requireOverwrites(where: string, overwrites: readonly BuilderOverwrite[
     targets.add(overwrite.target);
     for (const name of [...overwrite.allow, ...overwrite.deny])
       if (!(BUILDER_PERMISSIONS as readonly string[]).includes(name)) invalid(`"${name}" is not a permission the builder can set.`);
+  }
+}
+
+function requireEmoji(where: string, value: string | undefined): void {
+  if (value !== undefined && !isEmoji(value)) invalid(`${where} must be an emoji like 👍, or a custom emoji as name:id.`);
+}
+
+function requireForum(channel: BuilderChannel): void {
+  const forum = channel.forum;
+  if (!forum) return;
+  if (!isForumType(channel.type)) invalid(`#${channel.name} has forum settings but is not a forum or media channel.`);
+  if (forum.guidelines !== undefined && forum.guidelines.length > BUILDER_LIMITS.forumGuidelines) invalid(`The guidelines of #${channel.name} are too long (max ${BUILDER_LIMITS.forumGuidelines}).`);
+  if (forum.tags.length > BUILDER_LIMITS.forumTags) invalid(`#${channel.name} has too many tags. Discord allows ${BUILDER_LIMITS.forumTags}.`);
+  for (const tag of forum.tags) {
+    if (tag.name.length < 1 || tag.name.length > BUILDER_LIMITS.forumTagName) invalid(`Tag names in #${channel.name} must be between 1 and ${BUILDER_LIMITS.forumTagName} characters.`);
+    requireEmoji(`The emoji of tag "${tag.name}" in #${channel.name}`, tag.emoji);
+  }
+  requireEmoji(`The default reaction of #${channel.name}`, forum.defaultReactionEmoji);
+  if (forum.firstPost) {
+    if (forum.firstPost.title.length < 1 || forum.firstPost.title.length > BUILDER_LIMITS.forumPostTitle) invalid(`The first post title of #${channel.name} must be between 1 and ${BUILDER_LIMITS.forumPostTitle} characters.`);
+    if (forum.firstPost.content.length < 1 || forum.firstPost.content.length > BUILDER_LIMITS.forumPostContent) invalid(`The first post of #${channel.name} must be between 1 and ${BUILDER_LIMITS.forumPostContent} characters.`);
+    if (typeof forum.firstPost.pin !== "boolean") invalid(`Say whether the first post of #${channel.name} is pinned.`);
   }
 }
 
@@ -157,6 +212,7 @@ export function validateBlueprint(blueprint: BuilderBlueprint): void {
         channelPurposes.add(channel.purpose);
       }
       requireOverwrites(channel.name, channel.overwrites, roleKeys);
+      requireForum(channel);
     }
   }
   if (total > BUILDER_LIMITS.channels) invalid(`That is ${total} channels and categories. Discord allows ${BUILDER_LIMITS.channels}.`);
@@ -188,6 +244,7 @@ export function validateAnswers(answers: BuilderAnswers): void {
   if (name.length < 1 || name.length > 100) invalid("Server name must be between 1 and 100 characters.");
   if (answers.staffRanks.length > BUILDER_LIMITS.staffRanks) invalid(`You can have at most ${BUILDER_LIMITS.staffRanks} staff ranks.`);
   if (answers.departments.length > BUILDER_LIMITS.departments) invalid(`You can have at most ${BUILDER_LIMITS.departments} departments.`);
+  if (!BUILDER_STAFF_ACCESS.includes(answers.staffAccess)) invalid("Choose whether staff can see every department channel.");
   const seen = new Set<string>();
   for (const [what, list] of [["Staff rank", answers.staffRanks], ["Department", answers.departments]] as const)
     for (const item of list) {
