@@ -9,7 +9,8 @@
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "test": "vitest run test"
   },
   "exports": {
     ".": {
@@ -27,6 +28,10 @@
     "./brand": {
       "types": "./dist/brand.d.ts",
       "import": "./dist/brand.js"
+    },
+    "./messages": {
+      "types": "./dist/messages.d.ts",
+      "import": "./dist/messages.js"
     }
   }
 }
