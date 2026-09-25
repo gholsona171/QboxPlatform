@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, TemplateValues } from "@qbox/shared/messages";
 
 import {
   BirthdayService,
@@ -36,12 +37,17 @@ function settings(overrides: Partial<BirthdaySettingsInput> = {}): BirthdaySetti
   return { ...defaults, enabled: true, channelId: CHANNEL, roleId: ROLE, pingRoleId: PING, message: "Happy birthday {user}, you are {age} today! Love, {server}", ...overrides };
 }
 
-async function setup(start: string, overrides: Partial<BirthdaySettingsInput> = {}) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+async function setup(start: string, overrides: Partial<BirthdaySettingsInput> = {}, templates?: MessageTemplates) {
   let clock = new Date(start);
   const now = () => clock;
   const gateway = new FakeGateway();
   const repository = new InMemoryBirthdayRepository(now);
-  const service = new BirthdayService(repository, gateway, now);
+  const service = new BirthdayService(repository, gateway, now, templates);
   await service.saveSettings(settings(overrides));
   return { service, gateway, repository, at: (iso: string) => { clock = new Date(iso); } };
 }
@@ -112,7 +118,7 @@ describe("birthday timer", () => {
     at("2026-09-25T00:05:00.000Z");
     expect(await service.tick()).toEqual({ announced: 1, rolesRemoved: 0 });
     expect(gateway.posts[0]?.channelId).toBe(CHANNEL);
-    expect(gateway.posts[0]?.announcement).toMatchObject({ content: `<@${ALEX}> <@&${PING}>`, description: `Happy birthday <@${ALEX}>, you are 26 today! Love, Qbox City`, mentionRoleIds: [PING] });
+    expect(gateway.posts[0]?.announcement).toEqual({ content: `<@${ALEX}> <@&${PING}>`, embeds: [{ description: `Happy birthday <@${ALEX}>, you are 26 today! Love, Qbox City`, color: 0xf47fff }], mentionUserIds: [ALEX], mentionRoleIds: [PING] });
     expect(gateway.calls).toEqual([`add ${ALEX} ${ROLE}`]);
     expect(repository.birthdays[0]).toMatchObject({ lastAnnouncedYear: 2026, grantedRoleId: ROLE, roleRemoveAt: new Date("2026-09-25T15:00:00.000Z") });
     at("2026-09-25T06:00:00.000Z");
@@ -130,7 +136,7 @@ describe("birthday timer", () => {
     expect((await service.tick()).announced).toBe(0);
     at("2026-09-26T03:10:00.000Z");
     expect((await service.tick()).announced).toBe(1);
-    expect(gateway.posts[0]?.announcement.description).toBe(`Happy birthday <@${ALEX}>, you are today! Love, Qbox City`);
+    expect(gateway.posts[0]?.announcement.embeds?.[0]?.description).toBe(`Happy birthday <@${ALEX}>, you are today! Love, Qbox City`);
     await service.saveSettings(settings({ enabled: false }));
     await service.set({ guildId: GUILD, userId: SAM, displayName: "Sam", month: 9, day: 25, timeZone: "America/Los_Angeles" }, staff);
     expect((await service.tick()).announced).toBe(0);
@@ -141,6 +147,16 @@ describe("birthday timer", () => {
     await expect(service.saveSettings(settings({ channelId: undefined, roleId: undefined, expectedRevision: 1 }))).rejects.toMatchObject({ code: "INVALID_INPUT" });
     await expect(service.saveSettings(settings({ expectedRevision: 0 }))).rejects.toMatchObject({ code: "CONFLICT" });
     await service.sendTest(GUILD, ALEX);
-    expect(gateway.posts[0]?.announcement.description).toContain("21");
+    expect(gateway.posts[0]?.announcement.embeds?.[0]?.description).toContain("21");
+  });
+
+  it("posts the server's custom birthday message, keeping the pings", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const { service, gateway, at } = await setup("2026-09-25T12:00:00.000Z", { announceHour: 0 }, markedTemplates(seen));
+    await service.set({ guildId: GUILD, userId: ALEX, displayName: "Alex", month: 9, day: 25, year: 2000, showAge: true, timeZone: "UTC" }, alex);
+    at("2026-09-25T13:00:00.000Z");
+    expect((await service.tick()).announced).toBe(1);
+    expect(gateway.posts[0]?.announcement).toEqual({ content: "custom birthdays.announcement", embeds: undefined, mentionUserIds: [ALEX], mentionRoleIds: [PING] });
+    expect(seen).toEqual([{ key: "birthdays.announcement", values: { user: `<@${ALEX}>`, username: "Alex", age: 26, date: "September 25", server: "Qbox City" } }]);
   });
 });

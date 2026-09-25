@@ -1,4 +1,4 @@
-import { colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import type { DiscordRestClient } from "@qbox/shared/discord-rest";
 
 import type { BirthdayAnnouncement, BirthdayGateway } from "./types.js";
 
@@ -24,8 +24,8 @@ export class DiscordRestBirthdayGateway implements BirthdayGateway {
   public async post(channelId: string, announcement: BirthdayAnnouncement): Promise<{ readonly messageId: string }> {
     const message = (await this.rest.post(`/channels/${channelId}/messages`, {
       body: {
-        content: announcement.content,
-        embeds: [{ description: announcement.description, color: colorValue(announcement.color) }],
+        content: announcement.content ?? "",
+        embeds: announcement.embeds ?? [],
         allowed_mentions: { parse: [], users: [...announcement.mentionUserIds], roles: [...announcement.mentionRoleIds] },
       },
     })) as { readonly id: string };

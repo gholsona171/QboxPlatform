@@ -7,6 +7,7 @@ import type { CommunityRepository } from "@qbox/discord-community";
 import type { RoleDependencyRepository } from "@qbox/discord-roles";
 import type { DiscordFeatureFactory } from "./features/DiscordFeature.js";
 import { env } from "@qbox/shared";
+import type { MessageTemplates } from "@qbox/shared/messages";
 
 import { RoleMenuCommand } from "./commands/RoleMenu.command.js";
 import { WelcomeCommand } from "./commands/Welcome.command.js";
@@ -46,10 +47,12 @@ export class DiscordModule implements PlatformModule {
       readonly communityRepository?: CommunityRepository;
       readonly roleDependencyRepository?: RoleDependencyRepository;
       readonly features?: readonly DiscordFeatureFactory[];
+      /** Custom message templates for welcome and goodbye messages. */
+      readonly templates?: MessageTemplates;
     } = {},
   ) {
     this.discordService =
-      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository, dependencies.features);
+      dependencies.discordService ?? new DiscordService(permissionAuthorizer, dependencies.roleMenuRepository, dependencies.communityRepository, dependencies.roleDependencyRepository, dependencies.features, dependencies.templates);
     this.commandLoader = dependencies.commandLoader ?? new CommandLoader();
   }
 

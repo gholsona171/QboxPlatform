@@ -44,6 +44,7 @@ expire.
 - **Safety checks:** you cannot moderate yourself, the server owner, the bot, anyone whose highest role is at or above yours or the bot's, or anyone with a protected role.
 - **DMs:** members are told what happened and why (sent before kicks and bans so they can still receive it). Optionally include the moderator's name and an appeal message.
 - **Log channel:** every action, pardon, reason change, purge, lock, and slowmode change is posted.
+- **Custom messages:** customize the member DM under Look & Messages (key `moderation.warn-dm`) and the case log embed (key `moderation.case-log`).
 - **Automatic punishments:** for example, time out at 3 warnings and ban at 5. Warnings can expire after a number of days.
 - **Automod:** spam bursts, invite links, links not on an allow list, blocked words (with `*` wildcards), mass mentions, and excessive caps. Each rule deletes the message and can also warn or time out. Roles and channels can be exempt; administrators are never checked.
 - **Done in Discord:** bans, unbans, and kicks made in Discord's own menus are recorded as cases, using the audit log to find who did it.

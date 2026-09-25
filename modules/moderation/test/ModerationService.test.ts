@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, OutgoingMessage, TemplateValues } from "@qbox/shared/messages";
 
 import {
   DiscordRestModerationGateway,
@@ -27,8 +28,9 @@ const PROTECTED = "400000000000000009";
 
 class FakeGateway implements ModerationGateway {
   public readonly calls: string[] = [];
-  public readonly dms: ModerationEmbed[] = [];
+  public readonly dms: OutgoingMessage[] = [];
   public readonly posts: ModerationEmbed[] = [];
+  public readonly logs: OutgoingMessage[] = [];
   public hierarchy: HierarchyCheck = { allowed: true, targetRoleIds: [], targetIsMember: true };
   public dmWorks = true;
 
@@ -37,8 +39,10 @@ class FakeGateway implements ModerationGateway {
   public async kick(_g: string, userId: string) { this.calls.push(`kick ${userId}`); }
   public async ban(_g: string, userId: string, seconds: number) { this.calls.push(`ban ${userId} ${seconds}`); }
   public async unban(_g: string, userId: string) { this.calls.push(`unban ${userId}`); }
-  public async directMessage(_u: string, embed: ModerationEmbed) { this.calls.push("dm"); this.dms.push(embed); return this.dmWorks; }
+  public async guildName() { return "Guildhall HQ"; }
+  public async directMessage(_u: string, message: OutgoingMessage) { this.calls.push("dm"); this.dms.push(message); return this.dmWorks; }
   public async postEmbed(_c: string, embed: ModerationEmbed) { this.posts.push(embed); return { messageId: "700000000000000001" }; }
+  public async postMessage(_c: string, message: OutgoingMessage) { this.logs.push(message); return { messageId: "700000000000000001" }; }
   public async purge(_c: string, count: number) { this.calls.push(`purge ${count}`); return count; }
   public async setLocked(_g: string, _c: string, locked: boolean) { this.calls.push(locked ? "lock" : "unlock"); }
   public async setSlowmode(_c: string, seconds: number) { this.calls.push(`slowmode ${seconds}`); }
@@ -50,12 +54,17 @@ function settings(overrides: Partial<ModerationSettingsInput> = {}): ModerationS
   return { ...defaults, logChannelId: LOGS, ...overrides };
 }
 
-async function setup(overrides: Partial<ModerationSettingsInput> = {}) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+async function setup(overrides: Partial<ModerationSettingsInput> = {}, templates?: MessageTemplates) {
   let clock = new Date("2026-09-25T12:00:00.000Z");
   const now = () => clock;
   const gateway = new FakeGateway();
   const repository = new InMemoryModerationRepository(now);
-  const service = new ModerationService(repository, gateway, now);
+  const service = new ModerationService(repository, gateway, now, templates);
   await service.saveSettings(settings(overrides));
   return { service, gateway, repository, advance: (minutes: number) => { clock = new Date(clock.getTime() + minutes * 60_000); } };
 }
@@ -65,8 +74,8 @@ describe("ModerationService actions", () => {
     const { service, gateway } = await setup({ appealMessage: "Appeal at example.com" });
     const warning = await service.act({ guildId: GUILD, type: "WARN", target: MEMBER, moderator: MOD, reason: "Spamming" });
     expect(warning).toMatchObject({ number: 1, type: "WARN", active: true, dmDelivered: true, logMessageId: "700000000000000001" });
-    expect(gateway.dms[0]?.title).toBe("You received a warning");
-    expect(gateway.posts[0]?.title).toBe("Warning | Case #1");
+    expect(gateway.dms[0]?.embeds?.[0]?.title).toBe("You received a warning");
+    expect(gateway.logs[0]?.embeds?.[0]?.title).toBe("Warning | Case #1");
     expect((await service.act({ guildId: GUILD, type: "NOTE", target: MEMBER, moderator: MOD, reason: "Watch" })).number).toBe(2);
   });
 
@@ -76,7 +85,7 @@ describe("ModerationService actions", () => {
     const ban = await service.act({ guildId: GUILD, type: "BAN", target: MEMBER, moderator: MOD, reason: "Cheating", deleteMessageHours: 24 });
     expect(gateway.calls.slice(0, 2)).toEqual(["dm", `ban ${MEMBER.userId} 86400`]);
     expect(ban.dmDelivered).toBe(false);
-    expect(gateway.dms[0]?.fields?.some((field) => field.name === "Appeal")).toBe(true);
+    expect(gateway.dms[0]?.embeds?.[0]?.fields?.some((field) => field.name === "Appeal")).toBe(true);
   });
 
   it("enforces reasons, self-moderation, hierarchy, and protected roles", async () => {
@@ -107,6 +116,35 @@ describe("ModerationService actions", () => {
     const { service, gateway } = await setup();
     await service.act({ guildId: GUILD, type: "SOFTBAN", target: MEMBER, moderator: MOD, reason: "Raid" });
     expect(gateway.calls.filter((call) => call.startsWith("ban") || call.startsWith("unban"))).toEqual([`ban ${MEMBER.userId} 86400`, `unban ${MEMBER.userId}`]);
+  });
+});
+
+describe("ModerationService message templates", () => {
+  it("sends the built-in DM and case log when nothing is customized", async () => {
+    const { service, gateway } = await setup();
+    await service.act({ guildId: GUILD, type: "TIMEOUT", target: MEMBER, moderator: MOD, reason: "Spamming", durationMinutes: 30 });
+    expect(gateway.dms[0]).toEqual({
+      embeds: [{ title: "You were timed out", description: "**Reason:** Spamming", color: 0xe67e22, fields: [{ name: "Length", value: "30 minutes", inline: true }], footer: { text: "Case #1" }, timestamp: "2026-09-25T12:00:00.000Z" }],
+    });
+    expect(gateway.logs[0]).toEqual({
+      embeds: [{
+        title: "Timeout | Case #1",
+        description: `**Member:** <@${MEMBER.userId}> (Alex)\n**Moderator:** <@${MOD.userId}>\n**Reason:** Spamming\n**Length:** 30 minutes\n**Ends:** <t:1790339400:R>`,
+        color: 0xe67e22,
+        footer: { text: `Member ID ${MEMBER.userId}` },
+        timestamp: "2026-09-25T12:00:00.000Z",
+      }],
+    });
+  });
+
+  it("sends the server's custom DM and case log", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const { service, gateway } = await setup({}, markedTemplates(seen));
+    await service.act({ guildId: GUILD, type: "WARN", target: MEMBER, moderator: MOD, reason: "Spamming" });
+    expect(gateway.dms).toEqual([{ content: "custom moderation.warn-dm" }]);
+    expect(gateway.logs).toEqual([{ content: "custom moderation.case-log" }]);
+    const values = { user: `<@${MEMBER.userId}>`, username: "Alex", moderator: `<@${MOD.userId}>`, caseNumber: 1, action: "Warning", duration: "", reason: "Spamming", rule: "", server: "Guildhall HQ" };
+    expect(seen).toEqual([{ key: "moderation.warn-dm", values }, { key: "moderation.case-log", values }]);
   });
 });
 

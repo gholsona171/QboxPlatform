@@ -1,3 +1,6 @@
+import { colorValue } from "@qbox/shared/discord-rest";
+import { passthroughTemplates, type MessageTemplates, type OutgoingEmbed, type OutgoingMessage, type TemplateValues } from "@qbox/shared/messages";
+
 import { SpamTracker, defaultAutomod, evaluateAutomod, formatDuration } from "./automod.js";
 import type {
   AutomodMessage,
@@ -93,6 +96,21 @@ export function caseLabel(type: CaseType): string {
   return LABELS[type];
 }
 
+/** Placeholder values shared by `moderation.warn-dm` and `moderation.case-log`. */
+function caseValues(item: Pick<ModerationCase, "type" | "number" | "targetId" | "targetName" | "moderatorId" | "moderatorName" | "reason" | "durationMinutes" | "source">, server: string): TemplateValues {
+  return {
+    user: `<@${item.targetId}>`,
+    username: item.targetName,
+    moderator: item.moderatorId === "0" ? item.moderatorName : `<@${item.moderatorId}>`,
+    caseNumber: item.number,
+    action: caseLabel(item.type),
+    duration: item.durationMinutes ? formatDuration(item.durationMinutes) : "",
+    reason: item.reason ?? "No reason given",
+    rule: item.source === "AUTOMOD" ? (/^Automod \((\w+)\)/.exec(item.reason ?? "")?.[1] ?? "") : "",
+    server,
+  };
+}
+
 /**
  * Moderation rules shared by the bot, the API, and automod.
  *
@@ -108,6 +126,7 @@ export class ModerationService {
     private readonly repository: ModerationRepository,
     private readonly gateway?: ModerationGateway,
     private readonly now: () => Date = () => new Date(),
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public async settings(guildId: string): Promise<ModerationSettings> {
@@ -158,7 +177,12 @@ export class ModerationService {
 
     let dmDelivered: boolean | undefined;
     const notify = type !== "NOTE" && type !== "UNBAN" && settings.dmOnAction;
-    const dm = () => gateway.directMessage(target.userId, this.dmEmbed(type, settings, moderator, reason, duration, number)).catch(() => false);
+    const dm = async () => {
+      const server = await gateway.guildName(guildId).catch(() => "the server");
+      const values = caseValues({ type, number, targetId: target.userId, targetName: target.displayName, moderatorId: moderator.userId, moderatorName: moderator.displayName, reason, durationMinutes: duration, source: moderator.source }, server);
+      const message = await this.templates.apply(guildId, "moderation.warn-dm", values, { embeds: [this.dmEmbed(type, settings, moderator, reason, duration, number)] });
+      return gateway.directMessage(target.userId, message).catch(() => false);
+    };
     if (notify && (type === "KICK" || type === "BAN" || type === "SOFTBAN")) dmDelivered = await dm();
 
     switch (type) {
@@ -445,7 +469,7 @@ export class ModerationService {
       await this.repository.updateCase(active.id, { active: false });
   }
 
-  private dmEmbed(type: CaseType, settings: ModerationSettings, moderator: Moderator, reason: string | undefined, duration: number | undefined, number: number): ModerationEmbed {
+  private dmEmbed(type: CaseType, settings: ModerationSettings, moderator: Moderator, reason: string | undefined, duration: number | undefined, number: number): OutgoingEmbed {
     const verb: Readonly<Record<CaseType, string>> = {
       WARN: "You received a warning",
       TIMEOUT: "You were timed out",
@@ -456,7 +480,7 @@ export class ModerationService {
       SOFTBAN: "You were kicked and your recent messages were removed",
       NOTE: "Note",
     };
-    return {
+    return this.embed({
       title: verb[type],
       description: reason ? `**Reason:** ${reason}` : "No reason was given.",
       color: COLORS[type],
@@ -466,24 +490,42 @@ export class ModerationService {
         ...(settings.appealMessage && (type === "BAN" || type === "KICK" || type === "SOFTBAN") ? [{ name: "Appeal", value: settings.appealMessage }] : []),
       ],
       footer: `Case #${number}`,
+    });
+  }
+
+  /** A moderation embed as Discord embed JSON, the way the log channel shows it. */
+  private embed(embed: ModerationEmbed): OutgoingEmbed {
+    return {
+      title: embed.title,
+      description: embed.description,
+      color: colorValue(embed.color),
+      ...(embed.fields?.length ? { fields: embed.fields.map((field) => ({ name: field.name, value: field.value, inline: field.inline ?? false })) } : {}),
+      ...(embed.footer ? { footer: { text: embed.footer } } : {}),
+      timestamp: this.now().toISOString(),
     };
   }
 
   private async log(settings: ModerationSettings, item: ModerationCase): Promise<ModerationCase> {
-    const message = await this.post(settings, {
-      title: `${caseLabel(item.type)} | Case #${item.number}`,
-      description: [
-        `**Member:** <@${item.targetId}> (${item.targetName})`,
-        `**Moderator:** ${item.moderatorId === "0" ? item.moderatorName : `<@${item.moderatorId}>`}${item.source === "WEB" ? " via portal" : item.source === "AUTOMOD" ? " (automatic)" : item.source === "EXTERNAL" ? " (in Discord)" : ""}`,
-        `**Reason:** ${item.reason ?? "No reason given"}`,
-        ...(item.durationMinutes ? [`**Length:** ${formatDuration(item.durationMinutes)}`] : []),
-        ...(item.expiresAt ? [`**Ends:** <t:${Math.floor(item.expiresAt.getTime() / 1000)}:R>`] : []),
-        ...(item.dmDelivered === false ? ["_Could not DM the member._"] : []),
-      ].join("\n"),
-      color: COLORS[item.type],
-      footer: `Member ID ${item.targetId}`,
-    });
-    return message ? this.repository.updateCase(item.id, { logMessageId: message.messageId }) : item;
+    if (!settings.logChannelId || !this.gateway) return item;
+    const server = await this.gateway.guildName(item.guildId).catch(() => "the server");
+    const fallback: OutgoingMessage = {
+      embeds: [this.embed({
+        title: `${caseLabel(item.type)} | Case #${item.number}`,
+        description: [
+          `**Member:** <@${item.targetId}> (${item.targetName})`,
+          `**Moderator:** ${item.moderatorId === "0" ? item.moderatorName : `<@${item.moderatorId}>`}${item.source === "WEB" ? " via portal" : item.source === "AUTOMOD" ? " (automatic)" : item.source === "EXTERNAL" ? " (in Discord)" : ""}`,
+          `**Reason:** ${item.reason ?? "No reason given"}`,
+          ...(item.durationMinutes ? [`**Length:** ${formatDuration(item.durationMinutes)}`] : []),
+          ...(item.expiresAt ? [`**Ends:** <t:${Math.floor(item.expiresAt.getTime() / 1000)}:R>`] : []),
+          ...(item.dmDelivered === false ? ["_Could not DM the member._"] : []),
+        ].join("\n"),
+        color: COLORS[item.type],
+        footer: `Member ID ${item.targetId}`,
+      })],
+    };
+    const message = await this.templates.apply(item.guildId, "moderation.case-log", caseValues(item, server), fallback);
+    const posted = await this.gateway.postMessage(settings.logChannelId, message).catch(() => undefined);
+    return posted ? this.repository.updateCase(item.id, { logMessageId: posted.messageId }) : item;
   }
 
   private async post(settings: ModerationSettings, embed: ModerationEmbed): Promise<{ readonly messageId: string } | undefined> {

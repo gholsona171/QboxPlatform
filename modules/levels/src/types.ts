@@ -1,3 +1,5 @@
+import type { OutgoingMessage } from "@qbox/shared/messages";
+
 export type LevelUpMode = "CURRENT" | "CHANNEL" | "DM" | "OFF";
 export type LevelRewardMode = "STACK" | "HIGHEST";
 
@@ -114,9 +116,10 @@ export interface LevelGateway {
   memberRoleIds(guildId: string, userId: string): Promise<readonly string[] | undefined>;
   addRole(guildId: string, userId: string, roleId: string, reason: string): Promise<void>;
   removeRole(guildId: string, userId: string, roleId: string, reason: string): Promise<void>;
-  /** Posts a message that may ping `mentionUserId`. */
-  sendMessage(channelId: string, content: string, mentionUserId: string): Promise<void>;
-  directMessage(userId: string, content: string): Promise<boolean>;
+  guildName(guildId: string): Promise<string>;
+  /** Posts the rendered `levels.level-up` message; it may ping `mentionUserId`. */
+  sendMessage(channelId: string, message: OutgoingMessage, mentionUserId: string): Promise<void>;
+  directMessage(userId: string, message: OutgoingMessage): Promise<boolean>;
 }
 
 /** A message that may earn XP. */

@@ -1,4 +1,5 @@
 import { colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import type { OutgoingMessage } from "@qbox/shared/messages";
 
 import type { GuildMemberInfo, VerificationEmbed, VerificationGateway, VerificationPanel } from "./types.js";
 import { VERIFICATION_CUSTOM_ID } from "./types.js";
@@ -59,8 +60,8 @@ export class DiscordRestVerificationGateway implements VerificationGateway {
     }
   }
 
-  public async sendMessage(channelId: string, content: string, mentionUserId: string): Promise<void> {
-    await this.rest.post(`/channels/${channelId}/messages`, { body: { content, allowed_mentions: { parse: [], users: [mentionUserId] } } });
+  public async sendMessage(channelId: string, message: OutgoingMessage, mentionUserId: string): Promise<void> {
+    await this.rest.post(`/channels/${channelId}/messages`, { body: { ...message, allowed_mentions: { parse: [], users: [mentionUserId] } } });
   }
 
   public async postEmbed(channelId: string, embed: VerificationEmbed): Promise<void> {

@@ -1,5 +1,6 @@
 import { Events, type Client, type GuildMember, type PartialGuildMember } from "discord.js";
 import { DiscordRestVerificationGateway, VerificationService, type VerificationRepository } from "@qbox/verification";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { logger } from "@qbox/logger";
 
 import { VerifyCommand } from "../commands/Verify.command.js";
@@ -12,9 +13,9 @@ const SWEEP_INTERVAL_MS = 60_000;
  * Verification: `/verify`, the panel button and forms, the unverified role and
  * account age check on join, and kicking members who stay unverified.
  */
-export function verificationFeature(repository: VerificationRepository): DiscordFeatureFactory {
+export function verificationFeature(repository: VerificationRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client, authorizer }) => {
-    const verification = new VerificationService(repository, new DiscordRestVerificationGateway(client.rest));
+    const verification = new VerificationService(repository, new DiscordRestVerificationGateway(client.rest), undefined, templates);
     const interactions = new VerificationInteractionHandler(verification);
     const events = new VerificationEvents(verification);
     return {

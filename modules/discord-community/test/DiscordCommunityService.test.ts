@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, TemplateValues } from "@qbox/shared/messages";
 
 import {
   DiscordCommunityService,
@@ -11,6 +12,7 @@ import {
   type CommunityRoleMutationResult,
   type CommunityRoleQuery,
   type CommunityRoleValidation,
+  type CommunityPostMessage,
   type CommunitySendMessage,
   type CommunitySentMessage,
   type CommunitySettings,
@@ -61,7 +63,7 @@ describe("DiscordCommunityService", () => {
 
     expect(service.renderWelcomeGoodbye(config, placeholder()).content).toBe("Hi <@804859666655739996> in Qbox at 12");
     await expect(service.deliverWelcomeGoodbye("WELCOME", guildId, placeholder())).resolves.toBeUndefined();
-    expect(gateway.sent).toHaveLength(0);
+    expect(gateway.posted).toHaveLength(0);
   });
 
   it("delivers welcome messages and reports invalid channel failures", async () => {
@@ -72,6 +74,38 @@ describe("DiscordCommunityService", () => {
     await expect(service.deliverWelcomeGoodbye("WELCOME", guildId, placeholder())).resolves.toMatchObject({ channelId });
     gateway.failSend = true;
     await expect(service.deliverWelcomeGoodbye("WELCOME", guildId, placeholder())).rejects.toThrowError("invalid-channel");
+  });
+
+  it("posts the built-in welcome message when nothing is customized", async () => {
+    const gateway = new FakeGateway();
+    const service = new DiscordCommunityService(new InMemoryCommunityRepository(), gateway);
+    await service.saveWelcomeGoodbye(welcome({ enabled: true, messageText: "Hi {user} in {server}", embedEnabled: true, embedTitle: "Welcome", embedColor: "#57F287", thumbnailAvatar: true, footer: "Member {memberCount}", roleMentionId: roleId }));
+    await service.deliverWelcomeGoodbye("WELCOME", guildId, { ...placeholder(), avatarUrl: "https://cdn.example/avatar.png" });
+    expect(gateway.posted).toEqual([{
+      guildId,
+      channelId,
+      message: {
+        content: `<@&${roleId}> Hi <@804859666655739996> in Qbox`,
+        embeds: [{ title: "Welcome", description: "Hi <@804859666655739996> in Qbox", color: 0x57f287, thumbnail: { url: "https://cdn.example/avatar.png" }, footer: { text: "Member 12" } }],
+      },
+    }]);
+  });
+
+  it("posts the server's custom welcome and goodbye messages", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const templates: MessageTemplates = { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+    const gateway = new FakeGateway();
+    const service = new DiscordCommunityService(new InMemoryCommunityRepository(), gateway, templates);
+    await service.saveWelcomeGoodbye(welcome({ enabled: true }));
+    await service.saveWelcomeGoodbye(welcome({ kind: "GOODBYE", enabled: true, deleteAfterSeconds: 30 }));
+    await service.deliverWelcomeGoodbye("WELCOME", guildId, placeholder());
+    await service.deliverWelcomeGoodbye("GOODBYE", guildId, placeholder());
+    expect(gateway.posted).toEqual([
+      { guildId, channelId, message: { content: "custom community.welcome" } },
+      { guildId, channelId, message: { content: "custom community.goodbye" }, deleteAfterSeconds: 30 },
+    ]);
+    const values = { user: "<@804859666655739996>", username: "Owner", server: "Qbox", memberCount: 12 };
+    expect(seen).toEqual([{ key: "community.welcome", values }, { key: "community.goodbye", values }]);
   });
 
   it("applies autoroles in deterministic order while excluding bots and invalid roles", async () => {
@@ -161,6 +195,7 @@ function placeholder() {
 
 class FakeGateway implements DiscordCommunityGateway {
   public sent: CommunitySendMessage[] = [];
+  public posted: CommunityPostMessage[] = [];
   public assigned: CommunityRoleMutation[] = [];
   public renamed: ChannelRenameInput[] = [];
   public invalidRoles = new Set<string>();
@@ -170,6 +205,12 @@ class FakeGateway implements DiscordCommunityGateway {
   public async sendMessage(input: CommunitySendMessage): Promise<CommunitySentMessage> {
     if (this.failSend) throw new Error("invalid-channel");
     this.sent.push(input);
+    return { channelId: input.channelId, messageId: "1262656532902842428" };
+  }
+
+  public async postMessage(input: CommunityPostMessage): Promise<CommunitySentMessage> {
+    if (this.failSend) throw new Error("invalid-channel");
+    this.posted.push(input);
     return { channelId: input.channelId, messageId: "1262656532902842428" };
   }
 

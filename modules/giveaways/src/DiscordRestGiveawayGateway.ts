@@ -1,10 +1,18 @@
-import { colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import { GuildNameCache, type DiscordRestClient } from "@qbox/shared/discord-rest";
 
 import type { GiveawayGateway, GiveawayMessage } from "./types.js";
 
 /** Giveaway messages and winner DMs through the Discord REST API (v10). */
 export class DiscordRestGiveawayGateway implements GiveawayGateway {
-  public constructor(private readonly rest: DiscordRestClient) {}
+  private readonly guildNames: GuildNameCache;
+
+  public constructor(private readonly rest: DiscordRestClient) {
+    this.guildNames = new GuildNameCache(rest);
+  }
+
+  public guildName(guildId: string): Promise<string> {
+    return this.guildNames.name(guildId);
+  }
 
   public async postMessage(channelId: string, message: GiveawayMessage, replyToMessageId?: string): Promise<{ readonly messageId: string }> {
     const body = {
@@ -33,15 +41,7 @@ export class DiscordRestGiveawayGateway implements GiveawayGateway {
 function toBody(message: GiveawayMessage) {
   return {
     content: message.content ?? "",
-    embeds: message.embed
-      ? [{
-          title: message.embed.title,
-          description: message.embed.description,
-          color: colorValue(message.embed.color),
-          ...(message.embed.fields.length ? { fields: message.embed.fields.map((field) => ({ name: field.name, value: field.value, inline: field.inline ?? false })) } : {}),
-          ...(message.embed.footer ? { footer: { text: message.embed.footer } } : {}),
-        }]
-      : [],
+    embeds: message.embeds ?? [],
     components: message.enterButton
       ? [{ type: 1, components: [{ type: 2, style: 1, custom_id: message.enterButton.customId, label: message.enterButton.label, emoji: { name: "🎉" } }] }]
       : [],

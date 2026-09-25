@@ -1,4 +1,5 @@
 import { DiscordRestTicketGateway, TicketService, type TicketRepository } from "@qbox/tickets";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 
 import { TicketCommand } from "../commands/Ticket.command.js";
 import { TicketsCommand } from "../commands/Tickets.command.js";
@@ -8,9 +9,9 @@ import { DiscordTicketInteractionHandler } from "./DiscordTicketInteractionHandl
 import { TicketElevation } from "./ticketActor.js";
 
 /** Ticket system: `/ticket`, `/tickets`, panel components, and ticket events. */
-export function ticketsFeature(repository: TicketRepository): DiscordFeatureFactory {
+export function ticketsFeature(repository: TicketRepository, templates: MessageTemplates = passthroughTemplates): DiscordFeatureFactory {
   return ({ client, authorizer }) => {
-    const tickets = new TicketService(repository, new DiscordRestTicketGateway(client.rest));
+    const tickets = new TicketService(repository, new DiscordRestTicketGateway(client.rest), undefined, templates);
     const elevation = new TicketElevation(authorizer);
     const interactions = new DiscordTicketInteractionHandler(tickets, elevation);
     const events = new DiscordTicketEventHandler(tickets);

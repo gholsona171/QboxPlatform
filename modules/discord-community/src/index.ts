@@ -1,4 +1,5 @@
 import { BRAND } from "@qbox/shared/brand";
+import { passthroughTemplates, type MessageTemplates, type OutgoingMessage } from "@qbox/shared/messages";
 
 export type CommunityFeature =
   | "welcome"
@@ -67,6 +68,8 @@ export interface CommunityRepository {
 
 export interface DiscordCommunityGateway {
   sendMessage(input: CommunitySendMessage): Promise<CommunitySentMessage>;
+  /** Posts a rendered message (`community.welcome`, `community.goodbye`). */
+  postMessage(input: CommunityPostMessage): Promise<CommunitySentMessage>;
   assignRole(input: CommunityRoleMutation): Promise<CommunityRoleMutationResult>;
   removeRole(input: CommunityRoleMutation): Promise<CommunityRoleMutationResult>;
   validateRole(input: CommunityRoleQuery): Promise<CommunityRoleValidation>;
@@ -115,6 +118,8 @@ export interface PlaceholderContext {
   readonly server: string;
   readonly memberCount: number;
   readonly joinedAt: Date;
+  /** Member avatar for embed thumbnails. */
+  readonly avatarUrl?: string | undefined;
 }
 
 export interface AutoroleConfig {
@@ -299,6 +304,13 @@ export interface CommunitySendMessage {
   readonly deleteAfterSeconds?: number | undefined;
 }
 
+export interface CommunityPostMessage {
+  readonly guildId: string;
+  readonly channelId: string;
+  readonly message: OutgoingMessage;
+  readonly deleteAfterSeconds?: number | undefined;
+}
+
 export interface CommunitySentMessage {
   readonly channelId: string;
   readonly messageId: string;
@@ -366,6 +378,7 @@ export class DiscordCommunityService {
   public constructor(
     private readonly repository: CommunityRepository,
     private readonly gateway?: DiscordCommunityGateway,
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public settings(guildId: string): Promise<CommunitySettings> {
@@ -406,7 +419,19 @@ export class DiscordCommunityService {
     const config = kind === "WELCOME" ? settings.welcome : settings.goodbye;
     if (!config?.enabled) return undefined;
     if (!this.gateway) throw unavailable();
-    return this.gateway.sendMessage(this.renderWelcomeGoodbye(config, context));
+    const rendered = this.renderWelcomeGoodbye(config, context);
+    const message = await this.templates.apply(
+      guildId,
+      kind === "WELCOME" ? "community.welcome" : "community.goodbye",
+      { user: context.user, username: context.displayName, server: context.server, memberCount: context.memberCount },
+      outgoingMessage(rendered, context.avatarUrl),
+    );
+    return this.gateway.postMessage({
+      guildId,
+      channelId: config.channelId,
+      message,
+      ...(rendered.deleteAfterSeconds === undefined ? {} : { deleteAfterSeconds: rendered.deleteAfterSeconds }),
+    });
   }
 
   public saveAutoroles(input: AutoroleConfig): Promise<AutoroleConfig> {
@@ -643,6 +668,29 @@ export function renderCounter(template: string, value: number): string {
 
 function renderOptional(value: string | undefined, context: PlaceholderContext): string | undefined {
   return value === undefined ? undefined : renderPlaceholders(value, context);
+}
+
+/** A welcome or goodbye message as Discord message JSON, the way the channel shows it. */
+function outgoingMessage(message: CommunitySendMessage, avatarUrl: string | undefined): OutgoingMessage {
+  const embed = message.embed;
+  const thumbnailUrl = embed?.thumbnailUrl?.startsWith("avatar:") ? avatarUrl : embed?.thumbnailUrl;
+  return {
+    ...(message.content ? { content: message.content } : {}),
+    ...(embed
+      ? {
+          embeds: [{
+            ...(embed.title ? { title: embed.title } : {}),
+            ...(embed.description ? { description: embed.description } : {}),
+            ...(embed.color === undefined ? {} : { color: embed.color }),
+            ...(thumbnailUrl ? { thumbnail: { url: thumbnailUrl } } : {}),
+            ...(embed.imageUrl ? { image: { url: embed.imageUrl } } : {}),
+            ...(embed.footer ? { footer: { text: embed.footer } } : {}),
+            ...(embed.timestamp ? { timestamp: new Date().toISOString() } : {}),
+            ...(embed.fields?.length ? { fields: embed.fields.map((field) => ({ name: field.name, value: field.value, inline: field.inline })) } : {}),
+          }],
+        }
+      : {}),
+  };
 }
 
 function compactEmbed(input: RenderedEmbed): RenderedEmbed {

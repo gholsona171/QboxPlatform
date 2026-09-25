@@ -1,5 +1,7 @@
 import { randomInt } from "node:crypto";
 
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
+
 import type {
   AttemptFilter,
   CaptchaChallenge,
@@ -92,6 +94,7 @@ export class VerificationService {
     private readonly repository: VerificationRepository,
     private readonly gateway?: VerificationGateway,
     private readonly now: () => Date = () => new Date(),
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public async settings(guildId: string): Promise<VerificationSettings> {
@@ -330,8 +333,15 @@ export class VerificationService {
     const server = needsServer ? await gateway.guildName(guildId).catch(() => "the server") : "";
     if (settings.dmOnSuccess)
       await gateway.directMessage(member.userId, fillTemplate(settings.successMessage ?? "You are now verified in {server}. Welcome!", member.userId, server));
-    if (settings.welcomeChannelId && settings.welcomeMessage)
-      await gateway.sendMessage(settings.welcomeChannelId, fillTemplate(settings.welcomeMessage, member.userId, server), member.userId).catch(() => undefined);
+    if (settings.welcomeChannelId && settings.welcomeMessage) {
+      const welcome = await this.templates.apply(
+        guildId,
+        "verification.welcome",
+        { user: `<@${member.userId}>`, username: member.displayName, server },
+        { content: fillTemplate(settings.welcomeMessage, member.userId, server) },
+      );
+      await gateway.sendMessage(settings.welcomeChannelId, welcome, member.userId).catch(() => undefined);
+    }
     await this.log(settings, {
       title: result === "MANUAL" ? "Member verified by staff" : "Member verified",
       description: [

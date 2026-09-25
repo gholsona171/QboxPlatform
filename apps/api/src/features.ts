@@ -15,6 +15,7 @@ import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
 import { DiscordRestVerificationGateway, VerificationService } from "@qbox/verification";
 import { DiscordRestVoiceGateway, VoiceRoomService } from "@qbox/voice-rooms";
 import type { REST } from "discord.js";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 
 import { applicationsApiFeature } from "./applications/ApplicationRoutes.js";
 import { birthdaysApiFeature } from "./birthdays/BirthdayRoutes.js";
@@ -41,17 +42,20 @@ export interface ApiFeatureDependencies {
 }
 
 /** Every pluggable API feature. Add one line per feature. */
+/** Custom message templates for every feature that posts to Discord. */
+const templates: MessageTemplates = passthroughTemplates;
+
 export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies): readonly ApiFeature[] {
-  const tickets = new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined);
-  const moderation = new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined);
-  const verification = new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined);
+  const tickets = new TicketService(persistence.repositories.tickets, discordRest ? new DiscordRestTicketGateway(discordRest) : undefined, undefined, templates);
+  const moderation = new ModerationService(new PrismaModerationRepository(persistence.prisma), discordRest ? new DiscordRestModerationGateway(discordRest) : undefined, undefined, templates);
+  const verification = new VerificationService(new PrismaVerificationRepository(persistence.prisma), discordRest ? new DiscordRestVerificationGateway(discordRest) : undefined, undefined, templates);
   const applications = new ApplicationService(new PrismaApplicationRepository(persistence.prisma), discordRest ? new DiscordRestApplicationGateway(discordRest) : undefined);
   const staff = new StaffService(new PrismaStaffRepository(persistence.prisma), discordRest ? new DiscordRestStaffGateway(discordRest) : undefined);
-  const birthdays = new BirthdayService(new PrismaBirthdayRepository(persistence.prisma), discordRest ? new DiscordRestBirthdayGateway(discordRest) : undefined);
-  const levels = new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined);
+  const birthdays = new BirthdayService(new PrismaBirthdayRepository(persistence.prisma), discordRest ? new DiscordRestBirthdayGateway(discordRest) : undefined, undefined, templates);
+  const levels = new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined, undefined, undefined, templates);
   const voice = new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined);
   const fivem = new FivemService(new PrismaFivemRepository(persistence.prisma), new HttpFivemQueryClient(), discordRest ? new DiscordRestFivemGateway(discordRest) : undefined);
-  const community = new DiscordCommunityService(persistence.repositories.discordCommunity);
+  const community = new DiscordCommunityService(persistence.repositories.discordCommunity, undefined, templates);
   const builderLinks = new ServiceBuilderLinks({ moderation, verification, tickets, applications, staff, levels, birthdays, fivem, voice, community });
   return [
     directoryApiFeature(discordRest),
@@ -61,7 +65,7 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     applicationsApiFeature(applications),
     staffApiFeature(staff),
     pollsApiFeature(new PollService(new PrismaPollRepository(persistence.prisma), discordRest ? new DiscordRestPollGateway(discordRest) : undefined)),
-    giveawaysApiFeature(new GiveawayService(new PrismaGiveawayRepository(persistence.prisma), discordRest ? new DiscordRestGiveawayGateway(discordRest) : undefined)),
+    giveawaysApiFeature(new GiveawayService(new PrismaGiveawayRepository(persistence.prisma), discordRest ? new DiscordRestGiveawayGateway(discordRest) : undefined, undefined, { templates })),
     birthdaysApiFeature(birthdays),
     scheduledMessagesApiFeature(new ScheduledMessageService(new PrismaScheduledMessageRepository(persistence.prisma), discordRest ? new DiscordRestScheduledMessageGateway(discordRest) : undefined)),
     levelsApiFeature(levels),

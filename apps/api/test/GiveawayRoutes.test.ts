@@ -14,6 +14,7 @@ const host = { host: "127.0.0.1:3000" };
 const post = (url: string, payload: unknown = {}) => ({ method: "POST" as const, url, payload: payload as Record<string, unknown>, headers: { ...host, "content-type": "application/json" } });
 
 const gateway: GiveawayGateway = {
+  guildName: async () => "Qbox",
   postMessage: async () => ({ messageId: "700000000000000001" }),
   editMessage: async () => undefined,
   directMessage: async () => true,

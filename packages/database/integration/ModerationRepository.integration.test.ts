@@ -15,6 +15,7 @@ const member = { userId: "804859666655739996", displayName: "Member" };
 const moderator = { userId: "804859666655739997", displayName: "Mod", source: "WEB" as const };
 
 const gateway: ModerationGateway = {
+  guildName: async () => "Qbox",
   checkHierarchy: async () => ({ allowed: true, targetRoleIds: [], targetIsMember: true }),
   timeout: async () => undefined,
   kick: async () => undefined,
@@ -22,6 +23,7 @@ const gateway: ModerationGateway = {
   unban: async () => undefined,
   directMessage: async () => true,
   postEmbed: async () => ({ messageId: "1432100000000000001" }),
+  postMessage: async () => ({ messageId: "1432100000000000001" }),
   purge: async () => 0,
   setLocked: async () => undefined,
   setSlowmode: async () => undefined,

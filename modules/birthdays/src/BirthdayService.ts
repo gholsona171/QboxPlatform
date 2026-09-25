@@ -1,3 +1,5 @@
+import { colorValue } from "@qbox/shared/discord-rest";
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
 import { addDays, isLeapYear, zonedParts, zonedTimeToUtc, type ZonedDateTime } from "@qbox/shared/time-zones";
 
 import type {
@@ -75,6 +77,7 @@ export class BirthdayService {
     private readonly repository: BirthdayRepository,
     private readonly gateway?: BirthdayGateway,
     private readonly now: () => Date = () => new Date(),
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public async settings(guildId: string): Promise<BirthdaySettings> {
@@ -164,8 +167,10 @@ export class BirthdayService {
     if (!settings.channelId) throw new BirthdayError("INVALID_STATE", "Choose an announcement channel first.");
     if (!this.gateway) throw new BirthdayError("DEPENDENCY_UNAVAILABLE", "Discord is not connected.");
     const server = await this.gateway.guildName(guildId).catch(() => "the server");
+    const today = zonedParts(this.now(), "UTC");
+    const message = await this.announcement(settings, { userId, displayName: "", month: today.month, day: today.day }, 21, server);
     try {
-      return await this.gateway.post(settings.channelId, announcement(settings, userId, 21, server));
+      return await this.gateway.post(settings.channelId, message);
     } catch {
       throw new BirthdayError("DEPENDENCY_UNAVAILABLE", `${BRAND.name} could not post in the announcement channel. Check its permissions there.`);
     }
@@ -206,16 +211,29 @@ export class BirthdayService {
     if (!settings.channelId) return;
     const age = birthday.year !== undefined && birthday.showAge ? local.year - birthday.year : undefined;
     const server = await gateway.guildName(settings.guildId).catch(() => "the server");
-    await gateway.post(settings.channelId, announcement(settings, birthday.userId, age, server)).catch(() => undefined);
+    await gateway.post(settings.channelId, await this.announcement(settings, birthday, age, server)).catch(() => undefined);
+  }
+
+  /** The `birthdays.announcement` message: the server's custom version or the built-in one. */
+  private async announcement(settings: BirthdaySettings, member: Pick<Birthday, "userId" | "displayName" | "month" | "day">, age: number | undefined, server: string): Promise<BirthdayAnnouncement> {
+    const fallback = announcement(settings, member.userId, age, server);
+    const rendered = await this.templates.apply(
+      settings.guildId,
+      "birthdays.announcement",
+      { user: `<@${member.userId}>`, username: member.displayName, age: age ?? "", date: `${MONTHS[member.month - 1]} ${member.day}`, server },
+      fallback,
+    );
+    return { ...fallback, content: rendered.content, embeds: rendered.embeds };
   }
 }
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 /** Message sent for a birthday, also used for the portal test message. */
 export function announcement(settings: BirthdaySettings, userId: string, age: number | undefined, server: string): BirthdayAnnouncement {
   return {
     content: `<@${userId}>${settings.pingRoleId ? ` <@&${settings.pingRoleId}>` : ""}`,
-    description: renderBirthdayMessage(settings.message, userId, age, server),
-    color: settings.embedColor,
+    embeds: [{ description: renderBirthdayMessage(settings.message, userId, age, server), color: colorValue(settings.embedColor) }],
     mentionUserIds: [userId],
     mentionRoleIds: settings.pingRoleId ? [settings.pingRoleId] : [],
   };

@@ -12,6 +12,7 @@ const STAFF = "300000000000000001";
 const host = { host: "127.0.0.1:3000" };
 
 const gateway: TicketDiscordGateway = {
+  guildName: async () => "Qbox",
   createTicketSpace: async () => ({ channelId: "600000000000000001" }),
   postOpening: async () => undefined,
   postNotice: async () => ({ messageId: "700000000000000001" }),

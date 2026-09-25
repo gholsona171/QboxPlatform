@@ -50,6 +50,7 @@ After the first deploy that adds these commands, redeploy slash commands with th
 - **Claim lock:** optionally only the claimer can reply after a claim (channel mode).
 - **Transcripts** posted to a channel on close, downloadable in Discord and the portal, and optionally DMed to the member. Staff copies include internal notes; member copies do not.
 - **Feedback:** 1-5 star rating buttons DMed after close.
+- **Custom messages:** customize the opening message under Look & Messages (key `tickets.opened`) and the closing DM (key `tickets.closed-dm`).
 - **Auto-close** after N hours without activity, with an optional warning, and an option to skip claimed tickets.
 - **Limits and blocks:** open tickets per member, blocked members, blocked roles.
 - **Logs** of opens, claims, escalations, closes, reopens, and ratings to a log channel.

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, OutgoingMessage, TemplateValues } from "@qbox/shared/messages";
 
 import {
   DiscordRestVerificationGateway,
@@ -36,7 +37,7 @@ const NEW = userCreatedDaysAgo(2);
 class FakeGateway implements VerificationGateway {
   public readonly calls: string[] = [];
   public readonly dms: string[] = [];
-  public readonly messages: string[] = [];
+  public readonly messages: { channelId: string; message: OutgoingMessage }[] = [];
   public readonly logs: VerificationEmbed[] = [];
   public readonly members = new Map<string, GuildMemberInfo>();
   public failRoles = false;
@@ -56,7 +57,7 @@ class FakeGateway implements VerificationGateway {
   }
   public async kick(_g: string, userId: string) { this.calls.push(`kick ${userId}`); this.members.delete(userId); }
   public async directMessage(_userId: string, content: string) { this.dms.push(content); return true; }
-  public async sendMessage(channelId: string, content: string) { this.messages.push(`${channelId} ${content}`); }
+  public async sendMessage(channelId: string, message: OutgoingMessage) { this.messages.push({ channelId, message }); }
   public async postEmbed(_channelId: string, embed: VerificationEmbed) { this.logs.push(embed); }
   public async publishPanel(_channelId: string, _panel: VerificationPanel, existing?: string) { this.calls.push(`panel ${existing ?? "new"}`); return { messageId: existing ?? "600000000000000001" }; }
 }
@@ -66,12 +67,17 @@ function settings(overrides: Partial<VerificationSettingsInput> = {}): Verificat
   return { ...defaults, enabled: true, verifiedRoleIds: [VERIFIED], unverifiedRoleId: UNVERIFIED, logChannelId: LOGS, channelId: PANEL_CHANNEL, ...overrides };
 }
 
-async function setup(overrides: Partial<VerificationSettingsInput> = {}) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+async function setup(overrides: Partial<VerificationSettingsInput> = {}, templates?: MessageTemplates) {
   let clock = NOW;
   const now = () => clock;
   const gateway = new FakeGateway();
   const repository = new InMemoryVerificationRepository();
-  const service = new VerificationService(repository, gateway, now);
+  const service = new VerificationService(repository, gateway, now, templates);
   await service.saveSettings(settings(overrides));
   const member = (userId = OLD, roleIds: string[] = [UNVERIFIED]): VerificationMember => {
     gateway.members.set(userId, { userId, displayName: "Alex", roleIds });
@@ -103,6 +109,17 @@ describe("VerificationService settings", () => {
   });
 });
 
+describe("VerificationService message templates", () => {
+  it("posts the server's custom welcome message when it passes verification", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const { service, gateway, member } = await setup({ welcomeChannelId: WELCOME, welcomeMessage: "Welcome {user} to {server}!" }, markedTemplates(seen));
+    await service.memberJoined(GUILD, member(OLD, []));
+    await service.verifyByButton(GUILD, member(OLD, [UNVERIFIED]));
+    expect(gateway.messages).toEqual([{ channelId: WELCOME, message: { content: "custom verification.welcome" } }]);
+    expect(seen).toEqual([{ key: "verification.welcome", values: { user: `<@${OLD}>`, username: "Alex", server: "Qbox City" } }]);
+  });
+});
+
 describe("VerificationService flows", () => {
   it("verifies with a button: adds roles, removes the unverified role, DMs, welcomes, and logs", async () => {
     const { service, gateway, repository, member } = await setup({ dmOnSuccess: true, welcomeChannelId: WELCOME, welcomeMessage: "Welcome {user} to {server}!" });
@@ -113,7 +130,7 @@ describe("VerificationService flows", () => {
     expect(outcome.passed).toBe(true);
     expect(gateway.calls.slice(1)).toEqual([`add ${OLD} ${VERIFIED}`, `remove ${OLD} ${UNVERIFIED}`]);
     expect(gateway.dms).toEqual(["You are now verified in Qbox City. Welcome!"]);
-    expect(gateway.messages).toEqual([`${WELCOME} Welcome <@${OLD}> to Qbox City!`]);
+    expect(gateway.messages).toEqual([{ channelId: WELCOME, message: { content: `Welcome <@${OLD}> to Qbox City!` } }]);
     expect(gateway.logs.at(-1)?.title).toBe("Member verified");
     expect(await repository.getPending(GUILD, OLD)).toBeUndefined();
     expect((await service.attempts({ guildId: GUILD }))[0]).toMatchObject({ result: "PASSED", userId: OLD });

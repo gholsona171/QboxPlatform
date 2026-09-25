@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { passthroughTemplates, renderMessage, renderPlaceholders } from "../src/messages.js";
+import { MESSAGE_CATALOG, passthroughTemplates, renderMessage, renderPlaceholders } from "../src/messages.js";
 
 describe("message templates", () => {
   it("replaces known placeholders and leaves unknown ones as written", () => {
@@ -20,6 +20,19 @@ describe("message templates", () => {
       content: "<@1>",
       embeds: [{ title: "Ticket #2", description: "Donations", color: 1, footer: { text: "Guildhall" }, author: { name: "amy", icon_url: "x" }, fields: [{ name: "A", value: "B", inline: true }], image: { url: "https://i" } }],
     });
+  });
+
+  it("lists every customizable message once, sorted by feature then key", () => {
+    const keys = MESSAGE_CATALOG.map((entry) => entry.key);
+    expect(new Set(keys).size).toBe(keys.length);
+    const order = MESSAGE_CATALOG.map((entry) => `${entry.feature} ${entry.key}`);
+    expect(order).toEqual([...order].sort());
+    for (const entry of MESSAGE_CATALOG) {
+      expect(entry.key.startsWith(`${entry.key.split(".")[0]}.`)).toBe(true);
+      expect(entry.placeholders.length).toBeGreaterThan(0);
+    }
+    expect(keys).toContain("tickets.opened");
+    expect(keys).toContain("community.welcome");
   });
 
   it("passes the fallback through when nothing is customized", async () => {

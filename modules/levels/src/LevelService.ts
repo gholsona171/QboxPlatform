@@ -1,3 +1,5 @@
+import { passthroughTemplates, type MessageTemplates } from "@qbox/shared/messages";
+
 import { defaultCurve, levelForXp, levelProgress, xpForLevel } from "./curve.js";
 import type {
   LeaderboardPage,
@@ -59,6 +61,7 @@ export class LevelService {
     private readonly gateway?: LevelGateway,
     private readonly now: () => Date = () => new Date(),
     private readonly random: () => number = Math.random,
+    private readonly templates: MessageTemplates = passthroughTemplates,
   ) {}
 
   public async settings(guildId: string): Promise<LevelSettings> {
@@ -226,7 +229,7 @@ export class LevelService {
     const change = await this.applyLevel(settings, member, xpAdded);
     if (change.member.level > change.previousLevel) {
       await this.syncRewards(settings, member.guildId, member.userId, change.member.level, roleIds);
-      await this.announce(settings, member.userId, change.member.level, channelId);
+      await this.announce(settings, change.member, channelId);
     }
     return change;
   }
@@ -246,15 +249,23 @@ export class LevelService {
       if (!keep.has(reward.roleId) && roleIds.includes(reward.roleId)) await gateway.removeRole(guildId, userId, reward.roleId, reason).catch(() => undefined);
   }
 
-  private async announce(settings: LevelSettings, userId: string, level: number, channelId: string): Promise<void> {
+  private async announce(settings: LevelSettings, member: LevelMember, channelId: string): Promise<void> {
     if (!this.gateway || settings.levelUpMode === "OFF") return;
-    const content = renderLevelUpMessage(settings.levelUpMessage, userId, level);
+    const target = settings.levelUpMode === "CHANNEL" ? settings.levelUpChannelId : channelId;
+    if (settings.levelUpMode !== "DM" && !target) return;
+    const { guildId, userId, level } = member;
+    const [server, rank] = await Promise.all([this.gateway.guildName(guildId).catch(() => "the server"), this.repository.rank(guildId, userId)]);
+    const message = await this.templates.apply(
+      guildId,
+      "levels.level-up",
+      { user: `<@${userId}>`, username: member.displayName, level, xp: member.xp, rank: rank ?? "", server },
+      { content: renderLevelUpMessage(settings.levelUpMessage, userId, level) },
+    );
     if (settings.levelUpMode === "DM") {
-      await this.gateway.directMessage(userId, content);
+      await this.gateway.directMessage(userId, message);
       return;
     }
-    const target = settings.levelUpMode === "CHANNEL" ? settings.levelUpChannelId : channelId;
-    if (target) await this.gateway.sendMessage(target, content, userId).catch(() => undefined);
+    if (target) await this.gateway.sendMessage(target, message, userId).catch(() => undefined);
   }
 
   private pruneCooldowns(now: number, cooldownSeconds: number): void {

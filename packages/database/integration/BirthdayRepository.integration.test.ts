@@ -19,7 +19,7 @@ const roles: string[] = [];
 
 const gateway: BirthdayGateway = {
   guildName: async () => "Qbox",
-  post: async (_channel, announcement) => { posts.push(announcement.description); return { messageId: "1432100000000000001" }; },
+  post: async (_channel, announcement) => { posts.push(announcement.embeds?.[0]?.description ?? ""); return { messageId: "1432100000000000001" }; },
   addRole: async (_guild, userId) => { roles.push(`add ${userId}`); },
   removeRole: async (_guild, userId) => { roles.push(`remove ${userId}`); },
 };

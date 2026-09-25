@@ -7,6 +7,7 @@ import type {
   GiveawayDetail,
   GiveawayEntrant,
   GiveawayGateway,
+  GiveawayMessage,
   GiveawayRepository,
   GiveawayStartInput,
   GiveawayStatus,
@@ -15,11 +16,13 @@ import type {
 import { MAX_GIVEAWAY_MINUTES, MAX_GIVEAWAY_WINNERS } from "./types.js";
 import { GiveawayError, invalid, requireIds, requireLength, requireRange, requireSnowflake } from "./validation.js";
 import { BRAND } from "@qbox/shared/brand";
+import { passthroughTemplates, type MessageTemplates, type OutgoingMessage, type TemplateValues } from "@qbox/shared/messages";
 
 export interface GiveawayServiceOptions {
   /** Delay before the entry count on the message is refreshed. 0 refreshes right away. */
   readonly refreshDelayMs?: number | undefined;
   readonly random?: RandomInt | undefined;
+  readonly templates?: MessageTemplates | undefined;
 }
 
 export interface EntryResult {
@@ -36,6 +39,11 @@ const DAY_MS = 86_400_000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const STATES: Readonly<Record<GiveawayListState, readonly GiveawayStatus[]>> = { active: ["RUNNING", "PAUSED"], ended: ["ENDED", "CANCELLED"] };
 
+/** Just the text and embeds of a rendered message, so pings and buttons come from the built-in one. */
+function pick(message: OutgoingMessage): OutgoingMessage {
+  return { content: message.content, embeds: message.embeds };
+}
+
 /**
  * Giveaway rules shared by the bot and the API. The caller checks
  * `giveaways.manage` before staff actions; any member can enter.
@@ -45,6 +53,7 @@ export class GiveawayService {
   private readonly pending = new Map<string, ReturnType<typeof setTimeout>>();
   private readonly refreshDelayMs: number;
   private readonly random: RandomInt;
+  private readonly templates: MessageTemplates;
 
   public constructor(
     private readonly repository: GiveawayRepository,
@@ -54,6 +63,7 @@ export class GiveawayService {
   ) {
     this.refreshDelayMs = options.refreshDelayMs ?? 2000;
     this.random = options.random ?? cryptoRandomInt;
+    this.templates = options.templates ?? passthroughTemplates;
   }
 
   public async start(input: GiveawayStartInput, actor: GiveawayActor): Promise<Giveaway> {
@@ -101,7 +111,7 @@ export class GiveawayService {
       createdByName: actor.displayName,
     });
     try {
-      const posted = await gateway.postMessage(giveaway.channelId, giveawayMessage(giveaway, 0));
+      const posted = await gateway.postMessage(giveaway.channelId, await this.runningMessage(giveaway, 0));
       return await this.repository.update(giveaway.id, { messageId: posted.messageId });
     } catch {
       await this.repository.delete(giveaway.id);
@@ -233,9 +243,28 @@ export class GiveawayService {
 
   private async announce(giveaway: Giveaway, winners: readonly string[], reroll: boolean): Promise<void> {
     if (!this.gateway) return;
-    await this.refreshMessage(giveaway);
-    await this.gateway.postMessage(giveaway.channelId, winnersMessage(giveaway, winners, reroll), giveaway.messageId).catch(() => undefined);
+    const entries = await this.refreshMessage(giveaway);
+    const fallback = winnersMessage(giveaway, winners, reroll);
+    const rendered = await this.templates.apply(giveaway.guildId, "giveaways.ended", {
+      ...(await this.values(giveaway, entries)),
+      winners: winners.length ? winners.map((id) => `<@${id}>`).join(", ") : "No valid entries",
+      endsAt: giveaway.endedAt ?? giveaway.endsAt,
+    }, fallback);
+    await this.gateway.postMessage(giveaway.channelId, { ...fallback, ...pick(rendered) }, giveaway.messageId).catch(() => undefined);
     if (giveaway.dmWinners) for (const userId of winners) await this.gateway.directMessage(userId, winnerDirectMessage(giveaway));
+  }
+
+  /** The giveaway post (`giveaways.started`) while it runs; other states keep the built-in message. */
+  private async runningMessage(giveaway: Giveaway, entries: number): Promise<GiveawayMessage> {
+    const fallback = giveawayMessage(giveaway, entries);
+    if (giveaway.status !== "RUNNING") return fallback;
+    const rendered = await this.templates.apply(giveaway.guildId, "giveaways.started", { ...(await this.values(giveaway, entries)), winners: giveaway.winnerCount, endsAt: giveaway.endsAt }, fallback);
+    return { ...fallback, ...pick(rendered) };
+  }
+
+  private async values(giveaway: Giveaway, entries: number): Promise<TemplateValues> {
+    const server = this.gateway ? await this.gateway.guildName(giveaway.guildId).catch(() => "the server") : "the server";
+    return { prize: giveaway.prize, host: `<@${giveaway.hostId}>`, entries, server };
   }
 
   private async scheduleRefresh(giveawayId: string): Promise<void> {
@@ -264,10 +293,12 @@ export class GiveawayService {
     if (giveaway) await this.refreshMessage(giveaway);
   }
 
-  private async refreshMessage(giveaway: Giveaway): Promise<void> {
-    if (!this.gateway || !giveaway.messageId) return;
+  /** Updates the giveaway post and returns the entry count. */
+  private async refreshMessage(giveaway: Giveaway): Promise<number> {
     const count = (await this.repository.countEntrants([giveaway.id])).get(giveaway.id) ?? 0;
-    await this.gateway.editMessage(giveaway.channelId, giveaway.messageId, giveawayMessage(giveaway, count)).catch(() => undefined);
+    if (!this.gateway || !giveaway.messageId) return count;
+    await this.gateway.editMessage(giveaway.channelId, giveaway.messageId, await this.runningMessage(giveaway, count)).catch(() => undefined);
+    return count;
   }
 
   private bonus(input: readonly GiveawayBonusEntry[]): readonly GiveawayBonusEntry[] {

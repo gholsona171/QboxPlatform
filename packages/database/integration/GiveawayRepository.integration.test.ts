@@ -17,6 +17,7 @@ const staff = { userId: "804859666655739997", displayName: "Jay" };
 const member = (index: number, roleIds: string[] = []) => ({ userId: `80485966665573990${index}`, displayName: `Member ${index}`, roleIds });
 
 const gateway: GiveawayGateway = {
+  guildName: async () => "Qbox",
   postMessage: async () => ({ messageId: "1432100000000000001" }),
   editMessage: async () => undefined,
   directMessage: async () => true,

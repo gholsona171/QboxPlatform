@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { MessageTemplates, TemplateValues } from "@qbox/shared/messages";
 
 import {
   DiscordRestTicketGateway,
@@ -51,6 +52,7 @@ class FakeGateway implements TicketDiscordGateway {
     this.channel += 1n;
     return { channelId: String(this.channel) };
   }
+  public async guildName() { return "Guildhall HQ"; }
   public async postOpening(input: TicketOpeningMessage) { this.openings.push(input); }
   public async postNotice(input: TicketNotice) { this.notices.push(input); return { messageId: "700000000000000001" }; }
   public async setAccess(input: TicketAccessInput) { this.access.push(input); }
@@ -83,12 +85,17 @@ function settingsInput(overrides: Partial<TicketSettingsInput> = {}): TicketSett
   };
 }
 
-async function setup(overrides: Partial<TicketSettingsInput> = {}) {
+/** Records every template request and answers with a marked message. */
+function markedTemplates(seen: { key: string; values: TemplateValues }[]): MessageTemplates {
+  return { apply: async (_guildId, key, values) => { seen.push({ key, values }); return { content: `custom ${key}` }; } };
+}
+
+async function setup(overrides: Partial<TicketSettingsInput> = {}, templates?: MessageTemplates) {
   let clock = new Date("2026-09-25T12:00:00.000Z");
   const now = () => clock;
   const repository = new InMemoryTicketRepository(now);
   const gateway = new FakeGateway();
-  const service = new TicketService(repository, gateway, now);
+  const service = new TicketService(repository, gateway, now, templates);
   await service.saveSettings(settingsInput(overrides));
   return { repository, gateway, service, advance: (hours: number) => { clock = new Date(clock.getTime() + hours * 3600_000); } };
 }
@@ -130,7 +137,7 @@ describe("TicketService opening", () => {
     expect(ticket.priority).toBe("HIGH");
     expect(ticket.channelId).toBeDefined();
     expect(gateway.spaces[0]).toMatchObject({ name: "appeal-1-user-01", parentChannelId: CATEGORY_CHANNEL, supportRoleIds: [SUPPORT_ROLE, VIP_ROLE] });
-    expect(gateway.openings[0]?.body).toContain("Mistake");
+    expect(gateway.openings[0]?.message.embeds?.[0]?.description).toContain("Mistake");
     expect(gateway.openings[0]?.mentionRoleIds).toEqual([SUPPORT_ROLE, VIP_ROLE]);
     expect(gateway.notices.some((notice) => notice.channelId === LOGS)).toBe(true);
   });
@@ -148,7 +155,7 @@ describe("TicketService opening", () => {
     expect([first.categoryNumber, second.categoryNumber, third.categoryNumber]).toEqual([1, 1, 2]);
     expect(gateway.spaces.map((space) => space.name)).toEqual(["donations-1", "female-verification-1", "donations-2"]);
     expect(gateway.spaces[2]?.topic).toContain("Ticket #3 - Donations #2");
-    expect(gateway.openings[2]?.title).toBe("Ticket #3 - Donations #2");
+    expect(gateway.openings[2]?.message.embeds?.[0]?.title).toBe("Ticket #3 - Donations #2");
     const general = await service.openTicket({ guildId: GUILD, actor: actor(USER), answers: {} });
     expect(general.categoryNumber).toBeUndefined();
     expect(gateway.spaces[3]?.name).toBe("ticket-4");
@@ -245,7 +252,7 @@ describe("TicketService closing", () => {
     const closed = await service.close(GUILD, ticket.id, actor(USER), "Solved");
     expect(closed).toMatchObject({ status: "CLOSED", closeReason: "Solved", transcriptMessageId: "900000000000000001" });
     expect(gateway.transcripts[0]?.file.fileName).toBe("ticket-1-transcript.txt");
-    expect(gateway.dms[0]).toMatchObject({ userId: USER, feedbackTicketId: ticket.id });
+    expect(gateway.dms[0]).toMatchObject({ userId: USER, feedbackTicketId: ticket.id, message: { content: "Your ticket #1 was closed: Solved\nHow did we do? Rate your support experience below." } });
     expect(gateway.access).toContainEqual(expect.objectContaining({ targetId: USER, access: "READ_ONLY" }));
     expect(gateway.closed[0]).toMatchObject({ action: "ARCHIVE", closedParentChannelId: CLOSED_CATEGORY });
     await expect(service.close(GUILD, ticket.id, actor(USER))).rejects.toMatchObject({ code: "INVALID_STATE" });
@@ -298,6 +305,36 @@ describe("TicketService closing", () => {
     advance(12);
     expect(await service.sweepAutoClose()).toEqual({ warned: 0, closed: 1 });
     expect((await service.ticket(GUILD, ticket.id)).closeReason).toContain("48 hours");
+  });
+});
+
+describe("TicketService message templates", () => {
+  it("posts the built-in opening message and closing DM when nothing is customized", async () => {
+    const { service, gateway } = await setup({ feedbackEnabled: false, transcriptDmUser: true });
+    const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER), subject: "Help" });
+    expect(gateway.openings[0]?.message).toEqual({
+      embeds: [{
+        title: "Ticket #1",
+        description: `Thanks for contacting support, <@${USER}>. A team member will be with you shortly.\n\n**Subject:** Help`,
+        color: 0x5865f2,
+        footer: { text: `Priority: normal | Ticket ID ${ticket.id}` },
+        timestamp: "2026-09-25T12:00:00.000Z",
+      }],
+    });
+    await service.close(GUILD, ticket.id, actor(STAFF, [SUPPORT_ROLE]));
+    expect(gateway.dms[0]?.message).toEqual({ content: "Your ticket #1 was closed." });
+  });
+
+  it("posts the server's custom opening message and closing DM", async () => {
+    const seen: { key: string; values: TemplateValues }[] = [];
+    const { service, gateway } = await setup({}, markedTemplates(seen));
+    const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER), subject: "Help" });
+    expect(gateway.openings[0]?.message).toEqual({ content: "custom tickets.opened" });
+    expect(gateway.openings[0]?.mentionUserIds).toEqual([USER]);
+    expect(seen[0]).toEqual({ key: "tickets.opened", values: { user: `<@${USER}>`, username: "user-01", number: "1", category: "support", reason: "support", reasonNumber: "1", subject: "Help", server: "Guildhall HQ" } });
+    await service.close(GUILD, ticket.id, actor(STAFF, [SUPPORT_ROLE]), "Done");
+    expect(gateway.dms[0]?.message).toEqual({ content: "custom tickets.closed-dm" });
+    expect(seen[1]).toEqual({ key: "tickets.closed-dm", values: { user: `<@${USER}>`, username: "user-01", number: 1, reason: "support", reasonNumber: 1, closeReason: "Done", ratingPrompt: "How did we do? Rate your support experience below." } });
   });
 });
 
