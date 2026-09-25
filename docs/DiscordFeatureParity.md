@@ -23,11 +23,11 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Staff | PLANNED |  |  |  |  | /staff |  |  | Discord no / Portal no |
 | Moderation | LIVE | mod | automod message checks | messageCreate, guildBanAdd, guildBanRemove, guildMemberRemove, expired ban timer | /api/v1/moderation/overview, /api/v1/moderation/cases, /api/v1/moderation/actions, /api/v1/moderation/settings | /moderation | moderation.view, moderation.warn, moderation.timeout, moderation.kick, moderation.ban, moderation.messages, moderation.manage | ModerationSettings, ModerationCase | Discord yes / Portal yes |
 | Verification | PLANNED |  |  |  |  | /verification |  |  | Discord no / Portal no |
-| Polls | PLANNED |  |  |  |  | /polls |  |  | Discord no / Portal no |
+| Polls | LIVE | poll | poll vote buttons, poll choice menus, remove vote button | poll end timer | /api/v1/polls, /api/v1/polls/overview, /api/v1/polls/:id/close, /api/v1/polls/:id/reopen, /api/v1/polls/:id/export | /polls | polls.create, polls.manage | PollCounter, Poll, PollVote | Discord yes / Portal yes |
 | Birthdays | PLANNED |  |  |  |  | /birthdays |  |  | Discord no / Portal no |
 | Knowledge Base | PLANNED |  |  |  |  | /knowledge |  |  | Discord no / Portal no |
 | FiveM Server | PLANNED |  |  |  |  | /fivem |  |  | Discord no / Portal no |
 | Scheduled Messages | PLANNED |  |  |  |  | /discord?tab=scheduled |  |  | Discord no / Portal no |
-| Giveaways | PLANNED |  |  |  |  | /discord?tab=giveaways |  |  | Discord no / Portal no |
+| Giveaways | LIVE | giveaway | giveaway enter button | giveaway end timer | /api/v1/giveaways, /api/v1/giveaways/overview, /api/v1/giveaways/:id/end, /api/v1/giveaways/:id/reroll, /api/v1/giveaways/:id/cancel, /api/v1/giveaways/:id/pause, /api/v1/giveaways/:id/resume | /giveaways | giveaways.manage | GiveawayCounter, Giveaway, GiveawayEntry | Discord yes / Portal yes |
 | Levels and Rewards | PLANNED |  |  |  |  | /discord?tab=levels |  |  | Discord no / Portal no |
 | Voice Rooms | PLANNED |  |  |  |  | /discord?tab=voice |  |  | Discord no / Portal no |
