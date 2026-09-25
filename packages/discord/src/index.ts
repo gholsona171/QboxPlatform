@@ -24,3 +24,5 @@ export { moderationFeature } from "./moderation/ModerationFeature.js";
 export { verificationFeature } from "./verification/VerificationFeature.js";
 export { applicationsFeature } from "./applications/ApplicationsFeature.js";
 export { staffFeature } from "./staff/StaffFeature.js";
+export { pollsFeature } from "./polls/PollsFeature.js";
+export { giveawaysFeature } from "./giveaways/GiveawaysFeature.js";

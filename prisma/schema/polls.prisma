@@ -1,0 +1,62 @@
+// Polls (see docs/Polls.md). guildId is the Discord guild snowflake.
+
+enum PollStatus {
+  OPEN   @map("open")
+  CLOSED @map("closed")
+}
+
+enum PollResultsVisibility {
+  LIVE        @map("live")
+  AFTER_CLOSE @map("after-close")
+}
+
+model PollCounter {
+  guildId    String @id @map("guild_id")
+  nextNumber Int    @default(1) @map("next_number")
+
+  @@map("poll_counters")
+}
+
+model Poll {
+  id                String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId           String                @map("guild_id")
+  number            Int
+  question          String
+  options           Json                  @db.JsonB
+  maxChoices        Int                   @default(1) @map("max_choices")
+  anonymous         Boolean               @default(false)
+  resultsVisibility PollResultsVisibility @default(LIVE) @map("results_visibility")
+  allowVoteChange   Boolean               @default(true) @map("allow_vote_change")
+  allowedRoleIds    String[]              @map("allowed_role_ids")
+  channelId         String                @map("channel_id")
+  messageId         String?               @map("message_id")
+  pingRoleId        String?               @map("ping_role_id")
+  endsAt            DateTime?             @map("ends_at") @db.Timestamptz(3)
+  status            PollStatus            @default(OPEN)
+  createdById       String                @map("created_by_id")
+  createdByName     String                @map("created_by_name")
+  closedAt          DateTime?             @map("closed_at") @db.Timestamptz(3)
+  closedById        String?               @map("closed_by_id")
+  createdAt         DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
+  votes             PollVote[]
+
+  @@unique([guildId, number], map: "polls_guild_number_key")
+  @@index([guildId, status, number], map: "polls_guild_status_idx")
+  @@index([status, endsAt], map: "polls_status_ends_idx")
+  @@map("polls")
+}
+
+model PollVote {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  pollId    String   @map("poll_id") @db.Uuid
+  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  userId    String   @map("user_id")
+  userName  String   @map("user_name")
+  optionIds String[] @map("option_ids")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([pollId, userId], map: "poll_votes_poll_user_key")
+  @@map("poll_votes")
+}

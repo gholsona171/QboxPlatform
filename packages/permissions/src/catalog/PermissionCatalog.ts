@@ -7,7 +7,7 @@ export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:ef1a6b87b4bfc23ab4d4d6d9dbdf8b39285569ed6e0257e1941688d1728be618" as const;
+  "sha256:1aca4848e1f162a362dff916facc23abe734a01906628d6f01a951145ae75b66" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -47,6 +47,9 @@ export const PERMISSIONS = [
   "discord.starboard.manage",
   "verification.manage",
   "verification.members",
+  "polls.create",
+  "polls.manage",
+  "giveaways.manage",
 ] as const;
 
 /** An exact identifier present in the compiled permission catalog. */

@@ -212,6 +212,21 @@ export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
  */
 export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel
 /**
+ * Model GiveawayCounter
+ *
+ */
+export type GiveawayCounter = Prisma.GiveawayCounterModel
+/**
+ * Model Giveaway
+ *
+ */
+export type Giveaway = Prisma.GiveawayModel
+/**
+ * Model GiveawayEntry
+ *
+ */
+export type GiveawayEntry = Prisma.GiveawayEntryModel
+/**
  * Model ModerationSettings
  *
  */
@@ -221,6 +236,21 @@ export type ModerationSettings = Prisma.ModerationSettingsModel
  *
  */
 export type ModerationCase = Prisma.ModerationCaseModel
+/**
+ * Model PollCounter
+ *
+ */
+export type PollCounter = Prisma.PollCounterModel
+/**
+ * Model Poll
+ *
+ */
+export type Poll = Prisma.PollModel
+/**
+ * Model PollVote
+ *
+ */
+export type PollVote = Prisma.PollVoteModel
 /**
  * Model StaffSettings
  *

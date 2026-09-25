@@ -394,6 +394,16 @@ export const AuthenticationAuditActorType = {
 export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]
 
 
+export const GiveawayStatus = {
+  RUNNING: 'RUNNING',
+  PAUSED: 'PAUSED',
+  ENDED: 'ENDED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type GiveawayStatus = (typeof GiveawayStatus)[keyof typeof GiveawayStatus]
+
+
 export const ModerationCaseType = {
   WARN: 'WARN',
   TIMEOUT: 'TIMEOUT',
@@ -416,6 +426,22 @@ export const ModerationCaseSource = {
 } as const
 
 export type ModerationCaseSource = (typeof ModerationCaseSource)[keyof typeof ModerationCaseSource]
+
+
+export const PollStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type PollStatus = (typeof PollStatus)[keyof typeof PollStatus]
+
+
+export const PollResultsVisibility = {
+  LIVE: 'LIVE',
+  AFTER_CLOSE: 'AFTER_CLOSE'
+} as const
+
+export type PollResultsVisibility = (typeof PollResultsVisibility)[keyof typeof PollResultsVisibility]
 
 
 export const StaffMemberStatus = {

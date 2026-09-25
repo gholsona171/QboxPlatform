@@ -1,0 +1,63 @@
+// Giveaways (see docs/Giveaways.md). guildId is the Discord guild snowflake.
+
+enum GiveawayStatus {
+  RUNNING   @map("running")
+  PAUSED    @map("paused")
+  ENDED     @map("ended")
+  CANCELLED @map("cancelled")
+}
+
+model GiveawayCounter {
+  guildId    String @id @map("guild_id")
+  nextNumber Int    @default(1) @map("next_number")
+
+  @@map("giveaway_counters")
+}
+
+model Giveaway {
+  id                String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId           String          @map("guild_id")
+  number            Int
+  prize             String
+  description       String?
+  winnerCount       Int             @default(1) @map("winner_count")
+  channelId         String          @map("channel_id")
+  messageId         String?         @map("message_id")
+  hostId            String          @map("host_id")
+  requiredRoleIds   String[]        @map("required_role_ids")
+  blockedRoleIds    String[]        @map("blocked_role_ids")
+  minAccountAgeDays Int             @default(0) @map("min_account_age_days")
+  minServerDays     Int             @default(0) @map("min_server_days")
+  bonusEntries      Json            @default("[]") @map("bonus_entries") @db.JsonB
+  pingRoleId        String?         @map("ping_role_id")
+  dmWinners         Boolean         @default(true) @map("dm_winners")
+  endsAt            DateTime        @map("ends_at") @db.Timestamptz(3)
+  pausedAt          DateTime?       @map("paused_at") @db.Timestamptz(3)
+  status            GiveawayStatus  @default(RUNNING)
+  winnerIds         String[]        @map("winner_ids")
+  endedAt           DateTime?       @map("ended_at") @db.Timestamptz(3)
+  endedById         String?         @map("ended_by_id")
+  createdById       String          @map("created_by_id")
+  createdByName     String          @map("created_by_name")
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
+  entries           GiveawayEntry[]
+
+  @@unique([guildId, number], map: "giveaways_guild_number_key")
+  @@index([guildId, status, number], map: "giveaways_guild_status_idx")
+  @@index([status, endsAt], map: "giveaways_status_ends_idx")
+  @@map("giveaways")
+}
+
+model GiveawayEntry {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  giveawayId String   @map("giveaway_id") @db.Uuid
+  giveaway   Giveaway @relation(fields: [giveawayId], references: [id], onDelete: Cascade)
+  userId     String   @map("user_id")
+  userName   String   @map("user_name")
+  entries    Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@unique([giveawayId, userId], map: "giveaway_entries_giveaway_user_key")
+  @@map("giveaway_entries")
+}

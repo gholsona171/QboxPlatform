@@ -72,6 +72,9 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -81,6 +84,9 @@ importers:
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../../packages/permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus
@@ -148,7 +154,19 @@ importers:
 
   modules/discord-roles: {}
 
+  modules/giveaways:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/moderation:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/polls:
     dependencies:
       '@qbox/shared':
         specifier: workspace:*
@@ -196,12 +214,18 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
       '@qbox/moderation':
         specifier: workspace:*
         version: link:../../modules/moderation
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/prisma':
         specifier: workspace:*
         version: link:../prisma
@@ -232,6 +256,9 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/giveaways':
+        specifier: workspace:*
+        version: link:../../modules/giveaways
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger
@@ -241,6 +268,9 @@ importers:
       '@qbox/permissions':
         specifier: workspace:*
         version: link:../permissions
+      '@qbox/polls':
+        specifier: workspace:*
+        version: link:../../modules/polls
       '@qbox/role-menus':
         specifier: workspace:*
         version: link:../../modules/role-menus

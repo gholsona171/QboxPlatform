@@ -17,3 +17,5 @@ export * from "./moderation/PrismaModerationRepository.js";
 export * from "./verification/PrismaVerificationRepository.js";
 export * from "./applications/PrismaApplicationRepository.js";
 export * from "./staff/PrismaStaffRepository.js";
+export * from "./polls/PrismaPollRepository.js";
+export * from "./giveaways/PrismaGiveawayRepository.js";

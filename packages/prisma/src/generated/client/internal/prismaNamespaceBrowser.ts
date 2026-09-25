@@ -85,8 +85,14 @@ export const ModelName = {
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  GiveawayCounter: 'GiveawayCounter',
+  Giveaway: 'Giveaway',
+  GiveawayEntry: 'GiveawayEntry',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
+  PollCounter: 'PollCounter',
+  Poll: 'Poll',
+  PollVote: 'PollVote',
   StaffSettings: 'StaffSettings',
   StaffRank: 'StaffRank',
   StaffMember: 'StaffMember',
@@ -758,6 +764,58 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
+export const GiveawayCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber'
+} as const
+
+export type GiveawayCounterScalarFieldEnum = (typeof GiveawayCounterScalarFieldEnum)[keyof typeof GiveawayCounterScalarFieldEnum]
+
+
+export const GiveawayScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  prize: 'prize',
+  description: 'description',
+  winnerCount: 'winnerCount',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  hostId: 'hostId',
+  requiredRoleIds: 'requiredRoleIds',
+  blockedRoleIds: 'blockedRoleIds',
+  minAccountAgeDays: 'minAccountAgeDays',
+  minServerDays: 'minServerDays',
+  bonusEntries: 'bonusEntries',
+  pingRoleId: 'pingRoleId',
+  dmWinners: 'dmWinners',
+  endsAt: 'endsAt',
+  pausedAt: 'pausedAt',
+  status: 'status',
+  winnerIds: 'winnerIds',
+  endedAt: 'endedAt',
+  endedById: 'endedById',
+  createdById: 'createdById',
+  createdByName: 'createdByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GiveawayScalarFieldEnum = (typeof GiveawayScalarFieldEnum)[keyof typeof GiveawayScalarFieldEnum]
+
+
+export const GiveawayEntryScalarFieldEnum = {
+  id: 'id',
+  giveawayId: 'giveawayId',
+  userId: 'userId',
+  userName: 'userName',
+  entries: 'entries',
+  createdAt: 'createdAt'
+} as const
+
+export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
+
+
 export const ModerationSettingsScalarFieldEnum = {
   guildId: 'guildId',
   logChannelId: 'logChannelId',
@@ -806,6 +864,54 @@ export const ModerationCaseScalarFieldEnum = {
 } as const
 
 export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
+export const PollCounterScalarFieldEnum = {
+  guildId: 'guildId',
+  nextNumber: 'nextNumber'
+} as const
+
+export type PollCounterScalarFieldEnum = (typeof PollCounterScalarFieldEnum)[keyof typeof PollCounterScalarFieldEnum]
+
+
+export const PollScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  question: 'question',
+  options: 'options',
+  maxChoices: 'maxChoices',
+  anonymous: 'anonymous',
+  resultsVisibility: 'resultsVisibility',
+  allowVoteChange: 'allowVoteChange',
+  allowedRoleIds: 'allowedRoleIds',
+  channelId: 'channelId',
+  messageId: 'messageId',
+  pingRoleId: 'pingRoleId',
+  endsAt: 'endsAt',
+  status: 'status',
+  createdById: 'createdById',
+  createdByName: 'createdByName',
+  closedAt: 'closedAt',
+  closedById: 'closedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollScalarFieldEnum = (typeof PollScalarFieldEnum)[keyof typeof PollScalarFieldEnum]
+
+
+export const PollVoteScalarFieldEnum = {
+  id: 'id',
+  pollId: 'pollId',
+  userId: 'userId',
+  userName: 'userName',
+  optionIds: 'optionIds',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PollVoteScalarFieldEnum = (typeof PollVoteScalarFieldEnum)[keyof typeof PollVoteScalarFieldEnum]
 
 
 export const StaffSettingsScalarFieldEnum = {

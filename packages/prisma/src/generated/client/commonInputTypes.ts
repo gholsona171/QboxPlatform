@@ -1085,6 +1085,23 @@ export type EnumOAuthTransactionPurposeNullableWithAggregatesFilter<$PrismaModel
   _max?: Prisma.NestedEnumOAuthTransactionPurposeNullableFilter<$PrismaModel>
 }
 
+export type EnumGiveawayStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel> | $Enums.GiveawayStatus
+}
+
+export type EnumGiveawayStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGiveawayStatusWithAggregatesFilter<$PrismaModel> | $Enums.GiveawayStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
+}
+
 export type EnumModerationCaseTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
@@ -1117,6 +1134,40 @@ export type EnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type EnumPollResultsVisibilityFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollResultsVisibility | Prisma.EnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel> | $Enums.PollResultsVisibility
+}
+
+export type EnumPollStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollStatus | Prisma.EnumPollStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollStatusFilter<$PrismaModel> | $Enums.PollStatus
+}
+
+export type EnumPollResultsVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollResultsVisibility | Prisma.EnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollResultsVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.PollResultsVisibility
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel>
+}
+
+export type EnumPollStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollStatus | Prisma.EnumPollStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollStatusWithAggregatesFilter<$PrismaModel> | $Enums.PollStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
 }
 
 export type EnumStaffMemberStatusFilter<$PrismaModel = never> = {
@@ -2366,6 +2417,23 @@ export type NestedEnumOAuthTransactionPurposeNullableWithAggregatesFilter<$Prism
   _max?: Prisma.NestedEnumOAuthTransactionPurposeNullableFilter<$PrismaModel>
 }
 
+export type NestedEnumGiveawayStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel> | $Enums.GiveawayStatus
+}
+
+export type NestedEnumGiveawayStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGiveawayStatusWithAggregatesFilter<$PrismaModel> | $Enums.GiveawayStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGiveawayStatusFilter<$PrismaModel>
+}
+
 export type NestedEnumModerationCaseTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
@@ -2398,6 +2466,40 @@ export type NestedEnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumPollResultsVisibilityFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollResultsVisibility | Prisma.EnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel> | $Enums.PollResultsVisibility
+}
+
+export type NestedEnumPollStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollStatus | Prisma.EnumPollStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollStatusFilter<$PrismaModel> | $Enums.PollStatus
+}
+
+export type NestedEnumPollResultsVisibilityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollResultsVisibility | Prisma.EnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  in?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollResultsVisibility[] | Prisma.ListEnumPollResultsVisibilityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollResultsVisibilityWithAggregatesFilter<$PrismaModel> | $Enums.PollResultsVisibility
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPollResultsVisibilityFilter<$PrismaModel>
+}
+
+export type NestedEnumPollStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PollStatus | Prisma.EnumPollStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PollStatus[] | Prisma.ListEnumPollStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPollStatusWithAggregatesFilter<$PrismaModel> | $Enums.PollStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPollStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumStaffMemberStatusFilter<$PrismaModel = never> = {
