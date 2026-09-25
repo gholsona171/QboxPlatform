@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup for an Oracle Cloud "Always Free" Ubuntu server.
 # Installs Node.js, pnpm, and Tailscale, writes the private .env, builds
-# Qbox, registers slash commands, and starts the API and bot as services
+# Guildhall, registers slash commands, and starts the API and bot as services
 # that restart on failure and update themselves from GitHub.
 #
 # Run from the cloned repository:  bash ops/oracle/setup.sh
@@ -104,7 +104,7 @@ if git fetch --quiet origin deploy 2>/dev/null; then
 elif ! code_changed; then
   say "Already built for this version, skipping the build"
 else
-  say "Building Qbox (10-15 minutes on a small server)"
+  say "Building Guildhall (10-15 minutes on a small server)"
   pnpm install --frozen-lockfile
   pnpm build
   git rev-parse HEAD > "$BUILT_COMMIT_FILE"
@@ -159,7 +159,7 @@ unit qbox-bot apps/bot dist/index.js
 
 sudo tee /etc/systemd/system/qbox-update.service >/dev/null <<UNIT
 [Unit]
-Description=Update Qbox from GitHub
+Description=Update Guildhall from GitHub
 
 [Service]
 Type=oneshot
@@ -168,7 +168,7 @@ ExecStart=/usr/bin/env bash ${REPO_DIR}/ops/oracle/update.sh
 UNIT
 sudo tee /etc/systemd/system/qbox-update.timer >/dev/null <<UNIT
 [Unit]
-Description=Check GitHub for Qbox updates every 5 minutes
+Description=Check GitHub for Guildhall updates every 5 minutes
 
 [Timer]
 OnBootSec=2min

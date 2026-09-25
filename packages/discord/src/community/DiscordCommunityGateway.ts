@@ -5,6 +5,7 @@ import {
   type GuildMember,
   type GuildTextBasedChannel,
 } from "discord.js";
+import { BRAND } from "@qbox/shared/brand";
 import type {
   ChannelRenameInput,
   CommunityRoleMutation,
@@ -79,7 +80,7 @@ export class DiscordCommunityGatewayAdapter implements DiscordCommunityGateway {
     const guild = await this.resolveGuild(input.guildId);
     const channel = await guild.channels.fetch(input.channelId);
     if (!channel || !("setName" in channel)) throw new Error("Counter channel cannot be renamed.");
-    await channel.setName(input.name, "Qbox member counter refresh.");
+    await channel.setName(input.name, `${BRAND.name} member counter refresh.`);
   }
 
   private async resolveGuild(guildId: string): Promise<Guild> {

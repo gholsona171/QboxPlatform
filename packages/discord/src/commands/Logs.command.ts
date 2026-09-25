@@ -2,6 +2,7 @@ import { SlashCommandBuilder } from "discord.js";
 import type { DiscordCommunityService } from "@qbox/discord-community";
 import { CommunityCommand, enabledText } from "./communityCommandHelpers.js";
 import type { CommandExecutionContext } from "./DiscordCommand.js";
+import { BRAND } from "@qbox/shared/brand";
 
 const LOG_EVENT_CHOICES = [
   { name: "Member joined", value: "memberJoin" },
@@ -47,7 +48,7 @@ export class LogsCommand extends CommunityCommand {
     if (route === "test") {
       const destination = current.destinations.all ?? Object.values(current.destinations)[0];
       if (!destination) { await context.editReply({ content: "Set a log channel first with /logs configure." }); return; }
-      await service.sendAnnouncement({ guildId, channelId: destination, content: `Qbox log test from <@${context.interaction.user.id}>. Logging is working.` });
+      await service.sendAnnouncement({ guildId, channelId: destination, content: `${BRAND.name} log test from <@${context.interaction.user.id}>. Logging is working.` });
       await context.editReply({ content: `Test message sent to <#${destination}>.` });
       return;
     }

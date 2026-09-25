@@ -1,3 +1,5 @@
+import { BRAND } from "@qbox/shared/brand";
+
 export type CommunityFeature =
   | "welcome"
   | "goodbye"
@@ -435,7 +437,7 @@ export class DiscordCommunityService {
         results.push({ changed: false, message: validation.reason ?? "Role cannot be assigned." });
         continue;
       }
-      results.push(await this.gateway.assignRole({ guildId, memberId, roleId: rule.roleId, reason: "Qbox autorole assignment." }));
+      results.push(await this.gateway.assignRole({ guildId, memberId, roleId: rule.roleId, reason: `${BRAND.name} autorole assignment.` }));
     }
     return results;
   }
@@ -451,8 +453,8 @@ export class DiscordCommunityService {
     if (!this.gateway) throw unavailable();
     const validation = await this.gateway.validateRole({ guildId, memberId, roleId: rules.acceptedRoleId });
     if (!validation.assignable) throw new CommunityFeatureError("FORBIDDEN", validation.reason ?? "Accepted role cannot be assigned.");
-    const results = [await this.gateway.assignRole({ guildId, memberId, roleId: rules.acceptedRoleId, reason: "Qbox rules accepted." })];
-    if (rules.pendingRoleId) results.push(await this.gateway.removeRole({ guildId, memberId, roleId: rules.pendingRoleId, reason: "Qbox rules accepted." }));
+    const results = [await this.gateway.assignRole({ guildId, memberId, roleId: rules.acceptedRoleId, reason: `${BRAND.name} rules accepted.` })];
+    if (rules.pendingRoleId) results.push(await this.gateway.removeRole({ guildId, memberId, roleId: rules.pendingRoleId, reason: `${BRAND.name} rules accepted.` }));
     return results;
   }
 

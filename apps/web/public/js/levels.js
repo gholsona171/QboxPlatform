@@ -20,6 +20,7 @@ import {
   textField,
 } from "./forms.js";
 import { confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["leaderboard", "Leaderboard", false],
@@ -229,7 +230,7 @@ function rewardsTab() {
     ${roleSelect(`rw${index}.roleId`, "Role", reward.roleId)}
   </div>`).join("");
   return `<form class="form-grid readable-form" data-l-form="rewards">
-    <p class="microcopy full">Members get these roles when they reach the level. Leave a row empty to skip it. In Discord's role list, drag the Qbox role above these roles.</p>
+    <p class="microcopy full">Members get these roles when they reach the level. Leave a row empty to skip it. In Discord's role list, drag the ${BRAND.name} role (the bot's role) above these roles.</p>
     ${rows}
     ${selectField("rewardMode", "When a member earns more than one", [["STACK", "Keep all reward roles"], ["HIGHEST", "Keep only the highest reward role"]], s.rewardMode)}
     ${checkbox("removeRewardsOnReset", "Remove reward roles when XP is reset", s.removeRewardsOnReset)}

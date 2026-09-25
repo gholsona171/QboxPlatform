@@ -3,7 +3,7 @@ import { randomBytes } from "node:crypto";
 const key = () => randomBytes(32).toString("base64url");
 
 console.log([
-  "# New QboxPlatform local authentication keys.",
+  "# New Guildhall local authentication keys.",
   "# Paste these into your local ignored .env file. Do not commit them.",
   "AUTH_KEY_VERSION=1",
   `AUTH_SESSION_HMAC_KEY=${key()}`,

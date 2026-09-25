@@ -19,6 +19,7 @@ import type {
   VoteType,
 } from "./types.js";
 import { QUESTIONS_PER_PAGE } from "./types.js";
+import { BRAND } from "@qbox/shared/brand";
 import {
   ApplicationError,
   MAX_ANSWER_LENGTH,
@@ -351,7 +352,7 @@ export class ApplicationService {
         if (form.acceptRoleIds.length) await gateway.addRoles(guildId, application.applicantId, form.acceptRoleIds, audit);
         if (form.removeRoleIds.length) await gateway.removeRoles(guildId, application.applicantId, form.removeRoleIds, audit);
       } catch {
-        throw new ApplicationError("INVALID_STATE", "Could not change the member's roles. Check that they are still in the server and the Qbox role is above those roles.");
+        throw new ApplicationError("INVALID_STATE", `Could not change the member's roles. Check that they are still in the server and the ${BRAND.name} role (the bot's role) is above those roles.`);
       }
     }
     const server = await gateway.guildName(guildId).catch(() => "the server");

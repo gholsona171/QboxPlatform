@@ -25,6 +25,7 @@ import type {
 } from "./types.js";
 import { MAX_RANKS, STAFF_CUSTOM_ID } from "./types.js";
 import { StaffError, invalid, optionalText, requireLength, requireRange, requireSnowflake, validateRank, validateSettings } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 export interface HireInput {
   readonly rankId?: string | undefined;
@@ -56,8 +57,8 @@ export interface SweepResult {
 const HOUR_MS = 3_600_000;
 const DAY_MS = 86_400_000;
 const WEEK_MS = 7 * DAY_MS;
-const SYSTEM: StaffActor = { userId: "0", displayName: "Qbox", source: "SYSTEM" };
-const ROLE_FAILURE = "Discord would not change their roles. Make sure they are in the server and the Qbox role is above the staff roles.";
+const SYSTEM: StaffActor = { userId: "0", displayName: BRAND.name, source: "SYSTEM" };
+const ROLE_FAILURE = `Discord would not change their roles. Make sure they are in the server and the ${BRAND.name} role (the bot's role) is above the staff roles.`;
 
 const RECORD_LABELS: Readonly<Record<StaffRecordType, string>> = {
   HIRE: "Hired",
@@ -582,7 +583,7 @@ export class StaffService {
       }
     }
     const posted = await gateway.postEmbed(settings.rosterChannelId, embed).catch(() => {
-      throw new StaffError("INVALID_STATE", "Could not post in the roster channel. Check that Qbox can send messages there.");
+      throw new StaffError("INVALID_STATE", `Could not post in the roster channel. Check that ${BRAND.name} can send messages there.`);
     });
     await this.repository.setRosterMessage(guildId, posted.messageId);
     return posted;

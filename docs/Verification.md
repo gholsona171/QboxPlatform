@@ -1,7 +1,7 @@
 # Verification
 
 New members prove they are real before they get access to the server. They
-click a button, type a code, or answer your questions. Qbox gives them the
+click a button, type a code, or answer your questions. Guildhall gives them the
 verified roles, removes the unverified role, and records every attempt. Setup
 lives in the portal (`/verification`); staff use `/verify` in Discord.
 
@@ -38,7 +38,7 @@ Discord administrators can do everything.
 ## Methods
 
 - **Button:** clicking the panel button verifies the member.
-- **Code:** Qbox shows a 6-character code in a private reply (letters and digits, spaced out so it is easy to read). The member clicks **Enter code** and types it in a form. Spaces and case don't matter. Codes expire after 5 minutes and work once.
+- **Code:** Guildhall shows a 6-character code in a private reply (letters and digits, spaced out so it is easy to read). The member clicks **Enter code** and types it in a form. Spaces and case don't matter. Codes expire after 5 minutes and work once.
 - **Questions:** the member answers up to 5 questions in a form. Each question has one or more accepted answers, compared without case or extra spaces. Every answer must be right.
 
 ## Settings
@@ -61,7 +61,7 @@ how many members are waiting to verify.
 
 ## Setup
 
-1. Give the bot **Manage Roles** and **Kick Members**, and put the Qbox role above the verified and unverified roles.
+1. Give the bot **Manage Roles** and **Kick Members**, and put the Guildhall role above the verified and unverified roles.
 2. Hide your channels from `@everyone` (or the unverified role) and allow them for the verified role. Keep the verification channel visible to everyone.
 3. In the portal, open **Verification > Settings**, pick the method, roles, and channel, and turn verification on.
 4. Open **Panel**, adjust the text, and click **Post panel in Discord** (or run `/verify panel`).

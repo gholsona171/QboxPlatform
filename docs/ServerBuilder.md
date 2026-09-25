@@ -1,9 +1,9 @@
 # Server Builder
 
 Answer a few questions in the portal, check the blueprint, and click **Build**.
-Qbox creates the roles, categories, channels, and channel permissions in your
-Discord server, then connects them to the other Qbox features (moderation
-logs, verification, tickets, and so on). It works on the one server Qbox is
+Guildhall creates the roles, categories, channels, and channel permissions in your
+Discord server, then connects them to the other Guildhall features (moderation
+logs, verification, tickets, and so on). It works on the one server Guildhall is
 set up for.
 
 ## Where the code lives
@@ -36,7 +36,7 @@ Discord administrators can do everything.
    in place, remove roles, channels, or categories, and add channels.
    Counts are shown against Discord's limits, with warnings. Every change is
    saved, so you can come back later.
-3. **Build:** the bot check tells you if Qbox is missing permissions. Choose a
+3. **Build:** the bot check tells you if Guildhall is missing permissions. Choose a
    mode and which features to connect, then click **Build**. Progress and
    each step show live on the page.
 4. **History:** past builds with what they created, skipped, and failed.
@@ -55,14 +55,14 @@ server.
 
 ## Setup
 
-1. Give the Qbox bot **Manage Roles** and **Manage Channels**. Making it an
-   **Administrator** is simplest: without it, Qbox can only give roles and
+1. Give the Guildhall bot **Manage Roles** and **Manage Channels**. Making it an
+   **Administrator** is simplest: without it, Guildhall can only give roles and
    channel permissions it has itself, and anything else is listed as failed.
-2. Drag the Qbox role to the **top** of the role list (Server Settings >
+2. Drag the Guildhall role to the **top** of the role list (Server Settings >
    Roles). New roles are placed just under it, in rank order. If that is not
    allowed, the build still works and you can drag the roles into place.
 3. Announcement, stage, and media channels need **Community** turned on
-   (Server Settings > Enable Community). Without it, Qbox makes them as text
+   (Server Settings > Enable Community). Without it, Guildhall makes them as text
    or voice channels and says so in the build log. Forums that can't be
    created fall back to text channels the same way.
 

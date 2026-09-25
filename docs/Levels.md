@@ -58,7 +58,7 @@ a member (or everyone) removes their reward roles.
 
 ## Setup
 
-1. Give the bot **Manage Roles** and put the Qbox role above your reward roles.
+1. Give the bot **Manage Roles** and put the Guildhall role above your reward roles.
 2. In the portal, open **Levels > Settings**, turn XP on, and adjust the amounts.
 3. Add reward roles under **Levels > Rewards**.
 4. Grant `levels.manage` to staff who should adjust XP.

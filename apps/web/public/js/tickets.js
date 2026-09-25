@@ -33,6 +33,7 @@ import {
   textField,
 } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["inbox", "Inbox"],
@@ -321,7 +322,7 @@ function panelPreview(panel) {
   return `<div class="dc-message">
     <div class="dc-avatar">QB</div>
     <div class="dc-body">
-      <div class="dc-author">Qbox <span class="dc-bot">APP</span></div>
+      <div class="dc-author">${BRAND.name} <span class="dc-bot">APP</span></div>
       <div class="dc-embed" style="border-left-color:${escapeHtml(color)}">
         <strong>${escapeHtml(panel.title || "")}</strong>
         <p>${escapeHtml(panel.description || "")}</p>

@@ -2,6 +2,7 @@ import { colorValue, emojiObject, type DiscordRestClient } from "@qbox/shared/di
 
 import type { ApplicationEmbed, ApplicationForm, ApplicationGateway, ApplicationPanel, ButtonStyle, ReviewMessage } from "./types.js";
 import { APPLICATION_CUSTOM_ID } from "./types.js";
+import { BRAND } from "@qbox/shared/brand";
 
 interface IdResponse { readonly id: string }
 
@@ -29,7 +30,7 @@ export class DiscordRestApplicationGateway implements ApplicationGateway {
   public async createDiscussion(channelId: string, name: string, memberIds: readonly string[], content: string): Promise<{ readonly threadId: string }> {
     const thread = (await this.rest.post(`/channels/${channelId}/threads`, {
       body: { name, type: PRIVATE_THREAD, invitable: false, auto_archive_duration: THREAD_ARCHIVE_MINUTES },
-      reason: "Qbox application discussion",
+      reason: `${BRAND.name} application discussion`,
     })) as IdResponse;
     for (const userId of new Set(memberIds)) await this.rest.put(`/channels/${thread.id}/thread-members/${userId}`).catch(() => undefined);
     await this.rest.post(`/channels/${thread.id}/messages`, { body: { content: content.slice(0, 2000), allowed_mentions: { parse: ["users", "roles"] } } });

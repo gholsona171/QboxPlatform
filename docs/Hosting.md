@@ -1,6 +1,6 @@
 # Hosting (free)
 
-Qbox runs for free on:
+Guildhall runs for free on:
 
 | Part | Service |
 | --- | --- |
@@ -25,7 +25,7 @@ git clone git@github.com:gholsona171/QboxPlatform.git ~/qbox
 bash ~/qbox/ops/oracle/setup.sh
 ```
 
-The script asks for your Discord values and the Supabase connection string (the Discord server ID is optional; press Enter to skip it), writes them to `~/qbox/.env` (readable only by you, never committed), builds Qbox, registers the slash commands globally, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
+The script asks for your Discord values and the Supabase connection string (the Discord server ID is optional; press Enter to skip it), writes them to `~/qbox/.env` (readable only by you, never committed), builds Guildhall, registers the slash commands globally, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
 
 Finally, add `https://<portal address>/auth/discord/callback` under **Discord Developer Portal > OAuth2 > Redirects**.
 
@@ -33,11 +33,11 @@ Invite the bot with the link the setup prints (or **OAuth2 > URL Generator** wit
 
 ## Updates
 
-When `main` changes, the **Deploy build** GitHub workflow compiles Qbox and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers the global slash commands (Discord can take a few minutes to show changes), and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
+When `main` changes, the **Deploy build** GitHub workflow compiles Guildhall and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers the global slash commands (Discord can take a few minutes to show changes), and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
 
 ## Adding the bot to more servers
 
-One Qbox installation serves any number of Discord servers, like MEE6 or Dyno. Nothing on the hosting server changes when a new community joins:
+One Guildhall installation serves any number of Discord servers, like MEE6 or Dyno. Nothing on the hosting server changes when a new community joins:
 
 1. Open the invite link (the setup prints it; it is `https://discord.com/oauth2/authorize?client_id=<application ID>&scope=bot%20applications.commands&permissions=8`), pick the server, and authorize.
 2. The server owner and every member with **Administrator** or **Manage Server** get full portal access for that server automatically; nobody has to grant permissions first.

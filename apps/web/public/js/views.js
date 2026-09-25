@@ -3,6 +3,7 @@ import { appPath, liveUrl, staticHosting } from "./config.js";
 import { featureRegistry } from "./featureRegistry.js";
 import { session, signedIn } from "./session.js";
 import { badge, escapeHtml, signInCard } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 /** Overview: live ticket numbers, API status, and the features that are working today. */
 export async function renderOverviewPage(container) {
@@ -18,13 +19,13 @@ export async function renderOverviewPage(container) {
 
   if (!signedIn()) {
     container.innerHTML = `${signInCard(loginUrl(), staticHosting(), liveUrl())}
-      <section class="card"><h2>What you can manage</h2><div class="feature-grid">${featureCards}</div></section>`;
+      <section class="card"><h2>What you can manage</h2><p class="microcopy">${BRAND.tagline} Connect a FiveM server if you run one.</p><div class="feature-grid">${featureCards}</div></section>`;
     return;
   }
 
   container.innerHTML = `
     <section class="grid cols-4" id="overviewMetrics">${metrics()}</section>
-    <section class="card"><h2>Features</h2><div class="feature-grid">${featureCards}</div></section>`;
+    <section class="card"><h2>Features</h2><p class="microcopy">${BRAND.tagline} Connect a FiveM server if you run one.</p><div class="feature-grid">${featureCards}</div></section>`;
 
   try {
     const { stats } = (await ticketsOverview()).data;
@@ -47,7 +48,7 @@ export function renderSettingsPage(container) {
         ${detail("Username", escapeHtml(profile.username || "Unknown"))}
         ${detail("Discord ID", `<code>${escapeHtml(profile.discordUserId)}</code>`)}
         ${detail("Server membership", badge(String(me.membership?.status ?? "unknown").toLowerCase()))}
-        ${detail("Portal access", me.permissions?.discordManager ? "Full access, because you own or administer the server in Discord." : "Set by your Qbox permissions.")}
+        ${detail("Portal access", me.permissions?.discordManager ? "Full access, because you own or administer the server in Discord." : `Set by your ${BRAND.name} permissions.`)}
         <a class="button" href="${escapeHtml(appPath("/auth/discord/start"))}">Refresh Discord sign-in</a>
       </div>
       <div class="card">

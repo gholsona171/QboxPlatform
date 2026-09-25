@@ -12,6 +12,7 @@ import type {
   TicketTranscriptPost,
 } from "./types.js";
 import { colorValue, emojiObject, type DiscordRestClient, type DiscordRestFile } from "@qbox/shared/discord-rest";
+import { BRAND } from "@qbox/shared/brand";
 
 export type { DiscordRestClient, DiscordRestFile, DiscordRestRequest } from "@qbox/shared/discord-rest";
 
@@ -178,7 +179,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
   }
 
   public async deleteSpace(channelId: string, delaySeconds: number): Promise<void> {
-    const remove = () => this.rest.delete(`/channels/${channelId}`, { reason: "Qbox ticket closed." });
+    const remove = () => this.rest.delete(`/channels/${channelId}`, { reason: `${BRAND.name} ticket closed.` });
     if (delaySeconds <= 0) {
       await remove();
       return;

@@ -2,6 +2,7 @@ import { getJson, sendJson } from "./api.js";
 import { appPath } from "./config.js";
 import { channelSelect, dateTime, intValue, loadDirectory, numberField, roleSelect, textField } from "./forms.js";
 import { badge, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const view = { tab: "status", overview: undefined, status: undefined, statusError: undefined, history: undefined, range: "24h", error: undefined };
 let container;
@@ -84,7 +85,7 @@ function statusCard() {
 function setupCard() {
   return `<div class="empty-state">
     <h3>Set up your FiveM server</h3>
-    <p>Qbox is not connected to a FiveM server yet. Once it has the server address it shows live status and players here, keeps a status message updated in Discord, and can alert you when the server goes down.</p>
+    <p>${BRAND.name} is not connected to a FiveM server yet. Once it has the server address it shows live status and players here, keeps a status message updated in Discord, and can alert you when the server goes down.</p>
     ${view.overview.can.manage
       ? `<button class="button primary" data-f-tab="settings">Add the server address</button>`
       : `<p class="microcopy">Ask a server admin to add the server address on the Settings tab.</p>`}
@@ -152,7 +153,7 @@ function settingsTab() {
     <div class="toolbar full"><button type="button" class="button compact" data-f-action="test">Test connection</button><span data-f-test></span></div>
     ${textField("connectUrl", "Connect link", s.connectUrl, "https://cfx.re/join/abc123", false, "full")}
     <h3>Status message</h3>
-    <p class="microcopy full">Qbox keeps one message in this channel up to date with the status and player list.</p>
+    <p class="microcopy full">${BRAND.name} keeps one message in this channel up to date with the status and player list.</p>
     ${channelSelect("statusChannelId", "Status channel", s.statusChannelId, "TEXT", "Not set")}
     ${numberField("updateIntervalSeconds", "Update every (seconds, 30-3600)", s.updateIntervalSeconds, 30, 3600)}
     <h3>Alerts</h3>

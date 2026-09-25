@@ -22,6 +22,7 @@ import {
   textField,
 } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["cases", "Cases"],
@@ -271,7 +272,7 @@ function settingsTab() {
     ${numberField("defaultTimeoutMinutes", "Default timeout (minutes)", s.defaultTimeoutMinutes, 1, 40320)}
     ${numberField("banDeleteMessageHours", "Delete messages on ban (hours, 0-168)", s.banDeleteMessageHours, 0, 168)}
     ${numberField("warningExpiryDays", "Warnings stop counting after (days, 0 = never)", s.warningExpiryDays, 0, 3650)}
-    ${rolePicker("protectedRoleIds", "Protected roles (cannot be moderated through Qbox)", s.protectedRoleIds)}
+    ${rolePicker("protectedRoleIds", `Protected roles (cannot be moderated through ${BRAND.name})`, s.protectedRoleIds)}
     ${checkbox("recordExternalActions", "Record bans, unbans, and kicks done directly in Discord", s.recordExternalActions)}
     <h3>Automatic punishments</h3>
     <p class="microcopy full">When a member reaches this many active warnings, apply the action. Leave warnings empty to skip a row.</p>

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Pulls the latest build and restarts Qbox when something changed.
+# Pulls the latest build and restarts Guildhall when something changed.
 # Run by qbox-update.timer every 5 minutes; safe to run by hand.
 #
 # Slash commands are registered globally (once for every server the bot is

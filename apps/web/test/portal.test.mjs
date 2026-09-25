@@ -55,3 +55,16 @@ test("portal has a server picker that follows the guilds API contract", async ()
   assert.match(app, /qbox:guild-required/);
   assert.match(app, /chooseServerView\(\)/);
 });
+
+test("portal shows the Guildhall name and no visible Qbox", async () => {
+  const { BRAND } = await import("../public/js/brand.js");
+  assert.equal(BRAND.name, "Guildhall");
+  const html = await readFile(new URL("index.html", publicDirectory), "utf8");
+  assert.match(html, /<title>Guildhall<\/title>/);
+  assert.ok(html.includes("<strong>Guildhall</strong>"), "the sidebar brand block names Guildhall");
+  for (const { file, text } of await portalSources()) {
+    // Identifiers stay: qbox_ cookies, qbox: events, @qbox packages, QBOX_ variables, data- and meta attributes.
+    const visible = text.replace(/qbox[_:-][\w-]*/gi, "").replace(/@qbox\/[\w-]+/g, "");
+    assert.equal(/\bQbox(Platform)?\b/.test(visible), false, `${file} still shows Qbox`);
+  }
+});

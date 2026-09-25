@@ -15,6 +15,7 @@ import type {
 } from "./types.js";
 import { MAX_POLL_MINUTES, MAX_POLL_OPTIONS, MIN_POLL_OPTIONS } from "./types.js";
 import { PollError, invalid, requireEmoji, requireIds, requireLength, requireRange, requireSnowflake } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 export interface PollServiceOptions {
   /** Delay before the poll message is refreshed after votes. 0 refreshes right away. */
@@ -26,7 +27,7 @@ export interface PollExport {
   readonly content: string;
 }
 
-const QBOX: PollActor = { userId: "0", displayName: "Qbox", canManage: true };
+const QBOX: PollActor = { userId: "0", displayName: BRAND.name, canManage: true };
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -85,7 +86,7 @@ export class PollService {
       return await this.repository.update(poll.id, { messageId: posted.messageId });
     } catch {
       await this.repository.delete(poll.id);
-      throw new PollError("INVALID_STATE", `Could not post the poll in <#${poll.channelId}>. Check that Qbox can see and send messages there.`);
+      throw new PollError("INVALID_STATE", `Could not post the poll in <#${poll.channelId}>. Check that ${BRAND.name} can see and send messages there.`);
     }
   }
 

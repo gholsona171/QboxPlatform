@@ -16,6 +16,7 @@ import type {
 } from "./types.js";
 import { MAX_TIMEOUT_MINUTES } from "./types.js";
 import { ModerationError, invalid, requireLength, requireRange, requireSnowflake, validateSettings } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 export interface ModerationActionInput {
   readonly guildId: string;
@@ -68,7 +69,7 @@ const LABELS: Readonly<Record<CaseType, string>> = {
   NOTE: "Note",
 };
 
-const QBOX: Moderator = { userId: "0", displayName: "Qbox", source: "AUTOMOD" };
+const QBOX: Moderator = { userId: "0", displayName: BRAND.name, source: "AUTOMOD" };
 const DAY_MS = 86_400_000;
 
 export function defaultModerationSettings(guildId: string): ModerationSettings {
@@ -151,7 +152,7 @@ export class ModerationService {
         throw new ModerationError("INVALID_STATE", "That user is not in the server.");
     }
 
-    const auditReason = `${reason ?? "No reason given"} (by ${moderator.displayName}${moderator.source === "WEB" ? " via Qbox portal" : ""})`.slice(0, 512);
+    const auditReason = `${reason ?? "No reason given"} (by ${moderator.displayName}${moderator.source === "WEB" ? ` via ${BRAND.name} portal` : ""})`.slice(0, 512);
     const expiresAt = duration ? new Date(this.now().getTime() + duration * 60_000) : undefined;
     const number = await this.repository.allocateCaseNumber(guildId);
 

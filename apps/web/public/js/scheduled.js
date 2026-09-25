@@ -17,6 +17,7 @@ import {
   textField,
 } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["messages", "Messages"],
@@ -175,7 +176,7 @@ function preview(message) {
   return `<div class="dc-message">
     <div class="dc-avatar">QB</div>
     <div class="dc-body">
-      <div class="dc-author">Qbox <span class="dc-bot">APP</span></div>
+      <div class="dc-author">${BRAND.name} <span class="dc-bot">APP</span></div>
       ${pings || message.content ? `<p class="dc-content">${pings} ${escapeHtml(message.content ?? "")}</p>` : ""}
       ${hasEmbed ? `<div class="dc-embed" style="border-left-color:${escapeHtml(color)}">
         ${embed.title ? `<strong>${escapeHtml(embed.title)}</strong>` : ""}

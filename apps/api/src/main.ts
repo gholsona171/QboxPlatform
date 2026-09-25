@@ -5,6 +5,7 @@ import { logger } from "@qbox/logger";
 import { createApiApplication } from "./composition/ApiApplication.js";
 import type { ApiConfigurationInput } from "./config/ApiConfiguration.js";
 import { installApiSignalHandlers } from "./process/ApiSignalHandler.js";
+import { BRAND } from "@qbox/shared/brand";
 
 /** Raw values read only by the executable composition boundary. */
 export interface ApiProcessEnvironment {
@@ -93,14 +94,14 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
         port: bound?.port,
         readiness: "ready",
       },
-      "Qbox API started.",
+      `${BRAND.name} API started.`,
     );
     return removeSignals;
   } catch (error) {
     removeSignals();
     logger.error(
       { errorName: error instanceof Error ? error.name : "unknown" },
-      "Qbox API startup failed.",
+      `${BRAND.name} API startup failed.`,
     );
     throw error;
   }

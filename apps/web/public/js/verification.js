@@ -22,6 +22,7 @@ import {
   textField,
 } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify, row, table } from "./ui.js";
+import { BRAND } from "./brand.js";
 
 const TABS = [
   ["activity", "Activity"],
@@ -29,7 +30,7 @@ const TABS = [
   ["panel", "Panel"],
 ];
 const RESULT_LABELS = { PASSED: "Passed", FAILED: "Failed", DENIED_AGE: "Denied: new account", KICKED: "Kicked", MANUAL: "Verified by staff", REVOKED: "Unverified by staff" };
-const MODES = [["BUTTON", "Button: click to verify"], ["CAPTCHA", "Code: type the code Qbox shows"], ["QUESTION", "Questions: answer your questions"]];
+const MODES = [["BUTTON", "Button: click to verify"], ["CAPTCHA", `Code: type the code ${BRAND.name} shows`], ["QUESTION", "Questions: answer your questions"]];
 const AGE_ACTIONS = [["DENY", "Don't let them verify"], ["KICK", "Kick them"], ["FLAG", "Let them verify, but flag them in the log"]];
 const QUESTION_ROWS = 5;
 
@@ -89,7 +90,7 @@ function activityTab() {
     ["Member", `${escapeHtml(item.userName)} <small><code>${escapeHtml(item.userId)}</code></small>`],
     ["Result", badge(RESULT_LABELS[item.result] ?? item.result)],
     ["Details", escapeHtml((item.reason ?? "—").slice(0, 100))],
-    ["By", item.staffId ? memberName(item.staffId) : item.source === "AUTOMATIC" ? "Qbox" : "Member"],
+    ["By", item.staffId ? memberName(item.staffId) : item.source === "AUTOMATIC" ? BRAND.name : "Member"],
   ]));
   if (!settings.enabled) {
     return `<div class="empty-state">
@@ -198,7 +199,7 @@ function panelPreview(panel) {
   return `<div class="dc-message">
     <div class="dc-avatar">QB</div>
     <div class="dc-body">
-      <div class="dc-author">Qbox <span class="dc-bot">APP</span></div>
+      <div class="dc-author">${BRAND.name} <span class="dc-bot">APP</span></div>
       <div class="dc-embed" style="border-left-color:${escapeHtml(panel.color)}">
         <strong>${escapeHtml(panel.title)}</strong>
         <p>${escapeHtml(panel.description)}</p>

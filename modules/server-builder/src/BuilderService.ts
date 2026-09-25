@@ -36,6 +36,7 @@ import type {
 } from "./types.js";
 import { BOT, BUILDER_LINKS, BUILDER_RUN_MODES, DISCORD_CHANNEL_TYPE, EVERYONE } from "./types.js";
 import { BUILDER_LIMITS, BuilderError, normalizeBlueprint, requireSnowflake, summarize, validateAnswers, validateBlueprint } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 /** A blueprint with its counts, warnings, access summary, and feature links. */
 export interface BuilderPlan {
@@ -176,7 +177,7 @@ export class BuilderService {
     if (links.length > 0 && !this.links) throw new BuilderError("DEPENDENCY_UNAVAILABLE", "Feature links are not available right now.");
     await this.requireIdle(guildId);
     const preflight = preflightFrom(await gateway.botStatus(guildId));
-    if (!preflight.ready) throw new BuilderError("INVALID_STATE", preflight.messages[0] ?? "Qbox cannot build in this server.");
+    if (!preflight.ready) throw new BuilderError("INVALID_STATE", preflight.messages[0] ?? `${BRAND.name} cannot build in this server.`);
     this.active.add(guildId);
     try {
       const { blueprint } = draft;
@@ -219,7 +220,7 @@ export class BuilderService {
 
   private async build(run: BuilderRun, blueprint: BuilderBlueprint, gateway: BuilderGateway): Promise<void> {
     const { guildId } = run;
-    const reason = `Qbox server builder, started by ${run.startedByName}`.slice(0, 512);
+    const reason = `${BRAND.name} server builder, started by ${run.startedByName}`.slice(0, 512);
     const add = run.mode === "ADD";
     const counts = { done: 0, skipped: 0, failed: 0 };
     const warnings: string[] = [];
@@ -261,7 +262,7 @@ export class BuilderService {
         const top = (await gateway.botStatus(guildId)).topRolePosition - 1;
         await gateway.setRolePositions(guildId, created.map((id, index) => ({ id, position: Math.max(1, top - index) })), reason);
       } catch {
-        warnings.push("New roles could not be moved into rank order under the Qbox role. Drag them into place in Server Settings > Roles.");
+        warnings.push(`New roles could not be moved into rank order under the ${BRAND.name} role (the bot's role). Drag them into place in Server Settings > Roles.`);
         await this.repository.updateRun(run.id, { warnings });
       }
     }
@@ -374,7 +375,7 @@ export class BuilderService {
   }
 
   private async removeCreated(run: BuilderRun, items: readonly BuilderRunItem[], gateway: BuilderGateway): Promise<void> {
-    const reason = "Qbox server builder undo";
+    const reason = `${BRAND.name} server builder undo`;
     const order: readonly BuilderItemKind[] = ["CHANNEL", "CATEGORY", "ROLE"];
     let remaining = 0;
     for (const kind of order)
@@ -455,12 +456,12 @@ function preflightFrom(bot: BotStatus): BuilderPreflight {
   const canManageRoles = admin || (bot.permissions & DISCORD_PERMISSION.manageRoles) !== 0n;
   const canManageChannels = admin || (bot.permissions & DISCORD_PERMISSION.manageChannels) !== 0n;
   const messages: string[] = [];
-  if (!canManageRoles) messages.push("Qbox needs the Manage Roles permission to create roles.");
-  if (!canManageChannels) messages.push("Qbox needs the Manage Channels permission to create channels.");
+  if (!canManageRoles) messages.push(`${BRAND.name} needs the Manage Roles permission to create roles.`);
+  if (!canManageChannels) messages.push(`${BRAND.name} needs the Manage Channels permission to create channels.`);
   if (bot.topRolePosition < bot.highestRolePosition)
-    messages.push("The Qbox role is not at the top of the role list. New roles go under it, and Qbox can't manage roles above it. Drag it to the top in Server Settings > Roles.");
+    messages.push(`The ${BRAND.name} role (the bot's role) is not at the top of the role list. New roles go under it, and ${BRAND.name} can't manage roles above it. Drag it to the top in Server Settings > Roles.`);
   if (!admin && canManageRoles && canManageChannels)
-    messages.push("Qbox is not an administrator, so it can only give roles and channel permissions it has itself. Items it can't set are listed as failed.");
+    messages.push(`${BRAND.name} is not an administrator, so it can only give roles and channel permissions it has itself. Items it can't set are listed as failed.`);
   if (!bot.community) messages.push("Community is off, so announcement, stage, and media channels will be made as text and voice channels.");
   return { ready: canManageRoles && canManageChannels, canManageRoles, canManageChannels, community: bot.community, messages };
 }

@@ -120,7 +120,7 @@ describe("StaffService roster changes", () => {
   it("refuses to hire when Discord rejects the role change", async () => {
     const { service, gateway, repository } = await setup();
     gateway.failRoles = true;
-    await expect(service.hire(GUILD, ALEX, BOSS)).rejects.toThrow(/Qbox role is above/);
+    await expect(service.hire(GUILD, ALEX, BOSS)).rejects.toThrow(/Guildhall role \(the bot's role\) is above/);
     expect(repository.members).toHaveLength(0);
   });
 

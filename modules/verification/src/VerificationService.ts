@@ -19,6 +19,7 @@ import type {
   VerificationStats,
 } from "./types.js";
 import { VerificationError, requireLength, requireSnowflake, validateSettings } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 const DAY_MS = 86_400_000;
 const CAPTCHA_TTL_MS = 5 * 60_000;
@@ -264,7 +265,7 @@ export class VerificationService {
     }
     if (settings.unverifiedRoleId)
       await gateway.addRole(guildId, member.userId, settings.unverifiedRoleId, "Joined and is not verified yet").catch(() =>
-        this.log(settings, { title: "Could not add the unverified role", description: `<@${member.userId}> joined but I could not give them <@&${settings.unverifiedRoleId}>. Check that the Qbox role is above it.`, color: COLORS.FAILED }));
+        this.log(settings, { title: "Could not add the unverified role", description: `<@${member.userId}> joined but I could not give them <@&${settings.unverifiedRoleId}>. Check that the ${BRAND.name} role (the bot's role) is above it.`, color: COLORS.FAILED }));
     await this.repository.upsertPending({ guildId, userId: member.userId, joinedAt: this.now(), flagged: tooNew });
     if (!tooNew) return;
     const created = Math.floor(accountCreatedAt(member.userId).getTime() / 1000);
@@ -399,7 +400,7 @@ export class VerificationService {
     try {
       await change();
     } catch {
-      throw new VerificationError("DEPENDENCY_UNAVAILABLE", "I could not change the member's roles. Make sure the Qbox role is above the verification roles and has Manage Roles.");
+      throw new VerificationError("DEPENDENCY_UNAVAILABLE", `I could not change the member's roles. Make sure the ${BRAND.name} role (the bot's role) is above the verification roles and has Manage Roles.`);
     }
   }
 

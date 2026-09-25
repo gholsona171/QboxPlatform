@@ -2,6 +2,7 @@ import { Events, type Client, type Guild } from "discord.js";
 import { logger } from "@qbox/logger";
 
 import type { DiscordFeatureFactory } from "../features/DiscordFeature.js";
+import { BRAND } from "@qbox/shared/brand";
 
 /** Grants a server's owner every Qbox permission. Implemented with the permission bootstrap. */
 export interface GuildOwnerGrant {
@@ -50,7 +51,7 @@ class GuildOnboardingEvents {
     try {
       const result = await this.grant.ensureOwner(guild.id, guild.ownerId);
       if (result.created || trigger === "joined")
-        logger.info({ guildId: guild.id, guildName: guild.name, ownerId: guild.ownerId, trigger }, "Server owner set up in Qbox.");
+        logger.info({ guildId: guild.id, guildName: guild.name, ownerId: guild.ownerId, trigger }, `Server owner set up in ${BRAND.name}.`);
     } catch (error) {
       logger.error({ err: error, guildId: guild.id, trigger }, "Server owner setup failed.");
     }

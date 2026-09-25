@@ -1,24 +1,10 @@
-# QboxPlatform
+# Guildhall (code name Qbox)
 
-## Vision
+Guildhall runs your Discord community from one place. Invite the bot, sign in to the portal with Discord, and manage tickets, moderation, verification, staff, levels, giveaways and more for any server you run. It works for any number of Discord servers at once, the way MEE6 or Dyno do. If you run a FiveM server, you can connect it as an optional integration.
 
-QboxPlatform is a modular AI-powered management platform built for Discord and FiveM communities.
+"Qbox" is the code name. It stays in package names (`@qbox/*`), environment variables (`QBOX_*`), service names (`qbox-api`, `qbox-bot`), and the repository name. The name people see comes from `packages/shared/src/brand.ts` and `apps/web/public/js/brand.js`.
 
-It is designed around independent modules that communicate through a shared core.
-
-## Initial Goals
-
-- Modular architecture
-- AI Knowledge Base
-- Ticket System
-- Applications
-- Moderation
-- Staff Management
-- FiveM Integration
-- Web Dashboard
-- Analytics
-
-## Current Status
+## What it does
 
 Everything below works from both the web portal and Discord:
 
@@ -26,14 +12,14 @@ Everything below works from both the web portal and Discord:
 - **Safety:** moderation (cases, automod, automatic punishments), verification
 - **Team:** staff roster, ranks, strikes, leave, and shifts
 - **Community:** levels and rewards, giveaways, polls, birthdays, voice rooms, scheduled messages
-- **Server:** FiveM status, players, alerts, and restart warnings
+- **Server:** Server Builder (plans and creates roles and channels), and the optional FiveM integration (status, players, alerts, and restart warnings)
 - **Discord bot basics:** role management, role menus, welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard
 
 Each feature has its own guide in `docs/` (for example `docs/Tickets.md`). `docs/DiscordFeatureParity.md` lists every command, route, and permission. To add a feature, follow `docs/FeatureDevelopment.md`.
 
 ## Many servers, one bot
 
-One Qbox installation serves any number of Discord servers, the way MEE6 or Dyno do. Invite the bot with `https://discord.com/oauth2/authorize?client_id=<application ID>&scope=bot%20applications.commands&permissions=8`; slash commands are registered globally once, so they work everywhere the bot is. Each server's owner and Discord administrators get full portal access for that server automatically, and after signing in members pick the server they want to manage. Settings and data are kept per server. `DISCORD_GUILD_ID` is optional and only names the default server shown before a member picks one. See `docs/Hosting.md` ("Adding the bot to more servers").
+One Guildhall installation serves any number of Discord servers. Invite the bot with `https://discord.com/oauth2/authorize?client_id=<application ID>&scope=bot%20applications.commands&permissions=8`; slash commands are registered globally once, so they work everywhere the bot is. Each server's owner and Discord administrators get full portal access for that server automatically, and after signing in members pick the server they want to manage. Settings and data are kept per server. `DISCORD_GUILD_ID` is optional and only names the default server shown before a member picks one. See `docs/Hosting.md` ("Adding the bot to more servers").
 
 ## Quick Start
 
@@ -42,3 +28,7 @@ One Qbox installation serves any number of Discord servers, the way MEE6 or Dyno
 3. `pnpm db:start` for the temporary development database (see `docs/DevelopmentDatabase.md`), and set `DATABASE_URL` in `.env`.
 4. `pnpm build`, then start the bot (`pnpm --filter @qbox/bot start`) and the API (`pnpm --filter @qbox/api start`).
 5. Open `API_PUBLIC_BASE_URL` for the portal. The GitHub Pages preview is described in `apps/web/README.md`.
+
+## Design
+
+Guildhall is built from independent modules that talk through a shared core: a Discord bot, a Fastify API, a framework-free portal, and a PostgreSQL database. See `docs/Architecture.md`.

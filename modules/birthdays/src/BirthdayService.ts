@@ -13,6 +13,7 @@ import type {
   UpcomingBirthday,
 } from "./types.js";
 import { BirthdayError, invalid, requireDate, requireSnowflake, requireTimeZone, validateSettings } from "./validation.js";
+import { BRAND } from "@qbox/shared/brand";
 
 const DAY_MS = 86_400_000;
 export const DEFAULT_BIRTHDAY_MESSAGE = "Happy birthday, {user}! 🎂";
@@ -166,7 +167,7 @@ export class BirthdayService {
     try {
       return await this.gateway.post(settings.channelId, announcement(settings, userId, 21, server));
     } catch {
-      throw new BirthdayError("DEPENDENCY_UNAVAILABLE", "Qbox could not post in the announcement channel. Check its permissions there.");
+      throw new BirthdayError("DEPENDENCY_UNAVAILABLE", `${BRAND.name} could not post in the announcement channel. Check its permissions there.`);
     }
   }
 

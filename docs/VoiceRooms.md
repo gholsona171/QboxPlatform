@@ -1,6 +1,6 @@
 # Voice Rooms
 
-Join-to-create voice channels. A member joins a hub channel, Qbox creates a
+Join-to-create voice channels. A member joins a hub channel, Guildhall creates a
 room for them and moves them into it, and the room is deleted once it is
 empty. The owner controls the room with buttons in its chat or with `/voice`.
 Hubs and settings are managed in the portal (`/voice`).
@@ -81,5 +81,5 @@ removed from the list. Deleting a hub keeps its open rooms until they empty.
 
 ## Known limitations
 
-- `{game}` needs the Presence intent, which Qbox does not request, so it shows "Voice" unless the intent is added.
+- `{game}` needs the Presence intent, which Guildhall does not request, so it shows "Voice" unless the intent is added.
 - Empty-room timers live in memory; a restart cleans up empty rooms on startup instead.

@@ -1,3 +1,5 @@
+import { BRAND } from "./brand.js";
+
 export function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -29,9 +31,10 @@ export function signInCard(loginHref, previewSite, liveHref) {
       : `<p class="microcopy">The live platform link has not been configured for this preview site yet.</p>`
     : `<a class="button primary" href="${escapeHtml(loginHref)}">Sign in with Discord</a>`;
   return `<section class="card sign-in-card">
-    <div class="brand-mark large">QB</div>
+    <div class="brand-mark large">GH</div>
     <h2>Sign in to manage your server</h2>
-    <p class="microcopy">QboxPlatform uses your Discord account. You only see the tools your server roles allow.</p>
+    <p>${BRAND.name} runs your Discord community: tickets, moderation, verification, staff, levels, giveaways and more, from one portal.</p>
+    <p class="microcopy">Sign in with your Discord account. You only see the tools your server roles allow.</p>
     ${button}
   </section>`;
 }

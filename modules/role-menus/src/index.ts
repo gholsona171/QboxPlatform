@@ -1,3 +1,5 @@
+import { BRAND } from "@qbox/shared/brand";
+
 export type RoleMenuPresentationType = "BUTTONS" | "SELECT_MENU" | "REACTIONS";
 export type RoleMenuAssignmentMode = "TOGGLE" | "ADD_ONLY" | "REMOVE_ONLY" | "EXCLUSIVE";
 export type RoleMenuStatus = "DRAFT" | "PUBLISHED" | "DISABLED";
@@ -218,22 +220,22 @@ export class RoleMenuService {
       if (menu.assignmentMode === "ADD_ONLY") return { changed: false, message: "Reaction removal does not remove this role." };
       const hasRole = await this.gateway.hasRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId });
       if (!hasRole) return { changed: false, message: "No role change was required." };
-      return this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `Qbox role menu ${menu.id} reaction removed.` });
+      return this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `${BRAND.name} role menu ${menu.id} reaction removed.` });
     }
 
     if (menu.assignmentMode === "EXCLUSIVE") {
       for (const other of menu.options) {
         if (other.roleId !== option.roleId && await this.gateway.hasRole({ guildId: input.guildId, memberId: input.memberId, roleId: other.roleId }))
-          await this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: other.roleId, reason: `Qbox role menu ${menu.id} exclusive selection.` });
+          await this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: other.roleId, reason: `${BRAND.name} role menu ${menu.id} exclusive selection.` });
       }
-      return this.gateway.addRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `Qbox role menu ${menu.id} selected.` });
+      return this.gateway.addRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `${BRAND.name} role menu ${menu.id} selected.` });
     }
 
     const hasRole = await this.gateway.hasRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId });
     if (menu.assignmentMode === "ADD_ONLY" || (menu.assignmentMode === "TOGGLE" && !hasRole))
-      return this.gateway.addRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `Qbox role menu ${menu.id} selected.` });
+      return this.gateway.addRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `${BRAND.name} role menu ${menu.id} selected.` });
     if (menu.assignmentMode === "REMOVE_ONLY" || (menu.assignmentMode === "TOGGLE" && hasRole))
-      return this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `Qbox role menu ${menu.id} removed.` });
+      return this.gateway.removeRole({ guildId: input.guildId, memberId: input.memberId, roleId: option.roleId, reason: `${BRAND.name} role menu ${menu.id} removed.` });
     return { changed: false, message: "No role change was required." };
   }
 
