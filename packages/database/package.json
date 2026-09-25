@@ -9,6 +9,8 @@
     "@qbox/authentication": "workspace:*",
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
+    "@qbox/fivem": "workspace:*",
+    "@qbox/knowledge-base": "workspace:*",
     "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/prisma": "workspace:*",

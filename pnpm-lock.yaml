@@ -69,6 +69,12 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/logger':
         specifier: workspace:*
         version: link:../../packages/logger
@@ -133,6 +139,18 @@ importers:
 
   modules/discord-roles: {}
 
+  modules/fivem:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/knowledge-base:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/moderation:
     dependencies:
       '@qbox/shared':
@@ -166,6 +184,12 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/moderation':
         specifier: workspace:*
         version: link:../../modules/moderation
@@ -193,6 +217,12 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/logger':
         specifier: workspace:*
         version: link:../logger

@@ -25,8 +25,8 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Verification | PLANNED |  |  |  |  | /verification |  |  | Discord no / Portal no |
 | Polls | PLANNED |  |  |  |  | /polls |  |  | Discord no / Portal no |
 | Birthdays | PLANNED |  |  |  |  | /birthdays |  |  | Discord no / Portal no |
-| Knowledge Base | PLANNED |  |  |  |  | /knowledge |  |  | Discord no / Portal no |
-| FiveM Server | PLANNED |  |  |  |  | /fivem |  |  | Discord no / Portal no |
+| Knowledge Base | LIVE | faq, kb, ask | faq/kb title autocomplete, auto-answer suggestions | messageCreate, interactionCreate (autocomplete) | /api/v1/knowledge/overview, /api/v1/knowledge/articles, /api/v1/knowledge/categories, /api/v1/knowledge/settings | /knowledge | knowledge.manage | KnowledgeSettings, KnowledgeCategory, KnowledgeArticle | Discord yes / Portal yes |
+| FiveM Server | LIVE | fivem | connect link button | status update timer, restart warning timer | /api/v1/fivem/overview, /api/v1/fivem/status, /api/v1/fivem/history, /api/v1/fivem/settings, /api/v1/fivem/test | /fivem | fivem.manage | FivemSettings, FivemStatusSnapshot | Discord yes / Portal yes |
 | Scheduled Messages | PLANNED |  |  |  |  | /discord?tab=scheduled |  |  | Discord no / Portal no |
 | Giveaways | PLANNED |  |  |  |  | /discord?tab=giveaways |  |  | Discord no / Portal no |
 | Levels and Rewards | PLANNED |  |  |  |  | /discord?tab=levels |  |  | Discord no / Portal no |

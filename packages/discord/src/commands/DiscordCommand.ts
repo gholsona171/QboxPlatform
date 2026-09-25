@@ -2,7 +2,7 @@ import type {
   ChatInputCommandInteraction,
   InteractionEditReplyOptions,
 } from "discord.js";
-import type { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
+import type { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 
 import type { Permission } from "@qbox/permissions";
 
@@ -59,7 +59,7 @@ export interface CommandExecutionContext {
 
 export interface DiscordCommand {
   readonly type: "chat-input";
-  readonly data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder;
+  readonly data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | SlashCommandOptionsOnlyBuilder;
   readonly aliases?: readonly string[];
   readonly policy: CommandExecutionPolicy;
   bypassAuthorization?(context: CommandExecutionContext): boolean;
