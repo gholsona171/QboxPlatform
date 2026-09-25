@@ -433,3 +433,42 @@ export const TicketCloseAction = {
 } as const
 
 export type TicketCloseAction = (typeof TicketCloseAction)[keyof typeof TicketCloseAction]
+
+
+export const VerificationMode = {
+  BUTTON: 'BUTTON',
+  CAPTCHA: 'CAPTCHA',
+  QUESTION: 'QUESTION'
+} as const
+
+export type VerificationMode = (typeof VerificationMode)[keyof typeof VerificationMode]
+
+
+export const VerificationAgeAction = {
+  DENY: 'DENY',
+  KICK: 'KICK',
+  FLAG: 'FLAG'
+} as const
+
+export type VerificationAgeAction = (typeof VerificationAgeAction)[keyof typeof VerificationAgeAction]
+
+
+export const VerificationAttemptResult = {
+  PASSED: 'PASSED',
+  FAILED: 'FAILED',
+  DENIED_AGE: 'DENIED_AGE',
+  KICKED: 'KICKED',
+  MANUAL: 'MANUAL',
+  REVOKED: 'REVOKED'
+} as const
+
+export type VerificationAttemptResult = (typeof VerificationAttemptResult)[keyof typeof VerificationAttemptResult]
+
+
+export const VerificationAttemptSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  AUTOMATIC: 'AUTOMATIC'
+} as const
+
+export type VerificationAttemptSource = (typeof VerificationAttemptSource)[keyof typeof VerificationAttemptSource]

@@ -86,7 +86,10 @@ export const ModelName = {
   TicketPanel: 'TicketPanel',
   Ticket: 'Ticket',
   TicketMessage: 'TicketMessage',
-  TicketEvent: 'TicketEvent'
+  TicketEvent: 'TicketEvent',
+  VerificationSettings: 'VerificationSettings',
+  VerificationAttempt: 'VerificationAttempt',
+  VerificationPendingMember: 'VerificationPendingMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -831,6 +834,64 @@ export const TicketEventScalarFieldEnum = {
 } as const
 
 export type TicketEventScalarFieldEnum = (typeof TicketEventScalarFieldEnum)[keyof typeof TicketEventScalarFieldEnum]
+
+
+export const VerificationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  mode: 'mode',
+  verifiedRoleIds: 'verifiedRoleIds',
+  unverifiedRoleId: 'unverifiedRoleId',
+  channelId: 'channelId',
+  panelTitle: 'panelTitle',
+  panelDescription: 'panelDescription',
+  panelColor: 'panelColor',
+  panelButtonLabel: 'panelButtonLabel',
+  panelChannelId: 'panelChannelId',
+  panelMessageId: 'panelMessageId',
+  questions: 'questions',
+  logChannelId: 'logChannelId',
+  minAccountAgeDays: 'minAccountAgeDays',
+  ageAction: 'ageAction',
+  kickUnverifiedMinutes: 'kickUnverifiedMinutes',
+  maxAttempts: 'maxAttempts',
+  cooldownMinutes: 'cooldownMinutes',
+  dmOnSuccess: 'dmOnSuccess',
+  successMessage: 'successMessage',
+  welcomeChannelId: 'welcomeChannelId',
+  welcomeMessage: 'welcomeMessage',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationSettingsScalarFieldEnum = (typeof VerificationSettingsScalarFieldEnum)[keyof typeof VerificationSettingsScalarFieldEnum]
+
+
+export const VerificationAttemptScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  result: 'result',
+  reason: 'reason',
+  staffId: 'staffId',
+  staffName: 'staffName',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationAttemptScalarFieldEnum = (typeof VerificationAttemptScalarFieldEnum)[keyof typeof VerificationAttemptScalarFieldEnum]
+
+
+export const VerificationPendingMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  joinedAt: 'joinedAt',
+  flagged: 'flagged'
+} as const
+
+export type VerificationPendingMemberScalarFieldEnum = (typeof VerificationPendingMemberScalarFieldEnum)[keyof typeof VerificationPendingMemberScalarFieldEnum]
 
 
 export const SortOrder = {

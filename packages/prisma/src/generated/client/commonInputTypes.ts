@@ -1153,6 +1153,74 @@ export type EnumTicketMessageSourceWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumTicketMessageSourceFilter<$PrismaModel>
 }
 
+export type EnumVerificationModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationMode | Prisma.EnumVerificationModeFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel> | $Enums.VerificationMode
+}
+
+export type EnumVerificationAgeActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAgeAction | Prisma.EnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel> | $Enums.VerificationAgeAction
+}
+
+export type EnumVerificationModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationMode | Prisma.EnumVerificationModeFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationModeWithAggregatesFilter<$PrismaModel> | $Enums.VerificationMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel>
+}
+
+export type EnumVerificationAgeActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAgeAction | Prisma.EnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAgeActionWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAgeAction
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel>
+}
+
+export type EnumVerificationAttemptResultFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptResult | Prisma.EnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel> | $Enums.VerificationAttemptResult
+}
+
+export type EnumVerificationAttemptSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptSource | Prisma.EnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel> | $Enums.VerificationAttemptSource
+}
+
+export type EnumVerificationAttemptResultWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptResult | Prisma.EnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptResultWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAttemptResult
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel>
+}
+
+export type EnumVerificationAttemptSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptSource | Prisma.EnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptSourceWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAttemptSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -2245,4 +2313,72 @@ export type NestedEnumTicketMessageSourceWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTicketMessageSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTicketMessageSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationMode | Prisma.EnumVerificationModeFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel> | $Enums.VerificationMode
+}
+
+export type NestedEnumVerificationAgeActionFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAgeAction | Prisma.EnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel> | $Enums.VerificationAgeAction
+}
+
+export type NestedEnumVerificationModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationMode | Prisma.EnumVerificationModeFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationMode[] | Prisma.ListEnumVerificationModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationModeWithAggregatesFilter<$PrismaModel> | $Enums.VerificationMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationModeFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationAgeActionWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAgeAction | Prisma.EnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAgeAction[] | Prisma.ListEnumVerificationAgeActionFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAgeActionWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAgeAction
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAgeActionFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationAttemptResultFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptResult | Prisma.EnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel> | $Enums.VerificationAttemptResult
+}
+
+export type NestedEnumVerificationAttemptSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptSource | Prisma.EnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel> | $Enums.VerificationAttemptSource
+}
+
+export type NestedEnumVerificationAttemptResultWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptResult | Prisma.EnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptResult[] | Prisma.ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptResultWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAttemptResult
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAttemptResultFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationAttemptSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationAttemptSource | Prisma.EnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationAttemptSource[] | Prisma.ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationAttemptSourceWithAggregatesFilter<$PrismaModel> | $Enums.VerificationAttemptSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationAttemptSourceFilter<$PrismaModel>
 }

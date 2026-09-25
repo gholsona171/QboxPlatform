@@ -197,3 +197,18 @@ export type TicketMessage = Prisma.TicketMessageModel
  *
  */
 export type TicketEvent = Prisma.TicketEventModel
+/**
+ * Model VerificationSettings
+ *
+ */
+export type VerificationSettings = Prisma.VerificationSettingsModel
+/**
+ * Model VerificationAttempt
+ *
+ */
+export type VerificationAttempt = Prisma.VerificationAttemptModel
+/**
+ * Model VerificationPendingMember
+ *
+ */
+export type VerificationPendingMember = Prisma.VerificationPendingMemberModel

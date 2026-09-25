@@ -432,7 +432,10 @@ export const ModelName = {
   TicketPanel: 'TicketPanel',
   Ticket: 'Ticket',
   TicketMessage: 'TicketMessage',
-  TicketEvent: 'TicketEvent'
+  TicketEvent: 'TicketEvent',
+  VerificationSettings: 'VerificationSettings',
+  VerificationAttempt: 'VerificationAttempt',
+  VerificationPendingMember: 'VerificationPendingMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -448,7 +451,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "moderationSettings" | "moderationCase" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent"
+    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "moderationSettings" | "moderationCase" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3116,6 +3119,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VerificationSettings: {
+      payload: Prisma.$VerificationSettingsPayload<ExtArgs>
+      fields: Prisma.VerificationSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        update: {
+          args: Prisma.VerificationSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationSettings>
+        }
+        groupBy: {
+          args: Prisma.VerificationSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    VerificationAttempt: {
+      payload: Prisma.$VerificationAttemptPayload<ExtArgs>
+      fields: Prisma.VerificationAttemptFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationAttemptFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationAttemptFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationAttemptFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationAttemptFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationAttemptFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationAttemptCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationAttemptCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationAttemptCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationAttemptDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        update: {
+          args: Prisma.VerificationAttemptUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationAttemptDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationAttemptUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationAttemptUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationAttemptUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationAttemptPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationAttemptAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationAttempt>
+        }
+        groupBy: {
+          args: Prisma.VerificationAttemptGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationAttemptGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationAttemptCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationAttemptCountAggregateOutputType> | number
+        }
+      }
+    }
+    VerificationPendingMember: {
+      payload: Prisma.$VerificationPendingMemberPayload<ExtArgs>
+      fields: Prisma.VerificationPendingMemberFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationPendingMemberFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationPendingMemberFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationPendingMemberFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationPendingMemberFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationPendingMemberFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationPendingMemberCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationPendingMemberCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationPendingMemberCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationPendingMemberDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        update: {
+          args: Prisma.VerificationPendingMemberUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationPendingMemberDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationPendingMemberUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationPendingMemberUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationPendingMemberUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationPendingMemberPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationPendingMemberAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationPendingMember>
+        }
+        groupBy: {
+          args: Prisma.VerificationPendingMemberGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationPendingMemberGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationPendingMemberCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationPendingMemberCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3883,6 +4108,64 @@ export const TicketEventScalarFieldEnum = {
 export type TicketEventScalarFieldEnum = (typeof TicketEventScalarFieldEnum)[keyof typeof TicketEventScalarFieldEnum]
 
 
+export const VerificationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  mode: 'mode',
+  verifiedRoleIds: 'verifiedRoleIds',
+  unverifiedRoleId: 'unverifiedRoleId',
+  channelId: 'channelId',
+  panelTitle: 'panelTitle',
+  panelDescription: 'panelDescription',
+  panelColor: 'panelColor',
+  panelButtonLabel: 'panelButtonLabel',
+  panelChannelId: 'panelChannelId',
+  panelMessageId: 'panelMessageId',
+  questions: 'questions',
+  logChannelId: 'logChannelId',
+  minAccountAgeDays: 'minAccountAgeDays',
+  ageAction: 'ageAction',
+  kickUnverifiedMinutes: 'kickUnverifiedMinutes',
+  maxAttempts: 'maxAttempts',
+  cooldownMinutes: 'cooldownMinutes',
+  dmOnSuccess: 'dmOnSuccess',
+  successMessage: 'successMessage',
+  welcomeChannelId: 'welcomeChannelId',
+  welcomeMessage: 'welcomeMessage',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerificationSettingsScalarFieldEnum = (typeof VerificationSettingsScalarFieldEnum)[keyof typeof VerificationSettingsScalarFieldEnum]
+
+
+export const VerificationAttemptScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  userId: 'userId',
+  userName: 'userName',
+  result: 'result',
+  reason: 'reason',
+  staffId: 'staffId',
+  staffName: 'staffName',
+  source: 'source',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationAttemptScalarFieldEnum = (typeof VerificationAttemptScalarFieldEnum)[keyof typeof VerificationAttemptScalarFieldEnum]
+
+
+export const VerificationPendingMemberScalarFieldEnum = {
+  guildId: 'guildId',
+  userId: 'userId',
+  joinedAt: 'joinedAt',
+  flagged: 'flagged'
+} as const
+
+export type VerificationPendingMemberScalarFieldEnum = (typeof VerificationPendingMemberScalarFieldEnum)[keyof typeof VerificationPendingMemberScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4575,6 +4858,62 @@ export type ListEnumTicketMessageSourceFieldRefInput<$PrismaModel> = FieldRefInp
 
 
 /**
+ * Reference to a field of type 'VerificationMode'
+ */
+export type EnumVerificationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationMode'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationMode[]'
+ */
+export type ListEnumVerificationModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationMode[]'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAgeAction'
+ */
+export type EnumVerificationAgeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAgeAction'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAgeAction[]'
+ */
+export type ListEnumVerificationAgeActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAgeAction[]'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAttemptResult'
+ */
+export type EnumVerificationAttemptResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAttemptResult'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAttemptResult[]'
+ */
+export type ListEnumVerificationAttemptResultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAttemptResult[]'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAttemptSource'
+ */
+export type EnumVerificationAttemptSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAttemptSource'>
+
+
+
+/**
+ * Reference to a field of type 'VerificationAttemptSource[]'
+ */
+export type ListEnumVerificationAttemptSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationAttemptSource[]'>
+
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4774,6 +5113,9 @@ export type GlobalOmitConfig = {
   ticket?: Prisma.TicketOmit
   ticketMessage?: Prisma.TicketMessageOmit
   ticketEvent?: Prisma.TicketEventOmit
+  verificationSettings?: Prisma.VerificationSettingsOmit
+  verificationAttempt?: Prisma.VerificationAttemptOmit
+  verificationPendingMember?: Prisma.VerificationPendingMemberOmit
 }
 
 /* Types for Logging */
