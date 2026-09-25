@@ -146,26 +146,48 @@ export class InMemoryPermissionRepository implements PermissionRepository {
   }
 }
 
+/** How long the bot and API trust cached permission lookups before rereading the database. */
+export const PERMISSION_CACHE_TTL_MS = 60_000;
+
 /**
- * Process-local cache adapter for deterministic tests.
+ * Process-local permission cache.
  *
  * Entries are isolated by serialized principal and scope identity. It owns no
- * resources and provides no cross-process invalidation guarantees.
+ * resources and provides no cross-process invalidation, so processes that
+ * share a database (bot, API, operator CLI) pass `ttlMs` to pick up changes
+ * made elsewhere. Without it, entries live until invalidated.
  */
 export class InMemoryPermissionCache implements PermissionCache {
-  private readonly values = new Map<string, CachedPermissionAssignments>();
+  private readonly values = new Map<
+    string,
+    { readonly value: CachedPermissionAssignments; readonly storedAt: number }
+  >();
+  private readonly ttlMs: number | undefined;
+  private readonly now: () => number;
+
+  public constructor(options: { readonly ttlMs?: number; readonly now?: () => number } = {}) {
+    this.ttlMs = options.ttlMs;
+    this.now = options.now ?? Date.now;
+  }
 
   public async get(
     key: PermissionCacheKey,
   ): Promise<CachedPermissionAssignments | undefined> {
-    return this.values.get(this.key(key));
+    const cacheKey = this.key(key);
+    const entry = this.values.get(cacheKey);
+    if (!entry) return undefined;
+    if (this.ttlMs !== undefined && this.now() - entry.storedAt >= this.ttlMs) {
+      this.values.delete(cacheKey);
+      return undefined;
+    }
+    return entry.value;
   }
 
   public async set(
     key: PermissionCacheKey,
     value: CachedPermissionAssignments,
   ): Promise<void> {
-    this.values.set(this.key(key), value);
+    this.values.set(this.key(key), { value, storedAt: this.now() });
   }
 
   public async invalidate(scopes: readonly PermissionScope[]): Promise<void> {

@@ -10,6 +10,7 @@ import { logger } from "@qbox/logger";
 import {
   createLegacyAdministratorCompatibility,
   InMemoryPermissionCache,
+  PERMISSION_CACHE_TTL_MS,
   PersistentPermissionService,
 } from "@qbox/permissions";
 import { env } from "@qbox/shared";
@@ -23,7 +24,7 @@ const databaseConfiguration = DatabaseConfiguration.from({
   environment: env.NODE_ENV,
 });
 const invalidations = new InMemoryPermissionInvalidationBus();
-const cache = new InMemoryPermissionCache();
+const cache = new InMemoryPermissionCache({ ttlMs: PERMISSION_CACHE_TTL_MS });
 const unsubscribeInvalidation = invalidations.subscribe((event) =>
   cache.invalidate(event.scopes),
 );

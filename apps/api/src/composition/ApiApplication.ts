@@ -22,6 +22,7 @@ import { RoleManagementService } from "@qbox/discord-roles";
 import { REST } from "discord.js";
 import {
   InMemoryPermissionCache,
+  PERMISSION_CACHE_TTL_MS,
   PersistentPermissionService,
 } from "@qbox/permissions";
 import {
@@ -110,7 +111,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     environment: apiConfiguration.diagnostics().environment,
   });
   const invalidations = new InMemoryPermissionInvalidationBus();
-  const cache = new InMemoryPermissionCache();
+  const cache = new InMemoryPermissionCache({ ttlMs: PERMISSION_CACHE_TTL_MS });
   const unsubscribeInvalidations = invalidations.subscribe((event) =>
     cache.invalidate(event.scopes),
   );

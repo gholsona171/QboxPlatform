@@ -374,3 +374,18 @@ describe("PersistentPermissionService mutations", () => {
     ).rejects.toThrow("not implemented");
   });
 });
+
+describe("InMemoryPermissionCache expiry", () => {
+  it("forgets entries after the configured time so other processes' changes apply", async () => {
+    let now = 1_000;
+    const cache = new InMemoryPermissionCache({ ttlMs: 60_000, now: () => now });
+    const key = { scope: { type: "platform" as const }, principals: [] };
+    const value = { assignments: [], loadedAt: new Date(0) } as never;
+    await cache.set(key as never, value);
+    expect(await cache.get(key as never)).toBe(value);
+    now += 59_999;
+    expect(await cache.get(key as never)).toBe(value);
+    now += 1;
+    expect(await cache.get(key as never)).toBeUndefined();
+  });
+});
