@@ -79,6 +79,8 @@ export const ModelName = {
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  ModerationSettings: 'ModerationSettings',
+  ModerationCase: 'ModerationCase',
   TicketSettings: 'TicketSettings',
   TicketCategory: 'TicketCategory',
   TicketPanel: 'TicketPanel',
@@ -632,6 +634,56 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 } as const
 
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
+
+
+export const ModerationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  logChannelId: 'logChannelId',
+  dmOnAction: 'dmOnAction',
+  dmIncludeModerator: 'dmIncludeModerator',
+  appealMessage: 'appealMessage',
+  requireReason: 'requireReason',
+  defaultTimeoutMinutes: 'defaultTimeoutMinutes',
+  banDeleteMessageHours: 'banDeleteMessageHours',
+  warningExpiryDays: 'warningExpiryDays',
+  protectedRoleIds: 'protectedRoleIds',
+  escalation: 'escalation',
+  automod: 'automod',
+  recordExternalActions: 'recordExternalActions',
+  nextCaseNumber: 'nextCaseNumber',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationSettingsScalarFieldEnum = (typeof ModerationSettingsScalarFieldEnum)[keyof typeof ModerationSettingsScalarFieldEnum]
+
+
+export const ModerationCaseScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  type: 'type',
+  targetId: 'targetId',
+  targetName: 'targetName',
+  moderatorId: 'moderatorId',
+  moderatorName: 'moderatorName',
+  reason: 'reason',
+  durationMinutes: 'durationMinutes',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  source: 'source',
+  evidence: 'evidence',
+  dmDelivered: 'dmDelivered',
+  logMessageId: 'logMessageId',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById',
+  revokeReason: 'revokeReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
 
 
 export const TicketSettingsScalarFieldEnum = {

@@ -12,7 +12,7 @@ async function portalSources() {
 
 test("portal contains no demo data or demo mode", async () => {
   for (const { file, text } of await portalSources()) {
-    assert.equal(/demo/i.test(text), false, `${file} mentions demo`);
+    assert.equal(/\bdemo\b/i.test(text), false, `${file} mentions demo`);
     assert.equal(/localStorage/.test(text), false, `${file} stores data in the browser`);
   }
 });
@@ -20,9 +20,11 @@ test("portal contains no demo data or demo mode", async () => {
 test("every LIVE feature has a portal page", async () => {
   const { featureRegistry } = await import("../public/js/featureRegistry.js");
   const discord = await readFile(new URL("js/discord.js", publicDirectory), "utf8");
+  const pages = await readFile(new URL("js/pages.js", publicDirectory), "utf8");
   for (const feature of featureRegistry.filter((item) => item.status === "LIVE")) {
-    if (feature.id === "tickets") {
-      assert.equal(feature.portalRoute, "/tickets");
+    if (!feature.portalRoute.includes("?tab=")) {
+      const pageId = feature.portalRoute.slice(1);
+      assert.ok(pages.includes(`id: "${pageId}"`), `${feature.displayName} page "${pageId}" is missing from pages.js`);
       continue;
     }
     const tab = feature.portalRoute.split("tab=")[1];

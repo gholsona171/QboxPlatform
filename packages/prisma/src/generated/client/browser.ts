@@ -158,6 +158,16 @@ export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel
  */
 export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel
 /**
+ * Model ModerationSettings
+ *
+ */
+export type ModerationSettings = Prisma.ModerationSettingsModel
+/**
+ * Model ModerationCase
+ *
+ */
+export type ModerationCase = Prisma.ModerationCaseModel
+/**
  * Model TicketSettings
  *
  */

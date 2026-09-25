@@ -358,6 +358,30 @@ export const AuthenticationAuditActorType = {
 export type AuthenticationAuditActorType = (typeof AuthenticationAuditActorType)[keyof typeof AuthenticationAuditActorType]
 
 
+export const ModerationCaseType = {
+  WARN: 'WARN',
+  TIMEOUT: 'TIMEOUT',
+  UNTIMEOUT: 'UNTIMEOUT',
+  KICK: 'KICK',
+  BAN: 'BAN',
+  UNBAN: 'UNBAN',
+  SOFTBAN: 'SOFTBAN',
+  NOTE: 'NOTE'
+} as const
+
+export type ModerationCaseType = (typeof ModerationCaseType)[keyof typeof ModerationCaseType]
+
+
+export const ModerationCaseSource = {
+  DISCORD: 'DISCORD',
+  WEB: 'WEB',
+  AUTOMOD: 'AUTOMOD',
+  EXTERNAL: 'EXTERNAL'
+} as const
+
+export type ModerationCaseSource = (typeof ModerationCaseSource)[keyof typeof ModerationCaseSource]
+
+
 export const TicketMode = {
   CHANNEL: 'CHANNEL',
   THREAD: 'THREAD'

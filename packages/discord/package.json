@@ -16,6 +16,7 @@
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
     "@qbox/logger": "workspace:*",
+    "@qbox/moderation": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/role-menus": "workspace:*",
     "@qbox/shared": "workspace:*",

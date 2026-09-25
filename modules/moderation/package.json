@@ -1,5 +1,5 @@
 {
-  "name": "@qbox/tickets",
+  "name": "@qbox/moderation",
   "version": "0.1.0",
   "private": true,
   "type": "module",

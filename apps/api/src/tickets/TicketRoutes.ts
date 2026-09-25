@@ -8,13 +8,11 @@ import {
   type TicketService,
 } from "@qbox/tickets";
 
-import {
-  ConflictApiError,
-  DependencyUnavailableApiError,
-  NotFoundApiError,
-  ValidationApiError,
-} from "../errors/ApiError.js";
 import type { ApiFeature, ApiIdentity, ApiPermissionGuard } from "../features/ApiFeature.js";
+import { errorOf, featureCall, parseInput as parse, routeParam as param } from "../features/routeHelpers.js";
+
+const isTicketError = errorOf(TicketError);
+const safe = <T>(operation: () => Promise<T>) => featureCall(operation, isTicketError);
 
 export interface TicketRouteDependencies {
   readonly tickets: TicketService;
@@ -257,37 +255,6 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
   });
 }
 
-function parse<T extends z.ZodType>(schema: T, value: unknown): z.infer<T> {
-  const result = schema.safeParse(value);
-  if (!result.success)
-    throw new ValidationApiError(result.error.issues.map((issue) => ({ path: issue.path.join("."), code: issue.code, message: `${issue.path.join(".") || "body"}: ${issue.message}` })));
-  return withoutUndefined(result.data) as z.infer<T>;
-}
-
-/** Drops `undefined` keys so optional fields satisfy exact optional property types. */
-function withoutUndefined(value: unknown): unknown {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
-  return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined).map(([key, item]) => [key, withoutUndefined(item)]));
-}
-
-function param(request: FastifyRequest, name: string): string {
-  const value = request.params && typeof request.params === "object" ? Reflect.get(request.params, name) : undefined;
-  if (typeof value !== "string" || value.length === 0 || value.length > 64) throw new ValidationApiError([{ path: name, code: "invalid", message: `${name} is invalid.` }]);
-  return value;
-}
-
 function noStore(reply: FastifyReply): void {
   reply.header("cache-control", "no-store");
-}
-
-async function safe<T>(operation: () => Promise<T>): Promise<T> {
-  try {
-    return await operation();
-  } catch (error) {
-    if (!(error instanceof TicketError)) throw error;
-    if (error.code === "NOT_FOUND") throw new NotFoundApiError();
-    if (error.code === "DEPENDENCY_UNAVAILABLE") throw new DependencyUnavailableApiError();
-    if (error.code === "CONFLICT") throw new ConflictApiError([{ path: "tickets", code: "STALE_REVISION", message: error.message, ...(error.details ?? {}) }]);
-    throw new ValidationApiError([{ path: "tickets", code: error.code, message: error.message }]);
-  }
 }

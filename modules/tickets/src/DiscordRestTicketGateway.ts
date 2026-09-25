@@ -11,31 +11,9 @@ import type {
   TicketSpaceInput,
   TicketTranscriptPost,
 } from "./types.js";
+import { colorValue, emojiObject, type DiscordRestClient, type DiscordRestFile } from "@qbox/shared/discord-rest";
 
-/** File attached to a Discord REST request. */
-export interface DiscordRestFile {
-  readonly name: string;
-  readonly data: Buffer;
-  readonly contentType?: string;
-}
-
-export interface DiscordRestRequest {
-  readonly body?: unknown;
-  readonly files?: DiscordRestFile[];
-  readonly reason?: string;
-}
-
-/**
- * Minimal Discord REST surface. discord.js `REST` (and `client.rest`) satisfy
- * it, so the bot and the API share one gateway implementation.
- */
-export interface DiscordRestClient {
-  get(route: `/${string}`, options?: DiscordRestRequest): Promise<unknown>;
-  post(route: `/${string}`, options?: DiscordRestRequest): Promise<unknown>;
-  patch(route: `/${string}`, options?: DiscordRestRequest): Promise<unknown>;
-  put(route: `/${string}`, options?: DiscordRestRequest): Promise<unknown>;
-  delete(route: `/${string}`, options?: DiscordRestRequest): Promise<unknown>;
-}
+export type { DiscordRestClient, DiscordRestFile, DiscordRestRequest } from "@qbox/shared/discord-rest";
 
 /** Custom ID prefixes routed by the Discord interaction handler. */
 export const TICKET_CUSTOM_ID = {
@@ -227,7 +205,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
               label: category.name,
               value: category.id,
               ...(category.description ? { description: category.description } : {}),
-              ...(category.emoji ? { emoji: emoji(category.emoji) } : {}),
+              ...(category.emoji ? { emoji: emojiObject(category.emoji) } : {}),
             })),
           }],
         }]
@@ -304,19 +282,8 @@ function button(customId: string, label: string, style: TicketButtonStyle, emoji
     style: BUTTON_STYLE[style],
     custom_id: customId,
     label: label.slice(0, 80),
-    ...(emojiText ? { emoji: emoji(emojiText) } : {}),
+    ...(emojiText ? { emoji: emojiObject(emojiText) } : {}),
   };
-}
-
-/** Parses `<:name:id>`, `<a:name:id>`, or a unicode emoji into a Discord emoji object. */
-export function emoji(value: string): { readonly id?: string; readonly name: string; readonly animated?: boolean } {
-  const custom = /^<(a?):(\w{2,32}):(\d{17,20})>$/.exec(value.trim());
-  if (custom) return { id: custom[3] as string, name: custom[2] as string, animated: custom[1] === "a" };
-  return { name: value.trim() };
-}
-
-function colorValue(hex: string): number {
-  return Number.parseInt(hex.replace("#", ""), 16);
 }
 
 function chunk<T>(items: readonly T[], size: number): T[][] {
@@ -333,3 +300,6 @@ function defaultSchedule(callback: () => void, delayMs: number): void {
   const timer = setTimeout(callback, delayMs);
   timer.unref?.();
 }
+
+/** Parses a unicode or custom emoji into a Discord emoji object. */
+export const emoji = emojiObject;

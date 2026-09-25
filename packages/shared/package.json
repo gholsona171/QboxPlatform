@@ -10,5 +10,15 @@
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./discord-rest": {
+      "types": "./dist/discordRest.d.ts",
+      "import": "./dist/discordRest.js"
+    }
   }
 }

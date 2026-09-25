@@ -1,0 +1,71 @@
+// Moderation (see docs/Moderation.md). guildId is the Discord guild snowflake.
+
+enum ModerationCaseType {
+  WARN      @map("warn")
+  TIMEOUT   @map("timeout")
+  UNTIMEOUT @map("untimeout")
+  KICK      @map("kick")
+  BAN       @map("ban")
+  UNBAN     @map("unban")
+  SOFTBAN   @map("softban")
+  NOTE      @map("note")
+}
+
+enum ModerationCaseSource {
+  DISCORD  @map("discord")
+  WEB      @map("web")
+  AUTOMOD  @map("automod")
+  EXTERNAL @map("external")
+}
+
+model ModerationSettings {
+  guildId               String   @id @map("guild_id")
+  logChannelId          String?  @map("log_channel_id")
+  dmOnAction            Boolean  @default(true) @map("dm_on_action")
+  dmIncludeModerator    Boolean  @default(false) @map("dm_include_moderator")
+  appealMessage         String?  @map("appeal_message")
+  requireReason         Boolean  @default(false) @map("require_reason")
+  defaultTimeoutMinutes Int      @default(60) @map("default_timeout_minutes")
+  banDeleteMessageHours Int      @default(0) @map("ban_delete_message_hours")
+  warningExpiryDays     Int      @default(0) @map("warning_expiry_days")
+  protectedRoleIds      String[] @map("protected_role_ids")
+  escalation            Json     @default("[]") @db.JsonB
+  automod               Json     @default("{}") @db.JsonB
+  recordExternalActions Boolean  @default(true) @map("record_external_actions")
+  nextCaseNumber        Int      @default(1) @map("next_case_number")
+  revision              Int      @default(1)
+  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("moderation_settings")
+}
+
+model ModerationCase {
+  id              String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId         String               @map("guild_id")
+  number          Int
+  type            ModerationCaseType
+  targetId        String               @map("target_id")
+  targetName      String               @map("target_name")
+  moderatorId     String               @map("moderator_id")
+  moderatorName   String               @map("moderator_name")
+  reason          String?
+  durationMinutes Int?                 @map("duration_minutes")
+  expiresAt       DateTime?            @map("expires_at") @db.Timestamptz(3)
+  active          Boolean              @default(true)
+  source          ModerationCaseSource @default(DISCORD)
+  evidence        String[]
+  dmDelivered     Boolean?             @map("dm_delivered")
+  logMessageId    String?              @map("log_message_id")
+  revokedAt       DateTime?            @map("revoked_at") @db.Timestamptz(3)
+  revokedById     String?              @map("revoked_by_id")
+  revokeReason    String?              @map("revoke_reason")
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([guildId, number], map: "moderation_cases_guild_number_key")
+  @@index([guildId, targetId, createdAt], map: "moderation_cases_guild_target_idx")
+  @@index([guildId, type, active, expiresAt], map: "moderation_cases_guild_type_active_idx")
+  @@index([guildId, createdAt], map: "moderation_cases_guild_created_idx")
+  @@map("moderation_cases")
+}

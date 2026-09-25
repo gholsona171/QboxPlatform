@@ -1004,6 +1004,53 @@ export type EnumOAuthTransactionPurposeNullableWithAggregatesFilter<$PrismaModel
   _max?: Prisma.NestedEnumOAuthTransactionPurposeNullableFilter<$PrismaModel>
 }
 
+export type EnumModerationCaseTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel> | $Enums.ModerationCaseType
+}
+
+export type EnumModerationCaseSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseSource | Prisma.EnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel> | $Enums.ModerationCaseSource
+}
+
+export type BoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type EnumModerationCaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.ModerationCaseType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel>
+}
+
+export type EnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseSource | Prisma.EnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseSourceWithAggregatesFilter<$PrismaModel> | $Enums.ModerationCaseSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+}
+
 export type EnumTicketModeFilter<$PrismaModel = never> = {
   equals?: $Enums.TicketMode | Prisma.EnumTicketModeFieldRefInput<$PrismaModel>
   in?: $Enums.TicketMode[] | Prisma.ListEnumTicketModeFieldRefInput<$PrismaModel>
@@ -2049,6 +2096,53 @@ export type NestedEnumOAuthTransactionPurposeNullableWithAggregatesFilter<$Prism
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedEnumOAuthTransactionPurposeNullableFilter<$PrismaModel>
   _max?: Prisma.NestedEnumOAuthTransactionPurposeNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumModerationCaseTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel> | $Enums.ModerationCaseType
+}
+
+export type NestedEnumModerationCaseSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseSource | Prisma.EnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel> | $Enums.ModerationCaseSource
+}
+
+export type NestedBoolNullableFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableFilter<$PrismaModel> | boolean | null
+}
+
+export type NestedEnumModerationCaseTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseType | Prisma.EnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseType[] | Prisma.ListEnumModerationCaseTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseTypeWithAggregatesFilter<$PrismaModel> | $Enums.ModerationCaseType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModerationCaseTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ModerationCaseSource | Prisma.EnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ModerationCaseSource[] | Prisma.ListEnumModerationCaseSourceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumModerationCaseSourceWithAggregatesFilter<$PrismaModel> | $Enums.ModerationCaseSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedBoolNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumTicketModeFilter<$PrismaModel = never> = {

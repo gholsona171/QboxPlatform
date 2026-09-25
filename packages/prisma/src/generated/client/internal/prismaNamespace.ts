@@ -425,6 +425,8 @@ export const ModelName = {
   DiscordGuildMembership: 'DiscordGuildMembership',
   DiscordGuildMembershipRole: 'DiscordGuildMembershipRole',
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
+  ModerationSettings: 'ModerationSettings',
+  ModerationCase: 'ModerationCase',
   TicketSettings: 'TicketSettings',
   TicketCategory: 'TicketCategory',
   TicketPanel: 'TicketPanel',
@@ -446,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent"
+    modelProps: "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "moderationSettings" | "moderationCase" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2522,6 +2524,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ModerationSettings: {
+      payload: Prisma.$ModerationSettingsPayload<ExtArgs>
+      fields: Prisma.ModerationSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ModerationSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ModerationSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.ModerationSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ModerationSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.ModerationSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.ModerationSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.ModerationSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ModerationSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.ModerationSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        update: {
+          args: Prisma.ModerationSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.ModerationSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ModerationSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ModerationSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.ModerationSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.ModerationSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateModerationSettings>
+        }
+        groupBy: {
+          args: Prisma.ModerationSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModerationSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ModerationSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModerationSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    ModerationCase: {
+      payload: Prisma.$ModerationCasePayload<ExtArgs>
+      fields: Prisma.ModerationCaseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ModerationCaseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ModerationCaseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        findFirst: {
+          args: Prisma.ModerationCaseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ModerationCaseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        findMany: {
+          args: Prisma.ModerationCaseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>[]
+        }
+        create: {
+          args: Prisma.ModerationCaseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        createMany: {
+          args: Prisma.ModerationCaseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ModerationCaseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>[]
+        }
+        delete: {
+          args: Prisma.ModerationCaseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        update: {
+          args: Prisma.ModerationCaseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        deleteMany: {
+          args: Prisma.ModerationCaseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ModerationCaseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ModerationCaseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>[]
+        }
+        upsert: {
+          args: Prisma.ModerationCaseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ModerationCasePayload>
+        }
+        aggregate: {
+          args: Prisma.ModerationCaseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateModerationCase>
+        }
+        groupBy: {
+          args: Prisma.ModerationCaseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModerationCaseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ModerationCaseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ModerationCaseCountAggregateOutputType> | number
+        }
+      }
+    }
     TicketSettings: {
       payload: Prisma.$TicketSettingsPayload<ExtArgs>
       fields: Prisma.TicketSettingsFieldRefs
@@ -3536,6 +3686,56 @@ export const AuthenticationAuditEventScalarFieldEnum = {
 export type AuthenticationAuditEventScalarFieldEnum = (typeof AuthenticationAuditEventScalarFieldEnum)[keyof typeof AuthenticationAuditEventScalarFieldEnum]
 
 
+export const ModerationSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  logChannelId: 'logChannelId',
+  dmOnAction: 'dmOnAction',
+  dmIncludeModerator: 'dmIncludeModerator',
+  appealMessage: 'appealMessage',
+  requireReason: 'requireReason',
+  defaultTimeoutMinutes: 'defaultTimeoutMinutes',
+  banDeleteMessageHours: 'banDeleteMessageHours',
+  warningExpiryDays: 'warningExpiryDays',
+  protectedRoleIds: 'protectedRoleIds',
+  escalation: 'escalation',
+  automod: 'automod',
+  recordExternalActions: 'recordExternalActions',
+  nextCaseNumber: 'nextCaseNumber',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationSettingsScalarFieldEnum = (typeof ModerationSettingsScalarFieldEnum)[keyof typeof ModerationSettingsScalarFieldEnum]
+
+
+export const ModerationCaseScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  number: 'number',
+  type: 'type',
+  targetId: 'targetId',
+  targetName: 'targetName',
+  moderatorId: 'moderatorId',
+  moderatorName: 'moderatorName',
+  reason: 'reason',
+  durationMinutes: 'durationMinutes',
+  expiresAt: 'expiresAt',
+  active: 'active',
+  source: 'source',
+  evidence: 'evidence',
+  dmDelivered: 'dmDelivered',
+  logMessageId: 'logMessageId',
+  revokedAt: 'revokedAt',
+  revokedById: 'revokedById',
+  revokeReason: 'revokeReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
 export const TicketSettingsScalarFieldEnum = {
   guildId: 'guildId',
   enabled: 'enabled',
@@ -4263,6 +4463,34 @@ export type ListEnumAuthenticationAuditActorTypeFieldRefInput<$PrismaModel> = Fi
 
 
 /**
+ * Reference to a field of type 'ModerationCaseType'
+ */
+export type EnumModerationCaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseType'>
+
+
+
+/**
+ * Reference to a field of type 'ModerationCaseType[]'
+ */
+export type ListEnumModerationCaseTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseType[]'>
+
+
+
+/**
+ * Reference to a field of type 'ModerationCaseSource'
+ */
+export type EnumModerationCaseSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseSource'>
+
+
+
+/**
+ * Reference to a field of type 'ModerationCaseSource[]'
+ */
+export type ListEnumModerationCaseSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseSource[]'>
+
+
+
+/**
  * Reference to a field of type 'TicketMode'
  */
 export type EnumTicketModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TicketMode'>
@@ -4538,6 +4766,8 @@ export type GlobalOmitConfig = {
   discordGuildMembership?: Prisma.DiscordGuildMembershipOmit
   discordGuildMembershipRole?: Prisma.DiscordGuildMembershipRoleOmit
   authenticationAuditEvent?: Prisma.AuthenticationAuditEventOmit
+  moderationSettings?: Prisma.ModerationSettingsOmit
+  moderationCase?: Prisma.ModerationCaseOmit
   ticketSettings?: Prisma.TicketSettingsOmit
   ticketCategory?: Prisma.TicketCategoryOmit
   ticketPanel?: Prisma.TicketPanelOmit

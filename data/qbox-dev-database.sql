@@ -125,6 +125,10 @@ DROP INDEX IF EXISTS "public"."oauth_transactions_state_digest_key";
 DROP INDEX IF EXISTS "public"."oauth_transactions_browser_binding_digest_key";
 DROP INDEX IF EXISTS "public"."oauth_credentials_provider_expiry_idx";
 DROP INDEX IF EXISTS "public"."oauth_credentials_external_identity_key";
+DROP INDEX IF EXISTS "public"."moderation_cases_guild_type_active_idx";
+DROP INDEX IF EXISTS "public"."moderation_cases_guild_target_idx";
+DROP INDEX IF EXISTS "public"."moderation_cases_guild_number_key";
+DROP INDEX IF EXISTS "public"."moderation_cases_guild_created_idx";
 DROP INDEX IF EXISTS "public"."guild_discord_guild_id_key";
 DROP INDEX IF EXISTS "public"."external_identities_user_provider_key";
 DROP INDEX IF EXISTS "public"."external_identities_user_enabled_idx";
@@ -171,6 +175,8 @@ ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF
 ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF EXISTS "permission_assignments_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."moderation_settings" DROP CONSTRAINT IF EXISTS "moderation_settings_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."moderation_cases" DROP CONSTRAINT IF EXISTS "moderation_cases_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."guilds" DROP CONSTRAINT IF EXISTS "guilds_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."external_identities" DROP CONSTRAINT IF EXISTS "external_identities_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."embed_templates" DROP CONSTRAINT IF EXISTS "embed_templates_pkey";
@@ -206,6 +212,8 @@ DROP TABLE IF EXISTS "public"."permission_audit_events";
 DROP TABLE IF EXISTS "public"."permission_assignments";
 DROP TABLE IF EXISTS "public"."oauth_transactions";
 DROP TABLE IF EXISTS "public"."oauth_credentials";
+DROP TABLE IF EXISTS "public"."moderation_settings";
+DROP TABLE IF EXISTS "public"."moderation_cases";
 DROP TABLE IF EXISTS "public"."guilds";
 DROP TABLE IF EXISTS "public"."external_identities";
 DROP TABLE IF EXISTS "public"."embed_templates";
@@ -259,6 +267,8 @@ DROP TYPE IF EXISTS "public"."OAuthTransactionPurpose";
 DROP TYPE IF EXISTS "public"."OAuthTransactionFailureReason";
 DROP TYPE IF EXISTS "public"."OAuthPkceMode";
 DROP TYPE IF EXISTS "public"."OAuthCredentialRevocationReason";
+DROP TYPE IF EXISTS "public"."ModerationCaseType";
+DROP TYPE IF EXISTS "public"."ModerationCaseSource";
 DROP TYPE IF EXISTS "public"."DiscordGuildMembershipStatus";
 DROP TYPE IF EXISTS "public"."DiscordGuildMembershipSource";
 DROP TYPE IF EXISTS "public"."CustomCommandTriggerMode";
@@ -444,6 +454,34 @@ CREATE TYPE "public"."DiscordGuildMembershipStatus" AS ENUM (
     'present',
     'absent',
     'unknown'
+);
+
+
+--
+-- Name: ModerationCaseSource; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."ModerationCaseSource" AS ENUM (
+    'discord',
+    'web',
+    'automod',
+    'external'
+);
+
+
+--
+-- Name: ModerationCaseType; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."ModerationCaseType" AS ENUM (
+    'warn',
+    'timeout',
+    'untimeout',
+    'kick',
+    'ban',
+    'unban',
+    'softban',
+    'note'
 );
 
 
@@ -1311,6 +1349,60 @@ CREATE TABLE "public"."guilds" (
 
 
 --
+-- Name: moderation_cases; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."moderation_cases" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "number" integer NOT NULL,
+    "type" "public"."ModerationCaseType" NOT NULL,
+    "target_id" "text" NOT NULL,
+    "target_name" "text" NOT NULL,
+    "moderator_id" "text" NOT NULL,
+    "moderator_name" "text" NOT NULL,
+    "reason" "text",
+    "duration_minutes" integer,
+    "expires_at" timestamp(3) with time zone,
+    "active" boolean DEFAULT true NOT NULL,
+    "source" "public"."ModerationCaseSource" DEFAULT 'discord'::"public"."ModerationCaseSource" NOT NULL,
+    "evidence" "text"[],
+    "dm_delivered" boolean,
+    "log_message_id" "text",
+    "revoked_at" timestamp(3) with time zone,
+    "revoked_by_id" "text",
+    "revoke_reason" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: moderation_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."moderation_settings" (
+    "guild_id" "text" NOT NULL,
+    "log_channel_id" "text",
+    "dm_on_action" boolean DEFAULT true NOT NULL,
+    "dm_include_moderator" boolean DEFAULT false NOT NULL,
+    "appeal_message" "text",
+    "require_reason" boolean DEFAULT false NOT NULL,
+    "default_timeout_minutes" integer DEFAULT 60 NOT NULL,
+    "ban_delete_message_hours" integer DEFAULT 0 NOT NULL,
+    "warning_expiry_days" integer DEFAULT 0 NOT NULL,
+    "protected_role_ids" "text"[],
+    "escalation" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "automod" "jsonb" DEFAULT '{}'::"jsonb" NOT NULL,
+    "record_external_actions" boolean DEFAULT true NOT NULL,
+    "next_case_number" integer DEFAULT 1 NOT NULL,
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
 -- Name: oauth_credentials; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -1870,6 +1962,7 @@ daf4f787-5e30-469d-8801-82810121cf13	62512b9df8c3d9ca7a19a40d12a96d7c25a0d2eda60
 b15e2d92-e740-4f8b-80f9-d057036999ee	679bfaa0e2e88b46e38d0244afb92df1ff7ff5dda829c0f1ce26447cf60f4511	2026-09-25 04:41:44.254412+00	20260802203000_role_management_conflict_metadata	\N	\N	2026-09-25 04:41:44.250132+00	1
 421843d3-4d53-49e5-8351-9e6a70293487	50842d0e1245f24e5cc484c5f591254bd8406884a88936df31bd2fc5b82af3f9	2026-09-25 05:10:59.204373+00	20260925090000_ticket_system	\N	\N	2026-09-25 05:10:59.167464+00	1
 f3526aac-fb47-4a86-b0cf-29d1f27bbfd2	e5f57fef98683b928643458d7375b07aa98a594e406604ec994146a8333563ac	2026-09-25 05:26:24.773511+00	20260925120000_ticket_alert_members	\N	\N	2026-09-25 05:26:24.770336+00	1
+5e4bec6e-101b-4577-9655-86c954a921dd	49afba377429152bab6293811a1303cbe84468679746f77b6f15a02051ec8a88	2026-09-25 07:01:32.660207+00	20260925150000_moderation	\N	\N	2026-09-25 07:01:32.632979+00	1
 \.
 
 
@@ -1958,6 +2051,22 @@ COPY "public"."external_identities" ("id", "platform_user_id", "provider", "prov
 --
 
 COPY "public"."guilds" ("id", "discord_guild_id", "enabled", "disabled_at", "created_at", "updated_at", "metadata") FROM stdin;
+\.
+
+
+--
+-- Data for Name: moderation_cases; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."moderation_cases" ("id", "guild_id", "number", "type", "target_id", "target_name", "moderator_id", "moderator_name", "reason", "duration_minutes", "expires_at", "active", "source", "evidence", "dm_delivered", "log_message_id", "revoked_at", "revoked_by_id", "revoke_reason", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: moderation_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."moderation_settings" ("guild_id", "log_channel_id", "dm_on_action", "dm_include_moderator", "appeal_message", "require_reason", "default_timeout_minutes", "ban_delete_message_hours", "warning_expiry_days", "protected_role_ids", "escalation", "automod", "record_external_actions", "next_case_number", "revision", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -2223,6 +2332,22 @@ ALTER TABLE ONLY "public"."external_identities"
 
 ALTER TABLE ONLY "public"."guilds"
     ADD CONSTRAINT "guilds_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: moderation_cases moderation_cases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."moderation_cases"
+    ADD CONSTRAINT "moderation_cases_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: moderation_settings moderation_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."moderation_settings"
+    ADD CONSTRAINT "moderation_settings_pkey" PRIMARY KEY ("guild_id");
 
 
 --
@@ -2567,6 +2692,34 @@ CREATE UNIQUE INDEX "external_identities_user_provider_key" ON "public"."externa
 --
 
 CREATE UNIQUE INDEX "guild_discord_guild_id_key" ON "public"."guilds" USING "btree" ("discord_guild_id");
+
+
+--
+-- Name: moderation_cases_guild_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "moderation_cases_guild_created_idx" ON "public"."moderation_cases" USING "btree" ("guild_id", "created_at");
+
+
+--
+-- Name: moderation_cases_guild_number_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "moderation_cases_guild_number_key" ON "public"."moderation_cases" USING "btree" ("guild_id", "number");
+
+
+--
+-- Name: moderation_cases_guild_target_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "moderation_cases_guild_target_idx" ON "public"."moderation_cases" USING "btree" ("guild_id", "target_id", "created_at");
+
+
+--
+-- Name: moderation_cases_guild_type_active_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "moderation_cases_guild_type_active_idx" ON "public"."moderation_cases" USING "btree" ("guild_id", "type", "active", "expires_at");
 
 
 --

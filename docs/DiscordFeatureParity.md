@@ -21,7 +21,7 @@ Discord remains the primary operational and fallback interface. The portal is th
 | Applications | PLANNED |  |  |  |  | /applications |  |  | Discord no / Portal no |
 | Tickets | LIVE | ticket, tickets | ticket panel buttons, ticket select menus, ticket forms, close/claim/reopen/transcript buttons, feedback ratings | messageCreate, channelDelete, threadDelete, auto-close timer | /api/v1/tickets, /api/v1/tickets/overview, /api/v1/tickets/settings, /api/v1/tickets/categories, /api/v1/tickets/panels | /tickets | tickets.manage, tickets.handle | TicketSettings, TicketCategory, TicketPanel, Ticket, TicketMessage, TicketEvent | Discord yes / Portal yes |
 | Staff | PLANNED |  |  |  |  | /staff |  |  | Discord no / Portal no |
-| Moderation | PLANNED |  |  |  |  | /moderation |  |  | Discord no / Portal no |
+| Moderation | LIVE | mod | automod message checks | messageCreate, guildBanAdd, guildBanRemove, guildMemberRemove, expired ban timer | /api/v1/moderation/overview, /api/v1/moderation/cases, /api/v1/moderation/actions, /api/v1/moderation/settings | /moderation | moderation.view, moderation.warn, moderation.timeout, moderation.kick, moderation.ban, moderation.messages, moderation.manage | ModerationSettings, ModerationCase | Discord yes / Portal yes |
 | Verification | PLANNED |  |  |  |  | /verification |  |  | Discord no / Portal no |
 | Polls | PLANNED |  |  |  |  | /polls |  |  | Discord no / Portal no |
 | Birthdays | PLANNED |  |  |  |  | /birthdays |  |  | Discord no / Portal no |
