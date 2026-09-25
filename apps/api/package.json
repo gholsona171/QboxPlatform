@@ -22,6 +22,7 @@
     "@qbox/discord-community": "workspace:*",
     "@qbox/discord-roles": "workspace:*",
     "@qbox/fivem": "workspace:*",
+    "@qbox/game-servers": "workspace:*",
     "@qbox/giveaways": "workspace:*",
     "@qbox/knowledge-base": "workspace:*",
     "@qbox/levels": "workspace:*",

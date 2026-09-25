@@ -1,7 +1,8 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
+import { DiscordRestGamesGateway, GamesService, ProtocolQueryClient } from "@qbox/game-servers";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
@@ -25,6 +26,7 @@ import type { ApiFeature } from "./features/ApiFeature.js";
 import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
 import { levelsApiFeature } from "./levels/LevelRoutes.js";
 import { fivemApiFeature } from "./fivem/FivemRoutes.js";
+import { gamesApiFeature } from "./games/GamesRoutes.js";
 import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
 import { staffApiFeature } from "./staff/StaffRoutes.js";
@@ -68,6 +70,7 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     voiceRoomsApiFeature(voice),
     knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
     fivemApiFeature(fivem),
+    gamesApiFeature(new GamesService(new PrismaGamesRepository(persistence.prisma), new ProtocolQueryClient(), discordRest ? new DiscordRestGamesGateway(discordRest) : undefined)),
     builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
   ];
 }

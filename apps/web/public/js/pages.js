@@ -5,6 +5,7 @@ import { renderDiscordPage } from "./discord.js";
 import { renderGiveawaysPage } from "./giveaways.js";
 import { renderLevelsPage } from "./levels.js";
 import { renderFivemPage } from "./fivem.js";
+import { renderGamesPage } from "./games.js";
 import { renderKnowledgePage } from "./knowledge.js";
 import { renderModerationPage } from "./moderation.js";
 import { renderStaffPage } from "./staff.js";
@@ -38,6 +39,7 @@ export const pages = [
   { id: "scheduled", group: "Community", label: "Scheduled", description: "Messages that post on a schedule.", icon: icon('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'), render: renderScheduledPage },
   { id: "builder", group: "Server", label: "Server Builder", description: `Plan your channels and roles, then let ${BRAND.name} build them.`, icon: icon('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/>'), render: renderBuilderPage },
   { id: "fivem", group: "Server", label: "FiveM Server", description: "Live server status, players, alerts, and restarts.", icon: icon('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'), render: renderFivemPage },
+  { id: "games", group: "Server", label: "Game Servers", description: "Live status and player counts for Minecraft, Rust, ARK, Palworld, Valheim, CS2 and more.", icon: icon('<rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 11v3M5.5 12.5h3"/><path d="M15.5 11.5h.01M17.5 13.5h.01"/>'), render: renderGamesPage },
   { id: "discord", group: "Server", label: "Discord Bot", description: "Welcome messages, roles, logs and other bot features.", icon: icon('<rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 7V4"/><circle cx="9" cy="13" r="1.2"/><circle cx="15" cy="13" r="1.2"/>'), render: renderDiscordPage },
   { id: "settings", label: "Account", description: "Your Discord sign-in and service status.", icon: icon('<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>'), render: renderSettingsPage },
 ];
