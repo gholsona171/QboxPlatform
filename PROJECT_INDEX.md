@@ -23,7 +23,7 @@
 - **Purpose:** Discord bot process and the only application currently using the complete platform kernel lifecycle.
 - **Entry point:** `apps/bot/src/index.ts`
 - **Declared dependencies:** `@qbox/core`, `@qbox/discord`, `@qbox/logger`, `@qbox/shared`
-- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:dev:dry-run`, `deploy:commands:global`, `deploy:commands:global:dry-run`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
+- **Scripts:** `build`, `dev`, `start`, `deploy:commands:dev`, `deploy:commands:dev:dry-run`, `deploy:commands:global`, `deploy:commands:global:dry-run`, `deploy:commands:clear-guild`, `deploy:commands:clear-guild:dry-run`, `deploy:commands:guild`, `typecheck`, `test`, `clean`
 - **Runtime behavior:** Creates `PlatformKernel`, registers `DiscordModule`, starts the kernel, and handles `SIGINT` and `SIGTERM` shutdown signals.
 
 The additional file `apps/bot/src/bootstrap/environment.ts` defines an environment-loading function, but it is not imported by the bot entry point.

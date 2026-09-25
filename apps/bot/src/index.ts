@@ -8,7 +8,6 @@ import {
 import { DiscordModule } from "@qbox/discord";
 import { logger } from "@qbox/logger";
 import {
-  createLegacyAdministratorCompatibility,
   InMemoryPermissionCache,
   PERMISSION_CACHE_TTL_MS,
   PersistentPermissionService,
@@ -16,6 +15,7 @@ import {
 import { env } from "@qbox/shared";
 
 import { botFeatures } from "./features.js";
+import { composePermissionCompatibility } from "./permissionCompatibility.js";
 import { PermissionPersistenceModule } from "./PermissionPersistenceModule.js";
 
 const kernel = new PlatformKernel();
@@ -35,11 +35,13 @@ const persistence = new PrismaPermissionPersistenceClient(
 const database = new DatabaseService(databaseConfiguration, {
   create: () => persistence,
 });
-const compatibility = createLegacyAdministratorCompatibility(
-  env.DISCORD_GUILD_ID,
-  env.ADMIN_ROLE_IDS,
-  env.PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED,
-);
+// DISCORD_GUILD_ID is optional: the bot serves every server it is invited to.
+const { compatibility, persistence: compatibilityPersistence } =
+  composePermissionCompatibility({
+    guildId: env.DISCORD_GUILD_ID,
+    roleIds: env.ADMIN_ROLE_IDS,
+    enabled: env.PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED,
+  });
 const authorizer = new PersistentPermissionService(
   persistence.repositories.permissions,
   cache,
@@ -52,11 +54,7 @@ kernel.registerModule(
     persistence,
     persistence.repositories.definitions,
     cache,
-    {
-      enabled: compatibility.enabled,
-      ...(compatibility.guildId ? { guildId: compatibility.guildId } : {}),
-      roleIds: env.ADMIN_ROLE_IDS,
-    },
+    compatibilityPersistence,
   ),
 );
 kernel.registerModule(

@@ -52,7 +52,7 @@ if [ ! -f "$REPO_DIR/.env" ]; then
   DISCORD_APPLICATION_ID="$(ask 'Discord Application ID')"
   DISCORD_TOKEN="$(ask_secret 'Discord bot token')"
   DISCORD_OAUTH_CLIENT_SECRET="$(ask_secret 'Discord OAuth2 client secret')"
-  DISCORD_GUILD_ID="$(ask 'Discord server ID')"
+  DISCORD_GUILD_ID="$(ask 'Default Discord server ID (Enter to skip; the bot works in every server it is invited to)')"
   ADMIN_ROLE_IDS="$(ask 'Admin role IDs, comma separated (Enter to skip)')"
   DATABASE_URL="$(ask_secret 'Supabase DATABASE_URL (same as the GitHub secret)')"
   MESSAGE_CONTENT="$(ask 'Message Content intent turned on in the Discord portal? (yes/no)')"
@@ -110,20 +110,27 @@ else
   git rev-parse HEAD > "$BUILT_COMMIT_FILE"
 fi
 
-say "Registering slash commands in your server"
-if ! (cd apps/bot && node dist/deployCommands.js guild >/dev/null 2>&1); then
-  GUILD_ID="$(sed -n 's/^DISCORD_GUILD_ID=//p' "$REPO_DIR/.env")"
-  APP_ID="$(sed -n 's/^DISCORD_APPLICATION_ID=//p' "$REPO_DIR/.env")"
+APP_ID="$(sed -n 's/^DISCORD_APPLICATION_ID=//p' "$REPO_DIR/.env")"
+GUILD_ID="$(sed -n 's/^DISCORD_GUILD_ID=//p' "$REPO_DIR/.env")"
+INVITE_URL="https://discord.com/oauth2/authorize?client_id=${APP_ID}&scope=bot%20applications.commands&permissions=8"
+
+# Slash commands are registered once, globally, for every server the bot is
+# in. Discord can take a few minutes to show new global commands.
+say "Registering slash commands (global, for every server)"
+if ! (cd apps/bot && node dist/deployCommands.js global --confirm-global --confirm-global-removals >/dev/null 2>&1); then
   cat >&2 <<HINT
 
-The bot could not register its commands in server ${GUILD_ID}.
-Usually the bot has not been invited yet. Open this link, pick the server, and authorize:
-
-  https://discord.com/oauth2/authorize?client_id=${APP_ID}&scope=bot%20applications.commands&permissions=8
-
-Then run this setup again; it skips the build.
+The bot could not register its slash commands. Check DISCORD_TOKEN and
+DISCORD_APPLICATION_ID in ${REPO_DIR}/.env, then run this setup again; it skips the build.
 HINT
   exit 1
+fi
+if [ -n "$GUILD_ID" ]; then
+  # Older setups registered the commands in one server. Remove that copy so
+  # members do not see every command twice. Harmless when there is nothing to remove.
+  say "Removing the old per-server copy of the commands from server ${GUILD_ID}"
+  (cd apps/bot && node dist/deployCommands.js clear-guild >/dev/null 2>&1) \
+    || echo "Could not clear per-server commands in ${GUILD_ID} (is the bot in that server?). Run 'bash ops/oracle/update.sh' after inviting it." >&2
 fi
 
 say "Creating services"
@@ -186,6 +193,11 @@ Portal:  ${PUBLIC_URL}
 Last step: in the Discord Developer Portal > your app > OAuth2 > Redirects,
 add exactly:
   ${PUBLIC_URL}/auth/discord/callback
+
+Add the bot to a Discord server (any number of them) with this link:
+  ${INVITE_URL}
+The server owner and its Discord administrators can use the portal for that
+server right away. New global slash commands can take a few minutes to show up.
 
 Useful commands:
   systemctl status qbox-api qbox-bot     (are they running?)

@@ -38,7 +38,7 @@ The command previews guild/principal creation and the owner grant. Apply creates
 
 ## Legacy administrator migration
 
-The migration reads `DISCORD_GUILD_ID` and `ADMIN_ROLE_IDS` from trusted process configuration. Dry-run previews the guild, each configured role, principals to create, grants to create, and existing grants:
+The migration reads `ADMIN_ROLE_IDS` from trusted process configuration and targets `DISCORD_GUILD_ID`, or the guild passed explicitly with `--guild-id <id>` (required when `DISCORD_GUILD_ID` is empty, which is the multi-server default). Dry-run previews the guild, each configured role, principals to create, grants to create, and existing grants:
 
 ```sh
 pnpm --filter @qbox/bot permissions:migrate-legacy-admin

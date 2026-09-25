@@ -12,7 +12,7 @@ Run commands from the repository root. Keep credentials only in the ignored root
 
 Startup logs should identify the Discord application ID, bot username and user ID, connected guild count, discovered and registered command counts, command names/aliases, and load duration. They must not contain the token.
 
-When `ADMIN_ROLE_IDS` compatibility is active, the module startup log also reports `permissionCompatibilityEnabled: true`, `permissionCompatibilityRoleCount`, and `permissionCompatibilityGuildId`. Roles are bound only to that guild. Startup must fail if roles are configured without `DISCORD_GUILD_ID`.
+When `ADMIN_ROLE_IDS` compatibility is active, the module startup log also reports `permissionCompatibilityEnabled: true`, `permissionCompatibilityRoleCount`, and `permissionCompatibilityGuildId`. Roles are bound only to that guild. `DISCORD_GUILD_ID` is optional: the bot serves every server it is invited to, and when the ID is empty any configured legacy roles are ignored (`permissionCompatibilityRoleCount: 0`) instead of failing startup.
 
 ## Live smoke tests
 
@@ -46,6 +46,12 @@ Always preview global state first:
 
 `pnpm --filter @qbox/bot deploy:commands:global:dry-run`
 
-Apply a global plan with `pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global`. If the plan removes commands, also pass `--confirm-global-removals`. Review the printed plan immediately before applying; global propagation is not instantaneous.
+Apply a global plan with `pnpm --filter @qbox/bot deploy:commands:global -- --confirm-global`. If the plan removes commands, also pass `--confirm-global-removals`. Review the printed plan immediately before applying; global propagation is not instantaneous, and Discord can take a few minutes to show new or changed global commands.
+
+Global is the production scope: one registration serves every server the bot is invited to, so hosted deployments (`ops/oracle/setup.sh` and `update.sh`) always run `node dist/deployCommands.js global --confirm-global --confirm-global-removals`.
+
+### Clearing a guild copy
+
+A server that previously received a guild deployment shows each command twice once the global set exists (Discord lists the guild copy and the global one). Remove the guild copy with `pnpm --filter @qbox/bot deploy:commands:clear-guild:dry-run` to preview, then `pnpm --filter @qbox/bot deploy:commands:clear-guild` (`node dist/deployCommands.js clear-guild`). It targets `DISCORD_GUILD_ID`, removes every guild-scoped command there, leaves global commands untouched, and verifies that the server's guild command list is empty. It needs no confirmation flags because it changes one server only. The hosted scripts run it automatically when `DISCORD_GUILD_ID` is set in `.env`.
 
 To roll back, check out or rebuild a previously validated revision, run its full quality gate, preview its desired definitions against the same scope, then apply that plan. Prefer guild rollback while developing. Never improvise a global replacement without reviewing removals and using the required confirmation flags.

@@ -31,6 +31,10 @@ Everything below works from both the web portal and Discord:
 
 Each feature has its own guide in `docs/` (for example `docs/Tickets.md`). `docs/DiscordFeatureParity.md` lists every command, route, and permission. To add a feature, follow `docs/FeatureDevelopment.md`.
 
+## Many servers, one bot
+
+One Qbox installation serves any number of Discord servers, the way MEE6 or Dyno do. Invite the bot with `https://discord.com/oauth2/authorize?client_id=<application ID>&scope=bot%20applications.commands&permissions=8`; slash commands are registered globally once, so they work everywhere the bot is. Each server's owner and Discord administrators get full portal access for that server automatically, and after signing in members pick the server they want to manage. Settings and data are kept per server. `DISCORD_GUILD_ID` is optional and only names the default server shown before a member picks one. See `docs/Hosting.md` ("Adding the bot to more servers").
+
 ## Quick Start
 
 1. `pnpm install`

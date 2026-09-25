@@ -1,4 +1,10 @@
-export type DeploymentScope = "global" | "guild";
+/**
+ * "global" registers the command set for every server the bot is in,
+ * "guild" registers it in one server only, and "clear-guild" removes every
+ * guild-scoped command from one server (so members do not see each command
+ * twice once the global set exists).
+ */
+export type DeploymentScope = "global" | "guild" | "clear-guild";
 export type CommandDefinition = Readonly<Record<string, unknown>>;
 
 export interface CommandDeploymentTargetIdentity {

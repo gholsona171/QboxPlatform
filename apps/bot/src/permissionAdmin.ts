@@ -61,16 +61,20 @@ export async function runPermissionAdministration(
       writeResult(operation, apply, result);
       return;
     }
-    if (!env.DISCORD_GUILD_ID)
-      throw new Error("DISCORD_GUILD_ID is required for legacy migration.");
+    const legacyGuildId =
+      optionalFlag(argv, "--guild-id") ?? env.DISCORD_GUILD_ID;
+    if (!legacyGuildId)
+      throw new Error(
+        "Legacy migration needs --guild-id <id> (or DISCORD_GUILD_ID).",
+      );
     const result = apply
       ? await service.applyLegacyAdministrators(
-          env.DISCORD_GUILD_ID,
+          legacyGuildId,
           env.ADMIN_ROLE_IDS,
         )
       : {
           plan: await service.planLegacyAdministrators(
-            env.DISCORD_GUILD_ID,
+            legacyGuildId,
             env.ADMIN_ROLE_IDS,
           ),
           createdAssignments: 0,
@@ -85,8 +89,18 @@ export async function runPermissionAdministration(
 }
 
 function requiredFlag(argv: readonly string[], name: string): string {
+  const value = optionalFlag(argv, name);
+  if (!value) throw new Error(`${name} requires an explicit value.`);
+  return value;
+}
+
+function optionalFlag(
+  argv: readonly string[],
+  name: string,
+): string | undefined {
   const index = argv.indexOf(name);
-  const value = index < 0 ? undefined : argv[index + 1];
+  if (index < 0) return undefined;
+  const value = argv[index + 1];
   if (!value || value.startsWith("--"))
     throw new Error(`${name} requires an explicit value.`);
   return value;

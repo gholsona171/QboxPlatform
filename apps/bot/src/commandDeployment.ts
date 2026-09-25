@@ -37,6 +37,7 @@ export interface CommandDeploymentClient {
     guildId?: string
   ): Promise<readonly CommandDeploymentDefinition[]>;
   applyCommandDefinitions(guildId?: string): Promise<CommandDeploymentResult>;
+  clearCommandDefinitions(guildId: string): Promise<CommandDeploymentResult>;
 }
 
 interface DeploymentLogger {
@@ -61,10 +62,10 @@ export function resolveCommandDeploymentTarget(
     );
   }
 
-  if (scope === "guild") {
+  if (scope === "guild" || scope === "clear-guild") {
     if (!configuration.guildId) {
       throw new Error(
-        "DISCORD_GUILD_ID is required for guild command deployment."
+        `DISCORD_GUILD_ID is required for ${scope} command deployment.`
       );
     }
 
@@ -110,7 +111,8 @@ export async function executeCommandDeployment(
   }
 
   try {
-    const desired = client.desiredCommandDefinitions();
+    const desired =
+      target.scope === "clear-guild" ? [] : client.desiredCommandDefinitions();
     const current = await client.fetchCommandDefinitions(target.guildId);
     const plan = createCommandDeploymentPlan(target, current, desired);
     const summary = commandDeploymentPlanSummary(plan);
@@ -156,7 +158,10 @@ export async function executeCommandDeployment(
       );
     }
 
-    const applied = await client.applyCommandDefinitions(target.guildId);
+    const applied =
+      target.scope === "clear-guild" && target.guildId
+        ? await client.clearCommandDefinitions(target.guildId)
+        : await client.applyCommandDefinitions(target.guildId);
     const resulting = await client.fetchCommandDefinitions(target.guildId);
     const verification = createCommandDeploymentPlan(
       target,

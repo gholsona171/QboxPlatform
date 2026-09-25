@@ -59,16 +59,22 @@ function createClient(options: {
     commandCount: desired.length,
     commandNames: desired.map((command) => command.name)
   }));
+  const clearCommandDefinitions = vi.fn(async () => ({
+    commandCount: 0,
+    commandNames: []
+  }));
 
   return {
     client: {
       applicationId: () => "application-1",
       desiredCommandDefinitions: () => desired,
       fetchCommandDefinitions,
-      applyCommandDefinitions
+      applyCommandDefinitions,
+      clearCommandDefinitions
     },
     fetchCommandDefinitions,
-    applyCommandDefinitions
+    applyCommandDefinitions,
+    clearCommandDefinitions
   };
 }
 
@@ -100,11 +106,103 @@ describe("command deployment target", () => {
     });
   });
 
-  it("rejects guild deployment without DISCORD_GUILD_ID", () => {
-    expect(() => resolveCommandDeploymentTarget(
-      "guild",
-      configuration({ guildId: "" })
-    )).toThrow("DISCORD_GUILD_ID is required");
+  it.each(["guild", "clear-guild"] as const)(
+    "rejects %s deployment without DISCORD_GUILD_ID",
+    (scope) => {
+      expect(() => resolveCommandDeploymentTarget(
+        scope,
+        configuration({ guildId: "" })
+      )).toThrow("DISCORD_GUILD_ID is required");
+    }
+  );
+
+  it("selects a clear-guild target bound to DISCORD_GUILD_ID", () => {
+    expect(resolveCommandDeploymentTarget(
+      "clear-guild",
+      configuration()
+    )).toEqual({
+      scope: "clear-guild",
+      applicationId: "application-1",
+      guildId: "guild-1",
+      dryRun: false,
+      confirmGlobal: false,
+      confirmGlobalRemovals: false
+    });
+  });
+});
+
+describe("clear-guild deployment", () => {
+  it("removes every guild command and verifies the server is empty", async () => {
+    const {
+      client,
+      fetchCommandDefinitions,
+      applyCommandDefinitions,
+      clearCommandDefinitions
+    } = createClient({
+      current: [definition("ping"), definition("old")],
+      desired: [definition("ping")],
+      resulting: []
+    });
+    const result = await executeCommandDeployment(
+      target({ scope: "clear-guild" }),
+      client,
+      createLogger()
+    );
+
+    expect(result.plan.removals.map((change) => change.name)).toEqual([
+      "old",
+      "ping"
+    ]);
+    expect(result.plan.additions).toEqual([]);
+    expect(fetchCommandDefinitions).toHaveBeenNthCalledWith(1, "guild-1");
+    expect(clearCommandDefinitions).toHaveBeenCalledWith("guild-1");
+    expect(applyCommandDefinitions).not.toHaveBeenCalled();
+    expect(fetchCommandDefinitions).toHaveBeenNthCalledWith(2, "guild-1");
+    expect(result.verified).toBe(true);
+    expect(result.commandNames).toEqual([]);
+  });
+
+  it("previews removals in dry-run without touching Discord", async () => {
+    const { client, clearCommandDefinitions } = createClient({
+      current: [definition("ping")]
+    });
+    const result = await executeCommandDeployment(
+      target({ scope: "clear-guild", dryRun: true }),
+      client,
+      createLogger()
+    );
+
+    expect(result.applied).toBe(false);
+    expect(result.plan.removals[0]?.name).toBe("ping");
+    expect(result.commandNames).toEqual([]);
+    expect(clearCommandDefinitions).not.toHaveBeenCalled();
+  });
+
+  it("needs no global confirmation flags", async () => {
+    const { client, clearCommandDefinitions } = createClient({
+      current: [definition("ping")],
+      resulting: []
+    });
+
+    await expect(executeCommandDeployment(
+      target({ scope: "clear-guild" }),
+      client,
+      createLogger()
+    )).resolves.toMatchObject({ applied: true, verified: true });
+    expect(clearCommandDefinitions).toHaveBeenCalledOnce();
+  });
+
+  it("fails when guild commands remain after clearing", async () => {
+    const { client } = createClient({
+      current: [definition("ping")],
+      resulting: [definition("ping")]
+    });
+
+    await expect(executeCommandDeployment(
+      target({ scope: "clear-guild" }),
+      client,
+      createLogger()
+    )).rejects.toThrow("verification failed");
   });
 });
 
