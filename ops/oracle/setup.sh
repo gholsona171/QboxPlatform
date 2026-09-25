@@ -97,7 +97,11 @@ code_changed() {
   git cat-file -e "${BUILT_COMMIT}^{commit}" 2>/dev/null || return 0
   git diff --name-only "$BUILT_COMMIT" HEAD | grep -qvE '^(ops/|docs/|\.gitignore$|[^/]*\.md$)'
 }
-if ! code_changed; then
+if git fetch --quiet origin deploy 2>/dev/null; then
+  say "Downloading the build GitHub made"
+  git reset --hard --quiet origin/deploy
+  pnpm install --frozen-lockfile
+elif ! code_changed; then
   say "Already built for this version, skipping the build"
 else
   say "Building Qbox (10-15 minutes on a small server)"
