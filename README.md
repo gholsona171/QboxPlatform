@@ -20,9 +20,16 @@ It is designed around independent modules that communicate through a shared core
 
 ## Current Status
 
-Working today: the Discord bot (role management, role menus, welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard, and tickets), the API, and the web portal. See `docs/DiscordFeatureParity.md` for the full feature list and status.
+Everything below works from both the web portal and Discord:
 
-Planned: applications, moderation, staff tools, verification, polls, birthdays, knowledge base, and FiveM integration.
+- **Support:** tickets, applications, knowledge base (`/faq`, automatic answers, optional AI `/ask`)
+- **Safety:** moderation (cases, automod, automatic punishments), verification
+- **Team:** staff roster, ranks, strikes, leave, and shifts
+- **Community:** levels and rewards, giveaways, polls, birthdays, voice rooms, scheduled messages
+- **Server:** FiveM status, players, alerts, and restart warnings
+- **Discord bot basics:** role management, role menus, welcome/goodbye, autoroles, rules, counters, logs, embeds, custom commands, suggestions, starboard
+
+Each feature has its own guide in `docs/` (for example `docs/Tickets.md`). `docs/DiscordFeatureParity.md` lists every command, route, and permission. To add a feature, follow `docs/FeatureDevelopment.md`.
 
 ## Quick Start
 

@@ -7,8 +7,10 @@ import { pages } from "./pages.js";
 
 initializeModal();
 
+const navLink = (page) => `<a class="nav-link" href="${appPath(page.id === "overview" ? "/" : `/${page.id}`)}" data-route="${page.id}"><span class="nav-icon" aria-hidden="true">${page.icon}</span><span>${escapeHtml(page.label)}</span></a>`;
+
 document.getElementById("navigation").innerHTML = pages
-  .map((page) => `<a class="nav-link" href="${appPath(page.id === "overview" ? "/" : `/${page.id}`)}" data-route="${page.id}"><span class="nav-icon" aria-hidden="true">${page.icon}</span><span>${escapeHtml(page.label)}</span></a>`)
+  .map((page, index) => (page.group && page.group !== pages[index - 1]?.group ? `<p class="nav-group">${escapeHtml(page.group)}</p>` : "") + navLink(page))
   .join("");
 
 document.addEventListener("click", (event) => {

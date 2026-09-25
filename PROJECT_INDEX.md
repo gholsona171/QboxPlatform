@@ -140,6 +140,18 @@ The additional file `apps/bot/src/bootstrap/environment.ts` defines an environme
 | `@qbox/discord-roles`      | `modules/discord-roles`     | Role management and dependency tracking                                  |
 | `@qbox/role-menus`         | `modules/role-menus`        | Self-assignable role menus                                               |
 | `@qbox/tickets`            | `modules/tickets`           | Ticket system and shared Discord REST adapter. See `docs/Tickets.md`.    |
+| `@qbox/applications` | `modules/applications` | Staff and whitelist application forms, review, and votes. See `docs/Applications.md`. |
+| `@qbox/birthdays` | `modules/birthdays` | Birthday announcements and birthday role. See `docs/Birthdays.md`. |
+| `@qbox/fivem` | `modules/fivem` | FiveM server status, player chart, alerts, and restart warnings. See `docs/FiveM.md`. |
+| `@qbox/giveaways` | `modules/giveaways` | Giveaways with requirements, bonus entries, and fair draws. See `docs/Giveaways.md`. |
+| `@qbox/knowledge-base` | `modules/knowledge-base` | Help articles, `/faq`, automatic answers, and optional AI `/ask`. See `docs/KnowledgeBase.md`. |
+| `@qbox/levels` | `modules/levels` | Message and voice XP, leaderboard, and reward roles. See `docs/Levels.md`. |
+| `@qbox/moderation` | `modules/moderation` | Cases, automod, automatic punishments, and channel tools. See `docs/Moderation.md`. |
+| `@qbox/polls` | `modules/polls` | Button polls with live or hidden results and CSV export. See `docs/Polls.md`. |
+| `@qbox/scheduled-messages` | `modules/scheduled-messages` | Messages posted once or on a repeating schedule. See `docs/ScheduledMessages.md`. |
+| `@qbox/staff` | `modules/staff` | Staff roster, ranks, strikes, leave, and shifts. See `docs/Staff.md`. |
+| `@qbox/verification` | `modules/verification` | Button, code, or question verification with account age checks. See `docs/Verification.md`. |
+| `@qbox/voice-rooms` | `modules/voice-rooms` | Join-to-create voice rooms with owner controls. See `docs/VoiceRooms.md`. |
 
 # Services
 
@@ -381,14 +393,5 @@ The following systems have repository locations or placeholder classes but no fu
 
 - Production authentication features beyond the browser proof of concept: account linking UI, owner recovery UI, service credentials, generalized CSRF middleware, authenticated domain-management routes, and session-management UI are not implemented.
 - Background worker: `apps/worker/` does not create BullMQ or Redis workers.
-- OpenAI integration: `packages/openai/` does not construct or call an OpenAI client.
-- Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ.
-- FiveM/Qbox integration: `modules/fivem/` is empty.
-- Applications module: `modules/applications/` is empty.
-- Birthdays module: `modules/birthdays/` is empty.
-- Knowledge module: `modules/knowledge/` is empty.
-- Moderation module: `modules/moderation/` is empty.
-- Polls module: `modules/polls/` is empty.
-- Staff module: `modules/staff/` is empty.
-- Tickets module: `modules/tickets/` is empty.
-- Verification module: `modules/verification/` is empty.
+- OpenAI integration: `packages/openai/` does not construct or call an OpenAI client. The knowledge base's optional `/ask` calls the OpenAI API directly with `fetch` when `OPENAI_API_KEY` is set.
+- Scheduler: `packages/scheduler/` does not schedule jobs or use Redis/BullMQ. Feature timers (scheduled messages, giveaways, polls, birthdays, and others) run inside the bot process.
