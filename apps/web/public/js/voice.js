@@ -49,7 +49,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to voice rooms" : "Voice rooms are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the voice.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to voice rooms" : "Voice rooms are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Manage voice rooms permission (voice.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   if (!TABS.some(([id]) => id === view.tab)) view.tab = "hubs";
@@ -64,6 +64,13 @@ function render() {
 
 function hubsTab() {
   const { hubs, maxHubs } = view.overview;
+  if (!view.overview.settings.enabled && !hubs.length) {
+    return `<div class="empty-state">
+      <h3>Voice rooms are off.</h3>
+      <p>Turn them on in Settings, then add a join-to-create channel (a hub).</p>
+      <button class="button primary" data-v-tab="settings">Turn on voice rooms</button>
+    </div>`;
+  }
   const rows = hubs.map((hub) => row([
     ["Hub", `<strong>${escapeHtml(hub.name)}</strong>${hub.enabled ? "" : ` ${badge("off")}`}`],
     ["Join channel", escapeHtml(channelLabel(hub.channelId))],
@@ -74,7 +81,7 @@ function hubsTab() {
   ], `data-v-hub="${escapeHtml(hub.id)}" tabindex="0" class="${hub.id === view.editing?.id ? "selected" : ""}"`));
   return `<section class="grid main-detail">
     <div>
-      ${table(["Hub", "Join channel", "Room name", "Limit", "Private", "Roles"], rows, "No hubs yet. Add one to let members create their own rooms.")}
+      ${table(["Hub", "Join channel", "Room name", "Limit", "Private", "Roles"], rows, "No join-to-create channels (hubs) yet. Add one to let members create their own rooms.")}
       <div class="toolbar"><button class="button compact" data-v-action="new-hub" ${hubs.length >= maxHubs ? "disabled" : ""}>Add a hub</button><span class="microcopy">${hubs.length} of ${maxHubs} hubs</span></div>
     </div>
     <div class="card">${view.editing ? hubForm(view.editing) : `<p class="microcopy">Select a hub to edit it, or add a new one.</p>`}</div>
@@ -123,7 +130,7 @@ function settingsTab() {
     ${checkbox("enabled", "Voice rooms are on", s.enabled)}
     ${checkbox("controlPanel", "Post a control panel with buttons in each new room's chat", s.controlPanel)}
     ${checkbox("allowClaim", "Let someone in the room claim it after the owner leaves", s.allowClaim)}
-    <p class="microcopy full">Owners control their room with the panel or <code>/voice</code>. Staff with the voice.manage permission can control any room.</p>
+    <p class="microcopy full">Owners control their room with the panel or <code>/voice</code>. Staff with the Manage voice rooms permission (voice.manage) can control any room.</p>
     <button class="button primary full">Save settings</button>
   </form>`;
 }

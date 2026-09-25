@@ -81,7 +81,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to moderation" : "Moderation is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the moderation.view permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to moderation" : "Moderation is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the View moderation permission (moderation.view)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   const can = view.overview.can;
@@ -107,6 +107,21 @@ function tabContent() {
 
 /* ---------- Cases ---------- */
 
+function setupNote() {
+  if (!view.overview.can.manage) return "";
+  const { automod, logChannelId } = view.overview.settings;
+  const missing = [
+    ...(automod.enabled ? [] : [["Automod is off.", "automod", "Turn on automod"]]),
+    ...(logChannelId ? [] : [["No log channel is set, so actions are not posted in Discord.", "settings", "Pick a log channel"]]),
+  ];
+  if (!missing.length) return "";
+  return `<div class="card">${missing.map(([text, tab, label]) => `<p class="split-line"><span>${escapeHtml(text)}</span><button class="button compact" data-m-tab="${tab}">${escapeHtml(label)}</button></p>`).join("")}</div>`;
+}
+
+function filtersActive() {
+  return view.filters.type !== "" || view.filters.search !== "" || view.filters.active !== "";
+}
+
 function casesTab() {
   const rows = view.cases.map((item) => row([
     ["Case", `<strong>#${item.number}</strong>`],
@@ -117,6 +132,7 @@ function casesTab() {
     ["When", escapeHtml(relative(item.createdAt))],
   ], `data-m-case="${item.number}" class="${item.number === view.selected?.number ? "selected" : ""}" tabindex="0"`));
   return `
+    ${setupNote()}
     <form class="toolbar" data-m-form="filters">
       <input name="search" placeholder="Search #case, member name or ID, reason" value="${escapeHtml(view.filters.search)}">
       <select name="type"><option value="">All actions</option>${Object.entries(TYPE_LABELS).map(([value, label]) => `<option value="${value}" ${view.filters.type === value ? "selected" : ""}>${label}</option>`).join("")}</select>
@@ -124,7 +140,7 @@ function casesTab() {
       <button class="button compact">Filter</button>
     </form>
     <section class="grid main-detail">
-      <div>${table(["Case", "Action", "Member", "By", "Reason", "When"], rows, "No cases match.")}</div>
+      <div>${table(["Case", "Action", "Member", "By", "Reason", "When"], rows, filtersActive() ? "No cases match." : "No cases yet. Actions taken in Take action or with Discord commands show up here.")}</div>
       <div class="card">${caseDetail()}</div>
     </section>`;
 }
@@ -274,7 +290,7 @@ function statsTab() {
       ${metric("All cases", s.total)}${metric("Last 7 days", s.last7Days)}${metric("Active bans", s.activeBans)}${metric("Active timeouts", s.activeTimeouts)}
     </section>
     <section class="grid cols-2">
-      <div class="card"><h3>By action</h3>${table(["Action", "Cases"], Object.entries(s.byType).map(([type, count]) => row([["Action", escapeHtml(TYPE_LABELS[type] ?? type)], ["Cases", String(count)]])), "No cases yet.")}<p class="microcopy">Automatic actions: ${s.automodActions}</p></div>
+      <div class="card"><h3>By action</h3>${table(["Action", "Cases"], Object.entries(s.byType).map(([type, count]) => row([["Action", escapeHtml(TYPE_LABELS[type] ?? type)], ["Cases", String(count)]])), "No cases yet.")}<p class="microcopy">Actions taken by automod: ${s.automodActions}</p></div>
       <div class="card"><h3>Most active moderators</h3>${table(["Moderator", "Cases"], s.topModerators.map((item) => row([["Moderator", escapeHtml(item.name)], ["Cases", String(item.cases)]])), "No moderator actions yet.")}</div>
     </section>`;
 }

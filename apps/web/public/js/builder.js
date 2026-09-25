@@ -68,7 +68,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to the server builder" : "The server builder is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the builder.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to the server builder" : "The server builder is unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Manage server builder permission (builder.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   container.innerHTML = `<section class="card">
@@ -94,7 +94,7 @@ function questionsTab() {
   const templates = view.overview.templates;
   return `<div class="grid">
     <div class="feature-grid">${templates.map((template) => `<button type="button" class="feature-tile" data-b-template="${escapeHtml(template.type)}"><strong>${escapeHtml(template.label)}</strong><span class="microcopy">${escapeHtml(template.description)}</span></button>`).join("")}</div>
-    <p class="microcopy">Pick a starting point, change the answers, then make a blueprint. You can edit it before anything is built.</p>
+    <p class="microcopy">Pick a starting point, change the answers, then make a Blueprint (a preview of what will be built). You can edit it before anything is built.</p>
     <form class="form-grid readable-form" data-b-form="answers">
       ${selectField("serverType", "Server type", SERVER_TYPES, a.serverType)}
       ${textField("serverName", "Server name", a.serverName, "My City", true)}
@@ -128,9 +128,13 @@ function answersFromForm(form) {
 
 /* ---------- Blueprint ---------- */
 
+function noDraft() {
+  return `<div class="empty-state"><p>There is no blueprint yet.</p><button class="button primary" data-b-tab="questions">Answer the questions</button></div>`;
+}
+
 function blueprintTab() {
   const draft = view.overview.draft;
-  if (!draft) return `<div class="empty-state">Answer the questions and make a blueprint first.</div>`;
+  if (!draft) return noDraft();
   const { blueprint, summary, access } = draft;
   const limits = view.overview.limits;
   const metric = (label, value) => `<div class="card metric"><span class="metric-label">${escapeHtml(label)}</span><strong class="metric-value">${escapeHtml(value)}</strong></div>`;
@@ -218,7 +222,7 @@ function buildTab() {
     ${preflight.messages.length ? `<ul class="checklist">${preflight.messages.map((message) => `<li>${escapeHtml(message)}</li>`).join("")}</ul>` : `<p class="microcopy">Qbox can create roles and channels.</p>`}
   </div>`;
   if (active) return `${status}${runProgress(view.selected)}`;
-  if (!draft) return `${status}<div class="empty-state">Answer the questions and make a blueprint first.</div>`;
+  if (!draft) return `${status}${noDraft()}`;
   const { summary, links } = draft;
   return `${status}
     <form class="card form-grid readable-form" data-b-form="build">

@@ -127,7 +127,14 @@ function rankDot(rank) {
 
 function meTab() {
   const profile = view.me.profile;
-  if (!profile) return `<p class="microcopy">You're not on the staff roster.${view.overview ? " Use the Roster tab to see the team." : ""}</p>`;
+  if (!profile && can("manage") && view.overview && !view.overview.ranks.length) {
+    return `<div class="empty-state">
+      <h3>The staff roster isn't set up yet.</h3>
+      <p>1) Add ranks in Ranks 2) Hire members in Roster.</p>
+      <button class="button primary" data-s-tab="ranks">Add ranks</button>
+    </div>`;
+  }
+  if (!profile) return `<p class="microcopy">You're not on the staff roster.${view.overview ? " Use the Roster tab to see the team." : " Ask a server admin to add you."}</p>`;
   const { member, rank } = profile;
   const current = profile.leaves.find((leave) => ["PENDING", "APPROVED", "ACTIVE"].includes(leave.status));
   const shiftsAllowed = view.me.can.shifts;
@@ -241,7 +248,7 @@ function memberDetail() {
 }
 
 function historyList(records) {
-  if (!records.length) return `<p class="microcopy">Nothing yet.</p>`;
+  if (!records.length) return `<p class="microcopy">No history yet.</p>`;
   return `<ul class="timeline">${records.map((record) => `<li><strong>${escapeHtml(RECORD_LABELS[record.type])}${record.fromRank && record.toRank ? ` · ${escapeHtml(record.fromRank)} → ${escapeHtml(record.toRank)}` : record.toRank ? ` · ${escapeHtml(record.toRank)}` : ""}</strong>
     <small>${escapeHtml(dateTime(record.createdAt))} · by ${record.actorId === "0" ? escapeHtml(record.actorName) : memberName(record.actorId)}</small>
     ${record.reason ? `<p>${escapeHtml(record.reason)}</p>` : ""}</li>`).join("")}</ul>`;
@@ -438,7 +445,7 @@ async function action(name, value) {
     case "rank-down":
       return moveRank(Number(value), 1);
     case "rank-delete":
-      if (!(await confirmAction({ title: "Delete this rank?", body: "Only empty ranks can be deleted.", confirmText: "Delete" }))) return undefined;
+      if (!(await confirmAction({ title: "Delete this rank?", body: "Move everyone out of this rank before deleting it.", confirmText: "Delete" }))) return undefined;
       return run("Rank deleted.", () => sendJson(`staff/ranks/${value}`, "DELETE"));
     case "publish":
       return run("Roster message updated.", () => sendJson("staff/roster/publish", "POST", {}));

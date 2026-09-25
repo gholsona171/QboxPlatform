@@ -62,7 +62,9 @@ function render() {
   if (!tabs.some(([id]) => id === view.tab)) view.tab = "upcoming";
   container.innerHTML = `<section class="card">
     <nav class="tab-bar" aria-label="Birthday sections">${tabs.map(([id, label]) => `<button class="tab ${view.tab === id ? "active" : ""}" data-b-tab="${id}">${escapeHtml(label)}</button>`).join("")}</nav>
-    ${view.overview.settings.enabled ? "" : `<p class="microcopy">Birthday messages are off${view.overview.can.manage ? ". Turn them on in Settings." : "."}</p>`}
+    ${view.overview.settings.enabled || view.tab === "settings" ? "" : view.overview.can.manage
+      ? `<div class="empty-state"><h3>Birthday messages are off.</h3><p>Pick a channel and turn them on in Settings. Members add their date in My birthday or with /birthday set.</p><button class="button primary" data-b-tab="settings">Turn on birthday messages</button></div>`
+      : `<p class="microcopy">Birthday messages are off. You can still add yours in My birthday; a server admin can turn them on.</p>`}
     <div>${tabContent()}</div>
   </section>`;
   bind();

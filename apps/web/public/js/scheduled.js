@@ -57,7 +57,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to scheduled messages" : "Scheduled messages are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the scheduled.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to scheduled messages" : "Scheduled messages are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Manage scheduled messages permission (scheduled.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   if (!TABS.some(([id]) => id === view.tab)) view.tab = "messages";
@@ -92,6 +92,7 @@ function messagesTab() {
     </div>`],
   ]));
   return `<div class="split-line"><h3>Scheduled messages</h3><button class="button primary compact" data-s-action="new">+ New message</button></div>
+    ${rows.length ? "" : `<p class="microcopy">Post messages automatically on a schedule.</p>`}
     ${table(["Name", "Channel", "Schedule", "Next post", "Status", "Posts", ""], rows, "No scheduled messages yet.")}`;
 }
 

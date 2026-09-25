@@ -54,7 +54,7 @@ function render() {
   if (!container?.isConnected) return;
   if (view.error) {
     const denied = view.error.status === 403;
-    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to polls" : "Polls are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the polls.create or polls.manage permission." : escapeHtml(view.error.message)}</p></section>`;
+    container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to polls" : "Polls are unavailable"}</h2><p class="microcopy">${denied ? "Ask a server admin for the Create polls permission (polls.create) or the Manage polls permission (polls.manage)." : escapeHtml(view.error.message)}</p></section>`;
     return;
   }
   const tabs = TABS.filter(([id]) => id !== "create" || view.overview.can.create);
@@ -77,7 +77,9 @@ function listTab(polls) {
     [poll.status === "OPEN" ? "Ends" : "Closed", escapeHtml(poll.status === "OPEN" ? (poll.endsAt ? relative(poll.endsAt) : "When closed") : relative(poll.closedAt ?? poll.updatedAt))],
   ], `data-p-poll="${escapeHtml(poll.id)}" class="${poll.id === view.selected?.poll.id ? "selected" : ""}" tabindex="0"`));
   return `<section class="grid main-detail">
-    <div>${table(["Poll", "Question", "Voters", "Channel", view.tab === "open" ? "Ends" : "Closed"], rows, view.tab === "open" ? "No open polls. Create one here or with /poll create." : "No closed polls yet.")}</div>
+    <div>${!rows.length && view.tab === "open"
+      ? `<div class="empty-state"><p>No open polls.</p>${view.overview.can.create ? `<button class="button primary" data-p-tab="create">Create a poll</button><p class="microcopy">Or use /poll create in Discord.</p>` : ""}</div>`
+      : table(["Poll", "Question", "Voters", "Channel", view.tab === "open" ? "Ends" : "Closed"], rows, "No closed polls yet.")}</div>
     <div class="card">${pollDetail()}</div>
   </section>`;
 }

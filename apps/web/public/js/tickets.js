@@ -92,7 +92,7 @@ function render() {
   if (view.error) {
     const denied = view.error.status === 403;
     container.innerHTML = `<section class="card"><h2>${denied ? "You don't have access to tickets" : "Tickets are unavailable"}</h2>
-      <p class="microcopy">${denied ? "Ask a server admin to give you the tickets.handle permission (to answer tickets) or tickets.manage (to set them up)." : escapeHtml(view.error.message)}</p>
+      <p class="microcopy">${denied ? "Ask a server admin for the Handle tickets permission (tickets.handle) to answer tickets, or the Manage tickets permission (tickets.manage) to set them up." : escapeHtml(view.error.message)}</p>
       <button class="button" data-t-action="retry">Try again</button></section>`;
     bind();
     return;
@@ -108,15 +108,22 @@ function render() {
   bind();
 }
 
-function setupChecklist() {
-  if (!view.canManage) return "";
+function setupSteps() {
   const { settings, categories, panels } = view.overview;
-  const steps = [
+  return [
     [settings.enabled && (settings.openCategoryChannelId || settings.threadParentChannelId) && settings.supportRoleIds.length > 0, "Turn tickets on, pick where they open, and choose your support team", "settings"],
     [categories.some((category) => category.enabled), "Add ticket reasons (one button each)", "reasons"],
     [panels.some((panel) => panel.messageId), "Post a panel in a channel", "panels"],
   ];
-  if (steps.every(([done]) => done)) return "";
+}
+
+function setupDone() {
+  return setupSteps().every(([done]) => done);
+}
+
+function setupChecklist() {
+  if (!view.canManage || setupDone()) return "";
+  const steps = setupSteps();
   return `<section class="card setup-card"><h2>Set up tickets</h2><ol class="checklist">${steps
     .map(([done, text, tab]) => `<li class="${done ? "done" : ""}"><span class="check" aria-hidden="true">${done ? "✓" : ""}</span><button class="link-button" data-t-tab="${tab}">${escapeHtml(text)}</button></li>`)
     .join("")}</ol></section>`;
@@ -134,7 +141,22 @@ function tabContent() {
 
 /* ---------- Inbox ---------- */
 
+function setupCard() {
+  return `<div class="empty-state">
+    <h3>Tickets aren't set up yet${view.canManage ? ", so no one can open one." : "."}</h3>
+    <p>Members open a ticket with a button on a panel, and your support team answers it in Discord or here.</p>
+    ${view.canManage
+      ? `<button class="button primary" data-t-tab="settings">Finish setup</button>`
+      : `<p class="microcopy">Ask a server admin to finish setup.</p>`}
+  </div>`;
+}
+
+function filtersActive() {
+  return view.filters.status !== "open,claimed,pending" || view.filters.search !== "" || view.filters.priority !== "";
+}
+
 function inboxTab() {
+  if (!setupDone() && !view.tickets.length && !filtersActive()) return setupCard();
   const rows = view.tickets.map((ticket) => row([
     ["Ticket", `<strong>#${ticket.number}</strong><br><small>${escapeHtml(ticket.subject || ticket.categoryName || "General support")}</small>`],
     ["Member", escapeHtml(ticket.openerName)],
@@ -151,7 +173,7 @@ function inboxTab() {
       <button class="button compact">Filter</button>
     </form>
     <section class="grid main-detail">
-      <div>${table(["Ticket", "Member", "Reason", "Priority", "Status", "Updated"], rows, "No tickets match these filters.")}</div>
+      <div>${table(["Ticket", "Member", "Reason", "Priority", "Status", "Updated"], rows, filtersActive() ? "No tickets match these filters." : "No tickets yet.")}</div>
       <div class="card" id="ticketDetail">${detailPanel()}</div>
     </section>`;
 }

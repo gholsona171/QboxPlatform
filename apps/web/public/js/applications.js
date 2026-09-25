@@ -121,6 +121,13 @@ function applyTab() {
   const { forms, applications } = view.me;
   const form = forms.find((item) => item.id === view.applying);
   if (form) return applyForm(form);
+  if (view.me.can.manage && view.setup && !view.setup.forms.length && !applications.length) {
+    return `<div class="empty-state">
+      <h3>Applications aren't set up yet.</h3>
+      <p>Create your first form in Forms, then post it with Panels.</p>
+      <button class="button primary" data-a-tab="forms">Create a form</button>
+    </div>`;
+  }
   const list = forms.length
     ? `<ul class="reason-list">${forms.map((item) => `
         <li>
