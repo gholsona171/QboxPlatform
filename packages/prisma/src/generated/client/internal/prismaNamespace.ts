@@ -433,9 +433,14 @@ export const ModelName = {
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
   BirthdaySettings: 'BirthdaySettings',
   Birthday: 'Birthday',
+  FivemSettings: 'FivemSettings',
+  FivemStatusSnapshot: 'FivemStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
+  KnowledgeSettings: 'KnowledgeSettings',
+  KnowledgeCategory: 'KnowledgeCategory',
+  KnowledgeArticle: 'KnowledgeArticle',
   LevelSettings: 'LevelSettings',
   LevelMember: 'LevelMember',
   ModerationSettings: 'ModerationSettings',
@@ -479,7 +484,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3147,6 +3152,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FivemSettings: {
+      payload: Prisma.$FivemSettingsPayload<ExtArgs>
+      fields: Prisma.FivemSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FivemSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FivemSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.FivemSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FivemSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.FivemSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.FivemSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.FivemSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FivemSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.FivemSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        update: {
+          args: Prisma.FivemSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.FivemSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FivemSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FivemSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.FivemSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.FivemSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFivemSettings>
+        }
+        groupBy: {
+          args: Prisma.FivemSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FivemSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FivemSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FivemSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    FivemStatusSnapshot: {
+      payload: Prisma.$FivemStatusSnapshotPayload<ExtArgs>
+      fields: Prisma.FivemStatusSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FivemStatusSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FivemStatusSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.FivemStatusSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FivemStatusSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.FivemStatusSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.FivemStatusSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.FivemStatusSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FivemStatusSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.FivemStatusSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        update: {
+          args: Prisma.FivemStatusSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.FivemStatusSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FivemStatusSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FivemStatusSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.FivemStatusSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FivemStatusSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.FivemStatusSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFivemStatusSnapshot>
+        }
+        groupBy: {
+          args: Prisma.FivemStatusSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FivemStatusSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FivemStatusSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FivemStatusSnapshotCountAggregateOutputType> | number
+        }
+      }
+    }
     GiveawayCounter: {
       payload: Prisma.$GiveawayCounterPayload<ExtArgs>
       fields: Prisma.GiveawayCounterFieldRefs
@@ -3366,6 +3519,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.GiveawayEntryCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.GiveawayEntryCountAggregateOutputType> | number
+        }
+      }
+    }
+    KnowledgeSettings: {
+      payload: Prisma.$KnowledgeSettingsPayload<ExtArgs>
+      fields: Prisma.KnowledgeSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KnowledgeSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KnowledgeSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.KnowledgeSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KnowledgeSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.KnowledgeSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.KnowledgeSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.KnowledgeSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KnowledgeSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.KnowledgeSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        update: {
+          args: Prisma.KnowledgeSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.KnowledgeSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KnowledgeSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KnowledgeSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.KnowledgeSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.KnowledgeSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKnowledgeSettings>
+        }
+        groupBy: {
+          args: Prisma.KnowledgeSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KnowledgeSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    KnowledgeCategory: {
+      payload: Prisma.$KnowledgeCategoryPayload<ExtArgs>
+      fields: Prisma.KnowledgeCategoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KnowledgeCategoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KnowledgeCategoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        findFirst: {
+          args: Prisma.KnowledgeCategoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KnowledgeCategoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        findMany: {
+          args: Prisma.KnowledgeCategoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>[]
+        }
+        create: {
+          args: Prisma.KnowledgeCategoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        createMany: {
+          args: Prisma.KnowledgeCategoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KnowledgeCategoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>[]
+        }
+        delete: {
+          args: Prisma.KnowledgeCategoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        update: {
+          args: Prisma.KnowledgeCategoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.KnowledgeCategoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KnowledgeCategoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KnowledgeCategoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.KnowledgeCategoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeCategoryPayload>
+        }
+        aggregate: {
+          args: Prisma.KnowledgeCategoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKnowledgeCategory>
+        }
+        groupBy: {
+          args: Prisma.KnowledgeCategoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeCategoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KnowledgeCategoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeCategoryCountAggregateOutputType> | number
+        }
+      }
+    }
+    KnowledgeArticle: {
+      payload: Prisma.$KnowledgeArticlePayload<ExtArgs>
+      fields: Prisma.KnowledgeArticleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.KnowledgeArticleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.KnowledgeArticleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        findFirst: {
+          args: Prisma.KnowledgeArticleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.KnowledgeArticleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        findMany: {
+          args: Prisma.KnowledgeArticleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>[]
+        }
+        create: {
+          args: Prisma.KnowledgeArticleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        createMany: {
+          args: Prisma.KnowledgeArticleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.KnowledgeArticleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>[]
+        }
+        delete: {
+          args: Prisma.KnowledgeArticleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        update: {
+          args: Prisma.KnowledgeArticleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        deleteMany: {
+          args: Prisma.KnowledgeArticleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.KnowledgeArticleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.KnowledgeArticleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>[]
+        }
+        upsert: {
+          args: Prisma.KnowledgeArticleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$KnowledgeArticlePayload>
+        }
+        aggregate: {
+          args: Prisma.KnowledgeArticleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateKnowledgeArticle>
+        }
+        groupBy: {
+          args: Prisma.KnowledgeArticleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeArticleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.KnowledgeArticleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.KnowledgeArticleCountAggregateOutputType> | number
         }
       }
     }
@@ -6156,6 +6531,43 @@ export const BirthdayScalarFieldEnum = {
 export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
 
 
+export const FivemSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  serverAddress: 'serverAddress',
+  connectUrl: 'connectUrl',
+  statusChannelId: 'statusChannelId',
+  statusMessageId: 'statusMessageId',
+  updateIntervalSeconds: 'updateIntervalSeconds',
+  alertChannelId: 'alertChannelId',
+  alertRoleId: 'alertRoleId',
+  restartTimes: 'restartTimes',
+  timeZone: 'timeZone',
+  restartWarningMinutes: 'restartWarningMinutes',
+  lastOnline: 'lastOnline',
+  onlineSince: 'onlineSince',
+  failureStreak: 'failureStreak',
+  lastPolledAt: 'lastPolledAt',
+  sentRestartWarnings: 'sentRestartWarnings',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FivemSettingsScalarFieldEnum = (typeof FivemSettingsScalarFieldEnum)[keyof typeof FivemSettingsScalarFieldEnum]
+
+
+export const FivemStatusSnapshotScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  online: 'online',
+  players: 'players',
+  maxPlayers: 'maxPlayers',
+  at: 'at'
+} as const
+
+export type FivemStatusSnapshotScalarFieldEnum = (typeof FivemStatusSnapshotScalarFieldEnum)[keyof typeof FivemStatusSnapshotScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -6206,6 +6618,55 @@ export const GiveawayEntryScalarFieldEnum = {
 } as const
 
 export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
+
+
+export const KnowledgeSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  autoAnswerEnabled: 'autoAnswerEnabled',
+  autoAnswerChannelIds: 'autoAnswerChannelIds',
+  autoAnswerThreshold: 'autoAnswerThreshold',
+  autoAnswerCooldownSeconds: 'autoAnswerCooldownSeconds',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSettingsScalarFieldEnum = (typeof KnowledgeSettingsScalarFieldEnum)[keyof typeof KnowledgeSettingsScalarFieldEnum]
+
+
+export const KnowledgeCategoryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  emoji: 'emoji',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeCategoryScalarFieldEnum = (typeof KnowledgeCategoryScalarFieldEnum)[keyof typeof KnowledgeCategoryScalarFieldEnum]
+
+
+export const KnowledgeArticleScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  categoryId: 'categoryId',
+  title: 'title',
+  slug: 'slug',
+  body: 'body',
+  tags: 'tags',
+  published: 'published',
+  pinned: 'pinned',
+  views: 'views',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  updatedById: 'updatedById',
+  updatedByName: 'updatedByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeArticleScalarFieldEnum = (typeof KnowledgeArticleScalarFieldEnum)[keyof typeof KnowledgeArticleScalarFieldEnum]
 
 
 export const LevelSettingsScalarFieldEnum = {
@@ -7900,9 +8361,14 @@ export type GlobalOmitConfig = {
   authenticationAuditEvent?: Prisma.AuthenticationAuditEventOmit
   birthdaySettings?: Prisma.BirthdaySettingsOmit
   birthday?: Prisma.BirthdayOmit
+  fivemSettings?: Prisma.FivemSettingsOmit
+  fivemStatusSnapshot?: Prisma.FivemStatusSnapshotOmit
   giveawayCounter?: Prisma.GiveawayCounterOmit
   giveaway?: Prisma.GiveawayOmit
   giveawayEntry?: Prisma.GiveawayEntryOmit
+  knowledgeSettings?: Prisma.KnowledgeSettingsOmit
+  knowledgeCategory?: Prisma.KnowledgeCategoryOmit
+  knowledgeArticle?: Prisma.KnowledgeArticleOmit
   levelSettings?: Prisma.LevelSettingsOmit
   levelMember?: Prisma.LevelMemberOmit
   moderationSettings?: Prisma.ModerationSettingsOmit

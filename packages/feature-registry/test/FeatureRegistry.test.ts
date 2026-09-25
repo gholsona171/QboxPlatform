@@ -41,6 +41,10 @@ const commandNames = [
   "leaderboard",
   "levels",
   "voice",
+  "faq",
+  "kb",
+  "ask",
+  "fivem",
 ];
 
 describe("featureRegistry", () => {

@@ -94,6 +94,7 @@ describe("PrismaVerificationRepository", () => {
 
     clock = new Date(clock.getTime() + 31 * 60_000);
     expect(await service.sweepUnverified()).toEqual({ kicked: 1 });
+    clock = new Date(clock.getTime() + 1_000);
     await service.manualVerify(guildId, member("804859666655739903").userId, staff);
     expect(await service.stats(guildId)).toEqual({ verified24h: 2, failed24h: 2, deniedAge24h: 0, kicked24h: 1, verifiedTotal: 2, pending: 0 });
     const latest = await service.attempts({ guildId, limit: 1 });

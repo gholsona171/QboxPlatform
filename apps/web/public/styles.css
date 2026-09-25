@@ -352,3 +352,18 @@ td small { color: var(--muted); }
   .calendar-cell { min-height: 52px; padding: 4px; }
   .calendar-name { font-size: 10px; }
 }
+.category-row { display: grid; grid-template-columns: 90px minmax(0, 1fr) 90px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
+.markdown { line-height: 1.55; overflow-wrap: anywhere; }
+.markdown h3, .markdown h4, .markdown h5 { margin: 12px 0 6px; }
+.markdown p, .markdown ul, .markdown ol { margin: 0 0 8px; }
+.markdown code { font-family: var(--mono); background: var(--surface-3); padding: 1px 5px; border-radius: 4px; }
+.markdown pre { background: var(--surface-3); padding: 10px 12px; border-radius: var(--radius-sm); overflow-x: auto; }
+.markdown pre code { background: none; padding: 0; }
+.markdown a { color: var(--accent); }
+.player-chart { width: 100%; height: auto; display: block; }
+.player-chart text { fill: var(--muted); font-size: 11px; }
+.player-chart .chart-line { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; }
+.player-chart .chart-grid { stroke: var(--border); stroke-dasharray: 3 4; }
+.player-chart .chart-axis { stroke: var(--border-strong); }
+.player-chart .chart-down { fill: var(--danger); }
+@media (max-width: 720px) { .category-row { grid-template-columns: 70px minmax(0, 1fr); } }

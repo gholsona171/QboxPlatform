@@ -87,9 +87,14 @@ export const ModelName = {
   AuthenticationAuditEvent: 'AuthenticationAuditEvent',
   BirthdaySettings: 'BirthdaySettings',
   Birthday: 'Birthday',
+  FivemSettings: 'FivemSettings',
+  FivemStatusSnapshot: 'FivemStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
+  KnowledgeSettings: 'KnowledgeSettings',
+  KnowledgeCategory: 'KnowledgeCategory',
+  KnowledgeArticle: 'KnowledgeArticle',
   LevelSettings: 'LevelSettings',
   LevelMember: 'LevelMember',
   ModerationSettings: 'ModerationSettings',
@@ -812,6 +817,43 @@ export const BirthdayScalarFieldEnum = {
 export type BirthdayScalarFieldEnum = (typeof BirthdayScalarFieldEnum)[keyof typeof BirthdayScalarFieldEnum]
 
 
+export const FivemSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  serverAddress: 'serverAddress',
+  connectUrl: 'connectUrl',
+  statusChannelId: 'statusChannelId',
+  statusMessageId: 'statusMessageId',
+  updateIntervalSeconds: 'updateIntervalSeconds',
+  alertChannelId: 'alertChannelId',
+  alertRoleId: 'alertRoleId',
+  restartTimes: 'restartTimes',
+  timeZone: 'timeZone',
+  restartWarningMinutes: 'restartWarningMinutes',
+  lastOnline: 'lastOnline',
+  onlineSince: 'onlineSince',
+  failureStreak: 'failureStreak',
+  lastPolledAt: 'lastPolledAt',
+  sentRestartWarnings: 'sentRestartWarnings',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FivemSettingsScalarFieldEnum = (typeof FivemSettingsScalarFieldEnum)[keyof typeof FivemSettingsScalarFieldEnum]
+
+
+export const FivemStatusSnapshotScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  online: 'online',
+  players: 'players',
+  maxPlayers: 'maxPlayers',
+  at: 'at'
+} as const
+
+export type FivemStatusSnapshotScalarFieldEnum = (typeof FivemStatusSnapshotScalarFieldEnum)[keyof typeof FivemStatusSnapshotScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -862,6 +904,55 @@ export const GiveawayEntryScalarFieldEnum = {
 } as const
 
 export type GiveawayEntryScalarFieldEnum = (typeof GiveawayEntryScalarFieldEnum)[keyof typeof GiveawayEntryScalarFieldEnum]
+
+
+export const KnowledgeSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  autoAnswerEnabled: 'autoAnswerEnabled',
+  autoAnswerChannelIds: 'autoAnswerChannelIds',
+  autoAnswerThreshold: 'autoAnswerThreshold',
+  autoAnswerCooldownSeconds: 'autoAnswerCooldownSeconds',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeSettingsScalarFieldEnum = (typeof KnowledgeSettingsScalarFieldEnum)[keyof typeof KnowledgeSettingsScalarFieldEnum]
+
+
+export const KnowledgeCategoryScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  emoji: 'emoji',
+  order: 'order',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeCategoryScalarFieldEnum = (typeof KnowledgeCategoryScalarFieldEnum)[keyof typeof KnowledgeCategoryScalarFieldEnum]
+
+
+export const KnowledgeArticleScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  categoryId: 'categoryId',
+  title: 'title',
+  slug: 'slug',
+  body: 'body',
+  tags: 'tags',
+  published: 'published',
+  pinned: 'pinned',
+  views: 'views',
+  authorId: 'authorId',
+  authorName: 'authorName',
+  updatedById: 'updatedById',
+  updatedByName: 'updatedByName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type KnowledgeArticleScalarFieldEnum = (typeof KnowledgeArticleScalarFieldEnum)[keyof typeof KnowledgeArticleScalarFieldEnum]
 
 
 export const LevelSettingsScalarFieldEnum = {

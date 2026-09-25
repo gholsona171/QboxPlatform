@@ -75,9 +75,15 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/levels':
         specifier: workspace:*
         version: link:../../modules/levels
@@ -172,7 +178,19 @@ importers:
 
   modules/discord-roles: {}
 
+  modules/fivem:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
   modules/giveaways:
+    dependencies:
+      '@qbox/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
+
+  modules/knowledge-base:
     dependencies:
       '@qbox/shared':
         specifier: workspace:*
@@ -253,9 +271,15 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/levels':
         specifier: workspace:*
         version: link:../../modules/levels
@@ -307,9 +331,15 @@ importers:
       '@qbox/discord-roles':
         specifier: workspace:*
         version: link:../../modules/discord-roles
+      '@qbox/fivem':
+        specifier: workspace:*
+        version: link:../../modules/fivem
       '@qbox/giveaways':
         specifier: workspace:*
         version: link:../../modules/giveaways
+      '@qbox/knowledge-base':
+        specifier: workspace:*
+        version: link:../../modules/knowledge-base
       '@qbox/levels':
         specifier: workspace:*
         version: link:../../modules/levels

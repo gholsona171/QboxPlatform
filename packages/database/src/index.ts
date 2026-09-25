@@ -23,3 +23,5 @@ export * from "./birthdays/PrismaBirthdayRepository.js";
 export * from "./scheduledMessages/PrismaScheduledMessageRepository.js";
 export * from "./levels/PrismaLevelRepository.js";
 export * from "./voiceRooms/PrismaVoiceRepository.js";
+export * from "./knowledge/PrismaKnowledgeRepository.js";
+export * from "./fivem/PrismaFivemRepository.js";

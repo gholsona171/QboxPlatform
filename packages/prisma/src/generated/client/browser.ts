@@ -198,6 +198,16 @@ export type BirthdaySettings = Prisma.BirthdaySettingsModel
  */
 export type Birthday = Prisma.BirthdayModel
 /**
+ * Model FivemSettings
+ *
+ */
+export type FivemSettings = Prisma.FivemSettingsModel
+/**
+ * Model FivemStatusSnapshot
+ *
+ */
+export type FivemStatusSnapshot = Prisma.FivemStatusSnapshotModel
+/**
  * Model GiveawayCounter
  *
  */
@@ -212,6 +222,21 @@ export type Giveaway = Prisma.GiveawayModel
  *
  */
 export type GiveawayEntry = Prisma.GiveawayEntryModel
+/**
+ * Model KnowledgeSettings
+ *
+ */
+export type KnowledgeSettings = Prisma.KnowledgeSettingsModel
+/**
+ * Model KnowledgeCategory
+ *
+ */
+export type KnowledgeCategory = Prisma.KnowledgeCategoryModel
+/**
+ * Model KnowledgeArticle
+ *
+ */
+export type KnowledgeArticle = Prisma.KnowledgeArticleModel
 /**
  * Model LevelSettings
  *

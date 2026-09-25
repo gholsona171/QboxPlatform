@@ -24,6 +24,7 @@ export const env = {
   DATABASE_URL: process.env.DATABASE_URL ?? "",
   REDIS_URL: process.env.REDIS_URL ?? "",
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? "",
+  OPENAI_MODEL: process.env.OPENAI_MODEL || "gpt-4o-mini",
   DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
   DISCORD_MESSAGE_CONTENT_INTENT:
     (process.env.DISCORD_MESSAGE_CONTENT_INTENT ?? "false") === "true",

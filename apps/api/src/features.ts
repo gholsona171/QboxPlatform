@@ -1,6 +1,8 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaGiveawayRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaFivemRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaModerationRepository, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaVerificationRepository, PrismaVoiceRepository, type PrismaPermissionPersistenceClient } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
+import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
+import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
 import { DiscordRestGiveawayGateway, GiveawayService } from "@qbox/giveaways";
@@ -18,6 +20,8 @@ import { directoryApiFeature } from "./directory/DirectoryRoutes.js";
 import type { ApiFeature } from "./features/ApiFeature.js";
 import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
 import { levelsApiFeature } from "./levels/LevelRoutes.js";
+import { fivemApiFeature } from "./fivem/FivemRoutes.js";
+import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
 import { staffApiFeature } from "./staff/StaffRoutes.js";
 import { pollsApiFeature } from "./polls/PollRoutes.js";
@@ -47,5 +51,7 @@ export function apiFeatures({ persistence, discordRest }: ApiFeatureDependencies
     scheduledMessagesApiFeature(new ScheduledMessageService(new PrismaScheduledMessageRepository(persistence.prisma), discordRest ? new DiscordRestScheduledMessageGateway(discordRest) : undefined)),
     levelsApiFeature(new LevelService(new PrismaLevelRepository(persistence.prisma), discordRest ? new DiscordRestLevelGateway(discordRest) : undefined)),
     voiceRoomsApiFeature(new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined)),
+    knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
+    fivemApiFeature(new FivemService(new PrismaFivemRepository(persistence.prisma), new HttpFivemQueryClient(), discordRest ? new DiscordRestFivemGateway(discordRest) : undefined)),
   ];
 }
