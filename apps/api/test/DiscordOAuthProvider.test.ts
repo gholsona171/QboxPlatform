@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   opaqueAuthenticationSecret,
+  providerIssuedSecret,
   discordGuildId,
   type DiscordUserId,
 } from "@qbox/authentication";
@@ -113,6 +114,27 @@ describe("NativeDiscordOAuthProvider", () => {
       "content-type": "application/x-www-form-urlencoded",
     });
     expect(JSON.stringify(requests)).not.toContain(base.clientSecret);
+  });
+
+  it("accepts Discord's real 30-character codes and tokens", async () => {
+    const provider = new NativeDiscordOAuthProvider(
+      DiscordOAuthConfiguration.from(base),
+      async () =>
+        json({
+          access_token: "6qrZcUqja7812RVdnEKjpzOL4CvHBF",
+          refresh_token: "D43f5y0ahjqew82jZ4NViEr2YafMKh",
+          token_type: "Bearer",
+          expires_in: 604800,
+          scope: "identify guilds.members.read",
+        }),
+    );
+    const tokens = await provider.exchangeCode({
+      authorizationCode: providerIssuedSecret("NhhvTDYsFcdgNLnnLijcl7Ku7bEEeh"),
+      redirectUri: new URL(base.redirectUri),
+      signal: new AbortController().signal,
+    });
+    expect(tokens.accessToken).toHaveLength(30);
+    expect(tokens.refreshToken).toHaveLength(30);
   });
 
   it("rejects redirects, malformed responses, and scope mismatches", async () => {

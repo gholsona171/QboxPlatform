@@ -12,6 +12,7 @@ import {
   discordUserId,
   externalIdentityId,
   opaqueAuthenticationSecret,
+  providerIssuedSecret,
   platformUserId,
 } from "../src/index.js";
 
@@ -44,6 +45,12 @@ describe("authentication identifiers", () => {
     expect(() => authenticationDigest("A".repeat(64))).toThrow(/lowercase/);
     expect(opaqueAuthenticationSecret("x".repeat(32))).toHaveLength(32);
     expect(() => opaqueAuthenticationSecret("short")).toThrow(/bounded/);
+    const discordCode = "6qrZcUqja7812RVdnEKjpzOL4CvHBF";
+    expect(discordCode).toHaveLength(30);
+    expect(() => opaqueAuthenticationSecret(discordCode)).toThrow(/bounded/);
+    expect(providerIssuedSecret(discordCode)).toBe(discordCode);
+    expect(() => providerIssuedSecret("short")).toThrow(/bounded/);
+    expect(() => providerIssuedSecret("x".repeat(20) + "\n")).toThrow(/bounded/);
   });
 });
 

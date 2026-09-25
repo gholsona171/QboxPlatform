@@ -5,7 +5,7 @@ import { z } from "zod";
 import {
   discordRoleId,
   discordUserId,
-  opaqueAuthenticationSecret,
+  providerIssuedSecret,
   type DiscordGuildMembershipVerification,
   type DiscordGuildMembershipVerificationRequest,
   type DiscordGuildMembershipVerifier,
@@ -292,8 +292,8 @@ export class NativeDiscordOAuthProvider
     const scopes = normalizeScopes(parsed.data.scope.split(/\s+/));
     assertExactScopes(scopes, this.configuration.scopes);
     return Object.freeze({
-      accessToken: opaqueAuthenticationSecret(parsed.data.access_token),
-      refreshToken: opaqueAuthenticationSecret(parsed.data.refresh_token),
+      accessToken: providerIssuedSecret(parsed.data.access_token),
+      refreshToken: providerIssuedSecret(parsed.data.refresh_token),
       scopes,
       expiresAt: new Date(Date.now() + parsed.data.expires_in * 1_000),
     });

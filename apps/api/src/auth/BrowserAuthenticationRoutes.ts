@@ -19,6 +19,7 @@ import {
   type ExternalIdentity,
   type OpaqueAuthenticationSecret,
   opaqueAuthenticationSecret,
+  providerIssuedSecret,
 } from "@qbox/authentication";
 import type { GuildRepository } from "@qbox/permissions";
 import type {
@@ -116,7 +117,7 @@ export async function registerBrowserAuthenticationRoutes(
         context,
       );
       const token = await dependencies.provider.exchangeCode({
-        authorizationCode: opaqueAuthenticationSecret(query.code),
+        authorizationCode: providerIssuedSecret(query.code),
         redirectUri: new URL(diagnostics.callbackUrl),
         signal: request.apiContext.signal,
       });

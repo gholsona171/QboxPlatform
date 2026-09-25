@@ -17,6 +17,7 @@ import {
   oauthCredentialId,
   oauthTransactionId,
   opaqueAuthenticationSecret,
+  providerIssuedSecret,
   platformUserId,
   type AuthenticationCrypto,
   type AuthenticationIdGenerator,
@@ -274,7 +275,7 @@ export class NodeAuthenticationCrypto implements AuthenticationCrypto {
         decipher.update(encrypted.ciphertext),
         decipher.final(),
       ]);
-      return opaqueAuthenticationSecret(plaintext.toString("utf8"));
+      return providerIssuedSecret(plaintext.toString("utf8"));
     } catch {
       throw cryptographyFailure();
     } finally {

@@ -149,6 +149,20 @@ export function opaqueAuthenticationSecret(
   return value as OpaqueAuthenticationSecret;
 }
 
+/**
+ * Brands a secret issued by an OAuth provider (authorization codes, access and
+ * refresh tokens). Discord issues these at about 30 characters, shorter than
+ * the 32-character floor for secrets Qbox generates itself.
+ */
+export function providerIssuedSecret(value: string): OpaqueAuthenticationSecret {
+  if (value.length < 16 || value.length > 4096 || /[\u0000-\u001f\u007f]/.test(value))
+    throw new AuthenticationDomainError(
+      "invalid-identifier",
+      "Provider-issued secrets must have a safe bounded representation.",
+    );
+  return value as OpaqueAuthenticationSecret;
+}
+
 function canonicalUuid(value: string, label: string): string {
   if (!UUID_PATTERN.test(value))
     throw new AuthenticationDomainError(
