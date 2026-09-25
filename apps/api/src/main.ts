@@ -100,7 +100,7 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
   } catch (error) {
     removeSignals();
     logger.error(
-      { errorName: error instanceof Error ? error.name : "unknown" },
+      { err: error, errorName: error instanceof Error ? error.name : "unknown" },
       `${BRAND.name} API startup failed.`,
     );
     throw error;
