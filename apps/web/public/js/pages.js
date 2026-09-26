@@ -9,6 +9,7 @@ import { renderGamesPage } from "./games.js";
 import { renderKnowledgePage } from "./knowledge.js";
 import { renderMessagesPage } from "./messages.js";
 import { renderModerationPage } from "./moderation.js";
+import { renderMusicPage } from "./music.js";
 import { renderStaffPage } from "./staff.js";
 import { renderStreamsPage } from "./streams.js";
 import { renderPollsPage } from "./polls.js";
@@ -39,6 +40,7 @@ export const pages = [
   { id: "birthdays", group: "Community", label: "Birthdays", description: "Birthday messages, roles, and the member calendar.", icon: icon('<path d="M4 21h16"/><path d="M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c1.5 1 3 1 4.5 0s3-1 4.5 0 3 1 5 0"/><path d="M12 12V8"/><path d="M12 5.5c.8-.8.8-1.7 0-2.5-.8.8-.8 1.7 0 2.5Z"/>'), render: renderBirthdaysPage },
   { id: "voice", group: "Community", label: "Voice Rooms", description: "Join-to-create voice channels members control.", icon: icon('<path d="M4 10v4"/><path d="M8 7v10"/><path d="M12 4v16"/><path d="M16 7v10"/><path d="M20 10v4"/>'), render: renderVoicePage },
   { id: "streams", group: "Community", label: "Streams", description: "Announce when your creators go live.", icon: icon('<rect x="3" y="5" width="18" height="12" rx="2"/><path d="m10 9 5 3-5 3Z"/><path d="M8 21h8"/>'), render: renderStreamsPage },
+  { id: "music", group: "Community", label: "Music", description: "Play music and radio in voice channels.", icon: icon('<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'), render: renderMusicPage },
   { id: "scheduled", group: "Community", label: "Scheduled", description: "Messages that post on a schedule.", icon: icon('<circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/>'), render: renderScheduledPage },
   { id: "builder", group: "Server", label: "Server Builder", description: `Plan your channels and roles, then let ${BRAND.name} build them.`, icon: icon('<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/>'), render: renderBuilderPage },
   { id: "fivem", group: "Server", label: "FiveM Server", description: "Live server status, players, alerts, and restarts.", icon: icon('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'), render: renderFivemPage },

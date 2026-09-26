@@ -29,6 +29,7 @@
     "@qbox/messages": "workspace:*",
     "@qbox/logger": "workspace:*",
     "@qbox/moderation": "workspace:*",
+    "@qbox/music": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/polls": "workspace:*",
     "@qbox/role-menus": "workspace:*",

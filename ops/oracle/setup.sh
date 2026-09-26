@@ -18,7 +18,7 @@ ask_secret() { local prompt="$1" var; read -r -s -p "$prompt (hidden): " var; ec
 
 say "Installing system packages"
 sudo apt-get update -y
-sudo apt-get install -y ca-certificates curl git jq
+sudo apt-get install -y ca-certificates curl git jq ffmpeg
 
 if [ "$(free -m | awk '/^Mem:/ {print $2}')" -lt 2000 ] && [ ! -f /swapfile ]; then
   say "Adding 2 GB swap (small server)"

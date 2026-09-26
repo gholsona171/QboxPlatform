@@ -7,7 +7,7 @@ export const PERMISSION_CATALOG_VERSION = "1.0.0" as const;
 
 /** SHA-256 checksum of the ordered authoritative permission identifiers. */
 export const PERMISSION_CATALOG_CHECKSUM =
-  "sha256:f3d6778221e0c1c6691c0ebbdc9e52e82453adfd1d5d6b53d4a465a97d86037d" as const;
+  "sha256:df0efd01bfbe33d3d650ce41641141afa943c1f675e0d3cdff48be4ccfbf048a" as const;
 
 /**
  * Exact permission identifiers compiled into this application.
@@ -36,6 +36,8 @@ export const PERMISSIONS = [
   "fivem.manage",
   "streams.manage",
   "games.manage",
+  "music.manage",
+  "music.dj",
   "discord.roles.manage",
   "discord.roles.administrator",
   "discord.role-menus.manage",

@@ -1,4 +1,4 @@
-import { PermissionFlagsBits, type ChatInputCommandInteraction } from "discord.js";
+import { PermissionFlagsBits, type ChatInputCommandInteraction, type MessageComponentInteraction } from "discord.js";
 import type { Permission, PermissionAuthorizer } from "@qbox/permissions";
 
 import { discordPermissionIdentity } from "../permissions/DiscordPermissionIdentity.js";
@@ -6,11 +6,11 @@ import { discordPermissionIdentity } from "../permissions/DiscordPermissionIdent
 /**
  * True when the member holds `permission` through Qbox permissions, or is a
  * Discord administrator. Used by feature commands whose subcommands need
- * different permissions.
+ * different permissions, and by component handlers (buttons, menus).
  */
 export async function memberHasPermission(
   authorizer: PermissionAuthorizer,
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction | MessageComponentInteraction,
   permission: Permission,
 ): Promise<boolean> {
   if (interaction.memberPermissions?.has(PermissionFlagsBits.Administrator)) return true;

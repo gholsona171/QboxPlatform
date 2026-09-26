@@ -1,0 +1,117 @@
+// Music in voice channels (see docs/Music.md). guildId is the Discord guild snowflake.
+
+enum MusicLoopMode {
+  OFF   @map("off")
+  TRACK @map("track")
+  QUEUE @map("queue")
+}
+
+enum MusicPlayerState {
+  IDLE      @map("idle")
+  PLAYING   @map("playing")
+  PAUSED    @map("paused")
+  BUFFERING @map("buffering")
+}
+
+model MusicSettings {
+  guildId            String   @id @map("guild_id")
+  enabled            Boolean  @default(false)
+  djRoleIds          String[] @default([]) @map("dj_role_ids")
+  defaultVolume      Int      @default(60) @map("default_volume")
+  maxQueue           Int      @default(100) @map("max_queue")
+  announceChannelId  String?  @map("announce_channel_id")
+  nowPlayingPanel    Boolean  @default(true) @map("now_playing_panel")
+  stayConnected247   Boolean  @default(false) @map("stay_connected_247")
+  homeChannelId      String?  @map("home_channel_id")
+  autoLeaveMinutes   Int      @default(5) @map("auto_leave_minutes")
+  idleRadioStationId String?  @map("idle_radio_station_id") @db.Uuid
+  revision           Int      @default(1)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([stayConnected247, enabled], map: "music_settings_stay_connected_idx")
+  @@map("music_settings")
+}
+
+/// An audio file a manager uploaded. Files live on disk under MUSIC_STORAGE_DIR/<guildId>/<fileName>.
+model MusicTrack {
+  id              String               @id @db.Uuid
+  guildId         String               @map("guild_id")
+  title           String
+  artist          String?
+  album           String?
+  trackNumber     Int?                 @map("track_number")
+  durationSeconds Int?                 @map("duration_seconds")
+  fileName        String               @map("file_name")
+  coverFileName   String?              @map("cover_file_name")
+  contentType     String               @map("content_type")
+  sizeBytes       Int                  @map("size_bytes")
+  sha256          String
+  originalName    String               @map("original_name")
+  uploadedBy      String?              @map("uploaded_by")
+  createdAt       DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  playlists       MusicPlaylistTrack[]
+
+  @@unique([guildId, sha256], map: "music_tracks_guild_hash_key")
+  @@index([guildId, createdAt], map: "music_tracks_guild_created_idx")
+  @@map("music_tracks")
+}
+
+model MusicPlaylist {
+  id          String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId     String               @map("guild_id")
+  name        String
+  description String?
+  createdAt   DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tracks      MusicPlaylistTrack[]
+
+  @@index([guildId, name], map: "music_playlists_guild_name_idx")
+  @@map("music_playlists")
+}
+
+model MusicPlaylistTrack {
+  playlistId String        @map("playlist_id") @db.Uuid
+  position   Int
+  trackId    String        @map("track_id") @db.Uuid
+  playlist   MusicPlaylist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  track      MusicTrack    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@id([playlistId, position])
+  @@index([trackId], map: "music_playlist_tracks_track_idx")
+  @@map("music_playlist_tracks")
+}
+
+model MusicStation {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId    String   @map("guild_id")
+  name       String
+  url        String
+  faviconUrl String?  @map("favicon_url")
+  tags       String[] @default([])
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@unique([guildId, url], map: "music_stations_guild_url_key")
+  @@map("music_stations")
+}
+
+/// Player state per server, saved on every change so playback survives bot restarts.
+model MusicSession {
+  guildId         String           @id @map("guild_id")
+  channelId       String?          @map("channel_id")
+  textChannelId   String?          @map("text_channel_id")
+  panelChannelId  String?          @map("panel_channel_id")
+  panelMessageId  String?          @map("panel_message_id")
+  queue           Json             @default("[]")
+  index           Int              @default(0)
+  positionSeconds Int              @default(0) @map("position_seconds")
+  state           MusicPlayerState @default(IDLE)
+  loop            MusicLoopMode    @default(OFF)
+  shuffle         Boolean          @default(false)
+  volume          Int              @default(60)
+  updatedAt       DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([state], map: "music_sessions_state_idx")
+  @@map("music_sessions")
+}

@@ -46,6 +46,7 @@ const commandNames = [
   "ask",
   "fivem",
   "streams",
+  "music",
   "server",
   "builder",
 ];

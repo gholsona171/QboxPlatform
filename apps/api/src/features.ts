@@ -1,11 +1,12 @@
 import { ApplicationService, DiscordRestApplicationGateway } from "@qbox/applications";
-import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
+import { PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, PrismaMusicRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
 import { DiscordRestLevelGateway, LevelService } from "@qbox/levels";
 import { DiscordRestFivemGateway, FivemService, HttpFivemQueryClient } from "@qbox/fivem";
 import { DiscordRestGamesGateway, GamesService, ProtocolQueryClient } from "@qbox/game-servers";
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestMessagesGateway, MessageTemplateService } from "@qbox/messages";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
+import { FfmpegMusicProbe, HttpLinkResolver, HttpMusicControlClient, JamendoApiCatalog, LocalMusicStorage, MusicService, RadioBrowserDirectory, botIdFromToken, findMediaTools, voiceBotInviteUrl } from "@qbox/music";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
 import { DiscordRestStreamsGateway, StreamsService, createStreamPlatformClients } from "@qbox/streams";
 import { env } from "@qbox/shared";
@@ -33,6 +34,7 @@ import { fivemApiFeature } from "./fivem/FivemRoutes.js";
 import { gamesApiFeature } from "./games/GamesRoutes.js";
 import { knowledgeApiFeature } from "./knowledge/KnowledgeRoutes.js";
 import { moderationApiFeature } from "./moderation/ModerationRoutes.js";
+import { musicApiFeature, type MusicHostInfo } from "./music/MusicRoutes.js";
 import { staffApiFeature } from "./staff/StaffRoutes.js";
 import { streamsApiFeature } from "./streams/StreamsRoutes.js";
 import { pollsApiFeature } from "./polls/PollRoutes.js";
@@ -80,6 +82,7 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
     knowledgeApiFeature(new KnowledgeService(new PrismaKnowledgeRepository(persistence.prisma), discordRest ? new DiscordRestKnowledgeGateway(discordRest) : undefined)),
     fivemApiFeature(fivem),
     messagesApiFeature(templates),
+    musicApiFeature(musicService(persistence), new HttpMusicControlClient(env.DISCORD_TOKEN, `http://127.0.0.1:${Number(env.MUSIC_CONTROL_PORT)}`), musicHost(discordRest)),
     streamsApiFeature(new StreamsService(new PrismaStreamsRepository(persistence.prisma), createStreamPlatformClients(streamCredentials()), discordRest ? new DiscordRestStreamsGateway(discordRest) : undefined, { templates })),
     gamesApiFeature(new GamesService(new PrismaGamesRepository(persistence.prisma), new ProtocolQueryClient(), discordRest ? new DiscordRestGamesGateway(discordRest) : undefined, templates)),
     builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks, {
@@ -96,5 +99,35 @@ function streamCredentials() {
     kickClientId: env.KICK_CLIENT_ID,
     kickClientSecret: env.KICK_CLIENT_SECRET,
     youtubeApiKey: env.YOUTUBE_API_KEY,
+  };
+}
+
+/** Music library, playlists and stations; files go to MUSIC_STORAGE_DIR, which the bot reads. */
+function musicService(persistence: PrismaPermissionPersistenceClient): MusicService {
+  const probe = new FfmpegMusicProbe(findMediaTools(env.FFMPEG_PATH || undefined));
+  return new MusicService(new PrismaMusicRepository(persistence.prisma), {
+    storage: new LocalMusicStorage(env.MUSIC_STORAGE_DIR),
+    probe,
+    links: new HttpLinkResolver(fetch, probe),
+    radio: new RadioBrowserDirectory(),
+    jamendo: new JamendoApiCatalog(env.JAMENDO_CLIENT_ID),
+    quotaBytes: Number(env.MUSIC_GUILD_QUOTA_MB) * 1024 * 1024,
+  });
+}
+
+/** Whether ffmpeg is installed, and the optional second music bot (MUSIC_BOT_TOKEN): its invite link and whether it joined the server. */
+function musicHost(discordRest: REST | undefined): MusicHostInfo {
+  const ffmpeg = findMediaTools(env.FFMPEG_PATH || undefined).ffmpeg !== undefined;
+  if (!env.MUSIC_BOT_TOKEN) return { ffmpeg };
+  const botId = botIdFromToken(env.MUSIC_BOT_TOKEN);
+  return {
+    ffmpeg,
+    secondBot: {
+      inviteUrl: botId ? voiceBotInviteUrl(botId) : undefined,
+      inGuild: async (guildId) => {
+        if (!botId || !discordRest) return false;
+        return discordRest.get(`/guilds/${guildId}/members/${botId}`).then(() => true, () => false);
+      },
+    },
   };
 }

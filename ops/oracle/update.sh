@@ -22,6 +22,7 @@ if [ "$(git rev-parse HEAD)" = "$(git rev-parse "$TARGET")" ]; then
 fi
 
 echo "Updating to $(git rev-parse --short "$TARGET")"
+command -v ffmpeg >/dev/null 2>&1 || echo "Warning: ffmpeg is not installed, so Music cannot play. Run: sudo apt-get install -y ffmpeg"
 git reset --hard --quiet "$TARGET"
 pnpm install --frozen-lockfile
 if [ "$PREBUILT" = 0 ]; then

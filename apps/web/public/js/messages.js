@@ -5,7 +5,7 @@ import { badge, confirmAction, escapeHtml, notify } from "./ui.js";
 import { BRAND } from "./brand.js";
 
 const TABS = [["look", "Look"], ["messages", "Messages"]];
-const FEATURE_LABELS = { tickets: "Tickets", moderation: "Moderation", levels: "Levels", giveaways: "Giveaways", community: "Welcome and goodbye", verification: "Verification", birthdays: "Birthdays", streams: "Streams", games: "Game servers" };
+const FEATURE_LABELS = { tickets: "Tickets", moderation: "Moderation", levels: "Levels", giveaways: "Giveaways", community: "Welcome and goodbye", verification: "Verification", birthdays: "Birthdays", streams: "Streams", games: "Game servers", music: "Music" };
 const MAX_FIELDS = 25;
 const SAMPLE_EMBED = {
   title: "Ticket #12 · General support",

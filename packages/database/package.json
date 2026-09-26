@@ -18,6 +18,7 @@
     "@qbox/levels": "workspace:*",
     "@qbox/messages": "workspace:*",
     "@qbox/moderation": "workspace:*",
+    "@qbox/music": "workspace:*",
     "@qbox/permissions": "workspace:*",
     "@qbox/polls": "workspace:*",
     "@qbox/prisma": "workspace:*",

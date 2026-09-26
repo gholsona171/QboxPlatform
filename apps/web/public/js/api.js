@@ -81,6 +81,38 @@ export function sendJson(path, method, body) {
   return mutateJson(`/api/v1/${path}`, method, body);
 }
 
+/**
+ * Uploads one file as a raw body under /api/v1 with the CSRF header.
+ * `onProgress` gets 0-1 while the file is sent. Resolves with the JSON answer.
+ */
+export function uploadFile(path, file, contentType, onProgress) {
+  if (staticHosting()) return Promise.reject(Object.assign(new Error("Live services are available on the live platform."), { code: "DEPENDENCY_UNAVAILABLE" }));
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("POST", appPath(`/api/v1/${path}`));
+    request.withCredentials = true;
+    request.setRequestHeader("content-type", contentType);
+    request.setRequestHeader("x-file-name", encodeURIComponent(file.name));
+    const csrf = cookieValue(csrfCookieName);
+    if (csrf) request.setRequestHeader("x-csrf-token", csrf);
+    request.upload.addEventListener("progress", (event) => { if (event.lengthComputable) onProgress?.(event.loaded / event.total); });
+    request.addEventListener("load", () => {
+      let body = {};
+      try {
+        body = JSON.parse(request.responseText || "{}");
+      } catch {
+        // Proxy pages are not JSON.
+      }
+      if (request.status >= 200 && request.status < 300) return resolve(body);
+      const detail = Array.isArray(body.errors) ? body.errors.find((item) => typeof item?.message === "string")?.message : undefined;
+      const message = request.status === 413 ? "That file is larger than 50 MB." : detail || userMessage(body.code, body.detail || request.statusText);
+      reject(Object.assign(new Error(message), { code: body.code || "REQUEST_FAILED", status: request.status }));
+    });
+    request.addEventListener("error", () => reject(Object.assign(new Error("The upload failed. Check your connection."), { code: "REQUEST_FAILED" })));
+    request.send(file);
+  });
+}
+
 export function listTickets(filters = {}) {
   const query = new URLSearchParams(Object.entries(filters).filter(([, value]) => value !== undefined && value !== ""));
   return requestJson(`/api/v1/tickets${query.size ? `?${query}` : ""}`);

@@ -1,6 +1,7 @@
 ﻿import { config } from "dotenv";
 import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
+import { homedir } from "node:os";
 
 const filename = fileURLToPath(import.meta.url);
 const currentDirectory = dirname(filename);
@@ -30,6 +31,12 @@ export const env = {
   KICK_CLIENT_ID: process.env.KICK_CLIENT_ID ?? "",
   KICK_CLIENT_SECRET: process.env.KICK_CLIENT_SECRET ?? "",
   YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY ?? "",
+  MUSIC_BOT_TOKEN: process.env.MUSIC_BOT_TOKEN ?? "",
+  MUSIC_CONTROL_PORT: process.env.MUSIC_CONTROL_PORT || "3102",
+  MUSIC_STORAGE_DIR: process.env.MUSIC_STORAGE_DIR || join(homedir(), "qbox-music"),
+  MUSIC_GUILD_QUOTA_MB: process.env.MUSIC_GUILD_QUOTA_MB || "2048",
+  FFMPEG_PATH: process.env.FFMPEG_PATH ?? "",
+  JAMENDO_CLIENT_ID: process.env.JAMENDO_CLIENT_ID ?? "",
   DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
   DISCORD_MESSAGE_CONTENT_INTENT:
     (process.env.DISCORD_MESSAGE_CONTENT_INTENT ?? "false") === "true",

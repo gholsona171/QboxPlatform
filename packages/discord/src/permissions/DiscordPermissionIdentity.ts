@@ -1,4 +1,4 @@
-import type { ChatInputCommandInteraction } from "discord.js";
+import type { ChatInputCommandInteraction, MessageComponentInteraction } from "discord.js";
 
 import type { PermissionPrincipal, PermissionScope } from "@qbox/permissions";
 
@@ -17,7 +17,7 @@ export type DiscordPermissionIdentity =
  * Both cached GuildMember role collections and API member role arrays are supported.
  */
 export function discordPermissionIdentity(
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction | MessageComponentInteraction,
 ): DiscordPermissionIdentity {
   const userId = interaction.user.id?.trim();
   if (!userId) throw new Error("Discord interaction user identity is missing.");

@@ -1,5 +1,5 @@
-import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
-import { applicationsFeature, birthdaysFeature, builderFeature, type DiscordFeatureFactory, fivemFeature, gamesFeature, giveawaysFeature, guildOnboardingFeature, knowledgeFeature, levelsFeature, messagesFeature, moderationFeature, pollsFeature, scheduledMessagesFeature, staffFeature, streamsFeature, ticketsFeature, verificationFeature, voiceRoomsFeature } from "@qbox/discord";
+import { PermissionBootstrapService, PrismaApplicationRepository, PrismaBirthdayRepository, PrismaBuilderRepository, PrismaFivemRepository, PrismaGamesRepository, PrismaGiveawayRepository, PrismaKnowledgeRepository, PrismaLevelRepository, PrismaMessagesRepository, PrismaModerationRepository, PrismaMusicRepository, type PrismaPermissionPersistenceClient, PrismaPollRepository, PrismaScheduledMessageRepository, PrismaStaffRepository, PrismaStreamsRepository, PrismaVerificationRepository, PrismaVoiceRepository } from "@qbox/database";
+import { applicationsFeature, birthdaysFeature, builderFeature, type DiscordFeatureFactory, fivemFeature, gamesFeature, giveawaysFeature, guildOnboardingFeature, knowledgeFeature, levelsFeature, messagesFeature, moderationFeature, musicFeature, pollsFeature, scheduledMessagesFeature, staffFeature, streamsFeature, ticketsFeature, verificationFeature, voiceRoomsFeature } from "@qbox/discord";
 import { MessageTemplateService } from "@qbox/messages";
 import type { PersistentPermissionService } from "@qbox/permissions";
 import { env } from "@qbox/shared";
@@ -39,6 +39,16 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
     knowledgeFeature(new PrismaKnowledgeRepository(persistence.prisma), { openAiApiKey: env.OPENAI_API_KEY, openAiModel: env.OPENAI_MODEL }),
     fivemFeature(new PrismaFivemRepository(persistence.prisma)),
     streamsFeature(new PrismaStreamsRepository(persistence.prisma), { credentials: streamCredentials(), templates }),
+    musicFeature(new PrismaMusicRepository(persistence.prisma), {
+      discordToken: env.DISCORD_TOKEN,
+      musicBotToken: env.MUSIC_BOT_TOKEN || undefined,
+      controlPort: Number(env.MUSIC_CONTROL_PORT),
+      storageDir: env.MUSIC_STORAGE_DIR,
+      quotaBytes: Number(env.MUSIC_GUILD_QUOTA_MB) * 1024 * 1024,
+      ffmpegPath: env.FFMPEG_PATH || undefined,
+      jamendoClientId: env.JAMENDO_CLIENT_ID,
+      templates,
+    }),
     gamesFeature(new PrismaGamesRepository(persistence.prisma), templates),
     builderFeature(new PrismaBuilderRepository(persistence.prisma)),
   ];

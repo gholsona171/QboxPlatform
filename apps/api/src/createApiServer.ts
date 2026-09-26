@@ -37,6 +37,21 @@ import {
   type ApiRateLimitEvaluator,
 } from "./security/ApiTransportPolicies.js";
 
+/**
+ * Route config for a route that takes a raw file body instead of JSON: the
+ * content types it accepts and its own body size limit.
+ */
+export interface ApiUploadRoute {
+  readonly contentType: RegExp;
+  readonly bodyLimit: number;
+}
+
+declare module "fastify" {
+  interface FastifyContextConfig {
+    readonly upload?: ApiUploadRoute;
+  }
+}
+
 /** Injected dependencies for an unbound API transport instance. */
 export interface ApiServerDependencies {
   readonly configuration: ApiConfiguration;
@@ -137,7 +152,7 @@ export function createApiServer(
     );
 
     validateHeaders(request, diagnostics, trustedProxies, context.logger);
-    if (requestBytes !== undefined && requestBytes > diagnostics.bodySizeLimitBytes)
+    if (requestBytes !== undefined && requestBytes > (uploadRoute(request)?.bodyLimit ?? diagnostics.bodySizeLimitBytes))
       throw new PayloadTooLargeApiError();
     validateBodylessMethod(request);
     const rateLimitDecision = await rateLimit.evaluate({
@@ -405,12 +420,18 @@ function validateBodylessMethod(request: FastifyRequest): void {
     throw new ValidationApiError([{ path: "body", code: "BODY_NOT_ALLOWED" }]);
 }
 
+function uploadRoute(request: FastifyRequest): ApiUploadRoute | undefined {
+  return request.routeOptions.config?.upload;
+}
+
 function validateContentType(request: FastifyRequest): void {
   if (!["POST", "PUT", "PATCH"].includes(request.method)) return;
   const pathname = request.raw.url?.split("?", 1)[0] ?? "";
   if (!pathname.startsWith("/api/")) return;
   const contentType = singleHeader(request.headers["content-type"]);
-  if (contentType === undefined || !/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(contentType))
+  const upload = uploadRoute(request);
+  const accepted = upload ? upload.contentType.test(contentType ?? "") : /^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(contentType ?? "");
+  if (contentType === undefined || !accepted)
     throw new UnsupportedMediaTypeApiError();
   const length = parseContentLength(request.headers["content-length"]);
   if ((length ?? 0) === 0 && request.headers["transfer-encoding"] === undefined)
