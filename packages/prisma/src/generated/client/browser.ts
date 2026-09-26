@@ -223,6 +223,21 @@ export type FivemSettings = Prisma.FivemSettingsModel
  */
 export type FivemStatusSnapshot = Prisma.FivemStatusSnapshotModel
 /**
+ * Model GamesSettings
+ *
+ */
+export type GamesSettings = Prisma.GamesSettingsModel
+/**
+ * Model GamesServer
+ *
+ */
+export type GamesServer = Prisma.GamesServerModel
+/**
+ * Model GamesStatusSnapshot
+ *
+ */
+export type GamesStatusSnapshot = Prisma.GamesStatusSnapshotModel
+/**
  * Model GiveawayCounter
  *
  */
@@ -282,6 +297,36 @@ export type ModerationSettings = Prisma.ModerationSettingsModel
  *
  */
 export type ModerationCase = Prisma.ModerationCaseModel
+/**
+ * Model MusicSettings
+ *
+ */
+export type MusicSettings = Prisma.MusicSettingsModel
+/**
+ * Model MusicTrack
+ * An audio file a manager uploaded. Files live on disk under MUSIC_STORAGE_DIR/<guildId>/<fileName>.
+ */
+export type MusicTrack = Prisma.MusicTrackModel
+/**
+ * Model MusicPlaylist
+ *
+ */
+export type MusicPlaylist = Prisma.MusicPlaylistModel
+/**
+ * Model MusicPlaylistTrack
+ *
+ */
+export type MusicPlaylistTrack = Prisma.MusicPlaylistTrackModel
+/**
+ * Model MusicStation
+ *
+ */
+export type MusicStation = Prisma.MusicStationModel
+/**
+ * Model MusicSession
+ * Player state per server, saved on every change so playback survives bot restarts.
+ */
+export type MusicSession = Prisma.MusicSessionModel
 /**
  * Model PollCounter
  *

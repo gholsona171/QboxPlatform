@@ -1153,6 +1153,23 @@ export type EnumBuilderItemStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumBuilderItemStatusFilter<$PrismaModel>
 }
 
+export type EnumGamesServerKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.GamesServerKind | Prisma.EnumGamesServerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel> | $Enums.GamesServerKind
+}
+
+export type EnumGamesServerKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GamesServerKind | Prisma.EnumGamesServerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGamesServerKindWithAggregatesFilter<$PrismaModel> | $Enums.GamesServerKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel>
+}
+
 export type EnumGiveawayStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
   in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
@@ -1280,6 +1297,40 @@ export type EnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = never> =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type EnumMusicPlayerStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicPlayerState | Prisma.EnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel> | $Enums.MusicPlayerState
+}
+
+export type EnumMusicLoopModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicLoopMode | Prisma.EnumMusicLoopModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel> | $Enums.MusicLoopMode
+}
+
+export type EnumMusicPlayerStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicPlayerState | Prisma.EnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicPlayerStateWithAggregatesFilter<$PrismaModel> | $Enums.MusicPlayerState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel>
+}
+
+export type EnumMusicLoopModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicLoopMode | Prisma.EnumMusicLoopModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicLoopModeWithAggregatesFilter<$PrismaModel> | $Enums.MusicLoopMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel>
 }
 
 export type EnumPollResultsVisibilityFilter<$PrismaModel = never> = {
@@ -2682,6 +2733,23 @@ export type NestedEnumBuilderItemStatusWithAggregatesFilter<$PrismaModel = never
   _max?: Prisma.NestedEnumBuilderItemStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumGamesServerKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.GamesServerKind | Prisma.EnumGamesServerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel> | $Enums.GamesServerKind
+}
+
+export type NestedEnumGamesServerKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.GamesServerKind | Prisma.EnumGamesServerKindFieldRefInput<$PrismaModel>
+  in?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.GamesServerKind[] | Prisma.ListEnumGamesServerKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumGamesServerKindWithAggregatesFilter<$PrismaModel> | $Enums.GamesServerKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumGamesServerKindFilter<$PrismaModel>
+}
+
 export type NestedEnumGiveawayStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.GiveawayStatus | Prisma.EnumGiveawayStatusFieldRefInput<$PrismaModel>
   in?: $Enums.GiveawayStatus[] | Prisma.ListEnumGiveawayStatusFieldRefInput<$PrismaModel>
@@ -2798,6 +2866,40 @@ export type NestedEnumModerationCaseSourceWithAggregatesFilter<$PrismaModel = ne
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
   _max?: Prisma.NestedEnumModerationCaseSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumMusicPlayerStateFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicPlayerState | Prisma.EnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel> | $Enums.MusicPlayerState
+}
+
+export type NestedEnumMusicLoopModeFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicLoopMode | Prisma.EnumMusicLoopModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel> | $Enums.MusicLoopMode
+}
+
+export type NestedEnumMusicPlayerStateWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicPlayerState | Prisma.EnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicPlayerState[] | Prisma.ListEnumMusicPlayerStateFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicPlayerStateWithAggregatesFilter<$PrismaModel> | $Enums.MusicPlayerState
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMusicPlayerStateFilter<$PrismaModel>
+}
+
+export type NestedEnumMusicLoopModeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.MusicLoopMode | Prisma.EnumMusicLoopModeFieldRefInput<$PrismaModel>
+  in?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.MusicLoopMode[] | Prisma.ListEnumMusicLoopModeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMusicLoopModeWithAggregatesFilter<$PrismaModel> | $Enums.MusicLoopMode
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMusicLoopModeFilter<$PrismaModel>
 }
 
 export type NestedEnumPollResultsVisibilityFilter<$PrismaModel = never> = {

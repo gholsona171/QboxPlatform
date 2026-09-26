@@ -135,7 +135,9 @@ model Ticket {
   guildId             String         @map("guild_id") @db.Uuid
   number              Int
   categoryId          String?        @map("category_id") @db.Uuid
-  /** Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason. */
+  /**
+   * Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason.
+   */
   categoryNumber      Int?           @map("category_number")
   openerId            String         @map("opener_id")
   openerName          String         @map("opener_name")

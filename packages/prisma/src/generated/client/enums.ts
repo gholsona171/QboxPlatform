@@ -434,6 +434,15 @@ export const BuilderItemStatus = {
 export type BuilderItemStatus = (typeof BuilderItemStatus)[keyof typeof BuilderItemStatus]
 
 
+export const GamesServerKind = {
+  MINECRAFT_JAVA: 'MINECRAFT_JAVA',
+  MINECRAFT_BEDROCK: 'MINECRAFT_BEDROCK',
+  STEAM: 'STEAM'
+} as const
+
+export type GamesServerKind = (typeof GamesServerKind)[keyof typeof GamesServerKind]
+
+
 export const GiveawayStatus = {
   RUNNING: 'RUNNING',
   PAUSED: 'PAUSED',
@@ -492,6 +501,25 @@ export const ModerationCaseSource = {
 } as const
 
 export type ModerationCaseSource = (typeof ModerationCaseSource)[keyof typeof ModerationCaseSource]
+
+
+export const MusicLoopMode = {
+  OFF: 'OFF',
+  TRACK: 'TRACK',
+  QUEUE: 'QUEUE'
+} as const
+
+export type MusicLoopMode = (typeof MusicLoopMode)[keyof typeof MusicLoopMode]
+
+
+export const MusicPlayerState = {
+  IDLE: 'IDLE',
+  PLAYING: 'PLAYING',
+  PAUSED: 'PAUSED',
+  BUFFERING: 'BUFFERING'
+} as const
+
+export type MusicPlayerState = (typeof MusicPlayerState)[keyof typeof MusicPlayerState]
 
 
 export const PollStatus = {

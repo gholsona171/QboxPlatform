@@ -1882,7 +1882,8 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     number: number
     categoryId: string | null
     /**
-     * * Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason.
+     * *
+     *    * Position of this ticket within its reason (1, 2, 3 ...). Empty for tickets opened without a reason.
      */
     categoryNumber: number | null
     openerId: string

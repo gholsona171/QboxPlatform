@@ -92,6 +92,9 @@ export const ModelName = {
   BuilderRunItem: 'BuilderRunItem',
   FivemSettings: 'FivemSettings',
   FivemStatusSnapshot: 'FivemStatusSnapshot',
+  GamesSettings: 'GamesSettings',
+  GamesServer: 'GamesServer',
+  GamesStatusSnapshot: 'GamesStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
@@ -104,6 +107,12 @@ export const ModelName = {
   MessagesTemplate: 'MessagesTemplate',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
+  MusicSettings: 'MusicSettings',
+  MusicTrack: 'MusicTrack',
+  MusicPlaylist: 'MusicPlaylist',
+  MusicPlaylistTrack: 'MusicPlaylistTrack',
+  MusicStation: 'MusicStation',
+  MusicSession: 'MusicSession',
   PollCounter: 'PollCounter',
   Poll: 'Poll',
   PollVote: 'PollVote',
@@ -916,6 +925,62 @@ export const FivemStatusSnapshotScalarFieldEnum = {
 export type FivemStatusSnapshotScalarFieldEnum = (typeof FivemStatusSnapshotScalarFieldEnum)[keyof typeof FivemStatusSnapshotScalarFieldEnum]
 
 
+export const GamesSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  playerCountTemplate: 'playerCountTemplate',
+  playerCountOfflineTemplate: 'playerCountOfflineTemplate',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GamesSettingsScalarFieldEnum = (typeof GamesSettingsScalarFieldEnum)[keyof typeof GamesSettingsScalarFieldEnum]
+
+
+export const GamesServerScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  kind: 'kind',
+  address: 'address',
+  game: 'game',
+  connectUrl: 'connectUrl',
+  statusChannelId: 'statusChannelId',
+  statusMessageId: 'statusMessageId',
+  updateIntervalSeconds: 'updateIntervalSeconds',
+  playerCountChannelId: 'playerCountChannelId',
+  alertChannelId: 'alertChannelId',
+  alertRoleId: 'alertRoleId',
+  enabled: 'enabled',
+  lastOnline: 'lastOnline',
+  onlineSince: 'onlineSince',
+  offlineSince: 'offlineSince',
+  failureStreak: 'failureStreak',
+  lastPolledAt: 'lastPolledAt',
+  lastError: 'lastError',
+  lastPlayerCount: 'lastPlayerCount',
+  lastMaxPlayers: 'lastMaxPlayers',
+  lastRenamedAt: 'lastRenamedAt',
+  lastChannelName: 'lastChannelName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GamesServerScalarFieldEnum = (typeof GamesServerScalarFieldEnum)[keyof typeof GamesServerScalarFieldEnum]
+
+
+export const GamesStatusSnapshotScalarFieldEnum = {
+  id: 'id',
+  serverId: 'serverId',
+  online: 'online',
+  players: 'players',
+  maxPlayers: 'maxPlayers',
+  at: 'at'
+} as const
+
+export type GamesStatusSnapshotScalarFieldEnum = (typeof GamesStatusSnapshotScalarFieldEnum)[keyof typeof GamesStatusSnapshotScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -1144,6 +1209,101 @@ export const ModerationCaseScalarFieldEnum = {
 } as const
 
 export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
+export const MusicSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  djRoleIds: 'djRoleIds',
+  defaultVolume: 'defaultVolume',
+  maxQueue: 'maxQueue',
+  announceChannelId: 'announceChannelId',
+  nowPlayingPanel: 'nowPlayingPanel',
+  stayConnected247: 'stayConnected247',
+  homeChannelId: 'homeChannelId',
+  autoLeaveMinutes: 'autoLeaveMinutes',
+  idleRadioStationId: 'idleRadioStationId',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicSettingsScalarFieldEnum = (typeof MusicSettingsScalarFieldEnum)[keyof typeof MusicSettingsScalarFieldEnum]
+
+
+export const MusicTrackScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  title: 'title',
+  artist: 'artist',
+  album: 'album',
+  trackNumber: 'trackNumber',
+  durationSeconds: 'durationSeconds',
+  fileName: 'fileName',
+  coverFileName: 'coverFileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  originalName: 'originalName',
+  uploadedBy: 'uploadedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicTrackScalarFieldEnum = (typeof MusicTrackScalarFieldEnum)[keyof typeof MusicTrackScalarFieldEnum]
+
+
+export const MusicPlaylistScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicPlaylistScalarFieldEnum = (typeof MusicPlaylistScalarFieldEnum)[keyof typeof MusicPlaylistScalarFieldEnum]
+
+
+export const MusicPlaylistTrackScalarFieldEnum = {
+  playlistId: 'playlistId',
+  position: 'position',
+  trackId: 'trackId'
+} as const
+
+export type MusicPlaylistTrackScalarFieldEnum = (typeof MusicPlaylistTrackScalarFieldEnum)[keyof typeof MusicPlaylistTrackScalarFieldEnum]
+
+
+export const MusicStationScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  url: 'url',
+  faviconUrl: 'faviconUrl',
+  tags: 'tags',
+  createdAt: 'createdAt'
+} as const
+
+export type MusicStationScalarFieldEnum = (typeof MusicStationScalarFieldEnum)[keyof typeof MusicStationScalarFieldEnum]
+
+
+export const MusicSessionScalarFieldEnum = {
+  guildId: 'guildId',
+  channelId: 'channelId',
+  textChannelId: 'textChannelId',
+  panelChannelId: 'panelChannelId',
+  panelMessageId: 'panelMessageId',
+  queue: 'queue',
+  index: 'index',
+  positionSeconds: 'positionSeconds',
+  state: 'state',
+  loop: 'loop',
+  shuffle: 'shuffle',
+  volume: 'volume',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicSessionScalarFieldEnum = (typeof MusicSessionScalarFieldEnum)[keyof typeof MusicSessionScalarFieldEnum]
 
 
 export const PollCounterScalarFieldEnum = {

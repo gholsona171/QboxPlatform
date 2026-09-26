@@ -19,32 +19,32 @@ model GamesSettings {
 }
 
 model GamesServer {
-  id                    String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  guildId               String               @map("guild_id")
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  guildId               String                @map("guild_id")
   name                  String
   kind                  GamesServerKind
   address               String
   game                  String?
-  connectUrl            String?              @map("connect_url")
-  statusChannelId       String?              @map("status_channel_id")
-  statusMessageId       String?              @map("status_message_id")
-  updateIntervalSeconds Int                  @default(60) @map("update_interval_seconds")
-  playerCountChannelId  String?              @map("player_count_channel_id")
-  alertChannelId        String?              @map("alert_channel_id")
-  alertRoleId           String?              @map("alert_role_id")
-  enabled               Boolean              @default(true)
-  lastOnline            Boolean?             @map("last_online")
-  onlineSince           DateTime?            @map("online_since") @db.Timestamptz(3)
-  offlineSince          DateTime?            @map("offline_since") @db.Timestamptz(3)
-  failureStreak         Int                  @default(0) @map("failure_streak")
-  lastPolledAt          DateTime?            @map("last_polled_at") @db.Timestamptz(3)
-  lastError             String?              @map("last_error")
-  lastPlayerCount       Int                  @default(0) @map("last_player_count")
-  lastMaxPlayers        Int                  @default(0) @map("last_max_players")
-  lastRenamedAt         DateTime?            @map("last_renamed_at") @db.Timestamptz(3)
-  lastChannelName       String?              @map("last_channel_name")
-  createdAt             DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt             DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  connectUrl            String?               @map("connect_url")
+  statusChannelId       String?               @map("status_channel_id")
+  statusMessageId       String?               @map("status_message_id")
+  updateIntervalSeconds Int                   @default(60) @map("update_interval_seconds")
+  playerCountChannelId  String?               @map("player_count_channel_id")
+  alertChannelId        String?               @map("alert_channel_id")
+  alertRoleId           String?               @map("alert_role_id")
+  enabled               Boolean               @default(true)
+  lastOnline            Boolean?              @map("last_online")
+  onlineSince           DateTime?             @map("online_since") @db.Timestamptz(3)
+  offlineSince          DateTime?             @map("offline_since") @db.Timestamptz(3)
+  failureStreak         Int                   @default(0) @map("failure_streak")
+  lastPolledAt          DateTime?             @map("last_polled_at") @db.Timestamptz(3)
+  lastError             String?               @map("last_error")
+  lastPlayerCount       Int                   @default(0) @map("last_player_count")
+  lastMaxPlayers        Int                   @default(0) @map("last_max_players")
+  lastRenamedAt         DateTime?             @map("last_renamed_at") @db.Timestamptz(3)
+  lastChannelName       String?               @map("last_channel_name")
+  createdAt             DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime              @updatedAt @map("updated_at") @db.Timestamptz(3)
   snapshots             GamesStatusSnapshot[]
 
   @@index([guildId], map: "games_servers_guild_idx")

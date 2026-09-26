@@ -438,6 +438,9 @@ export const ModelName = {
   BuilderRunItem: 'BuilderRunItem',
   FivemSettings: 'FivemSettings',
   FivemStatusSnapshot: 'FivemStatusSnapshot',
+  GamesSettings: 'GamesSettings',
+  GamesServer: 'GamesServer',
+  GamesStatusSnapshot: 'GamesStatusSnapshot',
   GiveawayCounter: 'GiveawayCounter',
   Giveaway: 'Giveaway',
   GiveawayEntry: 'GiveawayEntry',
@@ -450,6 +453,12 @@ export const ModelName = {
   MessagesTemplate: 'MessagesTemplate',
   ModerationSettings: 'ModerationSettings',
   ModerationCase: 'ModerationCase',
+  MusicSettings: 'MusicSettings',
+  MusicTrack: 'MusicTrack',
+  MusicPlaylist: 'MusicPlaylist',
+  MusicPlaylistTrack: 'MusicPlaylistTrack',
+  MusicStation: 'MusicStation',
+  MusicSession: 'MusicSession',
   PollCounter: 'PollCounter',
   Poll: 'Poll',
   PollVote: 'PollVote',
@@ -491,7 +500,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "builderDraft" | "builderRun" | "builderRunItem" | "fivemSettings" | "fivemStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "messagesLook" | "messagesTemplate" | "moderationSettings" | "moderationCase" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "streamsSettings" | "streamsSubscription" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
+    modelProps: "applicationCounter" | "applicationForm" | "applicationPanel" | "application" | "applicationVote" | "applicationNote" | "guild" | "roleMenu" | "roleMenuOption" | "welcomeGoodbyeConfig" | "autoroleConfig" | "autoroleRule" | "rulesConfig" | "discordRoleAuditEvent" | "communityCounter" | "serverLogConfig" | "embedTemplate" | "customCommand" | "suggestion" | "starboardConfig" | "starboardEntry" | "permissionPrincipal" | "permissionDefinition" | "permissionAssignment" | "permissionAuditEvent" | "permissionCatalogState" | "platformUser" | "externalIdentity" | "browserSession" | "oAuthTransaction" | "oAuthCredential" | "discordGuildMembership" | "discordGuildMembershipRole" | "authenticationAuditEvent" | "birthdaySettings" | "birthday" | "builderDraft" | "builderRun" | "builderRunItem" | "fivemSettings" | "fivemStatusSnapshot" | "gamesSettings" | "gamesServer" | "gamesStatusSnapshot" | "giveawayCounter" | "giveaway" | "giveawayEntry" | "knowledgeSettings" | "knowledgeCategory" | "knowledgeArticle" | "levelSettings" | "levelMember" | "messagesLook" | "messagesTemplate" | "moderationSettings" | "moderationCase" | "musicSettings" | "musicTrack" | "musicPlaylist" | "musicPlaylistTrack" | "musicStation" | "musicSession" | "pollCounter" | "poll" | "pollVote" | "scheduledMessage" | "scheduledMessageRun" | "staffSettings" | "staffRank" | "staffMember" | "staffRecord" | "staffStrike" | "staffLeave" | "staffShift" | "streamsSettings" | "streamsSubscription" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "verificationSettings" | "verificationAttempt" | "verificationPendingMember" | "voiceSettings" | "voiceHub" | "voiceRoom"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3529,6 +3538,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GamesSettings: {
+      payload: Prisma.$GamesSettingsPayload<ExtArgs>
+      fields: Prisma.GamesSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GamesSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GamesSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.GamesSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GamesSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.GamesSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.GamesSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.GamesSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GamesSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.GamesSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        update: {
+          args: Prisma.GamesSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.GamesSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GamesSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GamesSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.GamesSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.GamesSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGamesSettings>
+        }
+        groupBy: {
+          args: Prisma.GamesSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GamesSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    GamesServer: {
+      payload: Prisma.$GamesServerPayload<ExtArgs>
+      fields: Prisma.GamesServerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GamesServerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GamesServerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        findFirst: {
+          args: Prisma.GamesServerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GamesServerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        findMany: {
+          args: Prisma.GamesServerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>[]
+        }
+        create: {
+          args: Prisma.GamesServerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        createMany: {
+          args: Prisma.GamesServerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GamesServerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>[]
+        }
+        delete: {
+          args: Prisma.GamesServerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        update: {
+          args: Prisma.GamesServerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        deleteMany: {
+          args: Prisma.GamesServerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GamesServerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GamesServerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>[]
+        }
+        upsert: {
+          args: Prisma.GamesServerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesServerPayload>
+        }
+        aggregate: {
+          args: Prisma.GamesServerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGamesServer>
+        }
+        groupBy: {
+          args: Prisma.GamesServerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesServerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GamesServerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesServerCountAggregateOutputType> | number
+        }
+      }
+    }
+    GamesStatusSnapshot: {
+      payload: Prisma.$GamesStatusSnapshotPayload<ExtArgs>
+      fields: Prisma.GamesStatusSnapshotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GamesStatusSnapshotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GamesStatusSnapshotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        findFirst: {
+          args: Prisma.GamesStatusSnapshotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GamesStatusSnapshotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        findMany: {
+          args: Prisma.GamesStatusSnapshotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>[]
+        }
+        create: {
+          args: Prisma.GamesStatusSnapshotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        createMany: {
+          args: Prisma.GamesStatusSnapshotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GamesStatusSnapshotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>[]
+        }
+        delete: {
+          args: Prisma.GamesStatusSnapshotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        update: {
+          args: Prisma.GamesStatusSnapshotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        deleteMany: {
+          args: Prisma.GamesStatusSnapshotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GamesStatusSnapshotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GamesStatusSnapshotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>[]
+        }
+        upsert: {
+          args: Prisma.GamesStatusSnapshotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GamesStatusSnapshotPayload>
+        }
+        aggregate: {
+          args: Prisma.GamesStatusSnapshotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGamesStatusSnapshot>
+        }
+        groupBy: {
+          args: Prisma.GamesStatusSnapshotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesStatusSnapshotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GamesStatusSnapshotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GamesStatusSnapshotCountAggregateOutputType> | number
+        }
+      }
+    }
     GiveawayCounter: {
       payload: Prisma.$GiveawayCounterPayload<ExtArgs>
       fields: Prisma.GiveawayCounterFieldRefs
@@ -4414,6 +4645,450 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ModerationCaseCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ModerationCaseCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicSettings: {
+      payload: Prisma.$MusicSettingsPayload<ExtArgs>
+      fields: Prisma.MusicSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.MusicSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.MusicSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.MusicSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        update: {
+          args: Prisma.MusicSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicSettings>
+        }
+        groupBy: {
+          args: Prisma.MusicSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicTrack: {
+      payload: Prisma.$MusicTrackPayload<ExtArgs>
+      fields: Prisma.MusicTrackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicTrackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicTrackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicTrackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicTrackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        findMany: {
+          args: Prisma.MusicTrackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>[]
+        }
+        create: {
+          args: Prisma.MusicTrackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        createMany: {
+          args: Prisma.MusicTrackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicTrackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicTrackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        update: {
+          args: Prisma.MusicTrackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicTrackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicTrackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicTrackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicTrackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicTrackPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicTrackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicTrack>
+        }
+        groupBy: {
+          args: Prisma.MusicTrackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicTrackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicTrackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicTrackCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicPlaylist: {
+      payload: Prisma.$MusicPlaylistPayload<ExtArgs>
+      fields: Prisma.MusicPlaylistFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicPlaylistFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicPlaylistFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicPlaylistFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicPlaylistFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        findMany: {
+          args: Prisma.MusicPlaylistFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>[]
+        }
+        create: {
+          args: Prisma.MusicPlaylistCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        createMany: {
+          args: Prisma.MusicPlaylistCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicPlaylistCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicPlaylistDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        update: {
+          args: Prisma.MusicPlaylistUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicPlaylistDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicPlaylistUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicPlaylistUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicPlaylistUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicPlaylistAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicPlaylist>
+        }
+        groupBy: {
+          args: Prisma.MusicPlaylistGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicPlaylistGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicPlaylistCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicPlaylistCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicPlaylistTrack: {
+      payload: Prisma.$MusicPlaylistTrackPayload<ExtArgs>
+      fields: Prisma.MusicPlaylistTrackFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicPlaylistTrackFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicPlaylistTrackFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicPlaylistTrackFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicPlaylistTrackFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        findMany: {
+          args: Prisma.MusicPlaylistTrackFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>[]
+        }
+        create: {
+          args: Prisma.MusicPlaylistTrackCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        createMany: {
+          args: Prisma.MusicPlaylistTrackCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicPlaylistTrackCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicPlaylistTrackDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        update: {
+          args: Prisma.MusicPlaylistTrackUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicPlaylistTrackDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicPlaylistTrackUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicPlaylistTrackUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicPlaylistTrackUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicPlaylistTrackPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicPlaylistTrackAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicPlaylistTrack>
+        }
+        groupBy: {
+          args: Prisma.MusicPlaylistTrackGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicPlaylistTrackGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicPlaylistTrackCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicPlaylistTrackCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicStation: {
+      payload: Prisma.$MusicStationPayload<ExtArgs>
+      fields: Prisma.MusicStationFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicStationFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicStationFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicStationFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicStationFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        findMany: {
+          args: Prisma.MusicStationFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>[]
+        }
+        create: {
+          args: Prisma.MusicStationCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        createMany: {
+          args: Prisma.MusicStationCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicStationCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicStationDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        update: {
+          args: Prisma.MusicStationUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicStationDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicStationUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicStationUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicStationUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicStationPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicStationAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicStation>
+        }
+        groupBy: {
+          args: Prisma.MusicStationGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicStationGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicStationCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicStationCountAggregateOutputType> | number
+        }
+      }
+    }
+    MusicSession: {
+      payload: Prisma.$MusicSessionPayload<ExtArgs>
+      fields: Prisma.MusicSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MusicSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MusicSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.MusicSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MusicSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        findMany: {
+          args: Prisma.MusicSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>[]
+        }
+        create: {
+          args: Prisma.MusicSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        createMany: {
+          args: Prisma.MusicSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MusicSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.MusicSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        update: {
+          args: Prisma.MusicSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.MusicSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MusicSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MusicSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.MusicSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MusicSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.MusicSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMusicSession>
+        }
+        groupBy: {
+          args: Prisma.MusicSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MusicSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MusicSessionCountAggregateOutputType> | number
         }
       }
     }
@@ -7148,6 +7823,62 @@ export const FivemStatusSnapshotScalarFieldEnum = {
 export type FivemStatusSnapshotScalarFieldEnum = (typeof FivemStatusSnapshotScalarFieldEnum)[keyof typeof FivemStatusSnapshotScalarFieldEnum]
 
 
+export const GamesSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  playerCountTemplate: 'playerCountTemplate',
+  playerCountOfflineTemplate: 'playerCountOfflineTemplate',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GamesSettingsScalarFieldEnum = (typeof GamesSettingsScalarFieldEnum)[keyof typeof GamesSettingsScalarFieldEnum]
+
+
+export const GamesServerScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  kind: 'kind',
+  address: 'address',
+  game: 'game',
+  connectUrl: 'connectUrl',
+  statusChannelId: 'statusChannelId',
+  statusMessageId: 'statusMessageId',
+  updateIntervalSeconds: 'updateIntervalSeconds',
+  playerCountChannelId: 'playerCountChannelId',
+  alertChannelId: 'alertChannelId',
+  alertRoleId: 'alertRoleId',
+  enabled: 'enabled',
+  lastOnline: 'lastOnline',
+  onlineSince: 'onlineSince',
+  offlineSince: 'offlineSince',
+  failureStreak: 'failureStreak',
+  lastPolledAt: 'lastPolledAt',
+  lastError: 'lastError',
+  lastPlayerCount: 'lastPlayerCount',
+  lastMaxPlayers: 'lastMaxPlayers',
+  lastRenamedAt: 'lastRenamedAt',
+  lastChannelName: 'lastChannelName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GamesServerScalarFieldEnum = (typeof GamesServerScalarFieldEnum)[keyof typeof GamesServerScalarFieldEnum]
+
+
+export const GamesStatusSnapshotScalarFieldEnum = {
+  id: 'id',
+  serverId: 'serverId',
+  online: 'online',
+  players: 'players',
+  maxPlayers: 'maxPlayers',
+  at: 'at'
+} as const
+
+export type GamesStatusSnapshotScalarFieldEnum = (typeof GamesStatusSnapshotScalarFieldEnum)[keyof typeof GamesStatusSnapshotScalarFieldEnum]
+
+
 export const GiveawayCounterScalarFieldEnum = {
   guildId: 'guildId',
   nextNumber: 'nextNumber'
@@ -7376,6 +8107,101 @@ export const ModerationCaseScalarFieldEnum = {
 } as const
 
 export type ModerationCaseScalarFieldEnum = (typeof ModerationCaseScalarFieldEnum)[keyof typeof ModerationCaseScalarFieldEnum]
+
+
+export const MusicSettingsScalarFieldEnum = {
+  guildId: 'guildId',
+  enabled: 'enabled',
+  djRoleIds: 'djRoleIds',
+  defaultVolume: 'defaultVolume',
+  maxQueue: 'maxQueue',
+  announceChannelId: 'announceChannelId',
+  nowPlayingPanel: 'nowPlayingPanel',
+  stayConnected247: 'stayConnected247',
+  homeChannelId: 'homeChannelId',
+  autoLeaveMinutes: 'autoLeaveMinutes',
+  idleRadioStationId: 'idleRadioStationId',
+  revision: 'revision',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicSettingsScalarFieldEnum = (typeof MusicSettingsScalarFieldEnum)[keyof typeof MusicSettingsScalarFieldEnum]
+
+
+export const MusicTrackScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  title: 'title',
+  artist: 'artist',
+  album: 'album',
+  trackNumber: 'trackNumber',
+  durationSeconds: 'durationSeconds',
+  fileName: 'fileName',
+  coverFileName: 'coverFileName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  originalName: 'originalName',
+  uploadedBy: 'uploadedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicTrackScalarFieldEnum = (typeof MusicTrackScalarFieldEnum)[keyof typeof MusicTrackScalarFieldEnum]
+
+
+export const MusicPlaylistScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicPlaylistScalarFieldEnum = (typeof MusicPlaylistScalarFieldEnum)[keyof typeof MusicPlaylistScalarFieldEnum]
+
+
+export const MusicPlaylistTrackScalarFieldEnum = {
+  playlistId: 'playlistId',
+  position: 'position',
+  trackId: 'trackId'
+} as const
+
+export type MusicPlaylistTrackScalarFieldEnum = (typeof MusicPlaylistTrackScalarFieldEnum)[keyof typeof MusicPlaylistTrackScalarFieldEnum]
+
+
+export const MusicStationScalarFieldEnum = {
+  id: 'id',
+  guildId: 'guildId',
+  name: 'name',
+  url: 'url',
+  faviconUrl: 'faviconUrl',
+  tags: 'tags',
+  createdAt: 'createdAt'
+} as const
+
+export type MusicStationScalarFieldEnum = (typeof MusicStationScalarFieldEnum)[keyof typeof MusicStationScalarFieldEnum]
+
+
+export const MusicSessionScalarFieldEnum = {
+  guildId: 'guildId',
+  channelId: 'channelId',
+  textChannelId: 'textChannelId',
+  panelChannelId: 'panelChannelId',
+  panelMessageId: 'panelMessageId',
+  queue: 'queue',
+  index: 'index',
+  positionSeconds: 'positionSeconds',
+  state: 'state',
+  loop: 'loop',
+  shuffle: 'shuffle',
+  volume: 'volume',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MusicSessionScalarFieldEnum = (typeof MusicSessionScalarFieldEnum)[keyof typeof MusicSessionScalarFieldEnum]
 
 
 export const PollCounterScalarFieldEnum = {
@@ -8583,6 +9409,20 @@ export type ListEnumBuilderItemStatusFieldRefInput<$PrismaModel> = FieldRefInput
 
 
 /**
+ * Reference to a field of type 'GamesServerKind'
+ */
+export type EnumGamesServerKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GamesServerKind'>
+
+
+
+/**
+ * Reference to a field of type 'GamesServerKind[]'
+ */
+export type ListEnumGamesServerKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GamesServerKind[]'>
+
+
+
+/**
  * Reference to a field of type 'GiveawayStatus'
  */
 export type EnumGiveawayStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GiveawayStatus'>
@@ -8677,6 +9517,34 @@ export type EnumModerationCaseSourceFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'ModerationCaseSource[]'
  */
 export type ListEnumModerationCaseSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ModerationCaseSource[]'>
+
+
+
+/**
+ * Reference to a field of type 'MusicPlayerState'
+ */
+export type EnumMusicPlayerStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MusicPlayerState'>
+
+
+
+/**
+ * Reference to a field of type 'MusicPlayerState[]'
+ */
+export type ListEnumMusicPlayerStateFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MusicPlayerState[]'>
+
+
+
+/**
+ * Reference to a field of type 'MusicLoopMode'
+ */
+export type EnumMusicLoopModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MusicLoopMode'>
+
+
+
+/**
+ * Reference to a field of type 'MusicLoopMode[]'
+ */
+export type ListEnumMusicLoopModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MusicLoopMode[]'>
 
 
 
@@ -9123,6 +9991,9 @@ export type GlobalOmitConfig = {
   builderRunItem?: Prisma.BuilderRunItemOmit
   fivemSettings?: Prisma.FivemSettingsOmit
   fivemStatusSnapshot?: Prisma.FivemStatusSnapshotOmit
+  gamesSettings?: Prisma.GamesSettingsOmit
+  gamesServer?: Prisma.GamesServerOmit
+  gamesStatusSnapshot?: Prisma.GamesStatusSnapshotOmit
   giveawayCounter?: Prisma.GiveawayCounterOmit
   giveaway?: Prisma.GiveawayOmit
   giveawayEntry?: Prisma.GiveawayEntryOmit
@@ -9135,6 +10006,12 @@ export type GlobalOmitConfig = {
   messagesTemplate?: Prisma.MessagesTemplateOmit
   moderationSettings?: Prisma.ModerationSettingsOmit
   moderationCase?: Prisma.ModerationCaseOmit
+  musicSettings?: Prisma.MusicSettingsOmit
+  musicTrack?: Prisma.MusicTrackOmit
+  musicPlaylist?: Prisma.MusicPlaylistOmit
+  musicPlaylistTrack?: Prisma.MusicPlaylistTrackOmit
+  musicStation?: Prisma.MusicStationOmit
+  musicSession?: Prisma.MusicSessionOmit
   pollCounter?: Prisma.PollCounterOmit
   poll?: Prisma.PollOmit
   pollVote?: Prisma.PollVoteOmit
