@@ -13,7 +13,7 @@ import { DiscordRestGiveawayGateway, GiveawayService } from "@qbox/giveaways";
 import { DiscordRestPollGateway, PollService } from "@qbox/polls";
 import { BirthdayService, DiscordRestBirthdayGateway } from "@qbox/birthdays";
 import { DiscordCommunityService } from "@qbox/discord-community";
-import { BuilderService, DiscordRestBuilderGateway } from "@qbox/server-builder";
+import { BuilderService, DiscordRestBuilderGateway, OpenAiBlueprintDesigner } from "@qbox/server-builder";
 import { DiscordRestScheduledMessageGateway, ScheduledMessageService } from "@qbox/scheduled-messages";
 import { DiscordRestTicketGateway, TicketService } from "@qbox/tickets";
 import { DiscordRestVerificationGateway, VerificationService } from "@qbox/verification";
@@ -82,7 +82,9 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
     messagesApiFeature(templates),
     streamsApiFeature(new StreamsService(new PrismaStreamsRepository(persistence.prisma), createStreamPlatformClients(streamCredentials()), discordRest ? new DiscordRestStreamsGateway(discordRest) : undefined, { templates })),
     gamesApiFeature(new GamesService(new PrismaGamesRepository(persistence.prisma), new ProtocolQueryClient(), discordRest ? new DiscordRestGamesGateway(discordRest) : undefined, templates)),
-    builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks)),
+    builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks, {
+      designer: env.OPENAI_API_KEY ? new OpenAiBlueprintDesigner(env.OPENAI_API_KEY, env.OPENAI_MODEL) : undefined,
+    })),
   ];
 }
 

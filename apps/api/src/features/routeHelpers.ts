@@ -43,7 +43,7 @@ export async function featureCall<T>(operation: () => Promise<T>, isFeatureError
   } catch (error) {
     if (!isFeatureError(error)) throw error;
     if (error.code === "NOT_FOUND") throw new NotFoundApiError();
-    if (error.code === "DEPENDENCY_UNAVAILABLE") throw new DependencyUnavailableApiError();
+    if (error.code === "DEPENDENCY_UNAVAILABLE") throw new DependencyUnavailableApiError([{ path: "feature", code: error.code, message: error.message }]);
     if (error.code === "CONFLICT") throw new ConflictApiError([{ path: "feature", code: "STALE_REVISION", message: error.message, ...(error.details ?? {}) }]);
     throw new ValidationApiError([{ path: "feature", code: error.code, message: error.message }]);
   }

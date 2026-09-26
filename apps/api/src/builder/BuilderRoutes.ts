@@ -3,7 +3,10 @@ import { z } from "zod";
 import { logger } from "@qbox/logger";
 import {
   BUILDER_CATEGORY_PURPOSES,
+  BUILDER_CHANNEL_EMOJIS,
   BUILDER_CHANNEL_PURPOSES,
+  BUILDER_EMOJI_SEPARATORS,
+  BUILDER_LIMITS,
   BUILDER_CHANNEL_TYPES,
   BUILDER_LINKS,
   BUILDER_PERMISSIONS,
@@ -79,10 +82,14 @@ const answersSchema = z.strictObject({
   voiceLounges: z.number().int(),
   useMediaChannels: z.boolean(),
   emojiCategories: z.boolean(),
+  channelEmojis: enumOf(BUILDER_CHANNEL_EMOJIS).default("ALL"),
+  emojiSeparator: enumOf(BUILDER_EMOJI_SEPARATORS).default("BAR"),
+  description: z.string().max(BUILDER_LIMITS.description).optional(),
 });
 
 const draftSchema = z.strictObject({ answers: answersSchema, blueprint: blueprintSchema, expectedRevision: z.number().int().min(0) });
 const generateSchema = z.strictObject({ answers: answersSchema, save: z.boolean().optional(), expectedRevision: z.number().int().min(0).optional() });
+const designSchema = z.strictObject({ prompt: z.string().min(1).max(BUILDER_LIMITS.description), expectedRevision: z.number().int().min(0) });
 const runSchema = z.strictObject({ mode: enumOf(BUILDER_RUN_MODES), links: z.array(enumOf(BUILDER_LINKS)).max(BUILDER_LINKS.length) });
 const listSchema = z.object({ limit: z.coerce.number().int().min(1).max(100).optional() });
 
@@ -134,6 +141,12 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
         return builder.saveDraft({ guildId: context.guildId, answers, blueprint: plan.blueprint, updatedById: identity.userId, expectedRevision: body.expectedRevision });
       }),
     };
+  });
+
+  server.post("/api/v1/builder/design", async (request) => {
+    const identity = await guard(request, "builder.manage", { mutation: true });
+    const body = parse(designSchema, request.body);
+    return { data: await safe(() => builder.designFromPrompt(context.guildId, body.prompt, body.expectedRevision, identity.userId)) };
   });
 
   server.get("/api/v1/builder/runs", async (request, reply) => {

@@ -4,16 +4,22 @@ import {
   BuilderService,
   DiscordRestBuilderGateway,
   InMemoryBuilderRepository,
+  NO_DESIGNER,
+  NO_DESIGN_ANSWER,
+  UNEXPECTED_DESIGN,
   PRESETS,
   generateBlueprint,
   templateFor,
+  type BlueprintDesigner,
   type BotStatus,
+  type BuilderAnswers,
   type BuilderBlueprint,
   type BuilderGateway,
   type BuilderLink,
   type BuilderLinkPort,
   type BuilderResolvedIds,
   type ChannelCreateInput,
+  type DesignedBlueprint,
   type ExistingChannel,
   type ExistingRole,
   type ForumPostInput,
@@ -166,6 +172,40 @@ describe("BuilderService builds", () => {
     expect(gateway.channels.filter((channel) => channel.name === "mod-log")).toHaveLength(2);
   });
 
+  it("matches existing channels without their emoji when adding to a server", async () => {
+    const emoji: BuilderBlueprint = {
+      ...small,
+      categories: [{
+        ...small.categories[0] as BuilderBlueprint["categories"][number],
+        channels: [
+          { key: "welcome", name: "👋┃welcome", type: "TEXT", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
+          { key: "general", name: "general", type: "TEXT", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
+          { key: "lounge-1", name: "🔊 Lounge 1", type: "VOICE", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
+          { key: "rules", name: "📜┃rules", type: "TEXT", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [] },
+        ],
+      }],
+    };
+    const { service, gateway, settle } = await setup(emoji);
+    gateway.channels.push(
+      { id: "600000000000000002", name: "welcome", type: 0 },
+      { id: "600000000000000003", name: "💬-general", type: 0 },
+      { id: "600000000000000004", name: "🔊┃Lounge 1", type: 2 },
+      { id: "600000000000000005", name: "📜┃rules", type: 0 },
+      { id: "600000000000000006", name: "rules", type: 0 },
+    );
+    const run = await service.startRun(GUILD, { mode: "ADD", links: [] }, starter);
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    const skipped = detail.items.filter((item) => item.status === "SKIPPED" && item.kind === "CHANNEL");
+    expect(skipped.map((item) => [item.name, item.discordId])).toEqual([
+      ["👋┃welcome", "600000000000000002"],
+      ["general", "600000000000000003"],
+      ["🔊 Lounge 1", "600000000000000004"],
+      ["📜┃rules", "600000000000000005"],
+    ]);
+    expect(gateway.channels.filter((channel) => channel.name.endsWith("welcome"))).toHaveLength(1);
+  });
+
   it("creates everything again in fresh mode without deleting anything", async () => {
     const { service, gateway, settle } = await setup();
     gateway.channels.push({ id: "600000000000000002", name: "general", type: 0 });
@@ -277,6 +317,62 @@ describe("BuilderService builds", () => {
     const saved = await service.saveDraft({ guildId: GUILD, answers: templateFor("FIVEM_RP").answers, blueprint: generateBlueprint(templateFor("FIVEM_RP").answers), expectedRevision: 1 });
     expect(saved.links.every((option) => option.available)).toBe(true);
     expect((await service.overview(GUILD)).preflight.ready).toBe(true);
+  });
+});
+
+describe("BuilderService designs from a description", () => {
+  const good: DesignedBlueprint = {
+    serverType: "GAMING",
+    serverName: "Rust Haven",
+    staffRanks: ["Owner", "Admin", "Helper"],
+    departments: [],
+    include: { fivemStatus: false, birthdays: false, tickets: true },
+    voiceLounges: 2,
+    channelEmojis: "KEY",
+    removeChannels: ["memes"],
+    extraRoles: [{ name: "Clan Leader", color: "#ff8800", purpose: "ping" }],
+    extraCategories: [{ name: "Trading", emoji: "💰", access: "everyone", channels: [{ name: "Market", type: "TEXT", topic: "Buy and sell." }] }],
+    summary: "A Rust community with a trading market.",
+  };
+
+  it("needs a designer", async () => {
+    const { service } = await setup();
+    expect((await service.overview(GUILD)).aiAvailable).toBe(false);
+    await expect(service.designFromPrompt(GUILD, "A Rust server", 1)).rejects.toMatchObject({ code: "DEPENDENCY_UNAVAILABLE", message: NO_DESIGNER });
+  });
+
+  it("turns a design into a saved draft with the answers, extras, and description", async () => {
+    const seen: { prompt: string; base: BuilderAnswers }[] = [];
+    const designer: BlueprintDesigner = { design: async (prompt, base) => { seen.push({ prompt, base }); return good; } };
+    const repository = new InMemoryBuilderRepository();
+    const service = new BuilderService(repository, new MemoryGateway(), new FakeLinks(), { designer });
+    expect((await service.overview(GUILD)).aiAvailable).toBe(true);
+    const result = await service.designFromPrompt(GUILD, "  A Rust community with a trading market  ", 0, starter.userId);
+    expect(result.summary).toBe("A Rust community with a trading market.");
+    expect(seen[0]).toMatchObject({ prompt: "A Rust community with a trading market", base: { serverType: "COMMUNITY" } });
+    expect(result.draft.revision).toBe(1);
+    expect(result.draft.answers).toMatchObject({ serverType: "GAMING", serverName: "Rust Haven", staffRanks: ["Owner", "Admin", "Helper"], voiceLounges: 2, channelEmojis: "KEY", description: "A Rust community with a trading market" });
+    expect(result.draft.answers.include).toMatchObject({ fivemStatus: false, birthdays: false, tickets: true, levels: true });
+    const names = result.draft.blueprint.categories.flatMap((category) => category.channels.map((channel) => channel.name));
+    expect(names).not.toContain("memes");
+    expect(names).toContain("market");
+    expect(result.draft.blueprint.categories.map((category) => category.name)).toContain("💰 TRADING");
+    expect(result.draft.blueprint.roles.find((role) => role.name === "Clan Leader")).toMatchObject({ purpose: "ping", mentionable: true, color: "#FF8800" });
+    expect((await service.draft(GUILD))?.answers.description).toBe("A Rust community with a trading market");
+    /* The next design starts from the saved answers and needs the current revision. */
+    await service.designFromPrompt(GUILD, "Again", 1);
+    expect(seen[1]?.base.serverName).toBe("Rust Haven");
+    await expect(service.designFromPrompt(GUILD, "Again", 1)).rejects.toMatchObject({ code: "CONFLICT" });
+  });
+
+  it("explains a designer that does not answer or answers with junk", async () => {
+    const failing = new BuilderService(new InMemoryBuilderRepository(), undefined, undefined, { designer: { design: async () => { throw new Error("socket hang up"); } } });
+    await expect(failing.designFromPrompt(GUILD, "A server", 0)).rejects.toMatchObject({ code: "DEPENDENCY_UNAVAILABLE", message: NO_DESIGN_ANSWER });
+    const junk = new BuilderService(new InMemoryBuilderRepository(), undefined, undefined, { designer: { design: async () => ({ hello: "world" }) as unknown as DesignedBlueprint } });
+    await expect(junk.designFromPrompt(GUILD, "A server", 0)).rejects.toMatchObject({ code: "DEPENDENCY_UNAVAILABLE", message: UNEXPECTED_DESIGN });
+    await expect(junk.designFromPrompt(GUILD, "   ", 0)).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    await expect(junk.designFromPrompt(GUILD, "x".repeat(2001), 0)).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    expect(await junk.draft(GUILD)).toBeUndefined();
   });
 });
 

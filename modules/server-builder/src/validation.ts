@@ -1,6 +1,8 @@
 import type { BuilderAnswers, BuilderBlueprint, BuilderChannel, BuilderChannelType, BuilderForumSetup, BuilderOverwrite, BuilderSummary } from "./types.js";
 import {
   BOT,
+  BUILDER_CHANNEL_EMOJIS,
+  BUILDER_EMOJI_SEPARATORS,
   BUILDER_STAFF_ACCESS,
   BUILDER_CATEGORY_PURPOSES,
   BUILDER_CHANNEL_PURPOSES,
@@ -46,6 +48,8 @@ export const BUILDER_LIMITS = {
   forumTagName: 20,
   forumPostTitle: 100,
   forumPostContent: 2000,
+  /** The "Describe your server" prompt. */
+  description: 2000,
 } as const;
 
 const SNOWFLAKE = /^\d{17,20}$/;
@@ -55,7 +59,10 @@ const TEXT_TYPES = new Set<BuilderChannelType>(["TEXT", "ANNOUNCEMENT", "FORUM",
 const FORUM_TYPES = new Set<BuilderChannelType>(["FORUM", "MEDIA"]);
 const CUSTOM_EMOJI = /^[a-zA-Z0-9_]{2,32}:\d{17,20}$/;
 /** One unicode emoji: a pictograph with optional skin tone, variation selector, and ZWJ parts, a keycap, or a flag. */
-const UNICODE_EMOJI = /^(?:\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3|(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})(?:\uFE0F|\p{Emoji_Modifier}|\u200D(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})\uFE0F?\p{Emoji_Modifier}?)*)$/u;
+const EMOJI_PATTERN = String.raw`(?:\p{Regional_Indicator}{2}|[0-9#*]\uFE0F?\u20E3|(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})(?:\uFE0F|\p{Emoji_Modifier}|\u200D(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})\uFE0F?\p{Emoji_Modifier}?)*)`;
+const UNICODE_EMOJI = new RegExp(`^${EMOJI_PATTERN}$`, "u");
+/** A channel name's leading emoji and the separator after it: `\uD83D\uDC4B\u2503welcome`, `\uD83D\uDC4B-welcome`, `\uD83D\uDD0A Lounge 1`, `\uD83D\uDC4B | welcome`. */
+const LEADING_EMOJI = new RegExp(`^${EMOJI_PATTERN}[\\s\u2503\u2502|\u30FB\u4E28\u2022\u00B7-]*`, "u");
 
 export function invalid(message: string): never {
   throw new BuilderError("INVALID_INPUT", message);
@@ -75,6 +82,16 @@ export function channelSlug(name: string): string {
     .replaceAll(/-{2,}/g, "-")
     .replaceAll(/^-+|-+$/g, "")
     .slice(0, BUILDER_LIMITS.nameLength);
+}
+
+/** A channel name without its leading emoji and separator: `👋┃welcome` and `👋-welcome` both give `welcome`. */
+export function plainChannelName(name: string): string {
+  return name.trim().replace(LEADING_EMOJI, "").trim();
+}
+
+/** Whether a channel name already starts with an emoji. */
+export function hasLeadingEmoji(name: string): boolean {
+  return LEADING_EMOJI.test(name.trim());
 }
 
 /** Lowercase key from any name, e.g. "Senior Moderator" -> "senior-moderator". */
@@ -256,4 +273,9 @@ export function validateAnswers(answers: BuilderAnswers): void {
     }
   requireRange("Voice lounges", answers.voiceLounges, 0, BUILDER_LIMITS.voiceLounges);
   for (const section of BUILDER_SECTIONS) if (typeof answers.include[section] !== "boolean") invalid(`Answer "${section}" with yes or no.`);
+  /* Drafts saved before these questions existed have no value, which means the default. */
+  if (answers.channelEmojis !== undefined && !BUILDER_CHANNEL_EMOJIS.includes(answers.channelEmojis)) invalid("Choose which channels get an emoji: none, key channels, or every channel.");
+  if (answers.emojiSeparator !== undefined && !BUILDER_EMOJI_SEPARATORS.includes(answers.emojiSeparator)) invalid("Choose how the emoji is joined to the channel name.");
+  if (answers.description !== undefined && (typeof answers.description !== "string" || answers.description.length > BUILDER_LIMITS.description))
+    invalid(`The description must be at most ${BUILDER_LIMITS.description} characters.`);
 }

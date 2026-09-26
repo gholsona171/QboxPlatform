@@ -11,6 +11,7 @@ set up for.
 | Part | Location |
 | --- | --- |
 | Blueprint, generator, presets, build runner, Discord REST adapter | `modules/server-builder` (`@qbox/server-builder`) |
+| AI designer ("Describe your server") | `modules/server-builder/src/BlueprintDesigner.ts` (`OpenAiBlueprintDesigner`) |
 | Database models | `BuilderDraft`, `BuilderRun`, `BuilderRunItem` in `prisma/schema/builder.prisma` |
 | PostgreSQL repository | `packages/database/src/builder/PrismaBuilderRepository.ts` |
 | `/builder` command | `packages/discord/src/commands/Builder.command.ts` |
@@ -27,11 +28,12 @@ Discord administrators can do everything.
 
 ## Using it
 
-1. **Questions:** pick a starting point (FiveM roleplay, gaming, community, or
-   business), then change the answers: server name, staff ranks (highest
-   first), departments, whether staff can see every department channel,
-   voice lounges, and which sections to include. **Make blueprint** saves it
-   as your draft.
+1. **Questions:** describe your server and let the AI design it (see
+   **Describe your server** below), or pick a starting point (FiveM roleplay,
+   gaming, community, or business), then change the answers: server name,
+   staff ranks (highest first), departments, whether staff can see every
+   department channel, voice lounges, which sections to include, and how
+   emoji are used in names. **Make blueprint** saves it as your draft.
 2. **Blueprint:** see every role (with its color) and every category and
    channel, with who can see and who can post in each channel. Rename things
    in place, change a channel's type, remove roles, channels, or categories,
@@ -54,6 +56,56 @@ Discord administrators can do everything.
 
 Neither mode ever deletes or changes anything that is already in your
 server.
+
+## Describe your server
+
+At the top of the Questions tab, type what you are trying to do with the
+server ("A Rust community with 3 wipes a month, a clan system, a trading
+market, and a ticket desk for base raids") and click **Design it for me**.
+Guildhall asks an AI model to fill in the questions the way the starting
+points do (server type, name, staff ranks, departments, voice lounges,
+sections, emoji), and to add what the starting points don't have: extra
+roles, extra categories with their own channels and access (everyone, staff,
+or named roles), and a list of generated channels to leave out. The result is
+saved as your draft, the model's one-line summary of what it understood is
+shown, and the Blueprint tab opens. Everything the AI added can be edited or
+removed like anything else. Your description is kept with the answers.
+
+The model never writes the blueprint itself: it returns a short list of
+answers and extras that Guildhall checks against the same rules as the
+questionnaire, and anything that would break the blueprint (a bad name, too
+many channels) is left out and mentioned in the summary.
+
+Nothing is built until you click **Build** on the Build tab.
+
+This needs an OpenAI API key on the host: set `OPENAI_API_KEY` (and
+optionally `OPENAI_MODEL`, default `gpt-4o-mini`) in the API's `.env` and
+restart. Without it the card says so and the rest of the builder works as
+before. A model that does not answer or answers with something unexpected is
+reported as a plain error; try again.
+
+## Channel emojis
+
+Two questions control emoji in names:
+
+- **Emoji in category names** puts an emoji in front of each category, like
+  `📢 INFORMATION`.
+- **Emoji in channel names** chooses which channels get one: **None**, **Key
+  channels only** (channels connected to a feature, plus everything in Start
+  Here, Information, and Support), or **Every channel** (the default). The
+  business starting point uses key channels only.
+- **Emoji style** chooses how it is joined: **Bar** (`👋┃welcome`,
+  `🔊┃Lounge 1`) or **Dash or space** (`👋-welcome`, `🔊 Lounge 1`).
+
+The emoji comes from a curated table by what the channel is for (welcome 👋,
+rules 📜, verify ✅, announcements 📢, tickets 🎫, mod-log 🔨, department
+chat 💬, briefings 📋, radio 📻, lounges 🔊, and so on), with a keyword match
+for channels you add yourself. Rename a channel in the Blueprint to change or
+remove its emoji.
+
+In **Add to my server** mode the emoji is ignored when matching names, so
+`👋┃welcome` reuses an existing `welcome` channel, and `welcome` reuses an
+existing `👋-welcome`.
 
 ## Who can see each channel
 

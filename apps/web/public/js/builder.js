@@ -30,6 +30,9 @@ const SECTIONS = [
   ["staffArea", "Staff channels and log channels"],
   ["ageRestricted", "An 18+ channel"],
 ];
+const CHANNEL_EMOJIS = [["NONE", "None"], ["KEY", "Key channels only"], ["ALL", "Every channel"]];
+const EMOJI_SEPARATORS = [["BAR", "Bar, like 👋┃welcome"], ["SPACE", "Dash or space, like 👋-welcome and 🔊 Lounge 1"]];
+const DESCRIBE_PLACEHOLDER = "A Rust community with 3 wipes a month, a clan system, a trading market, and a ticket desk for base raids…";
 const CHANNEL_TYPES = [["TEXT", "Text"], ["ANNOUNCEMENT", "Announcement"], ["FORUM", "Forum"], ["MEDIA", "Media"], ["VOICE", "Voice"], ["STAGE", "Stage"]];
 const TYPE_ICONS = { TEXT: "#", ANNOUNCEMENT: "📢", FORUM: "💬", MEDIA: "🖼️", VOICE: "🔊", STAGE: "🎙️" };
 const TEXT_TYPES = new Set(["TEXT", "ANNOUNCEMENT", "FORUM", "MEDIA"]);
@@ -48,7 +51,7 @@ const ITEM_LABELS = { ROLE: "Role", CATEGORY: "Category", CHANNEL: "Channel", LI
 const POLL_MS = 2000;
 
 /** `panel` is the one open inline editor on the blueprint: an access editor or a forum setup editor. */
-const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined, panel: undefined };
+const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined, panel: undefined, designing: false };
 let container;
 let pollTimer;
 
@@ -101,10 +104,27 @@ function tabContent() {
 
 /* ---------- Questions ---------- */
 
+function describeCard() {
+  if (!view.overview.aiAvailable)
+    return `<div class="card">
+      <h3>Describe your server</h3>
+      <p class="microcopy">Describe-your-server needs an OpenAI API key on the host. Add OPENAI_API_KEY to the server's .env and restart.</p>
+    </div>`;
+  return `<form class="card form-grid readable-form" data-b-form="design">
+    <h3 class="full">Describe your server</h3>
+    <label class="full">What are you trying to do with the server?<textarea name="prompt" rows="4" maxlength="2000" required placeholder="${escapeHtml(DESCRIBE_PLACEHOLDER)}">${escapeHtml(view.answers.description ?? "")}</textarea></label>
+    <div class="toolbar full">
+      <button class="button primary" ${view.designing ? "disabled" : ""}>${view.designing ? "Designing..." : "Design it for me"}</button>
+      <span class="microcopy">Uses AI to fill the questions and add custom categories. You can edit everything after.</span>
+    </div>
+  </form>`;
+}
+
 function questionsTab() {
   const a = view.answers;
   const templates = view.overview.templates;
   return `<div class="grid">
+    ${describeCard()}
     <div class="feature-grid">${templates.map((template) => `<button type="button" class="feature-tile" data-b-template="${escapeHtml(template.type)}"><strong>${escapeHtml(template.label)}</strong><span class="microcopy">${escapeHtml(template.description)}</span></button>`).join("")}</div>
     <p class="microcopy">Pick a starting point, change the answers, then make a Blueprint (a preview of what will be built). You can edit it before anything is built.</p>
     <form class="form-grid readable-form" data-b-form="answers">
@@ -119,6 +139,8 @@ function questionsTab() {
       </fieldset>
       ${checkbox("useMediaChannels", "Use Discord media channels for photos and clips (needs Community)", a.useMediaChannels)}
       ${checkbox("emojiCategories", "Emoji in category names, like 📢 INFORMATION", a.emojiCategories)}
+      ${selectField("channelEmojis", "Emoji in channel names", CHANNEL_EMOJIS, a.channelEmojis ?? "ALL")}
+      ${selectField("emojiSeparator", "Emoji style", EMOJI_SEPARATORS, a.emojiSeparator ?? "BAR")}
       <button class="button primary full">Make blueprint</button>
     </form>
   </div>`;
@@ -137,6 +159,9 @@ function answersFromForm(form) {
     voiceLounges: Number.parseInt(String(data.get("voiceLounges") ?? "0"), 10) || 0,
     useMediaChannels: form.elements.useMediaChannels?.checked === true,
     emojiCategories: form.elements.emojiCategories?.checked === true,
+    channelEmojis: String(data.get("channelEmojis") || "ALL"),
+    emojiSeparator: String(data.get("emojiSeparator") || "BAR"),
+    ...(view.answers?.description ? { description: view.answers.description } : {}),
   };
 }
 
@@ -697,6 +722,27 @@ async function submit(form) {
         notify(error.message || "That did not work.", "error");
         if (error.status === 409) await load();
       }
+      return render();
+    }
+    case "design": {
+      const prompt = String(new FormData(form).get("prompt") ?? "").trim();
+      if (!prompt) return notify("Describe your server first.", "error");
+      const draft = view.overview.draft;
+      if (draft && !(await confirmAction({ title: "Design a new blueprint?", body: "This replaces your current blueprint, including any edits you made to it.", confirmText: "Design" }))) return undefined;
+      view.designing = true;
+      render();
+      try {
+        const result = (await sendJson("builder/design", "POST", { prompt, expectedRevision: draft?.revision ?? 0 })).data;
+        view.overview.draft = result.draft;
+        view.answers = structuredClone(result.draft.answers);
+        notify(result.summary || "Blueprint designed. Check it before you build.");
+        view.tab = "blueprint";
+        history.replaceState({}, "", appPath("/builder?tab=blueprint"));
+      } catch (error) {
+        notify(error.message || "The AI designer did not answer. Try again.", "error");
+        if (error.status === 409) await load();
+      }
+      view.designing = false;
       return render();
     }
     case "add-channel": {

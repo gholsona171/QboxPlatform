@@ -186,6 +186,14 @@ export type BuilderSection = (typeof BUILDER_SECTIONS)[number];
 export type BuilderStaffAccess = "ALL" | "NONE";
 export const BUILDER_STAFF_ACCESS: readonly BuilderStaffAccess[] = ["ALL", "NONE"];
 
+/** NONE: plain names. KEY: emoji on channels with a purpose and in Start Here, Information, and Support. ALL: every channel. */
+export type BuilderChannelEmojis = "NONE" | "KEY" | "ALL";
+export const BUILDER_CHANNEL_EMOJIS: readonly BuilderChannelEmojis[] = ["NONE", "KEY", "ALL"];
+
+/** BAR: `👋┃welcome`. SPACE: `👋-welcome` for text channels and `🔊 Lounge 1` for voice. */
+export type BuilderEmojiSeparator = "SPACE" | "BAR";
+export const BUILDER_EMOJI_SEPARATORS: readonly BuilderEmojiSeparator[] = ["SPACE", "BAR"];
+
 export interface BuilderAnswers {
   readonly serverType: BuilderServerType;
   readonly serverName: string;
@@ -202,6 +210,12 @@ export interface BuilderAnswers {
   readonly useMediaChannels: boolean;
   /** Category names like "📢 INFORMATION". */
   readonly emojiCategories: boolean;
+  /** Emoji in channel names. Default ALL. */
+  readonly channelEmojis: BuilderChannelEmojis;
+  /** How the emoji is joined to the channel name. Default BAR. */
+  readonly emojiSeparator: BuilderEmojiSeparator;
+  /** What the owner typed into "Describe your server", when the answers came from the AI designer. */
+  readonly description?: string | undefined;
 }
 
 export interface BuilderTemplate {

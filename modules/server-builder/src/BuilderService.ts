@@ -1,6 +1,7 @@
 import { DISCORD_PERMISSION, colorValue } from "@qbox/shared/discord-rest";
 
-import { BUILDER_TEMPLATES, generateBlueprint } from "./generator.js";
+import { NO_DESIGNER, NO_DESIGN_ANSWER, answersFromDesign, applyDesign, parseDesignedBlueprint, type BlueprintDesigner } from "./BlueprintDesigner.js";
+import { BUILDER_TEMPLATES, generateBlueprint, templateFor } from "./generator.js";
 import { linkLabel, linkOptions } from "./links.js";
 import { describeAccess, effectiveOverwrites, permissionBits } from "./permissions.js";
 import type {
@@ -36,7 +37,7 @@ import type {
   ExistingChannel,
 } from "./types.js";
 import { BOT, BUILDER_LINKS, BUILDER_RUN_MODES, DISCORD_CHANNEL_TYPE, EVERYONE } from "./types.js";
-import { BUILDER_LIMITS, BuilderError, isForumType, normalizeBlueprint, requireSnowflake, summarize, validateAnswers, validateBlueprint } from "./validation.js";
+import { BUILDER_LIMITS, BuilderError, isForumType, normalizeBlueprint, plainChannelName, requireSnowflake, summarize, validateAnswers, validateBlueprint } from "./validation.js";
 import { BRAND } from "@qbox/shared/brand";
 
 /** A blueprint with its counts, warnings, access summary, and feature links. */
@@ -59,6 +60,8 @@ export interface BuilderOverview {
   readonly limits: typeof BUILDER_LIMITS;
   readonly lastRun?: BuilderRun | undefined;
   readonly preflight: BuilderPreflight;
+  /** "Describe your server" can be used: an AI designer is configured. */
+  readonly aiAvailable: boolean;
 }
 
 export interface BuilderStartInput {
@@ -66,10 +69,18 @@ export interface BuilderStartInput {
   readonly links: readonly BuilderLink[];
 }
 
+/** A draft made from a description, with the designer's plain summary of what it understood. */
+export interface BuilderDesignResult {
+  readonly draft: BuilderDraftView;
+  readonly summary: string;
+}
+
 export interface BuilderServiceOptions {
   readonly now?: () => Date;
   /** Runs a build in the background. Tests capture the task to await it. */
   readonly schedule?: (task: () => Promise<void>) => void;
+  /** Turns "Describe your server" text into answers and extras. Without one, describing is unavailable. */
+  readonly designer?: BlueprintDesigner | undefined;
 }
 
 const FALLBACK: Readonly<Partial<Record<BuilderChannelType, BuilderChannelType>>> = { ANNOUNCEMENT: "TEXT", FORUM: "TEXT", MEDIA: "TEXT", STAGE: "VOICE" };
@@ -99,6 +110,7 @@ export class BuilderService {
   private readonly now: () => Date;
   private readonly schedule: (task: () => Promise<void>) => void;
   private readonly active = new Set<string>();
+  private readonly designer: BlueprintDesigner | undefined;
 
   public constructor(
     private readonly repository: BuilderRepository,
@@ -108,6 +120,7 @@ export class BuilderService {
   ) {
     this.now = options.now ?? (() => new Date());
     this.schedule = options.schedule ?? ((task) => void task());
+    this.designer = options.designer;
   }
 
   public templates(): readonly BuilderTemplate[] {
@@ -126,7 +139,38 @@ export class BuilderService {
   public async overview(guildId: string): Promise<BuilderOverview> {
     requireSnowflake("guildId", guildId);
     const [draft, runs, preflight] = await Promise.all([this.draft(guildId), this.repository.listRuns(guildId, 1), this.preflight(guildId).catch((error: unknown) => unavailablePreflight(messageOf(error)))]);
-    return { draft, templates: BUILDER_TEMPLATES, limits: BUILDER_LIMITS, lastRun: runs[0], preflight };
+    return { draft, templates: BUILDER_TEMPLATES, limits: BUILDER_LIMITS, lastRun: runs[0], preflight, aiAvailable: this.designer !== undefined };
+  }
+
+  /**
+   * "Describe your server": the AI designer turns the description into answers
+   * and extras, the generator makes the blueprint, the extras are applied and
+   * checked, and the result is saved as the draft. Nothing is built.
+   */
+  public async designFromPrompt(guildId: string, prompt: string, expectedRevision: number, updatedById?: string): Promise<BuilderDesignResult> {
+    requireSnowflake("guildId", guildId);
+    const text = prompt.trim();
+    if (text.length < 1) throw new BuilderError("INVALID_INPUT", "Describe your server first.");
+    if (text.length > BUILDER_LIMITS.description) throw new BuilderError("INVALID_INPUT", `Keep the description under ${BUILDER_LIMITS.description} characters.`);
+    if (!this.designer) throw new BuilderError("DEPENDENCY_UNAVAILABLE", NO_DESIGNER);
+    const current = await this.repository.getDraft(guildId);
+    const base = current?.answers ?? templateFor("COMMUNITY").answers;
+    let raw: unknown;
+    try {
+      raw = await this.designer.design(text, base);
+    } catch (error) {
+      if (error instanceof BuilderError) throw error;
+      throw new BuilderError("DEPENDENCY_UNAVAILABLE", NO_DESIGN_ANSWER);
+    }
+    const design = parseDesignedBlueprint(raw);
+    const answers = answersFromDesign(design, text);
+    validateAnswers(answers);
+    const applied = applyDesign(generateBlueprint(answers), design, answers);
+    const blueprint = normalizeBlueprint(applied.blueprint);
+    validateBlueprint(blueprint);
+    const draft = await this.repository.saveDraft({ guildId, answers, blueprint, updatedById, expectedRevision });
+    const notes = applied.dropped.length ? ` ${applied.dropped.join(" ")}` : "";
+    return { draft: this.view(draft), summary: `${design.summary || "Blueprint designed from your description."}${notes}`.trim() };
   }
 
   public async draft(guildId: string): Promise<BuilderDraftView | undefined> {
@@ -277,10 +321,13 @@ export class BuilderService {
         const id = roleIds.get(overwrite.target);
         return id ? [{ id, type: 0, allow, deny }] : [];
       });
+    /* Names match without their leading emoji, so "👋┃welcome" reuses an existing "welcome" and the other way around. */
     const findExisting = (name: string, types: readonly number[], parentId?: string): ExistingChannel | undefined => {
       if (!add) return undefined;
-      const matches = existingChannels.filter((item) => item.name.toLowerCase() === name.toLowerCase() && types.includes(item.type));
-      return matches.find((item) => item.parentId === parentId) ?? matches[0];
+      const wanted = plainChannelName(name).toLowerCase();
+      const matches = existingChannels.filter((item) => types.includes(item.type) && plainChannelName(item.name).toLowerCase() === wanted);
+      const exact = matches.filter((item) => item.name.toLowerCase() === name.toLowerCase());
+      return exact.find((item) => item.parentId === parentId) ?? matches.find((item) => item.parentId === parentId) ?? exact[0] ?? matches[0];
     };
 
     /* Categories. */

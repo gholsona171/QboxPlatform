@@ -6,6 +6,8 @@ import {
   PERMISSION_BITS,
   PRESETS,
   channelSlug,
+  hasLeadingEmoji,
+  plainChannelName,
   describeAccess,
   isEmoji,
   mergeOverwrites,
@@ -83,6 +85,25 @@ describe("validateBlueprint", () => {
     expect(normalized.categories[0]?.channels.map((channel) => channel.name)).toEqual(["general-chat", "Lounge 1"]);
     expect(() => validateBlueprint(normalized)).not.toThrow();
     expect(channelSlug("  📢 Big   News -- Today  ")).toBe("📢-big-news-today");
+  });
+
+  it("keeps a leading emoji and the bar in channel slugs, and strips them for matching", () => {
+    expect(channelSlug("👋┃welcome")).toBe("👋┃welcome");
+    expect(channelSlug("👋┃Welcome Chat!")).toBe("👋┃welcome-chat");
+    expect(channelSlug("🎙️┃stage-talk")).toBe("🎙️┃stage-talk");
+    const withEmoji = blueprint({ categories: [{ key: "c", name: "C", overwrites: [], channels: [text("welcome", { name: "👋┃welcome" }), text("lounge", { name: "🔊 Lounge 1", type: "VOICE" })] }] });
+    expect(() => validateBlueprint(withEmoji)).not.toThrow();
+    expect(normalizeBlueprint(withEmoji).categories[0]?.channels.map((channel) => channel.name)).toEqual(["👋┃welcome", "🔊 Lounge 1"]);
+    expect(plainChannelName("👋┃welcome")).toBe("welcome");
+    expect(plainChannelName("👋-welcome")).toBe("welcome");
+    expect(plainChannelName("🔊 Lounge 1")).toBe("Lounge 1");
+    expect(plainChannelName("👋 | welcome")).toBe("welcome");
+    expect(plainChannelName("🎙️┃Police Briefing Room")).toBe("Police Briefing Room");
+    expect(plainChannelName("👍🏽・thumbs")).toBe("thumbs");
+    expect(plainChannelName("welcome")).toBe("welcome");
+    expect(plainChannelName("18-plus")).toBe("18-plus");
+    expect(hasLeadingEmoji("➕ Join to Create")).toBe(true);
+    expect(hasLeadingEmoji("Join to Create")).toBe(false);
   });
 });
 

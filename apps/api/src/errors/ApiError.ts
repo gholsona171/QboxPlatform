@@ -63,8 +63,9 @@ export class ConflictApiError extends ApiError {
 }
 
 export class DependencyUnavailableApiError extends ApiError {
-  public constructor() {
-    super("DEPENDENCY_UNAVAILABLE", 503, "Dependency unavailable", "A required service is temporarily unavailable.", "error");
+  /** `details` carries a feature's plain message (for example which host setting is missing) so the portal can show it. */
+  public constructor(details?: readonly Readonly<Record<string, unknown>>[]) {
+    super("DEPENDENCY_UNAVAILABLE", 503, "Dependency unavailable", "A required service is temporarily unavailable.", "error", details);
   }
 }
 

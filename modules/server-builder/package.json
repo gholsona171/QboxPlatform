@@ -12,6 +12,7 @@
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\""
   },
   "dependencies": {
-    "@qbox/shared": "workspace:*"
+    "@qbox/shared": "workspace:*",
+    "zod": "^4.4.3"
   }
 }

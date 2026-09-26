@@ -7,7 +7,11 @@ import {
   generateBlueprint,
   linkOptions,
   summarize,
+  plainChannelName,
   templateFor,
+  wantsEmoji,
+  channelEmoji,
+  emojiChannelName,
   validateBlueprint,
   type BuilderAnswers,
   type BuilderBlueprint,
@@ -15,6 +19,7 @@ import {
 } from "../src/index.js";
 
 const channels = (blueprint: BuilderBlueprint) => blueprint.categories.flatMap((category) => category.channels);
+const names = (blueprint: BuilderBlueprint) => channels(blueprint).map((channel) => plainChannelName(channel.name));
 const purposes = (blueprint: BuilderBlueprint) => channels(blueprint).map((channel) => channel.purpose).filter(Boolean);
 const without = (answers: BuilderAnswers, ...sections: BuilderSection[]): BuilderAnswers => ({
   ...answers,
@@ -69,12 +74,12 @@ describe("generateBlueprint", () => {
   it("uses media channels, departments, lounges, and plain category names when asked", () => {
     const base = templateFor("COMMUNITY").answers;
     const blueprint = generateBlueprint({ ...base, useMediaChannels: true, emojiCategories: false, voiceLounges: 5, departments: ["Art Team"] });
-    expect(channels(blueprint).filter((channel) => channel.type === "MEDIA").map((channel) => channel.name)).toEqual(["screenshots", "clips", "art"]);
+    expect(channels(blueprint).filter((channel) => channel.type === "MEDIA").map((channel) => plainChannelName(channel.name))).toEqual(["screenshots", "clips", "art"]);
     expect(blueprint.categories.map((category) => category.name)).toContain("ART TEAM");
-    expect(channels(blueprint).filter((channel) => channel.name.startsWith("Lounge"))).toHaveLength(5);
-    expect(channels(blueprint).map((channel) => channel.name)).toContain("art-team-chat");
+    expect(names(blueprint).filter((name) => name.startsWith("Lounge"))).toHaveLength(5);
+    expect(names(blueprint)).toContain("art-team-chat");
     const text = templateFor("COMMUNITY").answers;
-    const textMedia = channels(generateBlueprint(text)).find((channel) => channel.name === "screenshots");
+    const textMedia = channels(generateBlueprint(text)).find((channel) => plainChannelName(channel.name) === "screenshots");
     expect(textMedia).toMatchObject({ type: "TEXT", slowmodeSeconds: 10 });
   });
 
@@ -93,20 +98,88 @@ describe("generateBlueprint", () => {
   it("sets up every forum with guidelines, tags, a default reaction, and a pinned first post", () => {
     const blueprint = generateBlueprint(templateFor("FIVEM_RP").answers);
     const forums = channels(blueprint).filter((channel) => channel.type === "FORUM");
-    expect(forums.map((channel) => channel.name)).toEqual(["character-bios", "bug-reports", "help", "feedback"]);
+    expect(forums.map((channel) => plainChannelName(channel.name))).toEqual(["character-bios", "bug-reports", "help", "feedback"]);
     for (const forum of forums) {
       expect(forum.forum?.guidelines).toBeTruthy();
       expect(forum.forum?.tags.length).toBeGreaterThanOrEqual(3);
       expect(forum.forum?.defaultReactionEmoji).toBeTruthy();
       expect(forum.forum?.firstPost).toMatchObject({ title: "Read me first", pin: true });
     }
-    expect(forums.find((channel) => channel.name === "help")?.forum?.tags.map((tag) => tag.name)).toEqual(["Question", "Solved", "Bug"]);
-    expect(forums.find((channel) => channel.name === "bug-reports")?.forum?.tags.map((tag) => tag.name)).toEqual(["Open", "Fixed", "Cannot reproduce"]);
+    expect(forums.find((channel) => plainChannelName(channel.name) === "help")?.forum?.tags.map((tag) => tag.name)).toEqual(["Question", "Solved", "Bug"]);
+    expect(forums.find((channel) => plainChannelName(channel.name) === "bug-reports")?.forum?.tags.map((tag) => tag.name)).toEqual(["Open", "Fixed", "Cannot reproduce"]);
     expect(channels(blueprint).filter((channel) => channel.type !== "FORUM" && channel.type !== "MEDIA").every((channel) => channel.forum === undefined)).toBe(true);
-    const media = channels(generateBlueprint({ ...templateFor("COMMUNITY").answers, useMediaChannels: true })).find((channel) => channel.name === "clips");
+    const media = channels(generateBlueprint({ ...templateFor("COMMUNITY").answers, useMediaChannels: true })).find((channel) => plainChannelName(channel.name) === "clips");
     expect(media?.forum?.tags.length).toBeGreaterThan(0);
     expect(media?.forum?.firstPost).toBeUndefined();
     expect(defaultForumSetup("random-topic")).toMatchObject({ tags: expect.any(Array), firstPost: { pin: true } });
+  });
+
+  it("puts a curated emoji on every channel by default, in the bar style", () => {
+    const blueprint = generateBlueprint(templateFor("FIVEM_RP").answers);
+    const byPlain = Object.fromEntries(channels(blueprint).map((channel) => [plainChannelName(channel.name), channel]));
+    expect(byPlain.welcome?.name).toBe("👋┃welcome");
+    expect(byPlain.rules?.name).toBe("📜┃rules");
+    expect(byPlain.verify?.name).toBe("✅┃verify");
+    expect(byPlain.announcements?.name).toBe("📢┃announcements");
+    expect(byPlain["server-updates"]?.name).toBe("🆕┃server-updates");
+    expect(byPlain["open-a-ticket"]?.name).toBe("🎫┃open-a-ticket");
+    expect(byPlain["mod-log"]?.name).toBe("🔨┃mod-log");
+    expect(byPlain["character-bios"]?.name).toBe("🎭┃character-bios");
+    expect(byPlain["police-chat"]?.name).toBe("💬┃police-chat");
+    expect(byPlain["police-briefings"]?.name).toBe("📋┃police-briefings");
+    expect(byPlain["police-training"]?.name).toBe("🎓┃police-training");
+    expect(byPlain["Police Radio"]?.name).toBe("📻┃Police Radio");
+    expect(byPlain["Police Briefing Room"]?.name).toBe("🎙️┃Police Briefing Room");
+    expect(byPlain["Lounge 1"]?.name).toBe("🔊┃Lounge 1");
+    expect(byPlain["Staff Voice"]?.name).toBe("🔒┃Staff Voice");
+    expect(byPlain["Join to Create"]?.name).toBe("➕┃Join to Create");
+    expect(byPlain["18-plus"]).toBeUndefined();
+    expect(channels(blueprint).every((channel) => channel.name !== plainChannelName(channel.name))).toBe(true);
+    /* Keys stay plain. */
+    expect(byPlain.welcome?.key).toBe("welcome");
+    expect(byPlain["Lounge 1"]?.key).toBe("lounge-1");
+    expect(() => validateBlueprint(blueprint)).not.toThrow();
+  });
+
+  it("supports the space style, key channels only, and no emoji at all", () => {
+    const base = templateFor("GAMING").answers;
+    const spaced = generateBlueprint({ ...base, emojiSeparator: "SPACE" });
+    const named = (blueprint: BuilderBlueprint, plain: string) => channels(blueprint).find((channel) => plainChannelName(channel.name) === plain)?.name;
+    expect(named(spaced, "welcome")).toBe("👋-welcome");
+    expect(named(spaced, "Lounge 1")).toBe("🔊 Lounge 1");
+    expect(() => validateBlueprint(spaced)).not.toThrow();
+    const key = generateBlueprint({ ...base, channelEmojis: "KEY" });
+    expect(named(key, "welcome")).toBe("👋┃welcome");
+    expect(named(key, "events")).toBe("📅┃events");
+    expect(named(key, "open-a-ticket")).toBe("🎫┃open-a-ticket");
+    expect(named(key, "level-ups")).toBe("🏆┃level-ups");
+    expect(named(key, "general")).toBe("general");
+    expect(named(key, "staff-chat")).toBe("staff-chat");
+    expect(named(key, "Lounge 1")).toBe("Lounge 1");
+    const none = generateBlueprint({ ...base, channelEmojis: "NONE" });
+    expect(channels(none).every((channel) => channel.name === plainChannelName(channel.name))).toBe(true);
+    expect(named(none, "Join to Create")).toBe("Join to Create");
+    /* Drafts from before the question default to every channel, bar style. */
+    const { channelEmojis: _mode, emojiSeparator: _separator, ...legacy } = base;
+    expect(named(generateBlueprint(legacy as BuilderAnswers), "welcome")).toBe("👋┃welcome");
+    expect(templateFor("BUSINESS").answers).toMatchObject({ emojiCategories: false, channelEmojis: "KEY" });
+    expect(wantsEmoji("KEY", { purpose: undefined }, true)).toBe(true);
+    expect(wantsEmoji("KEY", { purpose: undefined }, false)).toBe(false);
+  });
+
+  it("finds an emoji by purpose, exact name, keyword, or type", () => {
+    expect(channelEmoji("anything", "birthdays")).toBe("🎂");
+    expect(channelEmoji("🎂┃birthdays")).toBe("🎂");
+    expect(channelEmoji("memes")).toBe("😂");
+    expect(channelEmoji("Meeting Room 2", undefined, "VOICE")).toBe("🗓️");
+    expect(channelEmoji("trading-market")).toBe("💰");
+    expect(channelEmoji("whatever")).toBe("💬");
+    expect(channelEmoji("whatever", undefined, "STAGE")).toBe("🔊");
+    expect(emojiChannelName("Big News", "📢", "TEXT", "BAR")).toBe("📢┃big-news");
+    expect(emojiChannelName("Big News", "📢", "TEXT", "SPACE")).toBe("📢-big-news");
+    expect(emojiChannelName("Lounge", "🔊", "VOICE", "SPACE")).toBe("🔊 Lounge");
+    expect(emojiChannelName("➕ Join", "🔊", "VOICE", "BAR")).toBe("➕ Join");
+    expect(defaultForumSetup("❓┃help").tags.map((tag) => tag.name)).toEqual(["Question", "Solved", "Bug"]);
   });
 
   it("rejects bad answers with plain messages", () => {
@@ -115,5 +188,8 @@ describe("generateBlueprint", () => {
     expect(() => generateBlueprint({ ...base, staffAccess: "SOME" as "ALL" })).toThrow("department channel");
     expect(() => generateBlueprint({ ...base, staffRanks: ["Admin", "admin"] })).toThrow("listed twice");
     expect(() => generateBlueprint({ ...base, voiceLounges: 11 })).toThrow("Voice lounges");
+    expect(() => generateBlueprint({ ...base, channelEmojis: "SOME" as "ALL" })).toThrow("emoji");
+    expect(() => generateBlueprint({ ...base, emojiSeparator: "DOT" as "BAR" })).toThrow("joined");
+    expect(() => generateBlueprint({ ...base, description: "x".repeat(2001) })).toThrow("description");
   });
 });

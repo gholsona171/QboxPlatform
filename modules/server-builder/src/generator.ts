@@ -5,8 +5,10 @@ import type {
   BuilderCategory,
   BuilderCategoryPurpose,
   BuilderChannel,
+  BuilderChannelEmojis,
   BuilderChannelPurpose,
   BuilderChannelType,
+  BuilderEmojiSeparator,
   BuilderForumSetup,
   BuilderOverwrite,
   BuilderPermission,
@@ -16,7 +18,7 @@ import type {
   BuilderTemplate,
 } from "./types.js";
 import { BUILDER_SECTIONS, EVERYONE } from "./types.js";
-import { channelSlug, isForumType, isTextType, keyOf, validateAnswers } from "./validation.js";
+import { channelSlug, hasLeadingEmoji, isForumType, isTextType, keyOf, plainChannelName, validateAnswers } from "./validation.js";
 
 const DEFAULT_STAFF = ["Owner", "Admin", "Senior Moderator", "Moderator", "Trial Moderator"];
 const STAFF_COLORS = ["#E74C3C", "#E67E22", "#F1C40F", "#2ECC71", "#1ABC9C", "#3498DB", "#9B59B6"];
@@ -43,6 +45,171 @@ const DEPARTMENT_EMOJI: readonly (readonly [RegExp, string])[] = [
   [/dev|engineer|tech/i, "💻"],
   [/design|art|creative/i, "🎨"],
 ];
+
+/** Channel emoji by purpose. */
+const PURPOSE_EMOJI: Readonly<Partial<Record<BuilderChannelPurpose, string>>> = {
+  welcome: "👋",
+  rules: "📜",
+  verify: "✅",
+  announcements: "📢",
+  giveaways: "🎁",
+  polls: "📊",
+  birthdays: "🎂",
+  suggestions: "💡",
+  starboard: "⭐",
+  "level-up": "🏆",
+  "tickets-panel": "🎫",
+  "fivem-status": "🟢",
+  "fivem-alerts": "🚨",
+  "mod-log": "🔨",
+  "server-log": "🧾",
+  "ticket-transcripts": "📁",
+  "applications-review": "🗳️",
+  "staff-log": "📒",
+  "voice-hub": "➕",
+};
+
+/** Channel emoji by exact (plain, lowercase) name. */
+const NAME_EMOJI: Readonly<Record<string, string>> = {
+  welcome: "👋",
+  rules: "📜",
+  verify: "✅",
+  announcements: "📢",
+  "server-updates": "🆕",
+  "company-updates": "🏢",
+  events: "📅",
+  giveaways: "🎁",
+  polls: "📊",
+  birthdays: "🎂",
+  general: "💬",
+  "off-topic": "🎲",
+  memes: "😂",
+  introductions: "🙋",
+  "bot-commands": "🤖",
+  suggestions: "💡",
+  starboard: "⭐",
+  "level-ups": "🏆",
+  "18-plus": "🔞",
+  screenshots: "📸",
+  clips: "🎬",
+  art: "🎨",
+  help: "❓",
+  feedback: "📝",
+  "open-a-ticket": "🎫",
+  "apply-here": "📋",
+  "event-chat": "🎪",
+  "event stage": "🎙️",
+  "town hall": "🎙️",
+  "join to create": "➕",
+  "server-status": "🟢",
+  "server-alerts": "🚨",
+  "how-to-connect": "🔗",
+  "city-rules": "📕",
+  "city-news": "📰",
+  "character-bios": "🎭",
+  "bug-reports": "🐛",
+  "patch-notes": "🛠️",
+  "looking-for-rp": "🔎",
+  "looking-for-group": "🔎",
+  "staff-announcements": "📣",
+  "staff-chat": "🛡️",
+  "staff-commands": "⌨️",
+  "staff voice": "🔒",
+  "staff meeting": "🔒",
+  "mod-log": "🔨",
+  "server-log": "🧾",
+  "ticket-transcripts": "📁",
+  "applications-review": "🗳️",
+  "staff-log": "📒",
+  watercooler: "☕",
+};
+
+/** Channel emoji by name keyword, checked in order after the exact table. */
+const KEYWORD_EMOJI: readonly (readonly [RegExp, string])[] = [
+  [/briefing room$/, "🎙️"],
+  [/meeting room/, "🗓️"],
+  [/^lounge/, "🔊"],
+  [/-briefings?$/, "📋"],
+  [/-reports?$/, "📄"],
+  [/-training$/, "🎓"],
+  [/radio$/, "📻"],
+  [/-chat$/, "💬"],
+  [/welcome|intro/, "👋"],
+  [/rule|guideline/, "📜"],
+  [/verif/, "✅"],
+  [/announce|news/, "📢"],
+  [/update|changelog|patch/, "🆕"],
+  [/event/, "📅"],
+  [/giveaway/, "🎁"],
+  [/poll|vote/, "📊"],
+  [/birthday/, "🎂"],
+  [/meme|funny/, "😂"],
+  [/bot|command/, "🤖"],
+  [/suggest|idea/, "💡"],
+  [/star/, "⭐"],
+  [/level|rank|xp/, "🏆"],
+  [/nsfw|18/, "🔞"],
+  [/screenshot|photo|picture|gallery/, "📸"],
+  [/clip|video/, "🎬"],
+  [/art|creative|design/, "🎨"],
+  [/help|question|support|faq/, "❓"],
+  [/feedback|review/, "📝"],
+  [/ticket/, "🎫"],
+  [/apply|application|recruit/, "📋"],
+  [/status|online/, "🟢"],
+  [/alert|outage|warning/, "🚨"],
+  [/connect|link|invite/, "🔗"],
+  [/bug|issue/, "🐛"],
+  [/rac(e|ing)/, "🏁"],
+  [/lfg|looking-for|find|team|group|squad|party/, "🔎"],
+  [/log$|logs$|-log-/, "🧾"],
+  [/staff|admin|mod/, "🛡️"],
+  [/trade|market|shop|store|sell|buy/, "💰"],
+  [/music/, "🎵"],
+  [/stream|live/, "📺"],
+  [/game|play/, "🎮"],
+  [/train|guide|tutorial|learn/, "🎓"],
+  [/report/, "📄"],
+  [/meeting|call/, "🗓️"],
+  [/voice|vc|talk|hangout/, "🔊"],
+  [/afk|sleep/, "💤"],
+];
+
+const VOICE_LIKE = new Set<BuilderChannelType>(["VOICE", "STAGE"]);
+
+/**
+ * A tasteful emoji for a channel: by purpose first, then by its exact name,
+ * then by a keyword in the name, then a plain default for its type.
+ */
+export function channelEmoji(name: string, purpose?: BuilderChannelPurpose | undefined, type: BuilderChannelType = "TEXT"): string {
+  const byPurpose = purpose ? PURPOSE_EMOJI[purpose] : undefined;
+  if (byPurpose) return byPurpose;
+  const plain = plainChannelName(name).toLowerCase();
+  const exact = NAME_EMOJI[plain] ?? NAME_EMOJI[plain.replaceAll("-", " ")];
+  if (exact) return exact;
+  const keyword = KEYWORD_EMOJI.find(([pattern]) => pattern.test(plain))?.[1];
+  if (keyword) return keyword;
+  return VOICE_LIKE.has(type) ? "🔊" : "💬";
+}
+
+/**
+ * Puts an emoji in front of a channel name in the chosen style. Text channels:
+ * `👋┃welcome` (BAR) or `👋-welcome` (SPACE). Voice: `🔊┃Lounge 1` or `🔊 Lounge 1`.
+ * A name that already starts with an emoji is left alone.
+ */
+export function emojiChannelName(name: string, emoji: string, type: BuilderChannelType, separator: BuilderEmojiSeparator): string {
+  if (hasLeadingEmoji(name)) return name;
+  const text = isTextType(type);
+  const joint = separator === "BAR" ? "┃" : text ? "-" : " ";
+  return `${emoji}${joint}${text ? channelSlug(name) : name.trim()}`;
+}
+
+/** Whether a channel gets an emoji under the answer: KEY means channels with a purpose or in a key category (Start Here, Information, Support). */
+export function wantsEmoji(mode: BuilderChannelEmojis, channel: Pick<BuilderChannel, "purpose">, keyCategory: boolean): boolean {
+  if (mode === "ALL") return true;
+  if (mode === "NONE") return false;
+  return channel.purpose !== undefined || keyCategory;
+}
 
 const READ_ME = "Read me first";
 const HOW_TO_POST = "Start a new post with the button above. Give it a clear title, pick a tag, and keep one topic per post.";
@@ -83,7 +250,7 @@ const FORUM_SETUPS: Readonly<Record<string, BuilderForumSetup>> = {
  * one. Media channels need an attachment in every post, so they get no first post.
  */
 export function defaultForumSetup(name: string, type: BuilderChannelType = "FORUM"): BuilderForumSetup {
-  const ready = FORUM_SETUPS[channelSlug(name)];
+  const ready = FORUM_SETUPS[channelSlug(plainChannelName(name))];
   const setup: BuilderForumSetup = ready ?? {
     guidelines: "One topic per post. Give it a clear title.",
     tags: [{ name: "Question", emoji: "❓" }, { name: "Discussion", emoji: "💬" }, { name: "Solved", emoji: "✅" }],
@@ -105,7 +272,7 @@ function allOn(): Record<BuilderSection, boolean> {
 function answers(serverType: BuilderServerType, serverName: string, overrides: Partial<BuilderAnswers>, off: readonly BuilderSection[]): BuilderAnswers {
   const include = allOn();
   for (const section of off) include[section] = false;
-  return { serverType, serverName, staffRanks: DEFAULT_STAFF, departments: [], staffAccess: "ALL", include, voiceLounges: 3, useMediaChannels: false, emojiCategories: true, ...overrides };
+  return { serverType, serverName, staffRanks: DEFAULT_STAFF, departments: [], staffAccess: "ALL", include, voiceLounges: 3, useMediaChannels: false, emojiCategories: true, channelEmojis: "ALL", emojiSeparator: "BAR", ...overrides };
 }
 
 /** Ready-made answer sets. */
@@ -135,7 +302,7 @@ export const BUILDER_TEMPLATES: readonly BuilderTemplate[] = [
     answers: answers(
       "BUSINESS",
       "My Company",
-      { staffRanks: ["Owner", "Manager", "Support Lead", "Support Agent"], departments: ["Sales", "Customer Success", "Development"], voiceLounges: 1, emojiCategories: false },
+      { staffRanks: ["Owner", "Manager", "Support Lead", "Support Agent"], departments: ["Sales", "Customer Success", "Development"], voiceLounges: 1, emojiCategories: false, channelEmojis: "KEY" },
       ["verification", "applications", "levels", "giveaways", "birthdays", "starboard", "media", "joinToCreate", "fivemStatus"],
     ),
   },
@@ -186,15 +353,20 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
       ...(isForumType(type) ? { forum: defaultForumSetup(finalName, type) } : {}),
     };
   };
+  const emojiMode: BuilderChannelEmojis = input.channelEmojis ?? "ALL";
+  const separator: BuilderEmojiSeparator = input.emojiSeparator ?? "BAR";
+  const decorate = (item: BuilderChannel, keyCategory: boolean): BuilderChannel =>
+    wantsEmoji(emojiMode, item, keyCategory) ? { ...item, name: emojiChannelName(item.name, channelEmoji(item.name, item.purpose, item.type), item.type, separator) } : item;
   const categories: BuilderCategory[] = [];
-  const category = (emoji: string, name: string, channels: readonly BuilderChannel[], overwrites: readonly BuilderOverwrite[], purpose?: BuilderCategoryPurpose): void => {
+  /** `keyCategory`: Start Here, Information, and Support, whose channels get an emoji under KEY. */
+  const category = (emoji: string, name: string, channels: readonly BuilderChannel[], overwrites: readonly BuilderOverwrite[], purpose?: BuilderCategoryPurpose, keyCategory = false): void => {
     if (channels.length === 0) return;
     const label = name.toUpperCase();
     categories.push({
       key: uniqueKey(`cat-${keyOf(name)}`),
       name: input.emojiCategories ? `${emoji} ${label}` : label,
       overwrites,
-      channels,
+      channels: channels.map((item) => decorate(item, keyCategory)),
       ...(purpose ? { purpose } : {}),
     });
   };
@@ -238,7 +410,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
       purpose: "verify",
       overwrites: mergeOverwrites(readOnly, [{ target: EVERYONE, allow: ["ViewChannel", "ReadMessageHistory"], deny: ["SendMessages"] }, { target: verifiedKey, allow: [], deny: ["ViewChannel"] }]),
     }));
-  category("👋", "Start Here", start, []);
+  category("👋", "Start Here", start, [], undefined, true);
 
   /* Information. */
   const info: BuilderChannel[] = [];
@@ -250,7 +422,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
   if (on("giveaways")) info.push(channel("TEXT", "giveaways", { topic: "Click the button on a giveaway to enter.", overwrites: readOnly, purpose: "giveaways" }));
   if (on("polls")) info.push(channel("TEXT", "polls", { topic: "Vote on server questions.", overwrites: readOnly, purpose: "polls" }));
   if (on("birthdays")) info.push(channel("TEXT", "birthdays", { topic: "Birthday wishes. Add yours with /birthday set.", overwrites: readOnly, purpose: "birthdays" }));
-  category("📢", "Information", info, gate);
+  category("📢", "Information", info, gate, undefined, true);
 
   /* Game server. */
   const game: BuilderChannel[] = [];
@@ -305,7 +477,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
   const support: BuilderChannel[] = [];
   if (on("tickets")) support.push(channel("TEXT", "open-a-ticket", { topic: "Need help? Open a ticket here.", overwrites: readOnly, purpose: "tickets-panel" }));
   if (on("applications")) support.push(channel("TEXT", "apply-here", { topic: "Apply to join the team.", overwrites: readOnly }));
-  category("🎫", "Support", support, gate, on("tickets") ? "tickets" : undefined);
+  category("🎫", "Support", support, gate, on("tickets") ? "tickets" : undefined, true);
 
   /* Events. */
   if (on("events"))
@@ -316,7 +488,7 @@ export function generateBlueprint(input: BuilderAnswers): BuilderBlueprint {
 
   /* Voice. */
   const voice: BuilderChannel[] = [];
-  if (on("joinToCreate")) voice.push(channel("VOICE", "➕ Join to Create", { purpose: "voice-hub" }));
+  if (on("joinToCreate")) voice.push(channel("VOICE", "Join to Create", { purpose: "voice-hub" }));
   for (let index = 1; index <= input.voiceLounges; index += 1) voice.push(channel("VOICE", business ? `Meeting Room ${index}` : `Lounge ${index}`));
   category("🔊", "Voice", voice, gate);
 

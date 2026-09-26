@@ -3,6 +3,7 @@ import {
   BuilderService,
   InMemoryBuilderRepository,
   templateFor,
+  type BlueprintDesigner,
   type BuilderGateway,
   type BuilderLinkPort,
 } from "@qbox/server-builder";
@@ -33,7 +34,7 @@ function gateway(): BuilderGateway {
   };
 }
 
-function setup(allowed: readonly string[] = ["builder.manage"]) {
+function setup(allowed: readonly string[] = ["builder.manage"], designer?: BlueprintDesigner) {
   const calls: { permission: string; mutation: boolean }[] = [];
   const context: ApiFeatureContext = {
     guildId: GUILD,
@@ -48,7 +49,7 @@ function setup(allowed: readonly string[] = ["builder.manage"]) {
   const tasks: (() => Promise<void>)[] = [];
   const links: BuilderLinkPort = { apply: async (link) => `${link} linked` };
   const repository = new InMemoryBuilderRepository();
-  const service = new BuilderService(repository, gateway(), links, { schedule: (task) => void tasks.push(task) });
+  const service = new BuilderService(repository, gateway(), links, { schedule: (task) => void tasks.push(task), designer });
   const server = createApiServer({
     configuration: ApiConfiguration.from({ environment: "test", publicBaseUrl: "http://127.0.0.1:3000", buildVersion: "builder-test" }),
     registerRoutes: (instance) => builderApiFeature(service).register(instance, context),
@@ -94,13 +95,13 @@ describe("server builder routes", () => {
     const { staffAccess: _staffAccess, ...legacy } = templateFor("FIVEM_RP").answers;
     const saved = (await server.inject(json("POST", "/api/v1/builder/generate", { answers: legacy, save: true, expectedRevision: 0 }))).json().data;
     expect(saved.answers.staffAccess).toBe("ALL");
-    const help = saved.blueprint.categories.flatMap((category: { channels: { name: string; type: string }[] }) => category.channels).find((channel: { name: string }) => channel.name === "help");
+    const help = saved.blueprint.categories.flatMap((category: { channels: { name: string; type: string }[] }) => category.channels).find((channel: { name: string }) => channel.name.endsWith("help"));
     expect(help.forum.firstPost.pin).toBe(true);
     const edited = {
       ...saved.blueprint,
       categories: saved.blueprint.categories.map((category: { channels: { name: string; overwrites: unknown[]; forum?: unknown }[] }) => ({
         ...category,
-        channels: category.channels.map((channel) => channel.name === "help"
+        channels: category.channels.map((channel) => channel.name.endsWith("help")
           ? {
             ...channel,
             overwrites: [{ target: "@everyone", allow: [], deny: ["ViewChannel"] }, { target: "dept-ems", allow: ["ViewChannel", "SendMessages"], deny: [] }],
@@ -114,7 +115,7 @@ describe("server builder routes", () => {
     expect(updated.statusCode).toBe(200);
     expect(updated.json().data.answers.staffAccess).toBe("NONE");
     expect(updated.json().data.access.help).toEqual({ see: "Verified, EMS", post: "Verified, EMS" });
-    const tooMany = { ...edited, categories: edited.categories.map((category: { channels: { name: string; forum?: { tags: unknown[] } }[] }) => ({ ...category, channels: category.channels.map((channel) => channel.name === "help" ? { ...channel, forum: { ...channel.forum, tags: Array.from({ length: 21 }, (_, index) => ({ name: `t${index}` })) } } : channel) })) };
+    const tooMany = { ...edited, categories: edited.categories.map((category: { channels: { name: string; forum?: { tags: unknown[] } }[] }) => ({ ...category, channels: category.channels.map((channel) => channel.name.endsWith("help") ? { ...channel, forum: { ...channel.forum, tags: Array.from({ length: 21 }, (_, index) => ({ name: `t${index}` })) } } : channel) })) };
     expect((await server.inject(json("PUT", "/api/v1/builder/draft", { answers, blueprint: tooMany, expectedRevision: 2 }))).statusCode).toBe(400);
     expect((await server.inject(json("PUT", "/api/v1/builder/draft", { answers: { ...answers, staffAccess: "SOME" }, blueprint: edited, expectedRevision: 2 }))).statusCode).toBe(400);
   });
@@ -139,6 +140,58 @@ describe("server builder routes", () => {
     expect((await server.inject({ method: "GET", url: `/api/v1/builder/runs/${run.id}`, headers: host })).json().data.run.status).toBe("UNDONE");
     expect((await server.inject({ method: "GET", url: "/api/v1/builder/runs/unknown", headers: host })).statusCode).toBe(404);
     expect((await server.inject(json("POST", "/api/v1/builder/runs", { mode: "WIPE", links: [] }))).statusCode).toBe(400);
+  });
+
+  it("accepts the channel emoji answers and defaults them for older drafts", async () => {
+    const { server } = setup();
+    const { channelEmojis: _mode, emojiSeparator: _separator, ...legacy } = templateFor("GAMING").answers;
+    const saved = (await server.inject(json("POST", "/api/v1/builder/generate", { answers: legacy, save: true, expectedRevision: 0 }))).json().data;
+    expect(saved.answers).toMatchObject({ channelEmojis: "ALL", emojiSeparator: "BAR" });
+    const names = saved.blueprint.categories.flatMap((category: { channels: { name: string }[] }) => category.channels.map((channel) => channel.name));
+    expect(names).toContain("👋┃welcome");
+    const spaced = (await server.inject(json("POST", "/api/v1/builder/generate", { answers: { ...legacy, channelEmojis: "KEY", emojiSeparator: "SPACE", description: "A gaming server" } }))).json().data;
+    const spacedNames = spaced.blueprint.categories.flatMap((category: { channels: { name: string }[] }) => category.channels.map((channel) => channel.name));
+    expect(spacedNames).toContain("👋-welcome");
+    expect(spacedNames).toContain("general");
+    expect((await server.inject(json("POST", "/api/v1/builder/generate", { answers: { ...legacy, channelEmojis: "SOME" } }))).statusCode).toBe(400);
+  });
+
+  it("designs a draft from a description, or says the AI designer is missing", async () => {
+    const without = setup();
+    expect((await without.server.inject({ method: "GET", url: "/api/v1/builder/overview", headers: host })).json().data.aiAvailable).toBe(false);
+    const missing = await without.server.inject(json("POST", "/api/v1/builder/design", { prompt: "A Rust server", expectedRevision: 0 }));
+    expect(missing.statusCode).toBe(503);
+    expect(missing.json().errors[0].message).toContain("OPENAI_API_KEY");
+
+    const prompts: string[] = [];
+    const designer: BlueprintDesigner = {
+      design: async (prompt) => {
+        prompts.push(prompt);
+        return {
+          serverType: "GAMING",
+          serverName: "Rust Haven",
+          extraCategories: [{ name: "Trading", emoji: "💰", access: "everyone", channels: [{ name: "market", type: "TEXT" }] }],
+          summary: "A Rust community with a market.",
+        };
+      },
+    };
+    const { server, calls } = setup(["builder.manage"], designer);
+    expect((await server.inject({ method: "GET", url: "/api/v1/builder/overview", headers: host })).json().data.aiAvailable).toBe(true);
+    const designed = await server.inject(json("POST", "/api/v1/builder/design", { prompt: "A Rust community with a market", expectedRevision: 0 }));
+    expect(designed.statusCode).toBe(200);
+    expect(designed.json().data.summary).toBe("A Rust community with a market.");
+    expect(designed.json().data.draft).toMatchObject({ revision: 1, answers: { serverType: "GAMING", serverName: "Rust Haven", description: "A Rust community with a market" } });
+    expect(designed.json().data.draft.blueprint.categories.map((category: { name: string }) => category.name)).toContain("💰 TRADING");
+    expect(prompts).toEqual(["A Rust community with a market"]);
+    expect(calls.at(-1)).toEqual({ permission: "builder.manage", mutation: true });
+    expect((await server.inject(json("POST", "/api/v1/builder/design", { prompt: "Again", expectedRevision: 0 }))).statusCode).toBe(409);
+    expect((await server.inject(json("POST", "/api/v1/builder/design", { prompt: "", expectedRevision: 1 }))).statusCode).toBe(400);
+    expect((await server.inject(json("POST", "/api/v1/builder/design", { prompt: "x".repeat(2001), expectedRevision: 1 }))).statusCode).toBe(400);
+
+    const junk = setup(["builder.manage"], { design: async () => ({ nope: true }) as never });
+    const unexpected = await junk.server.inject(json("POST", "/api/v1/builder/design", { prompt: "Hi", expectedRevision: 0 }));
+    expect(unexpected.statusCode).toBe(503);
+    expect(unexpected.json().errors[0].message).toContain("unexpected");
   });
 
   it("marks runs interrupted by a restart as failed when the server starts", async () => {
