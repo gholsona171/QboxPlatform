@@ -408,7 +408,9 @@ export type BuilderRunStatus = (typeof BuilderRunStatus)[keyof typeof BuilderRun
 
 export const BuilderRunMode = {
   ADD: 'ADD',
-  FRESH: 'FRESH'
+  FRESH: 'FRESH',
+  WIPE: 'WIPE',
+  WIPE_AND_BUILD: 'WIPE_AND_BUILD'
 } as const
 
 export type BuilderRunMode = (typeof BuilderRunMode)[keyof typeof BuilderRunMode]
@@ -418,7 +420,9 @@ export const BuilderItemKind = {
   ROLE: 'ROLE',
   CATEGORY: 'CATEGORY',
   CHANNEL: 'CHANNEL',
-  LINK: 'LINK'
+  LINK: 'LINK',
+  EMOJI: 'EMOJI',
+  STICKER: 'STICKER'
 } as const
 
 export type BuilderItemKind = (typeof BuilderItemKind)[keyof typeof BuilderItemKind]
@@ -428,7 +432,8 @@ export const BuilderItemStatus = {
   CREATED: 'CREATED',
   SKIPPED: 'SKIPPED',
   FAILED: 'FAILED',
-  DELETED: 'DELETED'
+  DELETED: 'DELETED',
+  KEPT: 'KEPT'
 } as const
 
 export type BuilderItemStatus = (typeof BuilderItemStatus)[keyof typeof BuilderItemStatus]

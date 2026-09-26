@@ -47,11 +47,13 @@ const VOICE_MANAGE = ["MuteMembers", "MoveMembers"];
 const ACCESS_CHOICES = [["default", "Default"], ["hidden", "Hidden"], ["see", "See only"], ["post", "See & post"]];
 const FORUM_LIMITS = { guidelines: 4096, tags: 20, tagName: 20, postTitle: 100, postContent: 2000 };
 const STATUS_LABELS = { QUEUED: "waiting", RUNNING: "running", SUCCEEDED: "finished", PARTIAL: "finished with problems", FAILED: "failed", UNDONE: "undone" };
-const ITEM_LABELS = { ROLE: "Role", CATEGORY: "Category", CHANNEL: "Channel", LINK: "Feature" };
+const MODE_LABELS = { ADD: "Add to server", FRESH: "Fresh layout", WIPE: "Wipe server", WIPE_AND_BUILD: "Wipe, then build" };
+const WIPE_MODES = new Set(["WIPE", "WIPE_AND_BUILD"]);
+const ITEM_LABELS = { ROLE: "Role", CATEGORY: "Category", CHANNEL: "Channel", LINK: "Feature", EMOJI: "Emoji", STICKER: "Sticker" };
 const POLL_MS = 2000;
 
 /** `panel` is the one open inline editor on the blueprint: an access editor or a forum setup editor. */
-const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined, panel: undefined, designing: false };
+const view = { tab: "questions", overview: undefined, answers: undefined, runs: [], selected: undefined, error: undefined, panel: undefined, designing: false, buildMode: "ADD", wipePreview: undefined };
 let container;
 let pollTimer;
 
@@ -72,6 +74,7 @@ async function load() {
     const active = view.runs.find((run) => run.status === "QUEUED" || run.status === "RUNNING");
     const selectedId = active?.id ?? view.selected?.run.id ?? view.overview.lastRun?.id;
     view.selected = selectedId ? (await getJson(`builder/runs/${encodeURIComponent(selectedId)}`)).data : undefined;
+    view.wipePreview = view.overview.wipe?.allowed ? await getJson("builder/wipe/preview").then((response) => response.data).catch(() => undefined) : undefined;
     view.error = undefined;
     if (active) schedulePoll();
   } catch (error) {
@@ -488,19 +491,54 @@ function buildTab() {
     ${preflight.messages.length ? `<ul class="checklist">${preflight.messages.map((message) => `<li>${escapeHtml(message)}</li>`).join("")}</ul>` : `<p class="microcopy">${BRAND.name} can create roles and channels.</p>`}
   </div>`;
   if (active) return `${status}${runProgress(view.selected)}`;
-  if (!draft) return `${status}${noDraft()}`;
+  if (!draft) return `${status}${noDraft()}${wipeCard()}`;
   const { summary, links } = draft;
+  const wipeMode = view.buildMode === "WIPE_AND_BUILD";
+  const buttonLabel = wipeMode ? `Wipe the server, then build ${summary.roles} roles and ${summary.totalChannels} channels` : `Build ${summary.roles} roles and ${summary.totalChannels} channels`;
   return `${status}
     <form class="card form-grid readable-form" data-b-form="build">
       <h3>How to build</h3>
-      <label class="checkbox full"><input type="radio" name="mode" value="ADD" checked> Add to my server: skip roles and channels that already exist with the same name</label>
-      <label class="checkbox full"><input type="radio" name="mode" value="FRESH"> Fresh layout: create everything, even if the names already exist</label>
-      <p class="microcopy full">Nothing already in your server is ever deleted. You can undo a build later; that only removes what the build created.</p>
+      <label class="checkbox full"><input type="radio" name="mode" value="ADD" ${view.buildMode === "ADD" ? "checked" : ""}> Add to my server: skip roles and channels that already exist with the same name</label>
+      <label class="checkbox full"><input type="radio" name="mode" value="FRESH" ${view.buildMode === "FRESH" ? "checked" : ""}> Fresh layout: create everything, even if the names already exist</label>
+      <label class="checkbox full"><input type="radio" name="mode" value="WIPE_AND_BUILD" ${wipeMode ? "checked" : ""}> Wipe the server first, then build (for a first install): erase everything in Discord, then create this layout fresh</label>
+      <p class="microcopy full">Add and Fresh never delete anything. Wipe-first deletes channels, roles, and (optionally) emojis before building; ${BRAND.name} keeps a copy of the old layout so you can rebuild it.</p>
+      ${wipeMode ? wipeConfirm() : ""}
       <h3>Connect ${BRAND.name} features</h3>
       ${links.map((link) => `<label class="checkbox full"><input type="checkbox" name="links" value="${escapeHtml(link.link)}" ${link.available ? "checked" : "disabled"}> <strong>${escapeHtml(link.label)}</strong>&nbsp;<span class="microcopy">${escapeHtml(link.available ? link.description : "Not in this blueprint.")}</span></label>`).join("")}
       <p class="microcopy full">This saves the new channels and roles into each feature's settings. Your other settings are kept.</p>
-      <button class="button primary full" ${preflight.ready ? "" : "disabled"}>Build ${summary.roles} roles and ${summary.totalChannels} channels</button>
-    </form>`;
+      <button class="button ${wipeMode ? "danger" : "primary"} full" ${preflight.ready && (!wipeMode || view.wipePreview) ? "" : "disabled"}>${escapeHtml(buttonLabel)}</button>
+    </form>
+    ${wipeCard()}`;
+}
+
+/** The include toggles, counts, kept list, typed-name confirmation, and "I understand" checkbox for a wipe. */
+function wipeConfirm() {
+  const preview = view.wipePreview;
+  if (!preview) return `<p class="microcopy full">Loading the wipe details...</p>`;
+  return `<div class="wipe-confirm full">
+    ${preview.missing.length ? `<ul class="checklist">${preview.missing.map((message) => `<li>${badge("not ready")} ${escapeHtml(message)}</li>`).join("")}</ul>` : ""}
+    <p><strong>This deletes:</strong> ${preview.channels} channels, ${preview.categories} categories, ${preview.roles} roles${preview.emojis || preview.stickers ? ` (and, if ticked, ${preview.emojis} emojis and ${preview.stickers} stickers)` : ""}.</p>
+    <label class="checkbox"><input type="checkbox" name="incChannels" checked> Delete channels and categories</label>
+    <label class="checkbox"><input type="checkbox" name="incRoles" checked> Delete roles (except @everyone, bot/integration roles, and roles above the ${BRAND.name} role)</label>
+    <label class="checkbox"><input type="checkbox" name="incEmojis"> Delete custom emojis (${preview.emojis}) and stickers (${preview.stickers})</label>
+    ${preview.kept.length ? `<div><strong class="microcopy">Kept no matter what:</strong><ul class="checklist">${preview.kept.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul></div>` : ""}
+    <p class="microcopy">Messages and channels cannot be recovered. ${BRAND.name} keeps a copy of the layout so you can rebuild it.</p>
+    <label class="full">Type the server name to confirm (case-sensitive): <strong>${escapeHtml(preview.serverName)}</strong><input name="confirmName" placeholder="${escapeHtml(preview.serverName)}" autocomplete="off"></label>
+    <label class="checkbox"><input type="checkbox" name="understand"> I understand this cannot be undone.</label>
+  </div>`;
+}
+
+/** The danger "Wipe server" card at the bottom of the Build tab. */
+function wipeCard() {
+  const wipe = view.overview.wipe;
+  if (!wipe?.allowed)
+    return `<div class="card danger-zone"><h3>Wipe server</h3><p class="microcopy">${escapeHtml(wipe?.reason || "Only the server owner or an administrator can wipe the server.")}</p></div>`;
+  return `<form class="card danger-zone form-grid readable-form" data-b-form="wipe">
+    <h3 class="full">Wipe server</h3>
+    <p class="microcopy full">Erase everything inside Discord so you can start clean. This does not delete the server, members, or bans.</p>
+    ${wipeConfirm()}
+    <button class="button danger full" ${view.wipePreview ? "" : "disabled"}>Wipe the server</button>
+  </form>`;
 }
 
 function runProgress(detailData) {
@@ -512,7 +550,7 @@ function runProgress(detailData) {
   return `<div class="card">
     <div class="split-line"><h3>Build ${escapeHtml(dateTime(run.createdAt))}</h3>${badge(STATUS_LABELS[run.status])}</div>
     <progress class="builder-progress" max="${Math.max(run.planned, 1)}" value="${finished}"></progress>
-    <p class="microcopy">${run.done} created, ${run.skipped} skipped, ${run.failed} failed of ${run.planned}.${running ? " This page updates by itself." : ""}</p>
+    <p class="microcopy">${WIPE_MODES.has(run.mode) ? `${run.done} removed, ${run.skipped} kept, ${run.failed} failed` : `${run.done} created, ${run.skipped} skipped, ${run.failed} failed`} of ${run.planned}.${running ? " This page updates by itself." : ""}</p>
     ${run.error ? `<p class="microcopy">${escapeHtml(run.error)}</p>` : ""}
     ${run.warnings.length ? `<ul class="checklist">${run.warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul>` : ""}
     <ul class="timeline builder-log">${log || `<li>Starting...</li>`}</ul>
@@ -549,11 +587,12 @@ function historyTab() {
   const rows = view.runs.map((run) => row([
     ["When", `${escapeHtml(relative(run.createdAt))}`],
     ["Status", badge(STATUS_LABELS[run.status])],
-    ["Mode", run.mode === "ADD" ? "Add to server" : "Fresh layout"],
-    ["Result", `${run.done} created, ${run.skipped} skipped, ${run.failed} failed`],
+    ["Mode", MODE_LABELS[run.mode] ?? run.mode],
+    ["Result", WIPE_MODES.has(run.mode) ? `${run.done} removed, ${run.skipped} kept, ${run.failed} failed` : `${run.done} created, ${run.skipped} skipped, ${run.failed} failed`],
     ["By", escapeHtml(run.startedByName)],
     ["", `<button type="button" class="button compact" data-b-view-run="${escapeHtml(run.id)}">View</button>
-      ${run.status !== "UNDONE" && run.status !== "RUNNING" && run.status !== "QUEUED" && run.done > 0 ? `<button type="button" class="button compact danger" data-b-undo="${escapeHtml(run.id)}">Undo this build</button>` : ""}`],
+      ${WIPE_MODES.has(run.mode) ? `<button type="button" class="button compact" data-b-load-blueprint="${escapeHtml(run.id)}">Load as blueprint</button>` : ""}
+      ${!WIPE_MODES.has(run.mode) && run.status !== "UNDONE" && run.status !== "RUNNING" && run.status !== "QUEUED" && run.done > 0 ? `<button type="button" class="button compact danger" data-b-undo="${escapeHtml(run.id)}">Undo this build</button>` : ""}`],
   ], `class="${run.id === view.selected?.run.id ? "selected" : ""}"`));
   return `<section class="grid main-detail">
     <div>${table(["When", "Status", "Mode", "Result", "By", ""], rows, "No builds yet.")}</div>
@@ -685,6 +724,26 @@ function bind() {
     if (!(await confirmAction({ title: `Remove ${category.name}?`, body: `Its ${category.channels.length} channels are removed from the blueprint too.`, confirmText: "Remove" }))) return;
     void editBlueprint((blueprint) => { blueprint.categories = blueprint.categories.filter((item) => item.key !== category.key); }, "Category removed.");
   }));
+  container.querySelectorAll("input[name=mode]").forEach((input) => input.addEventListener("change", () => {
+    if (!input.checked) return;
+    view.buildMode = input.value;
+    render();
+  }));
+  container.querySelectorAll("[data-b-load-blueprint]").forEach((button) => button.addEventListener("click", async () => {
+    if (!(await confirmAction({ title: "Load this layout as a blueprint?", body: "This replaces your current blueprint with the layout saved before the wipe, including any edits you made. Messages cannot be recovered.", confirmText: "Load blueprint" }))) return;
+    try {
+      const result = (await sendJson(`builder/runs/${encodeURIComponent(button.dataset.bLoadBlueprint)}/load-blueprint`, "POST", {})).data;
+      view.overview.draft = result.draft;
+      view.answers = structuredClone(result.draft.answers);
+      notify([`Loaded the saved layout as your blueprint.`, ...result.notes].join(" "));
+      view.tab = "blueprint";
+      history.replaceState({}, "", appPath("/builder?tab=blueprint"));
+      render();
+    } catch (error) {
+      notify(error.message || "That did not work.", "error");
+      if (error.status === 409) await load();
+    }
+  }));
   container.querySelectorAll("[data-b-view-run]").forEach((button) => button.addEventListener("click", async () => {
     try {
       view.selected = (await getJson(`builder/runs/${encodeURIComponent(button.dataset.bViewRun)}`)).data;
@@ -772,6 +831,26 @@ async function submit(form) {
       const mode = String(data.get("mode"));
       const links = data.getAll("links");
       const { summary } = view.overview.draft;
+      if (mode === "WIPE_AND_BUILD") {
+        const wipe = readWipeConfirm(form);
+        if (!wipe) return undefined;
+        const ok = await confirmAction({
+          title: "Wipe the server, then build?",
+          body: `${BRAND.name} will delete everything in Discord (channels, roles${wipe.include.emojis ? ", emojis and stickers" : ""}), then build ${summary.roles} roles and ${summary.totalChannels} channels. Messages and channels cannot be recovered. ${BRAND.name} keeps a copy of the layout so you can rebuild it.`,
+          confirmText: "Wipe and build",
+        });
+        if (!ok) return undefined;
+        try {
+          const run = (await sendJson("builder/runs", "POST", { mode, links, confirmName: wipe.confirmName, include: wipe.include })).data;
+          view.selected = { run, items: [] };
+          view.buildMode = "ADD";
+          notify("Wipe and build started.");
+          schedulePoll();
+        } catch (error) {
+          notify(error.message || "That did not work.", "error");
+        }
+        return render();
+      }
       const ok = await confirmAction({
         title: "Build your server now?",
         body: `${BRAND.name} will create up to ${summary.roles} roles and ${summary.totalChannels} channels and categories${links.length ? `, then connect ${links.length} features` : ""}. ${mode === "ADD" ? "Items that already exist are skipped." : "Everything is created new."} Nothing is deleted.`,
@@ -788,7 +867,52 @@ async function submit(form) {
       }
       return render();
     }
+    case "wipe": {
+      const wipe = readWipeConfirm(form);
+      if (!wipe) return undefined;
+      const ok = await confirmAction({
+        title: "Wipe the server now?",
+        body: `${BRAND.name} will delete everything in Discord (channels, roles${wipe.include.emojis ? ", emojis and stickers" : ""}). Messages and channels cannot be recovered. ${BRAND.name} keeps a copy of the layout so you can rebuild it.`,
+        confirmText: "Wipe the server",
+      });
+      if (!ok) return undefined;
+      try {
+        const run = (await sendJson("builder/wipe", "POST", { confirmName: wipe.confirmName, include: wipe.include })).data;
+        view.selected = { run, items: [] };
+        notify("Wipe started.");
+        schedulePoll();
+      } catch (error) {
+        notify(error.message || "That did not work.", "error");
+      }
+      return render();
+    }
     default:
       return undefined;
   }
+}
+
+/** Reads the wipe confirmation fields; notifies and returns undefined when the name is not typed exactly or "I understand" is unticked. */
+function readWipeConfirm(form) {
+  const preview = view.wipePreview;
+  const confirmName = String(new FormData(form).get("confirmName") ?? "");
+  if (!preview) {
+    notify("The wipe details are still loading. Try again in a moment.", "error");
+    return undefined;
+  }
+  if (form.elements.understand?.checked !== true) {
+    notify("Tick \"I understand\" to confirm the wipe.", "error");
+    return undefined;
+  }
+  if (confirmName !== preview.serverName) {
+    notify("Type the server name exactly (it is case-sensitive) to confirm.", "error");
+    return undefined;
+  }
+  return {
+    confirmName,
+    include: {
+      channels: form.elements.incChannels?.checked === true,
+      roles: form.elements.incRoles?.checked === true,
+      emojis: form.elements.incEmojis?.checked === true,
+    },
+  };
 }

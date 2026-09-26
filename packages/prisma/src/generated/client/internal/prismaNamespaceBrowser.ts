@@ -860,6 +860,7 @@ export const BuilderRunScalarFieldEnum = {
   startedByName: 'startedByName',
   warnings: 'warnings',
   error: 'error',
+  snapshot: 'snapshot',
   startedAt: 'startedAt',
   finishedAt: 'finishedAt',
   undoneAt: 'undoneAt',

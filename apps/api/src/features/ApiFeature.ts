@@ -23,11 +23,16 @@ export type ApiPermissionGuard = (request: FastifyRequest, permission: Permissio
 /** Requires any signed-in member of the configured server. */
 export type ApiMemberGuard = (request: FastifyRequest, options: ApiGuardOptions) => Promise<ApiIdentity>;
 
+/** Whether the request's signed-in member holds `platform.owner`. */
+export type ApiPlatformOwnerCheck = (request: FastifyRequest) => Promise<boolean>;
+
 export interface ApiFeatureContext {
   /** Discord guild the platform manages. */
   readonly guildId: string;
   readonly guard: ApiPermissionGuard;
   readonly member: ApiMemberGuard;
+  /** Resolves whether the caller is a platform owner. Optional; absent in minimal test contexts. */
+  readonly platformOwner?: ApiPlatformOwnerCheck | undefined;
 }
 
 /** A pluggable API feature that registers its own `/api/v1/...` routes. */

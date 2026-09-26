@@ -91,6 +91,7 @@ export const DISCORD_PERMISSION = {
   manageNicknames: 1n << 27n,
   manageRoles: 1n << 28n,
   manageWebhooks: 1n << 29n,
+  manageGuildExpressions: 1n << 30n,
   useApplicationCommands: 1n << 31n,
   requestToSpeak: 1n << 32n,
   manageEvents: 1n << 33n,

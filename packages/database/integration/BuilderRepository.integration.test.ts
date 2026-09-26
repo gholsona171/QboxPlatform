@@ -51,4 +51,29 @@ describe("PrismaBuilderRepository", () => {
     expect((await repository.updateRun(run.id, { error: null })).error).toBeUndefined();
     expect(await repository.listRuns(guildId, 10)).toHaveLength(1);
   });
+
+  it("stores a wipe run with its snapshot and the new statuses and kinds", async () => {
+    const snapshot = {
+      guildName: "Test City",
+      botUserId: "900000000000000001",
+      community: true,
+      rulesChannelId: "600000000000000201",
+      roles: [{ id: "600000000000000102", name: "Member", color: 3447003, hoist: false, mentionable: false, permissions: "1024", position: 2, managed: false }],
+      channels: [{ id: "600000000000000202", name: "general", type: 0, nsfw: false, slowmodeSeconds: 0, userLimit: 0, position: 0, overwrites: [] }],
+      emojis: [{ id: "600000000000000300", name: "pepe" }],
+      stickers: [],
+    } as const;
+    const run = await repository.createRun({ guildId, mode: "WIPE", links: [], planned: 3, startedById: "804859666655739997", startedByName: "Jay", snapshot });
+    expect(run.mode).toBe("WIPE");
+    const loaded = await repository.getRun(guildId, run.id);
+    expect(loaded?.snapshot).toEqual(JSON.parse(JSON.stringify(snapshot)));
+    await repository.addItem({ runId: run.id, kind: "CHANNEL", key: "600000000000000202", name: "general", status: "DELETED", discordId: "600000000000000202" });
+    await repository.addItem({ runId: run.id, kind: "EMOJI", key: "600000000000000300", name: "pepe", status: "DELETED", discordId: "600000000000000300" });
+    await repository.addItem({ runId: run.id, kind: "STICKER", key: "600000000000000301", name: "wave", status: "KEPT", note: "Above the role." });
+    const items = await repository.listItems(run.id);
+    expect(items.map((item) => [item.kind, item.status])).toEqual([["CHANNEL", "DELETED"], ["EMOJI", "DELETED"], ["STICKER", "KEPT"]]);
+    const wipeAndBuild = await repository.createRun({ guildId, mode: "WIPE_AND_BUILD", links: [], planned: 0, startedById: "804859666655739997", startedByName: "Jay" });
+    expect(wipeAndBuild.mode).toBe("WIPE_AND_BUILD");
+    expect(wipeAndBuild.snapshot).toBeUndefined();
+  });
 });

@@ -41,6 +41,11 @@ export {
   type BuilderPlan,
   type BuilderServiceOptions,
   type BuilderStartInput,
+  type LoadBlueprintResult,
+  type WipeAuthorizationOptions,
+  type WipeEligibility,
+  type WipeStartInput,
 } from "./BuilderService.js";
+export { colorHex, permissionNames, snapshotToBlueprint } from "./wipe.js";
 export { DiscordRestBuilderGateway } from "./DiscordRestBuilderGateway.js";
 export { InMemoryBuilderRepository } from "./InMemoryBuilderRepository.js";

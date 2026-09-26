@@ -10,8 +10,10 @@ enum BuilderRunStatus {
 }
 
 enum BuilderRunMode {
-  ADD   @map("add")
-  FRESH @map("fresh")
+  ADD            @map("add")
+  FRESH          @map("fresh")
+  WIPE           @map("wipe")
+  WIPE_AND_BUILD @map("wipe_and_build")
 }
 
 enum BuilderItemKind {
@@ -19,6 +21,8 @@ enum BuilderItemKind {
   CATEGORY @map("category")
   CHANNEL  @map("channel")
   LINK     @map("link")
+  EMOJI    @map("emoji")
+  STICKER  @map("sticker")
 }
 
 enum BuilderItemStatus {
@@ -26,6 +30,7 @@ enum BuilderItemStatus {
   SKIPPED @map("skipped")
   FAILED  @map("failed")
   DELETED @map("deleted")
+  KEPT    @map("kept")
 }
 
 model BuilderDraft {
@@ -54,6 +59,7 @@ model BuilderRun {
   startedByName String           @map("started_by_name")
   warnings      String[]
   error         String?
+  snapshot      Json?            @db.JsonB
   startedAt     DateTime?        @map("started_at") @db.Timestamptz(3)
   finishedAt    DateTime?        @map("finished_at") @db.Timestamptz(3)
   undoneAt      DateTime?        @map("undone_at") @db.Timestamptz(3)

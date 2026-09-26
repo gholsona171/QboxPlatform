@@ -24,6 +24,10 @@ import {
   type ExistingRole,
   type ForumPostInput,
   type RoleCreateInput,
+  type WipeExpression,
+  type WipeLayout,
+  type WipeLayoutChannel,
+  type WipeLayoutRole,
 } from "../src/index.js";
 
 const GUILD = "100000000000000001";
@@ -42,11 +46,22 @@ class MemoryGateway implements BuilderGateway {
   public pinned: string[] = [];
   public failPosts = false;
   public failPins = false;
+  /** Wipe: full layout returned by readLayout, plus expressions. */
+  public layout: WipeLayout = { name: "Test City", community: false, roles: [], channels: [] };
+  public emojis: WipeExpression[] = [];
+  public stickers: WipeExpression[] = [];
+  public deleteChannelError = new Map<string, unknown>();
+  public deleteRoleError = new Map<string, unknown>();
   private next = 1000;
 
   public async listRoles() { return [...this.roles]; }
   public async listChannels() { return this.channels.map(({ input: _input, ...channel }) => channel); }
   public async botStatus() { return this.status; }
+  public async readLayout() { return this.layout; }
+  public async listEmojis() { return [...this.emojis]; }
+  public async listStickers() { return [...this.stickers]; }
+  public async deleteEmoji(_guild: string, emojiId: string) { this.deleted.push(emojiId); }
+  public async deleteSticker(_guild: string, stickerId: string) { this.deleted.push(stickerId); }
   public async createRole(_guild: string, input: RoleCreateInput) {
     if (this.failRole.has(input.name)) throw new Error("Missing Permissions");
     const id = this.id();
@@ -71,10 +86,14 @@ class MemoryGateway implements BuilderGateway {
     this.pinned.push(threadId);
   }
   public async deleteChannel(channelId: string) {
+    const error = this.deleteChannelError.get(channelId);
+    if (error) throw error;
     this.deleted.push(channelId);
     this.channels = this.channels.filter((channel) => channel.id !== channelId);
   }
   public async deleteRole(_guild: string, roleId: string) {
+    const error = this.deleteRoleError.get(roleId);
+    if (error) throw error;
     this.deleted.push(roleId);
     this.roles = this.roles.filter((role) => role.id !== roleId);
   }
@@ -373,6 +392,152 @@ describe("BuilderService designs from a description", () => {
     await expect(junk.designFromPrompt(GUILD, "   ", 0)).rejects.toMatchObject({ code: "INVALID_INPUT" });
     await expect(junk.designFromPrompt(GUILD, "x".repeat(2001), 0)).rejects.toMatchObject({ code: "INVALID_INPUT" });
     expect(await junk.draft(GUILD)).toBeUndefined();
+  });
+});
+
+/* ---------- Wipe ---------- */
+
+const ROLE_EVERYONE: WipeLayoutRole = { id: GUILD, name: "@everyone", color: 0, hoist: false, mentionable: false, permissions: "0", position: 0, managed: false };
+const ROLE_BOT: WipeLayoutRole = { id: "600000000000000101", name: "Qbox", color: 0, hoist: false, mentionable: false, permissions: "8", position: 5, managed: true };
+const ROLE_MEMBER: WipeLayoutRole = { id: "600000000000000102", name: "Member", color: 3447003, hoist: false, mentionable: false, permissions: "1024", position: 2, managed: false };
+const ROLE_ABOVE: WipeLayoutRole = { id: "600000000000000103", name: "Above", color: 0, hoist: false, mentionable: false, permissions: "0", position: 8, managed: false };
+const CHANNELS: WipeLayoutChannel[] = [
+  { id: "600000000000000200", name: "Info", type: 4, nsfw: false, slowmodeSeconds: 0, userLimit: 0, position: 0, overwrites: [] },
+  { id: "600000000000000201", name: "rules", type: 0, nsfw: false, slowmodeSeconds: 0, userLimit: 0, position: 0, parentId: "600000000000000200", overwrites: [] },
+  { id: "600000000000000202", name: "general", type: 0, nsfw: false, slowmodeSeconds: 0, userLimit: 0, position: 1, parentId: "600000000000000200", overwrites: [{ id: GUILD, type: 0, allow: "0", deny: "1024" }, { id: "600000000000000999", type: 1, allow: "2048", deny: "0" }] },
+  { id: "600000000000000203", name: "Lounge", type: 2, nsfw: false, slowmodeSeconds: 0, userLimit: 0, position: 0, overwrites: [] },
+];
+
+function wipeLayout(): WipeLayout {
+  return { name: "Test City", community: true, rulesChannelId: "600000000000000201", roles: [ROLE_EVERYONE, ROLE_BOT, ROLE_MEMBER, ROLE_ABOVE], channels: structuredClone(CHANNELS) };
+}
+
+async function wipeSetup(options: { ownerId?: string; layout?: WipeLayout } = {}) {
+  const repository = new InMemoryBuilderRepository();
+  const gateway = new MemoryGateway();
+  gateway.status = { ...gateway.status, ownerId: options.ownerId ?? starter.userId, topRolePosition: 5, highestRolePosition: 8 };
+  gateway.layout = options.layout ?? wipeLayout();
+  gateway.roles = gateway.layout.roles.map((role) => ({ id: role.id, name: role.name, position: role.position, managed: role.managed, permissions: role.permissions }));
+  gateway.emojis = [{ id: "600000000000000300", name: "pepe" }];
+  gateway.stickers = [{ id: "600000000000000301", name: "wave" }];
+  const tasks: Promise<void>[] = [];
+  const service = new BuilderService(repository, gateway, new FakeLinks(), { schedule: (task) => void tasks.push(task()) });
+  const settle = async () => { await Promise.all(tasks.splice(0)); };
+  return { repository, gateway, service, settle };
+}
+
+const WIPE_ALL = { confirmName: "Test City", include: { channels: true, roles: true, emojis: false } };
+
+describe("BuilderService wipes", () => {
+  it("deletes channels first, then categories, then roles lowest-first, keeping managed, @everyone, above-bot roles, and Community channels", async () => {
+    const { service, gateway, settle } = await wipeSetup();
+    const run = await service.startWipe(GUILD, WIPE_ALL, starter);
+    expect(run).toMatchObject({ mode: "WIPE", planned: 6 });
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    expect(detail.run).toMatchObject({ status: "SUCCEEDED", done: 4, skipped: 2, failed: 0 });
+    expect(gateway.deleted).toEqual(["600000000000000202", "600000000000000203", "600000000000000200", "600000000000000102"]);
+    const byKey = (key: string) => detail.items.find((item) => item.key === key);
+    expect(byKey("600000000000000201")).toMatchObject({ status: "KEPT", note: expect.stringContaining("Community") });
+    expect(byKey("600000000000000103")).toMatchObject({ status: "KEPT", note: expect.stringContaining("role") });
+    expect(detail.items.some((item) => item.key === ROLE_BOT.id || item.key === GUILD)).toBe(false);
+    expect(detail.run.snapshot).toBeUndefined();
+  });
+
+  it("keeps a Community channel Discord refuses to delete (50074) and continues", async () => {
+    const layout = wipeLayout();
+    const { service, gateway, settle } = await wipeSetup({ layout: { ...layout, rulesChannelId: undefined } });
+    gateway.deleteChannelError.set("600000000000000201", { code: 50074, message: "Cannot delete a channel required for Community" });
+    const run = await service.startWipe(GUILD, WIPE_ALL, starter);
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    expect(detail.run.status).toBe("SUCCEEDED");
+    expect(detail.items.find((item) => item.key === "600000000000000201")).toMatchObject({ status: "KEPT", note: expect.stringContaining("Community") });
+    expect(gateway.deleted).not.toContain("600000000000000201");
+  });
+
+  it("records a per-item failure and marks the run PARTIAL", async () => {
+    const { service, gateway, settle } = await wipeSetup();
+    gateway.deleteRoleError.set("600000000000000102", new Error("Missing Permissions"));
+    const run = await service.startWipe(GUILD, WIPE_ALL, starter);
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    expect(detail.run).toMatchObject({ status: "PARTIAL", failed: 1 });
+    expect(detail.items.find((item) => item.key === "600000000000000102")).toMatchObject({ status: "FAILED", error: "Missing Permissions" });
+  });
+
+  it("deletes emojis and stickers when asked", async () => {
+    const { service, gateway, settle } = await wipeSetup();
+    const run = await service.startWipe(GUILD, { confirmName: "Test City", include: { channels: false, roles: false, emojis: true } }, starter);
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    expect(gateway.deleted).toEqual(["600000000000000300", "600000000000000301"]);
+    expect(detail.items.map((item) => [item.kind, item.status])).toEqual([["EMOJI", "DELETED"], ["STICKER", "DELETED"]]);
+  });
+
+  it("allows the owner, an administrator, or a platform owner, but not builder.manage or Manage Server alone", async () => {
+    const other = { userId: "300000000000000099", displayName: "Not owner", roleIds: ["600000000000000102"] };
+    const { service } = await wipeSetup({ ownerId: "300000000000000001" });
+    /* Owner (matches ownerId) is allowed. */
+    await expect(service.startWipe(GUILD, WIPE_ALL, { userId: "300000000000000001", displayName: "Owner" })).resolves.toMatchObject({ mode: "WIPE" });
+    /* A non-owner without an admin role is refused. */
+    const denied = await wipeSetup({ ownerId: "300000000000000001" });
+    await expect(denied.service.startWipe(GUILD, WIPE_ALL, other)).rejects.toMatchObject({ code: "FORBIDDEN", message: "Only the server owner or an administrator can wipe the server." });
+    /* Manage Server only is not enough. */
+    const manageServer = await wipeSetup({ ownerId: "300000000000000001" });
+    manageServer.gateway.roles = manageServer.gateway.roles.map((role) => (role.id === "600000000000000102" ? { ...role, permissions: String(1n << 5n) } : role));
+    await expect(manageServer.service.startWipe(GUILD, WIPE_ALL, other)).rejects.toMatchObject({ code: "FORBIDDEN" });
+    /* An Administrator role is allowed. */
+    const admin = await wipeSetup({ ownerId: "300000000000000001" });
+    admin.gateway.roles = admin.gateway.roles.map((role) => (role.id === "600000000000000102" ? { ...role, permissions: "8" } : role));
+    await expect(admin.service.startWipe(GUILD, WIPE_ALL, other)).resolves.toMatchObject({ mode: "WIPE" });
+    /* A platform owner is allowed even without an owner or admin match. */
+    const platform = await wipeSetup({ ownerId: "300000000000000001" });
+    await expect(platform.service.startWipe(GUILD, WIPE_ALL, other, { platformOwner: true })).resolves.toMatchObject({ mode: "WIPE" });
+  });
+
+  it("requires the typed server name and rate-limits wipes", async () => {
+    const { service, settle } = await wipeSetup();
+    await expect(service.startWipe(GUILD, { ...WIPE_ALL, confirmName: "test city" }, starter)).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    await service.startWipe(GUILD, WIPE_ALL, starter);
+    await settle();
+    await expect(service.startWipe(GUILD, WIPE_ALL, starter)).rejects.toMatchObject({ code: "LIMIT_REACHED" });
+  });
+
+  it("previews counts and the kept list", async () => {
+    const { service } = await wipeSetup();
+    const preview = await service.wipePreview(GUILD);
+    expect(preview).toMatchObject({ serverName: "Test City", channels: 2, categories: 1, roles: 1, emojis: 1, stickers: 1, community: true });
+    expect(preview.kept.some((line) => line.includes("Above"))).toBe(true);
+    expect(preview.kept.some((line) => line.includes("Community"))).toBe(true);
+  });
+
+  it("turns the snapshot back into a blueprint draft, mapping overwrites and dropping member and unknown bits", async () => {
+    const { service, settle } = await wipeSetup();
+    const run = await service.startWipe(GUILD, WIPE_ALL, starter);
+    await settle();
+    const result = await service.loadBlueprintFromRun(GUILD, run.id, starter);
+    const roleNames = result.draft.blueprint.roles.map((role) => role.name);
+    expect(roleNames).toEqual(["Above", "Member"]);
+    expect(roleNames).not.toContain("@everyone");
+    expect(roleNames).not.toContain("Qbox");
+    const general = result.draft.blueprint.categories.flatMap((category) => category.channels).find((channel) => channel.name === "general");
+    expect(general?.overwrites).toEqual([{ target: "@everyone", allow: [], deny: ["ViewChannel"] }]);
+    expect(result.notes.some((note) => note.includes("specific members"))).toBe(true);
+    expect((await service.draft(GUILD))?.blueprint.categories.length).toBeGreaterThan(0);
+  });
+
+  it("wipes then builds in one run", async () => {
+    const { service, gateway, settle } = await wipeSetup();
+    await service.saveDraft({ guildId: GUILD, answers: templateFor("COMMUNITY").answers, blueprint: small, expectedRevision: 0 });
+    const run = await service.startRun(GUILD, { mode: "WIPE_AND_BUILD", links: ["moderation"], confirmName: "Test City", include: { channels: true, roles: true, emojis: false } }, starter);
+    expect(run.mode).toBe("WIPE_AND_BUILD");
+    await settle();
+    const detail = await service.run(GUILD, run.id);
+    expect(detail.items.some((item) => item.status === "DELETED")).toBe(true);
+    expect(detail.items.some((item) => item.status === "CREATED" && item.kind === "CHANNEL")).toBe(true);
+    expect(detail.items.some((item) => item.kind === "LINK" && item.status === "CREATED")).toBe(true);
+    expect(gateway.channels.some((channel) => channel.name === "general")).toBe(true);
   });
 });
 

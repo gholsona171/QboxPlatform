@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "discord.js";
-import { BuilderError, type BuilderRunStatus, type BuilderService } from "@qbox/server-builder";
+import { BuilderError, type BuilderRunMode, type BuilderRunStatus, type BuilderService } from "@qbox/server-builder";
 import type { PermissionAuthorizer } from "@qbox/permissions";
 
 import type { CommandExecutionContext, CommandExecutionPolicy, DiscordCommand } from "./DiscordCommand.js";
@@ -14,6 +14,13 @@ const STATUS: Readonly<Record<BuilderRunStatus, { readonly label: string; readon
   PARTIAL: { label: "Finished with problems", color: "#FEE75C" },
   FAILED: { label: "Failed", color: "#ED4245" },
   UNDONE: { label: "Undone", color: "#99AAB5" },
+};
+
+const MODE_LABELS: Readonly<Record<BuilderRunMode, string>> = {
+  ADD: "Add to my server",
+  FRESH: "Fresh layout",
+  WIPE: "Wipe the server",
+  WIPE_AND_BUILD: "Wipe, then build",
 };
 
 /** `/builder` - server builder status. Building happens in the portal. */
@@ -67,7 +74,7 @@ export class BuilderCommand implements DiscordCommand {
         color: status.color,
         fields: [
           { name: "Started by", value: run.startedByName, inline: true },
-          { name: "Mode", value: run.mode === "ADD" ? "Add to my server" : "Fresh layout", inline: true },
+          { name: "Mode", value: MODE_LABELS[run.mode] ?? run.mode, inline: true },
           ...(links.length ? [{ name: "Connected features", value: links.join("\n").slice(0, 1024) }] : []),
           ...(problems.length ? [{ name: "Problems", value: problems.join("\n").slice(0, 1024) }] : []),
           ...(run.warnings.length ? [{ name: "Warnings", value: run.warnings.join("\n").slice(0, 1024) }] : []),

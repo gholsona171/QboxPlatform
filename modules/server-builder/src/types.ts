@@ -262,10 +262,14 @@ export interface BuilderAccess {
 /* ---------- Runs ---------- */
 
 export type BuilderRunStatus = "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED" | "PARTIAL" | "UNDONE";
-export type BuilderRunMode = "ADD" | "FRESH";
+export type BuilderRunMode = "ADD" | "FRESH" | "WIPE" | "WIPE_AND_BUILD";
+/** Modes for the Build tab (add to the server or a fresh layout). */
 export const BUILDER_RUN_MODES: readonly BuilderRunMode[] = ["ADD", "FRESH"];
-export type BuilderItemKind = "ROLE" | "CATEGORY" | "CHANNEL" | "LINK";
-export type BuilderItemStatus = "CREATED" | "SKIPPED" | "FAILED" | "DELETED";
+/** Modes the start-run endpoint accepts: the two build modes plus wipe-then-build. */
+export const BUILDER_START_MODES: readonly BuilderRunMode[] = ["ADD", "FRESH", "WIPE_AND_BUILD"];
+export type BuilderItemKind = "ROLE" | "CATEGORY" | "CHANNEL" | "LINK" | "EMOJI" | "STICKER";
+/** KEPT: a wipe deliberately left an item in place (managed role, above the bot, Community channel). */
+export type BuilderItemStatus = "CREATED" | "SKIPPED" | "FAILED" | "DELETED" | "KEPT";
 
 export const BUILDER_LINKS = [
   "moderation",
@@ -298,6 +302,8 @@ export interface BuilderRun {
   readonly startedByName: string;
   readonly warnings: readonly string[];
   readonly error?: string | undefined;
+  /** The server layout captured before a wipe, so the old layout can be rebuilt. */
+  readonly snapshot?: WipeSnapshot | undefined;
   readonly startedAt?: Date | undefined;
   readonly finishedAt?: Date | undefined;
   readonly undoneAt?: Date | undefined;
@@ -312,6 +318,7 @@ export interface BuilderRunCreateData {
   readonly planned: number;
   readonly startedById: string;
   readonly startedByName: string;
+  readonly snapshot?: WipeSnapshot | undefined;
 }
 
 export interface BuilderRunPatch {
@@ -355,6 +362,8 @@ export interface BuilderRunDetail {
 export interface BuilderStarter {
   readonly userId: string;
   readonly displayName: string;
+  /** The member's Discord role IDs, for the owner-or-administrator wipe check. */
+  readonly roleIds?: readonly string[] | undefined;
 }
 
 export interface BuilderRepository {
@@ -391,6 +400,8 @@ export interface ExistingRole {
   readonly name: string;
   readonly position: number;
   readonly managed: boolean;
+  /** Permission bitfield as a string; present when read for the wipe owner-or-administrator check. */
+  readonly permissions?: string | undefined;
 }
 
 export interface ExistingChannel {
@@ -410,6 +421,8 @@ export interface BotStatus {
   readonly highestRolePosition: number;
   /** The server has Community turned on (needed for announcement, stage, and media channels). */
   readonly community: boolean;
+  /** Discord user ID of the guild owner, for the owner-only wipe check. */
+  readonly ownerId?: string | undefined;
 }
 
 export interface DiscordOverwrite {
@@ -448,6 +461,97 @@ export interface ForumPostInput {
   readonly content: string;
 }
 
+/* ---------- Wipe ---------- */
+
+/** A role, exactly as Discord has it, captured for a wipe snapshot. */
+export interface WipeLayoutRole {
+  readonly id: string;
+  readonly name: string;
+  /** Discord's integer color (0 = no color). */
+  readonly color: number;
+  readonly hoist: boolean;
+  readonly mentionable: boolean;
+  /** Permission bitfield as a string. */
+  readonly permissions: string;
+  readonly position: number;
+  readonly managed: boolean;
+}
+
+/** A permission overwrite, as Discord has it. `type` 0 = role, 1 = member. */
+export interface WipeLayoutOverwrite {
+  readonly id: string;
+  readonly type: 0 | 1;
+  readonly allow: string;
+  readonly deny: string;
+}
+
+/** A category or channel, exactly as Discord has it, captured for a wipe snapshot. */
+export interface WipeLayoutChannel {
+  readonly id: string;
+  readonly name: string;
+  readonly type: number;
+  readonly topic?: string | undefined;
+  readonly nsfw: boolean;
+  readonly slowmodeSeconds: number;
+  readonly userLimit: number;
+  readonly bitrate?: number | undefined;
+  readonly position: number;
+  readonly parentId?: string | undefined;
+  readonly overwrites: readonly WipeLayoutOverwrite[];
+}
+
+/** A custom emoji or sticker. */
+export interface WipeExpression {
+  readonly id: string;
+  readonly name: string;
+}
+
+/** Everything a wipe needs to read before deleting. */
+export interface WipeLayout {
+  readonly name: string;
+  readonly community: boolean;
+  /** Community channels Discord refuses to delete while Community is on. */
+  readonly rulesChannelId?: string | undefined;
+  readonly publicUpdatesChannelId?: string | undefined;
+  readonly roles: readonly WipeLayoutRole[];
+  readonly channels: readonly WipeLayoutChannel[];
+}
+
+/** The layout saved with a wipe run, so it can be turned back into a blueprint. */
+export interface WipeSnapshot {
+  readonly guildName: string;
+  readonly botUserId: string;
+  readonly community: boolean;
+  readonly rulesChannelId?: string | undefined;
+  readonly publicUpdatesChannelId?: string | undefined;
+  readonly roles: readonly WipeLayoutRole[];
+  readonly channels: readonly WipeLayoutChannel[];
+  readonly emojis: readonly WipeExpression[];
+  readonly stickers: readonly WipeExpression[];
+}
+
+/** Which kinds of thing a wipe deletes. Emojis and stickers are off by default. */
+export interface WipeInclude {
+  readonly channels: boolean;
+  readonly roles: boolean;
+  readonly emojis: boolean;
+}
+
+/** Counts and the kept list for the wipe confirmation dialog. */
+export interface WipePreview {
+  readonly serverName: string;
+  readonly channels: number;
+  readonly categories: number;
+  readonly roles: number;
+  readonly emojis: number;
+  readonly stickers: number;
+  /** Roles and channels a wipe cannot or will not delete, with why. */
+  readonly kept: readonly string[];
+  readonly community: boolean;
+  /** Missing bot permissions that would stop the wipe. */
+  readonly missing: readonly string[];
+}
+
 /** Discord operations the builder needs. */
 export interface BuilderGateway {
   listRoles(guildId: string): Promise<readonly ExistingRole[]>;
@@ -462,7 +566,16 @@ export interface BuilderGateway {
   pinForumPost(threadId: string, reason: string): Promise<void>;
   deleteChannel(channelId: string, reason: string): Promise<void>;
   deleteRole(guildId: string, roleId: string, reason: string): Promise<void>;
+  /** Reads the full current layout (roles and channels) for a wipe. */
+  readLayout(guildId: string): Promise<WipeLayout>;
+  listEmojis(guildId: string): Promise<readonly WipeExpression[]>;
+  listStickers(guildId: string): Promise<readonly WipeExpression[]>;
+  deleteEmoji(guildId: string, emojiId: string, reason: string): Promise<void>;
+  deleteSticker(guildId: string, stickerId: string, reason: string): Promise<void>;
 }
+
+/** Discord's error code when deleting a Community-required channel (rules, public updates). */
+export const DISCORD_COMMUNITY_CHANNEL_ERROR = 50074;
 
 export interface BuilderPreflight {
   readonly ready: boolean;
