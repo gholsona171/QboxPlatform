@@ -8,11 +8,12 @@ with `/ticket open`. Staff handle them in Discord or in the portal at `/tickets`
 | Part | Location |
 | --- | --- |
 | Rules, validation, Discord REST adapter | `modules/tickets` (`@qbox/tickets`) |
+| Transcripts (.txt and .html) | `modules/tickets/src/transcripts.ts` |
 | PostgreSQL persistence | `packages/database/src/tickets/PrismaTicketRepository.ts` |
 | Database models | `TicketSettings`, `TicketCategory`, `TicketPanel`, `Ticket`, `TicketMessage`, `TicketEvent` in `prisma/schema/tickets.prisma` |
 | Discord commands | `packages/discord/src/commands/Ticket.command.ts`, `Tickets.command.ts` |
 | Buttons, dropdowns, forms | `packages/discord/src/tickets/DiscordTicketInteractionHandler.ts` |
-| Message recording, deleted channels, auto-close | `packages/discord/src/tickets/DiscordTicketEventHandler.ts` |
+| Message recording (ticket and staff chat), deleted channels, auto-close, retention | `packages/discord/src/tickets/DiscordTicketEventHandler.ts` |
 | API | `apps/api/src/tickets/TicketRoutes.ts` |
 | Portal | `apps/web/public/js/tickets.js` |
 
@@ -31,7 +32,7 @@ The bot and the API share one `TicketService` and one Discord adapter
 
 ## Setup
 
-1. Give the bot **Manage Channels**, **Manage Roles**, **Send Messages**, **Embed Links**, **Attach Files**, and **Read Message History**. In thread mode it also needs **Create Private Threads** and **Manage Threads**.
+1. Give the bot **Manage Channels**, **Manage Roles**, **Send Messages**, **Embed Links**, **Attach Files**, **Read Message History**, **Create Private Threads**, **Manage Threads**, and **Send Messages in Threads**. The last three are needed for the staff chat (both modes) and for ticket threads (thread mode).
 2. Run `/tickets setup enabled:true category:<category> transcripts:<channel> logs:<channel> support-role:<role>`.
 3. Create ticket types: `/tickets category-create name:"General Support"`. In the portal you can add up to 5 form questions per type.
 4. Post a panel: `/tickets panel name:main channel:#support`.
@@ -48,13 +49,74 @@ After the first deploy that adds these commands, redeploy slash commands with th
 - **Staff tools:** claim, unclaim, transfer, add/remove members, rename, priority (low/normal/high/urgent), "waiting on member" status, tags, internal notes (never shown to the member), replies from the portal, reopen, delete channel.
 - **Closing:** member close on/off, confirmation, required reason, keep (read-only, optional move to a closed category) or delete after a delay.
 - **Claim lock:** optionally only the claimer can reply after a claim (channel mode).
-- **Transcripts** posted to a channel on close, downloadable in Discord and the portal, and optionally DMed to the member. Staff copies include internal notes; member copies do not.
+- **Staff chat:** a private thread per ticket where staff talk without the member (see below).
+- **Transcripts** posted to a channel on close (.txt and .html), downloadable in Discord and the portal, and DMed to the member (on by default for new servers). Staff copies include the staff chat; member copies never do.
+- **Keeping tickets:** closed tickets are deleted after 6, 9 or 12 months (default 12), or kept forever.
 - **Feedback:** 1-5 star rating buttons DMed after close.
 - **Custom messages:** customize the opening message under Look & Messages (key `tickets.opened`) and the closing DM (key `tickets.closed-dm`).
 - **Auto-close** after N hours without activity, with an optional warning, and an option to skip claimed tickets.
 - **Limits and blocks:** open tickets per member, blocked members, blocked roles.
 - **Logs** of opens, claims, escalations, closes, reopens, and ratings to a log channel.
 - **Statistics:** counts by status and type, average rating, average first response time, average resolution time, top staff.
+
+## Staff chat
+
+When a ticket opens, the bot creates a private thread that only staff can see.
+It is on by default (**Settings → Staff chat**); each ticket reason can follow
+the server setting, always open one, or never open one (API field
+`staffThread`: `INHERIT`, `ON`, `OFF`; setting `staffThreadEnabled`).
+
+- **Channel mode:** right after the ticket channel is created and the opening message posted, the bot creates a private thread inside the ticket channel named `🔒 staff-<ticket channel name>`, so it appears inside the ticket.
+- **Thread mode:** the ticket is itself a private thread, and a thread cannot contain another thread. The staff chat is a separate private thread in the same parent channel, named `🔒 staff-ticket-<number>`. Its first message links to the ticket thread, and the **🔒 Staff chat** button in the ticket links to it.
+
+The thread's first message reads "Staff-only chat for Ticket #N – reason.
+@member cannot see this thread." and pings the support roles. The member who
+opened the ticket is never added. Staff join the thread when:
+
+- they are an alerted member of the ticket's reason (added when the ticket opens),
+- they claim the ticket (or it is transferred to them),
+- they send their first message in the ticket, or
+- they press **🔒 Staff chat** on the ticket's opening message. Only staff (the same rule as claiming) can; anyone else gets "Only staff can open the staff chat." The reply links to the thread.
+
+Messages in the staff thread are saved as the ticket's staff chat (internal
+notes). Notes written in the portal are posted in the thread as "Name (from
+portal):". The portal shows them under **Staff chat (not visible to the
+member)** with a link to the thread. Staff transcripts include them marked
+`[staff chat]`; member transcripts never do.
+
+When the ticket closes, the staff thread is archived and locked; reopening the
+ticket unarchives it. When the ticket channel is deleted, the thread goes with
+it in channel mode and is deleted too in thread mode.
+
+If Discord refuses to create the thread (missing **Create Private Threads** or
+**Manage Threads**), the ticket still opens. The ticket history records
+`staff-thread-failed` and the portal shows "Staff chat could not be created:
+the bot needs Create Private Threads and Manage Threads."
+
+## Transcripts and keeping tickets
+
+**Send the member their transcript when the ticket closes** is on by default
+for new servers (existing servers keep their saved choice). The DM holds:
+
+1. a summary: ticket number (and the reason's own number), server, reason, opened and closed times, who closed it, the close reason, and the message count;
+2. `ticket-<N>-transcript.txt`, which Discord previews inline on desktop and mobile;
+3. `ticket-<N>-transcript.html`, one self-contained page (dark Discord-like style, no scripts, nothing loaded from the internet) that opens in any browser and can be kept forever.
+
+Both files leave out the staff chat. If the member's DMs are closed, the bot
+says so in the ticket before it is archived and records
+`transcript-dm-failed`; staff can retry with **Send transcript to member** on
+the closed ticket in the portal (`POST /api/v1/tickets/:id/send-transcript`,
+`tickets.handle` or `tickets.manage`). The staff copy posted in the transcript
+channel has both files and includes the staff chat. Each file is kept under
+8 MB (Discord allows 10 MB); a longer transcript is cut and ends with
+"Transcript truncated; the full ticket is in the portal until <date>". The
+portal downloads either format (`/transcript` and `/transcript?format=html`).
+
+**Keep closed tickets for** 6, 9 or 12 months (default 12), or forever
+(`retentionMonths`: 6, 9, 12, or 0). Once a day (and when the bot starts) the
+bot deletes closed tickets whose close date is older than that, with their
+messages and history, 200 at a time. Open tickets are never deleted. Members
+keep the transcript they were sent.
 
 ## Portal
 
@@ -119,4 +181,5 @@ sends automatically.
 - Message text in transcripts needs the privileged Message Content intent.
 - In thread mode, claim lock is not available (threads have no per-role permissions), and closed threads are archived and locked rather than made read-only per member.
 - `/ticket open` cannot show a form. Ticket types with required questions must be opened from a panel.
-- Transcripts are plain text.
+- Transcripts record message text and attachments. Embeds other members or bots post are not recorded; the opening form is shown as a summary block.
+- Staff who talk only through a bot or webhook are not added to the staff chat automatically.

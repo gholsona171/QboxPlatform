@@ -5,7 +5,7 @@ import { TicketCommand } from "../commands/Ticket.command.js";
 import { TicketsCommand } from "../commands/Tickets.command.js";
 import type { DiscordFeatureFactory } from "../features/DiscordFeature.js";
 import { DiscordTicketEventHandler } from "./DiscordTicketEventHandler.js";
-import { DiscordTicketInteractionHandler } from "./DiscordTicketInteractionHandler.js";
+import { DiscordTicketInteractionHandler, TICKET_INTERACTION_PREFIXES } from "./DiscordTicketInteractionHandler.js";
 import { TicketElevation } from "./ticketActor.js";
 
 /** Ticket system: `/ticket`, `/tickets`, panel components, and ticket events. */
@@ -18,7 +18,7 @@ export function ticketsFeature(repository: TicketRepository, templates: MessageT
     return {
       name: "tickets",
       commands: () => [new TicketCommand(tickets, elevation), new TicketsCommand(tickets)],
-      interactionPrefixes: ["qbox:ticket:"],
+      interactionPrefixes: [...TICKET_INTERACTION_PREFIXES],
       handleInteraction: (interaction) => interactions.handle(interaction),
       attach: (target) => events.attach(target),
       detach: () => events.detach(),

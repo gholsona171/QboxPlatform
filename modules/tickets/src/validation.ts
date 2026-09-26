@@ -4,7 +4,7 @@ import type {
   TicketQuestion,
   TicketSettingsInput,
 } from "./types.js";
-import { TICKET_BUTTON_STYLES, TICKET_PRIORITIES } from "./types.js";
+import { TICKET_BUTTON_STYLES, TICKET_PRIORITIES, TICKET_RETENTION_MONTHS, TICKET_STAFF_THREAD_MODES } from "./types.js";
 
 export type TicketErrorCode =
   | "INVALID_INPUT"
@@ -78,6 +78,8 @@ export function validateSettings(input: TicketSettingsInput): void {
   requireRange("autoCloseWarningHours", input.autoCloseWarningHours, 0, 720);
   if (input.autoCloseWarningHours > 0 && input.autoCloseWarningHours >= input.autoCloseHours)
     invalid("autoCloseWarningHours must be less than autoCloseHours.");
+  if (input.retentionMonths !== undefined && !TICKET_RETENTION_MONTHS.includes(input.retentionMonths))
+    invalid("retentionMonths must be 6, 9, 12, or 0 to keep closed tickets forever.");
   if (input.enabled && input.mode === "THREAD" && !input.threadParentChannelId)
     invalid("Thread mode requires a parent channel for ticket threads.");
 }
@@ -89,6 +91,7 @@ export function validateCategory(input: TicketCategoryInput): void {
   if (input.emoji !== undefined) requireLength("emoji", input.emoji, 1, 64);
   if (!TICKET_BUTTON_STYLES.includes(input.buttonStyle)) invalid("buttonStyle is not supported.");
   if (!TICKET_PRIORITIES.includes(input.defaultPriority)) invalid("defaultPriority is not supported.");
+  if (input.staffThread !== undefined && !TICKET_STAFF_THREAD_MODES.includes(input.staffThread)) invalid("staffThread must be INHERIT, ON, or OFF.");
   requireRoleList("supportRoleIds", input.supportRoleIds);
   requireRoleList("requiredRoleIds", input.requiredRoleIds);
   requireRoleList("alertUserIds", input.alertUserIds);

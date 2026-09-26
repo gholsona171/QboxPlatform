@@ -15,6 +15,7 @@ import type {
   TicketPanelInput,
   TicketPatch,
   TicketRepository,
+  TicketRetentionPolicy,
   TicketSettings,
   TicketSettingsInput,
   TicketStats,
@@ -42,7 +43,13 @@ export class InMemoryTicketRepository implements TicketRepository {
     if (input.expectedRevision !== undefined && input.expectedRevision !== current.revision)
       throw new TicketError("CONFLICT", "Ticket settings changed since they were loaded.", { currentRevision: current.revision });
     const { expectedRevision: _expected, source: _source, ...rest } = input;
-    const saved: TicketSettings = { ...rest, nextNumber: current.nextNumber, revision: current.revision + 1 };
+    const saved: TicketSettings = {
+      ...rest,
+      staffThreadEnabled: input.staffThreadEnabled ?? current.staffThreadEnabled,
+      retentionMonths: input.retentionMonths ?? current.retentionMonths,
+      nextNumber: current.nextNumber,
+      revision: current.revision + 1,
+    };
     this.settingsByGuild.set(input.guildId, saved);
     return saved;
   }
@@ -65,7 +72,12 @@ export class InMemoryTicketRepository implements TicketRepository {
 
   public async saveCategory(input: TicketCategoryInput): Promise<TicketCategory> {
     const existing = input.id ? this.categories.get(input.id) : undefined;
-    const saved: TicketCategory = { ...input, id: input.id ?? randomUUID(), position: input.position ?? existing?.position ?? 0 };
+    const saved: TicketCategory = {
+      ...input,
+      id: input.id ?? randomUUID(),
+      position: input.position ?? existing?.position ?? 0,
+      staffThread: input.staffThread ?? existing?.staffThread ?? "INHERIT",
+    };
     this.categories.set(saved.id, saved);
     return saved;
   }
@@ -136,6 +148,10 @@ export class InMemoryTicketRepository implements TicketRepository {
     return [...this.tickets.values()].find((ticket) => ticket.channelId === channelId);
   }
 
+  public async findTicketByStaffThread(threadId: string): Promise<Ticket | undefined> {
+    return [...this.tickets.values()].find((ticket) => ticket.staffThreadId === threadId);
+  }
+
   public async findTicketByNumber(guildId: string, number: number): Promise<Ticket | undefined> {
     return [...this.tickets.values()].find((ticket) => ticket.guildId === guildId && ticket.number === number);
   }
@@ -196,6 +212,27 @@ export class InMemoryTicketRepository implements TicketRepository {
 
   public async listAutoCloseGuilds(): Promise<readonly string[]> {
     return [...this.settingsByGuild.values()].filter((settings) => settings.enabled && settings.autoCloseHours > 0).map((settings) => settings.guildId);
+  }
+
+  public async listRetentionPolicies(): Promise<readonly TicketRetentionPolicy[]> {
+    return [...this.settingsByGuild.values()]
+      .filter((settings) => settings.retentionMonths > 0)
+      .map((settings) => ({ guildId: settings.guildId, retentionMonths: settings.retentionMonths }));
+  }
+
+  public async deleteClosedTickets(guildId: string, closedBefore: Date, limit: number): Promise<number> {
+    const doomed = [...this.tickets.values()]
+      .filter((ticket) => ticket.guildId === guildId && ticket.status === "CLOSED" && ticket.closedAt !== undefined && ticket.closedAt < closedBefore)
+      .slice(0, limit);
+    const ids = new Set(doomed.map((ticket) => ticket.id));
+    for (const id of ids) this.tickets.delete(id);
+    const keep = <T extends { ticketId: string }>(items: T[]) => {
+      const remaining = items.filter((item) => !ids.has(item.ticketId));
+      items.splice(0, items.length, ...remaining);
+    };
+    keep(this.messages);
+    keep(this.events);
+    return ids.size;
   }
 
   public async stats(guildId: string): Promise<TicketStats> {

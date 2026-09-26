@@ -11,10 +11,15 @@ export type TicketMessageSource = "DISCORD" | "WEB" | "SYSTEM";
 export type TicketCloseAction = "ARCHIVE" | "DELETE";
 export type TicketButtonStyle = "PRIMARY" | "SECONDARY" | "SUCCESS" | "DANGER";
 export type TicketOperationSource = "DISCORD" | "WEB" | "SYSTEM";
+/** Per-reason staff thread override: follow the server setting, always create, or never create. */
+export type TicketStaffThreadMode = "INHERIT" | "ON" | "OFF";
 
 export const TICKET_STATUSES: readonly TicketStatus[] = ["OPEN", "CLAIMED", "PENDING", "CLOSED"];
 export const TICKET_PRIORITIES: readonly TicketPriority[] = ["LOW", "NORMAL", "HIGH", "URGENT"];
 export const TICKET_BUTTON_STYLES: readonly TicketButtonStyle[] = ["PRIMARY", "SECONDARY", "SUCCESS", "DANGER"];
+export const TICKET_STAFF_THREAD_MODES: readonly TicketStaffThreadMode[] = ["INHERIT", "ON", "OFF"];
+/** How long closed tickets are kept: 6, 9 or 12 months, or 0 to keep them forever. */
+export const TICKET_RETENTION_MONTHS: readonly number[] = [0, 6, 9, 12];
 
 /** Guild-wide ticket configuration. */
 export interface TicketSettings {
@@ -53,12 +58,21 @@ export interface TicketSettings {
   readonly autoCloseExcludeClaimed: boolean;
   readonly blockedUserIds: readonly string[];
   readonly blockedRoleIds: readonly string[];
+  /** Open a private staff-only thread for every ticket (reasons can override). */
+  readonly staffThreadEnabled: boolean;
+  /** Closed tickets older than this many months are deleted. `0` keeps them forever. */
+  readonly retentionMonths: number;
   readonly nextNumber: number;
   readonly revision: number;
 }
 
-/** Settings update. `expectedRevision` enables optimistic concurrency. */
-export interface TicketSettingsInput extends Omit<TicketSettings, "nextNumber" | "revision"> {
+/**
+ * Settings update. `expectedRevision` enables optimistic concurrency.
+ * `staffThreadEnabled` and `retentionMonths` keep their saved value when left out.
+ */
+export interface TicketSettingsInput extends Omit<TicketSettings, "nextNumber" | "revision" | "staffThreadEnabled" | "retentionMonths"> {
+  readonly staffThreadEnabled?: boolean | undefined;
+  readonly retentionMonths?: number | undefined;
   readonly expectedRevision?: number | undefined;
   readonly source: TicketOperationSource;
 }
@@ -97,11 +111,15 @@ export interface TicketCategory {
   /** Members need one of these roles to open this category. Empty means everyone. */
   readonly requiredRoleIds: readonly string[];
   readonly maxOpenPerUser?: number | undefined;
+  /** Staff thread for tickets of this reason: follow the server setting, always, or never. */
+  readonly staffThread: TicketStaffThreadMode;
 }
 
-export interface TicketCategoryInput extends Omit<TicketCategory, "id" | "position"> {
+export interface TicketCategoryInput extends Omit<TicketCategory, "id" | "position" | "staffThread"> {
   readonly id?: string | undefined;
   readonly position?: number | undefined;
+  /** Defaults to `INHERIT`. */
+  readonly staffThread?: TicketStaffThreadMode | undefined;
 }
 
 /** A message with buttons or a select menu that members use to open tickets. */
@@ -149,6 +167,8 @@ export interface Ticket {
   readonly openerId: string;
   readonly openerName: string;
   readonly channelId?: string | undefined;
+  /** Private staff-only thread for this ticket (inside the ticket channel, or next to the ticket thread). */
+  readonly staffThreadId?: string | undefined;
   readonly subject?: string | undefined;
   readonly answers: readonly TicketAnswer[];
   readonly status: TicketStatus;
@@ -184,6 +204,7 @@ export interface TicketCreateData {
 /** Fields a repository update may change. `null` clears an optional field. */
 export interface TicketPatch {
   readonly channelId?: string | null;
+  readonly staffThreadId?: string | null;
   readonly status?: TicketStatus;
   readonly priority?: TicketPriority;
   readonly claimedById?: string | null;
@@ -210,7 +231,7 @@ export interface TicketMessage {
   readonly content: string;
   readonly attachments: readonly string[];
   readonly source: TicketMessageSource;
-  /** Internal staff notes are never sent to Discord or the requester. */
+  /** Staff chat: staff thread messages and portal notes. Never shown to the requester. */
   readonly internal: boolean;
   readonly createdAt: Date;
 }
@@ -282,6 +303,7 @@ export interface TicketRepository {
   createTicket(input: TicketCreateData): Promise<Ticket>;
   getTicket(id: string): Promise<Ticket | undefined>;
   findTicketByChannel(channelId: string): Promise<Ticket | undefined>;
+  findTicketByStaffThread(threadId: string): Promise<Ticket | undefined>;
   findTicketByNumber(guildId: string, number: number): Promise<Ticket | undefined>;
   listTickets(filter: TicketListFilter): Promise<readonly Ticket[]>;
   countActiveTickets(guildId: string, openerId: string, categoryId?: string): Promise<number>;
@@ -292,7 +314,19 @@ export interface TicketRepository {
   listEvents(ticketId: string): Promise<readonly TicketEvent[]>;
   /** Guild IDs whose ticket settings enable auto-close. */
   listAutoCloseGuilds(): Promise<readonly string[]>;
+  /** Guilds that delete old closed tickets (`retentionMonths` above 0). */
+  listRetentionPolicies(): Promise<readonly TicketRetentionPolicy[]>;
+  /**
+   * Deletes up to `limit` CLOSED tickets of the guild whose `closedAt` is before
+   * `closedBefore`, with their messages and events. Returns how many were deleted.
+   */
+  deleteClosedTickets(guildId: string, closedBefore: Date, limit: number): Promise<number>;
   stats(guildId: string): Promise<TicketStats>;
+}
+
+export interface TicketRetentionPolicy {
+  readonly guildId: string;
+  readonly retentionMonths: number;
 }
 
 export interface TicketSpaceInput {
@@ -316,6 +350,8 @@ export interface TicketOpeningMessage {
   readonly mentionUserIds: readonly string[];
   readonly mentionRoleIds: readonly string[];
   readonly claimButton: boolean;
+  /** Adds the "🔒 Staff chat" button to the staff controls row. */
+  readonly staffChatButton?: boolean | undefined;
 }
 
 export interface TicketNotice {
@@ -325,6 +361,8 @@ export interface TicketNotice {
   readonly title?: string | undefined;
   /** Adds reopen/delete/transcript buttons shown after closing. */
   readonly closedControlsTicketId?: string | undefined;
+  /** Pings nobody, even when the content mentions members. */
+  readonly silent?: boolean | undefined;
 }
 
 export interface TicketAccessInput {
@@ -361,25 +399,44 @@ export interface TicketPanelPublishInput {
 export interface TicketTranscriptFile {
   readonly fileName: string;
   readonly content: string;
+  /** Defaults to plain text. */
+  readonly contentType?: string | undefined;
 }
 
 export interface TicketTranscriptPost {
   readonly channelId: string;
   readonly ticket: Ticket;
   readonly summary: string;
-  readonly file: TicketTranscriptFile;
+  /** The .txt transcript, then the .html page. */
+  readonly files: readonly TicketTranscriptFile[];
 }
 
 export interface TicketDirectMessage {
   readonly userId: string;
-  /** The rendered message (`tickets.closed-dm`). */
+  /** The rendered message (`tickets.closed-dm`), plus the summary embed when the transcript is sent. */
   readonly message: OutgoingMessage;
-  readonly file?: TicketTranscriptFile | undefined;
+  readonly files?: readonly TicketTranscriptFile[] | undefined;
   /** Adds 1-5 star rating buttons for this ticket. */
   readonly feedbackTicketId?: string | undefined;
 }
 
-/** Discord operations the ticket service needs. */
+export interface TicketStaffThreadInput {
+  readonly guildId: string;
+  /** Channel the private thread is created in: the ticket channel, or the ticket thread's parent channel. */
+  readonly parentChannelId: string;
+  readonly name: string;
+  /** First message posted in the thread. */
+  readonly content: string;
+  /** Roles mentioned (and notified) by the first message. */
+  readonly mentionRoleIds: readonly string[];
+  readonly reason: string;
+}
+
+/**
+ * Discord operations the ticket service needs. The staff thread operations are
+ * optional so small test gateways can leave them out; without them no staff
+ * thread is created.
+ */
 export interface TicketDiscordGateway {
   guildName(guildId: string): Promise<string>;
   createTicketSpace(input: TicketSpaceInput): Promise<{ readonly channelId: string }>;
@@ -394,6 +451,11 @@ export interface TicketDiscordGateway {
   deletePanelMessage(channelId: string, messageId: string): Promise<void>;
   postTranscript(input: TicketTranscriptPost): Promise<{ readonly messageId: string }>;
   directMessage(input: TicketDirectMessage): Promise<boolean>;
+  /** Creates a private, non-invitable thread, posts its first message, and returns the thread ID. */
+  createStaffThread?(input: TicketStaffThreadInput): Promise<{ readonly threadId: string }>;
+  addThreadMember?(threadId: string, userId: string): Promise<void>;
+  /** Archives and locks (true), or unarchives and unlocks (false), a thread. */
+  setThreadArchived?(threadId: string, archived: boolean): Promise<void>;
 }
 
 /** Who is acting on a ticket, as seen by the service. */

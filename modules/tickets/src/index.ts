@@ -7,10 +7,15 @@ export {
   ticketLabel,
   panelCategories,
   systemActor,
+  RETENTION_BATCH_SIZE,
   type AutoCloseSweepResult,
   type OpenTicketInput,
   type RecordedDiscordMessage,
+  type RetentionSweepResult,
+  type StaffChatLink,
+  type TicketServiceOptions,
 } from "./TicketService.js";
+export { TRANSCRIPT_BYTE_LIMIT, escapeHtml, renderHtmlTranscript, renderTextTranscript, truncationLine, type TranscriptInput } from "./transcripts.js";
 export {
   DiscordRestTicketGateway,
   TICKET_CUSTOM_ID,

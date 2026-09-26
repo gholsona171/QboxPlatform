@@ -46,6 +46,8 @@ const TABS = [
 const STATUS_FILTERS = [["open,claimed,pending", "Active"], ["open", "Open"], ["claimed", "Claimed"], ["pending", "Waiting on member"], ["closed", "Closed"], ["", "All"]];
 const PRIORITIES = ["LOW", "NORMAL", "HIGH", "URGENT"];
 const BUTTON_STYLES = [["PRIMARY", "Blurple"], ["SECONDARY", "Grey"], ["SUCCESS", "Green"], ["DANGER", "Red"]];
+const STAFF_THREAD_MODES = [["INHERIT", "Use the server setting"], ["ON", "Always open a staff chat"], ["OFF", "Never open a staff chat"]];
+const RETENTION_OPTIONS = [["6", "6 months"], ["9", "9 months"], ["12", "12 months"], ["0", "Forever"]];
 
 const view = {
   tab: "inbox",
@@ -193,9 +195,10 @@ function detailPanel() {
   if (!view.detail) return `<p class="microcopy">Select a ticket to read the conversation and act on it.</p>`;
   const { ticket, messages, events } = view.detail;
   const closed = ticket.status === "CLOSED";
-  const conversation = messages.length
-    ? `<ul class="timeline">${messages.map((message) => `<li${message.internal ? ' class="internal-note"' : ""}><strong>${escapeHtml(message.authorName)}${message.internal ? " · internal note" : message.source === "WEB" ? " · from portal" : ""}</strong><small>${escapeHtml(new Date(message.createdAt).toLocaleString())}</small><p>${escapeHtml(message.content)}</p>${message.attachments.map((url) => `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">Attachment</a>`).join(" ")}</li>`).join("")}</ul>`
-    : `<p class="microcopy">No messages yet.</p>`;
+  const timeline = (items, empty) => items.length
+    ? `<ul class="timeline">${items.map((message) => `<li${message.internal ? ' class="internal-note"' : ""}><strong>${escapeHtml(message.authorName)}${message.source === "WEB" ? " · from portal" : ""}</strong><small>${escapeHtml(new Date(message.createdAt).toLocaleString())}</small><p>${escapeHtml(message.content)}</p>${message.attachments.map((url) => `<a href="${escapeHtml(url)}" target="_blank" rel="noreferrer">Attachment</a>`).join(" ")}</li>`).join("")}</ul>`
+    : `<p class="microcopy">${empty}</p>`;
+  const conversation = timeline(messages.filter((message) => !message.internal), "No messages yet.");
   return `
     <div class="detail-stack">
       <div class="split-line"><h2>#${ticket.number} ${escapeHtml(ticket.subject || ticket.categoryName || "Support")}</h2>${badge(statusLabel(ticket.status))}</div>
@@ -208,15 +211,15 @@ function detailPanel() {
       ${ticket.answers.map((answer) => detail(escapeHtml(answer.question), escapeHtml(answer.answer))).join("")}
       <div class="toolbar">
         ${closed
-          ? `<button class="button compact" data-t-action="reopen">Reopen</button>${ticket.channelId ? `<button class="button compact danger" data-t-action="delete-channel">Delete channel</button>` : ""}`
+          ? `<button class="button compact" data-t-action="reopen">Reopen</button><button class="button compact" data-t-action="send-transcript">Send transcript to member</button>${ticket.channelId ? `<button class="button compact danger" data-t-action="delete-channel">Delete channel</button>` : ""}`
           : `${ticket.claimedById ? `<button class="button compact" data-t-action="unclaim">Unassign</button>` : `<button class="button compact primary" data-t-action="claim">Claim</button>`}
              <button class="button compact" data-t-action="waiting" data-value="${ticket.status === "PENDING" ? "false" : "true"}">${ticket.status === "PENDING" ? "Resume" : "Waiting on member"}</button>
              <button class="button compact danger" data-t-action="close">Close</button>`}
-        <a class="button compact" href="${escapeHtml(ticketTranscriptUrl(ticket.id))}">Transcript</a>
+        <a class="button compact" href="${escapeHtml(ticketTranscriptUrl(ticket.id))}">Transcript (.txt)</a>
+        <a class="button compact" href="${escapeHtml(`${ticketTranscriptUrl(ticket.id)}?format=html`)}">Transcript (.html)</a>
       </div>
       ${closed ? "" : `
         <form class="form-grid" data-t-form="reply"><label class="full">Reply in Discord<textarea name="content" maxlength="1900" required placeholder="The member sees this in their ticket"></textarea></label><button class="button primary full">Send reply</button></form>
-        <form class="form-grid" data-t-form="note"><label class="full">Internal note<textarea name="content" maxlength="4000" required placeholder="Only staff can see this"></textarea></label><button class="button full">Save note</button></form>
         <form class="form-grid" data-t-form="priority">
           <label>Priority<select name="priority">${PRIORITIES.map((value) => `<option value="${value}" ${ticket.priority === value ? "selected" : ""}>${value.toLowerCase()}</option>`).join("")}</select></label>
           <label>Tags<input name="tags" value="${escapeHtml(ticket.tags.join(", "))}" placeholder="billing, refund"></label>
@@ -226,9 +229,25 @@ function detailPanel() {
         ${ticket.participantIds.length ? `<div class="chip-row">${ticket.participantIds.map((id) => `<span class="chip">${memberName(id)}<button type="button" aria-label="Remove" data-t-action="remove-participant" data-value="${escapeHtml(id)}">×</button></span>`).join("")}</div>` : ""}`}
       <h3>Conversation</h3>
       ${conversation}
+      ${staffChatSection(ticket, messages, events, closed, timeline)}
       <h3>History</h3>
       <ul class="timeline">${events.slice().reverse().map((event) => `<li><strong>${escapeHtml(event.action.replaceAll("-", " "))}</strong><small>${escapeHtml(new Date(event.createdAt).toLocaleString())} · ${escapeHtml(event.source.toLowerCase())}</small></li>`).join("")}</ul>
     </div>`;
+}
+
+/** The ticket's staff chat: staff thread messages and portal notes. The member never sees these. */
+function staffChatSection(ticket, messages, events, closed, timeline) {
+  const failure = ticket.staffThreadId ? undefined : events.slice().reverse().find((event) => event.action === "staff-thread-failed");
+  const link = ticket.staffThreadId
+    ? `<p><a class="button compact" href="https://discord.com/channels/${escapeHtml(ticket.guildId)}/${escapeHtml(ticket.staffThreadId)}" target="_blank" rel="noreferrer">🔒 Open the staff thread in Discord</a></p>`
+    : "";
+  const problem = failure
+    ? `<p class="microcopy" role="status">Staff chat could not be created: ${escapeHtml(String(failure.details?.reason ?? "Discord refused."))}</p>`
+    : "";
+  const form = closed
+    ? ""
+    : `<form class="form-grid" data-t-form="note"><label class="full">Add to the staff chat<textarea name="content" maxlength="4000" required placeholder="Only staff can see this${ticket.staffThreadId ? ". It is also posted in the staff thread." : ""}"></textarea></label><button class="button full">Post to staff chat</button></form>`;
+  return `<h3>Staff chat (not visible to the member)</h3>${problem}${link}${timeline(messages.filter((message) => message.internal), "No staff messages yet.")}${form}`;
 }
 
 /* ---------- Ticket reasons ---------- */
@@ -263,7 +282,8 @@ function reasonsTab() {
         <p class="microcopy">Each reason counts its own tickets, so the fifth ticket for this reason is number 5. Use {reasonNumber} for that count, {number} for the server-wide count, {reason} for this reason's name, {username} for the member.</p>
         <h4>Who is alerted and can help</h4>
         ${rolePicker("supportRoleIds", "Support roles for this reason", c.supportRoleIds, "Added to the support team from Settings.")}
-        ${memberPicker("alertUserIds", "Alert specific members", c.alertUserIds, "They are added to the ticket and pinged when it opens.")}
+        ${memberPicker("alertUserIds", "Alert specific members", c.alertUserIds, "They are added to the ticket and its staff chat, and pinged when it opens.")}
+        ${selectField("staffThread", "Staff chat for this reason", STAFF_THREAD_MODES, c.staffThread || "INHERIT")}
         <h4>Who can open it</h4>
         ${rolePicker("requiredRoleIds", "Only members with these roles", c.requiredRoleIds, "Leave empty so everyone can open this reason.")}
         ${numberField("maxOpenPerUser", "Max open per member for this reason", c.maxOpenPerUser ?? "", 1, 25, false)}
@@ -517,9 +537,15 @@ function settingsTab() {
       <h3>Transcripts, logs and feedback</h3>
       ${checkbox("transcriptsEnabled", "Save a transcript when a ticket closes", s.transcriptsEnabled)}
       ${channelSelect("transcriptChannelId", "Transcript channel", s.transcriptChannelId, "TEXT", "Not set")}
-      ${checkbox("transcriptDmUser", "Send the transcript to the member", s.transcriptDmUser)}
+      ${checkbox("transcriptDmUser", "Send the member their transcript when the ticket closes", s.transcriptDmUser)}
       ${channelSelect("logChannelId", "Ticket log channel", s.logChannelId, "TEXT", "Not set")}
       ${checkbox("feedbackEnabled", "Ask members to rate their ticket", s.feedbackEnabled)}
+      <h3>Staff chat</h3>
+      ${checkbox("staffThreadEnabled", "Open a private staff chat thread for every ticket", s.staffThreadEnabled !== false)}
+      <p class="microcopy full">Only staff can see it; the member who opened the ticket is never added. Ticket reasons can turn it on or off for their tickets. The bot needs Create Private Threads, Manage Threads, and Send Messages in Threads.</p>
+      <h3>Keeping closed tickets</h3>
+      ${selectField("retentionMonths", "Keep closed tickets for", RETENTION_OPTIONS, String(s.retentionMonths ?? 12))}
+      <p class="microcopy full">Closed tickets older than this are deleted from ${escapeHtml(BRAND.name)}. Members keep the transcript we sent them.</p>
       <h3>Auto-close</h3>
       ${numberField("autoCloseHours", "Close after hours with no activity (0 = never)", s.autoCloseHours, 0, 720)}
       ${numberField("autoCloseWarningHours", "Warn this many hours before (0 = no warning)", s.autoCloseWarningHours, 0, 720)}
@@ -630,6 +656,7 @@ async function action(name, value) {
     case "unclaim": return run("Ticket unassigned.", () => ticketAction(id, "unclaim"));
     case "waiting": return run("Status updated.", () => ticketAction(id, "waiting", { waiting: value === "true" }));
     case "reopen": return run("Ticket reopened.", () => ticketAction(id, "reopen"));
+    case "send-transcript": return run("Transcript sent to the member.", () => ticketAction(id, "send-transcript"));
     case "remove-participant": return run("Removed from the ticket.", () => removeTicketParticipant(id, value));
     case "close": {
       const reason = window.prompt("Reason for closing (optional)");
@@ -694,7 +721,7 @@ async function submit(name, form) {
         await ticketAction(id, "tags", { tags: String(data.get("tags") ?? "").split(",").map((tag) => tag.trim()).filter(Boolean) });
       });
     case "reply": return run("Reply sent to Discord.", () => ticketAction(id, "reply", { content: data.get("content") }));
-    case "note": return run("Note saved.", () => ticketAction(id, "notes", { content: data.get("content") }));
+    case "note": return run("Posted to the staff chat.", () => ticketAction(id, "notes", { content: data.get("content") }));
     case "participant": return run("Added to the ticket.", () => ticketAction(id, "participants", { userId: data.get("userId") }));
     case "settings": return run("Settings saved.", () => saveTicketSettings(settingsPayload(form, data)));
     case "reason":
@@ -744,6 +771,8 @@ function settingsPayload(form, data) {
     autoCloseExcludeClaimed: bool("autoCloseExcludeClaimed"),
     blockedUserIds: String(data.get("blockedUserIds") ?? "").split(/\s+/).filter(Boolean),
     blockedRoleIds: data.getAll("blockedRoleIds"),
+    staffThreadEnabled: bool("staffThreadEnabled"),
+    retentionMonths: int("retentionMonths"),
     expectedRevision: int("expectedRevision"),
   };
 }
@@ -767,6 +796,7 @@ function reasonPayload(form, data) {
     supportRoleIds: data.getAll("supportRoleIds"),
     alertUserIds: data.getAll("alertUserIds"),
     requiredRoleIds: data.getAll("requiredRoleIds"),
+    staffThread: String(data.get("staffThread") || "INHERIT"),
     ...optionalId(data, "parentChannelId"),
     ...(text("nameTemplate") ? { nameTemplate: text("nameTemplate") } : {}),
     ...(text("openMessage") ? { openMessage: text("openMessage") } : {}),

@@ -18,8 +18,10 @@ import type {
   TicketStats,
   TicketStatus,
   TicketTranscriptFile,
+  TicketDirectMessage,
 } from "./types.js";
 import { TICKET_PRIORITIES } from "./types.js";
+import { TRANSCRIPT_BYTE_LIMIT, renderHtmlTranscript, renderTextTranscript, ticketLabel } from "./transcripts.js";
 import { BRAND } from "@qbox/shared/brand";
 import { colorValue } from "@qbox/shared/discord-rest";
 import { passthroughTemplates, type MessageTemplates, type OutgoingMessage } from "@qbox/shared/messages";
@@ -60,8 +62,28 @@ export interface AutoCloseSweepResult {
   readonly closed: number;
 }
 
+export interface RetentionSweepResult {
+  /** Closed tickets deleted, with their messages and events. */
+  readonly deleted: number;
+  readonly guilds: number;
+}
+
+export interface TicketServiceOptions {
+  /** Size limit for each transcript file in bytes (default 8 MB). */
+  readonly transcriptByteLimit?: number | undefined;
+}
+
+/** Where a staff member can open the ticket's staff chat. */
+export interface StaffChatLink {
+  readonly threadId: string;
+  readonly url: string;
+}
+
 const ACTIVE_STATUSES: readonly TicketStatus[] = ["OPEN", "CLAIMED", "PENDING"];
 const HOUR_MS = 60 * 60 * 1000;
+/** Old closed tickets are deleted this many at a time. */
+export const RETENTION_BATCH_SIZE = 200;
+const STAFF_THREAD_PERMISSION_REASON = "the bot needs Create Private Threads and Manage Threads.";
 
 export function defaultTicketSettings(guildId: string): TicketSettings {
   return {
@@ -82,13 +104,15 @@ export function defaultTicketSettings(guildId: string): TicketSettings {
     claimEnabled: true,
     claimRestrictsReplies: false,
     transcriptsEnabled: true,
-    transcriptDmUser: false,
+    transcriptDmUser: true,
     feedbackEnabled: true,
     autoCloseHours: 0,
     autoCloseWarningHours: 0,
     autoCloseExcludeClaimed: true,
     blockedUserIds: [],
     blockedRoleIds: [],
+    staffThreadEnabled: true,
+    retentionMonths: 12,
     nextNumber: 1,
     revision: 0,
   };
@@ -102,11 +126,15 @@ export function defaultTicketSettings(guildId: string): TicketSettings {
  * channel or missing permission never leaves a ticket stuck open.
  */
 export class TicketService {
+  /** `threadId:userId` pairs already added to a staff thread by this process (adding again is harmless). */
+  private readonly staffThreadMembers = new Set<string>();
+
   public constructor(
     private readonly repository: TicketRepository,
     private readonly gateway?: TicketDiscordGateway,
     private readonly now: () => Date = () => new Date(),
     private readonly templates: MessageTemplates = passthroughTemplates,
+    private readonly options: TicketServiceOptions = {},
   ) {}
 
   public async settings(guildId: string): Promise<TicketSettings> {
@@ -116,8 +144,11 @@ export class TicketService {
 
   public async saveSettings(input: TicketSettingsInput): Promise<TicketSettings> {
     validateSettings(input);
+    const current = input.staffThreadEnabled === undefined || input.retentionMonths === undefined ? await this.settings(input.guildId) : undefined;
     return this.repository.saveSettings({
       ...input,
+      staffThreadEnabled: input.staffThreadEnabled ?? current?.staffThreadEnabled ?? true,
+      retentionMonths: input.retentionMonths ?? current?.retentionMonths ?? 12,
       supportRoleIds: unique(input.supportRoleIds),
       blockedRoleIds: unique(input.blockedRoleIds),
       blockedUserIds: unique(input.blockedUserIds),
@@ -144,6 +175,7 @@ export class TicketService {
       supportRoleIds: unique(input.supportRoleIds),
       alertUserIds: unique(input.alertUserIds),
       requiredRoleIds: unique(input.requiredRoleIds),
+      staffThread: input.staffThread ?? existing.find((category) => category.id === input.id)?.staffThread ?? "INHERIT",
       position: input.position ?? (input.id === undefined ? existing.length : undefined),
     });
   }
@@ -253,13 +285,14 @@ export class TicketService {
     });
     const values = placeholderValues(created, category, input.actor);
     const supportRoleIds = unique([...settings.supportRoleIds, ...(category?.supportRoleIds ?? [])]);
+    const spaceName = channelName(category?.nameTemplate ?? (category ? DEFAULT_REASON_NAME_TEMPLATE : settings.nameTemplate), values);
     let channelId: string;
     try {
       ({ channelId } = await gateway.createTicketSpace({
         guildId: input.guildId,
         mode: settings.mode,
         ...(parentChannelId ? { parentChannelId } : {}),
-        name: channelName(category?.nameTemplate ?? (category ? DEFAULT_REASON_NAME_TEMPLATE : settings.nameTemplate), values),
+        name: spaceName,
         openerId: input.actor.userId,
         supportRoleIds,
         memberIds: (category?.alertUserIds ?? []).filter((userId) => userId !== input.actor.userId),
@@ -270,7 +303,8 @@ export class TicketService {
       await this.event(created.id, "open-failed", input.actor, { reason: errorText(error) });
       throw new TicketError("DEPENDENCY_UNAVAILABLE", "The ticket channel could not be created. Check the bot's permissions and try again.");
     }
-    const ticket = await this.repository.updateTicket(created.id, { channelId, lastActivityAt: this.now() });
+    let ticket = await this.repository.updateTicket(created.id, { channelId, lastActivityAt: this.now() });
+    const staffThread = staffThreadWanted(settings, category) && gateway.createStaffThread !== undefined;
     await this.event(ticket.id, "opened", input.actor, {
       category: category?.name ?? null,
       priority: ticket.priority,
@@ -293,14 +327,49 @@ export class TicketService {
         mentionUserIds: unique([input.actor.userId, ...(category?.alertUserIds ?? [])]),
         mentionRoleIds: settings.pingSupportOnOpen ? supportRoleIds : [],
         claimButton: settings.claimEnabled,
+        staffChatButton: staffThread,
       }),
     );
+    if (staffThread) {
+      // Channel mode: inside the ticket channel. Thread mode: a thread cannot hold a thread, so next to it.
+      const threadParent = settings.mode === "CHANNEL" ? channelId : parentChannelId;
+      if (threadParent)
+        ticket = await this.createStaffThread(ticket, input.actor, {
+          parentChannelId: threadParent,
+          name: settings.mode === "CHANNEL" ? `🔒 staff-${spaceName}` : `🔒 staff-ticket-${ticket.number}`,
+          supportRoleIds,
+          alertUserIds: category?.alertUserIds ?? [],
+          reason: category?.name ?? "General support",
+        });
+    }
     await this.log(settings, ticket, `Ticket #${ticket.number} opened`, `<@${ticket.openerId}> opened <#${channelId}>${category ? ` in **${category.name}**` : ""}.`, "#57F287");
     return ticket;
   }
 
   public async ticketForChannel(channelId: string): Promise<Ticket | undefined> {
     return this.repository.findTicketByChannel(channelId);
+  }
+
+  /** The ticket whose staff thread this is. */
+  public async ticketForStaffThread(threadId: string): Promise<Ticket | undefined> {
+    return this.repository.findTicketByStaffThread(threadId);
+  }
+
+  /**
+   * "🔒 Staff chat" button: adds a staff member (same rule as claiming) to the
+   * ticket's staff thread and returns where it is.
+   */
+  public async openStaffChat(guildId: string, id: string, actor: TicketActor): Promise<StaffChatLink> {
+    const ticket = await this.ticket(guildId, id);
+    const settings = await this.settings(guildId);
+    if (!this.isStaff(settings, await this.categoryFor(ticket), actor)) throw new TicketError("FORBIDDEN", "Only staff can open the staff chat.");
+    if (!ticket.staffThreadId) throw new TicketError("INVALID_STATE", "This ticket has no staff chat.");
+    const gateway = this.requireGateway();
+    if (ticket.openerId !== actor.userId && gateway.addThreadMember) {
+      await gateway.addThreadMember(ticket.staffThreadId, actor.userId);
+      this.rememberStaffMember(ticket.staffThreadId, actor.userId);
+    }
+    return { threadId: ticket.staffThreadId, url: `https://discord.com/channels/${guildId}/${ticket.staffThreadId}` };
   }
 
   public async ticket(guildId: string, id: string): Promise<Ticket> {
@@ -345,6 +414,7 @@ export class TicketService {
         await this.restrictStaff(updated, settings, actor, channelId, "READ_ONLY");
       await this.notice(updated, actor, `<@${actor.userId}> claimed this ticket and will be assisting you.`);
     }
+    await this.addStaffThreadMember(updated, actor.userId, actor);
     await this.log(settings, updated, `Ticket #${updated.number} claimed`, `<@${actor.userId}> claimed the ticket.`, "#FEE75C");
     return updated;
   }
@@ -374,6 +444,7 @@ export class TicketService {
     const updated = await this.repository.updateTicket(id, { claimedById: targetUserId, status: ticket.status === "PENDING" ? "PENDING" : "CLAIMED" });
     await this.event(id, "transferred", actor, { from: ticket.claimedById ?? null, to: targetUserId });
     await this.notice(updated, actor, `This ticket was transferred to <@${targetUserId}>.`);
+    await this.addStaffThreadMember(updated, targetUserId, actor);
     return updated;
   }
 
@@ -446,7 +517,16 @@ export class TicketService {
 
   public async addNote(guildId: string, id: string, actor: TicketActor, content: string): Promise<TicketMessage> {
     requireLength("note", content.trim(), 1, 4000);
-    await this.staffContext(guildId, id, actor);
+    const { ticket } = await this.staffContext(guildId, id, actor);
+    // Staff chat is one conversation: a note written outside Discord is posted into the staff thread too.
+    const gateway = this.gateway;
+    const threadId = ticket.staffThreadId;
+    if (gateway && threadId && ticket.status !== "CLOSED") {
+      const author = actor.source === "WEB" ? `${actor.displayName} (from portal)` : actor.displayName;
+      await this.attempt(id, actor, "staff-thread-note", () =>
+        gateway.postNotice({ channelId: threadId, content: `**${author}:**\n${content.trim()}`.slice(0, 2000), silent: true }).then(() => undefined),
+      );
+    }
     const message = await this.repository.addMessage({
       ticketId: id,
       authorId: actor.userId,
@@ -489,10 +569,27 @@ export class TicketService {
     return message;
   }
 
-  /** Stores a Discord message sent inside a ticket channel for transcripts. */
+  /**
+   * Stores a Discord message sent inside a ticket channel for transcripts.
+   * Messages in the ticket's staff thread are stored as staff chat (internal).
+   */
   public async recordMessage(input: RecordedDiscordMessage): Promise<TicketMessage | undefined> {
     const ticket = await this.repository.findTicketByChannel(input.channelId);
-    if (!ticket || ticket.status === "CLOSED") return undefined;
+    if (!ticket) {
+      const staffTicket = await this.repository.findTicketByStaffThread(input.channelId);
+      if (!staffTicket || staffTicket.status === "CLOSED") return undefined;
+      return this.repository.addMessage({
+        ticketId: staffTicket.id,
+        discordMessageId: input.discordMessageId,
+        authorId: input.authorId,
+        authorName: input.authorName,
+        content: input.content.slice(0, 4000),
+        attachments: input.attachments.slice(0, 10),
+        source: "DISCORD",
+        internal: true,
+      });
+    }
+    if (ticket.status === "CLOSED") return undefined;
     const message = await this.repository.addMessage({
       ticketId: ticket.id,
       discordMessageId: input.discordMessageId,
@@ -504,11 +601,16 @@ export class TicketService {
       internal: false,
     });
     const patch: { -readonly [K in keyof TicketPatch]: TicketPatch[K] } = { lastActivityAt: this.now(), autoCloseWarnedAt: null };
-    if (input.authorId !== ticket.openerId && !ticket.firstResponseAt) {
+    const firstStaffMessage = ticket.staffThreadId !== undefined && !this.staffThreadMembers.has(`${ticket.staffThreadId}:${input.authorId}`);
+    if (input.authorId !== ticket.openerId && (!ticket.firstResponseAt || firstStaffMessage)) {
       const settings = await this.settings(ticket.guildId);
       const category = await this.categoryFor(ticket);
       const actor: TicketActor = { userId: input.authorId, displayName: input.authorName, roleIds: input.authorRoleIds, elevated: false, source: "DISCORD" };
-      if (this.isStaff(settings, category, actor)) patch.firstResponseAt = this.now();
+      if (this.isStaff(settings, category, actor)) {
+        if (!ticket.firstResponseAt) patch.firstResponseAt = this.now();
+        // Staff who talk in the ticket join its staff chat on their first message.
+        if (firstStaffMessage) await this.addStaffThreadMember(ticket, input.authorId, actor);
+      }
     }
     if (ticket.status === "PENDING" && input.authorId === ticket.openerId) patch.status = ticket.claimedById ? "CLAIMED" : "OPEN";
     await this.repository.updateTicket(ticket.id, patch);
@@ -562,30 +664,27 @@ export class TicketService {
     }
 
     let finalTicket = closed;
-    const transcript = settings.transcriptsEnabled || settings.transcriptDmUser ? await this.transcript(guildId, id, true) : undefined;
-    if (transcript && settings.transcriptsEnabled && settings.transcriptChannelId) {
+    if (settings.transcriptsEnabled && settings.transcriptChannelId) {
       const transcriptChannelId = settings.transcriptChannelId;
       await this.attempt(id, actor, "post-transcript", async () => {
+        // Staff copy: includes the staff chat.
+        const files = await this.transcriptFiles(closed, settings, true);
         const { messageId } = await gateway.postTranscript({
           channelId: transcriptChannelId,
           ticket: closed,
           summary: closeSummary(closed),
-          file: transcript,
+          files,
         });
         finalTicket = await this.repository.updateTicket(id, { transcriptMessageId: messageId });
       });
     }
     if (settings.transcriptDmUser || settings.feedbackEnabled) {
-      const publicTranscript = settings.transcriptDmUser ? await this.transcript(guildId, id, false) : undefined;
-      const message = await this.closedDirectMessage(closed, trimmed, settings.feedbackEnabled);
-      await this.attempt(id, actor, "direct-message", () =>
-        gateway.directMessage({
-          userId: closed.openerId,
-          message,
-          ...(publicTranscript ? { file: publicTranscript } : {}),
-          ...(settings.feedbackEnabled ? { feedbackTicketId: id } : {}),
-        }).then(() => undefined),
-      );
+      let sent = false;
+      await this.attempt(id, actor, "direct-message", async () => {
+        const message = await this.memberDirectMessage(closed, settings, trimmed, { transcript: settings.transcriptDmUser, feedback: settings.feedbackEnabled });
+        sent = await gateway.directMessage(message);
+      });
+      if (!sent && settings.transcriptDmUser) await this.transcriptDmFailed(closed, actor, true);
     }
     if (closed.channelId) {
       const channelId = closed.channelId;
@@ -601,6 +700,7 @@ export class TicketService {
       );
       if (settings.closeAction === "DELETE") finalTicket = await this.repository.updateTicket(id, { channelId: null });
     }
+    finalTicket = await this.closeStaffThread(finalTicket, closed.staffThreadId, settings, actor, settings.closeAction === "DELETE" ? settings.deleteDelaySeconds : undefined);
     await this.log(settings, closed, `Ticket #${closed.number} closed`, `Closed by <@${actor.userId}>${trimmed ? `\nReason: ${trimmed}` : ""}`, "#ED4245");
     return finalTicket;
   }
@@ -624,6 +724,9 @@ export class TicketService {
       closeReason: null,
       lastActivityAt: this.now(),
     });
+    const staffThreadId = ticket.staffThreadId;
+    const setArchived = gateway.setThreadArchived?.bind(gateway);
+    if (staffThreadId && setArchived) await this.attempt(id, actor, "staff-thread-reopen", () => setArchived(staffThreadId, false));
     await this.event(id, "reopened", actor, {});
     await this.notice(updated, actor, `Ticket reopened by <@${actor.userId}>.`);
     await this.log(settings, updated, `Ticket #${updated.number} reopened`, `<@${actor.userId}> reopened the ticket.`, "#57F287");
@@ -632,24 +735,38 @@ export class TicketService {
 
   /** Deletes the Discord channel of a closed ticket. The record and transcript stay. */
   public async deleteChannel(guildId: string, id: string, actor: TicketActor): Promise<Ticket> {
-    const { ticket } = await this.staffContext(guildId, id, actor);
+    const { ticket, settings } = await this.staffContext(guildId, id, actor);
     if (ticket.status !== "CLOSED") throw new TicketError("INVALID_STATE", "Close the ticket before deleting its channel.");
     if (!ticket.channelId) throw new TicketError("INVALID_STATE", "The ticket channel was already deleted.");
     await this.requireGateway().deleteSpace(ticket.channelId, 5);
-    const updated = await this.repository.updateTicket(id, { channelId: null });
+    const updated = await this.closeStaffThread(await this.repository.updateTicket(id, { channelId: null }), ticket.staffThreadId, settings, actor, 5);
     await this.event(id, "channel-deleted", actor, {});
     return updated;
   }
 
-  /** Marks a ticket closed when its Discord channel disappears. */
+  /** Marks a ticket closed when its Discord channel disappears, and forgets a deleted staff thread. */
   public async handleChannelDeleted(channelId: string): Promise<void> {
     const ticket = await this.repository.findTicketByChannel(channelId);
-    if (!ticket) return;
+    if (!ticket) {
+      const staffTicket = await this.repository.findTicketByStaffThread(channelId);
+      if (!staffTicket) return;
+      await this.repository.updateTicket(staffTicket.id, { staffThreadId: null });
+      await this.event(staffTicket.id, "staff-thread-removed", systemActor(), {});
+      return;
+    }
+    const settings = await this.settings(ticket.guildId);
+    // Channel mode: the staff thread lived inside the deleted channel. Thread mode: it stays, archived.
+    const insideChannel = settings.mode === "CHANNEL";
     await this.repository.updateTicket(ticket.id, {
       channelId: null,
+      ...(insideChannel && ticket.staffThreadId ? { staffThreadId: null } : {}),
       ...(ticket.status === "CLOSED" ? {} : { status: "CLOSED", closedAt: this.now(), closeReason: "Ticket channel was deleted." }),
     });
     await this.event(ticket.id, "channel-removed", systemActor(), {});
+    const staffThreadId = ticket.staffThreadId;
+    const setArchived = this.gateway?.setThreadArchived?.bind(this.gateway);
+    if (!insideChannel && staffThreadId && setArchived && ticket.status !== "CLOSED")
+      await this.attempt(ticket.id, systemActor(), "staff-thread-archive", () => setArchived(staffThreadId, true));
   }
 
   public async rate(id: string, userId: string, rating: number, feedback?: string): Promise<Ticket> {
@@ -668,26 +785,62 @@ export class TicketService {
     return updated;
   }
 
-  /** Renders a plain-text transcript. Internal notes are included only for staff copies. */
+  /** Renders a plain-text transcript. The staff chat is included only in staff copies. */
   public async transcript(guildId: string, id: string, includeInternal: boolean): Promise<TicketTranscriptFile> {
     const ticket = await this.ticket(guildId, id);
-    const messages = await this.repository.listMessages(id);
-    const lines = [
-      ticketLabel(ticket),
-      `Opened by ${ticket.openerName} (${ticket.openerId}) at ${ticket.createdAt.toISOString()}`,
-      `Status: ${ticket.status}  Priority: ${ticket.priority}${ticket.claimedById ? `  Claimed by: ${ticket.claimedById}` : ""}`,
-      ...(ticket.subject ? [`Subject: ${ticket.subject}`] : []),
-      ...ticket.answers.map((answer) => `${answer.question}: ${answer.answer}`),
-      ...(ticket.closedAt ? [`Closed at ${ticket.closedAt.toISOString()} by ${ticket.closedById ?? "system"}${ticket.closeReason ? ` - ${ticket.closeReason}` : ""}`] : []),
-      "-".repeat(60),
-      ...messages
-        .filter((message) => includeInternal || !message.internal)
-        .flatMap((message) => [
-          `[${message.createdAt.toISOString()}] ${message.internal ? "[internal note] " : ""}${message.authorName}: ${message.content}`,
-          ...message.attachments.map((url) => `    attachment: ${url}`),
-        ]),
-    ];
-    return { fileName: `ticket-${ticket.number}-transcript.txt`, content: `${lines.join("\n")}\n` };
+    const [text] = await this.transcriptFiles(ticket, await this.settings(guildId), includeInternal);
+    return text;
+  }
+
+  /** The .txt and .html transcripts. Member copies never include the staff chat. */
+  public async transcriptFiles(ticket: Ticket, settings: TicketSettings, includeStaffChat: boolean): Promise<readonly [TicketTranscriptFile, TicketTranscriptFile]> {
+    const messages = await this.repository.listMessages(ticket.id);
+    const serverName = this.gateway ? await this.gateway.guildName(ticket.guildId).catch(() => undefined) : undefined;
+    const input = {
+      ticket,
+      messages,
+      includeStaffChat,
+      serverName,
+      deletionDate: deletionDate(ticket, settings),
+      byteLimit: this.options.transcriptByteLimit ?? TRANSCRIPT_BYTE_LIMIT,
+    };
+    return [renderTextTranscript(input), renderHtmlTranscript(input)];
+  }
+
+  /**
+   * Portal retry: DMs the member their transcript (summary, .txt and .html,
+   * no staff chat) for a closed ticket.
+   */
+  public async sendTranscriptToMember(guildId: string, id: string, actor: TicketActor): Promise<{ readonly sent: true }> {
+    const { ticket, settings } = await this.staffContext(guildId, id, actor);
+    if (ticket.status !== "CLOSED") throw new TicketError("INVALID_STATE", "Transcripts are sent once the ticket is closed.");
+    const gateway = this.requireGateway();
+    const message = await this.memberDirectMessage(ticket, settings, ticket.closeReason, { transcript: true, feedback: false });
+    if (!(await gateway.directMessage(message).catch(() => false))) {
+      await this.transcriptDmFailed(ticket, actor, false);
+      throw new TicketError("INVALID_STATE", "The member's DMs are closed, so the transcript could not be sent.");
+    }
+    await this.event(id, "transcript-dm-sent", actor, {});
+    return { sent: true };
+  }
+
+  /**
+   * Deletes CLOSED tickets older than each server's retention (with their
+   * messages and events), 200 at a time. Open tickets are never deleted.
+   */
+  public async sweepRetention(): Promise<RetentionSweepResult> {
+    let deleted = 0;
+    const policies = await this.repository.listRetentionPolicies();
+    for (const policy of policies) {
+      if (policy.retentionMonths <= 0) continue;
+      const cutoff = addMonths(this.now(), -policy.retentionMonths);
+      for (;;) {
+        const count = await this.repository.deleteClosedTickets(policy.guildId, cutoff, RETENTION_BATCH_SIZE);
+        deleted += count;
+        if (count < RETENTION_BATCH_SIZE) break;
+      }
+    }
+    return { deleted, guilds: policies.length };
   }
 
   /** Transcript for a member: staff get internal notes, the opener gets the public copy. */
@@ -765,6 +918,118 @@ export class TicketService {
     const panel = (await this.panels(guildId)).find((item) => item.id === id);
     if (!panel) throw new TicketError("NOT_FOUND", "Ticket panel was not found.");
     return panel;
+  }
+
+  /**
+   * Creates the private staff thread, posts its first message (pinging the
+   * support roles), and adds the reason's alerted members. The opener is never
+   * added. A refusal from Discord is recorded and the ticket stays open.
+   */
+  private async createStaffThread(
+    ticket: Ticket,
+    actor: TicketActor,
+    input: { parentChannelId: string; name: string; supportRoleIds: readonly string[]; alertUserIds: readonly string[]; reason: string },
+  ): Promise<Ticket> {
+    const create = this.gateway?.createStaffThread?.bind(this.gateway);
+    if (!create) return ticket;
+    const inTicket = input.parentChannelId === ticket.channelId;
+    const content = [
+      `Staff-only chat for Ticket #${ticket.number} – ${input.reason}. <@${ticket.openerId}> cannot see this thread.`,
+      ...(inTicket || !ticket.channelId ? [] : [`Ticket: <#${ticket.channelId}>`]),
+      ...(input.supportRoleIds.length ? [input.supportRoleIds.map((roleId) => `<@&${roleId}>`).join(" ")] : []),
+    ].join("\n");
+    let threadId: string;
+    try {
+      ({ threadId } = await create({
+        guildId: ticket.guildId,
+        parentChannelId: input.parentChannelId,
+        name: [...input.name].slice(0, 100).join(""),
+        content,
+        mentionRoleIds: input.supportRoleIds,
+        reason: `Staff chat for ${ticketLabel(ticket)}`,
+      }));
+    } catch (error) {
+      await this.event(ticket.id, "staff-thread-failed", actor, { reason: staffThreadFailureReason(error) });
+      return ticket;
+    }
+    const updated = await this.repository.updateTicket(ticket.id, { staffThreadId: threadId });
+    await this.event(ticket.id, "staff-thread-created", actor, { threadId });
+    for (const userId of unique(input.alertUserIds)) await this.addStaffThreadMember(updated, userId, actor);
+    return updated;
+  }
+
+  /** Adds a staff member to the ticket's staff thread. Never the opener. */
+  private async addStaffThreadMember(ticket: Ticket, userId: string, actor: TicketActor): Promise<void> {
+    const threadId = ticket.staffThreadId;
+    const add = this.gateway?.addThreadMember?.bind(this.gateway);
+    if (!threadId || !add || userId === ticket.openerId || userId === "0") return;
+    await this.attempt(ticket.id, actor, "staff-thread-member", async () => {
+      await add(threadId, userId);
+      this.rememberStaffMember(threadId, userId);
+    });
+  }
+
+  private rememberStaffMember(threadId: string, userId: string): void {
+    if (this.staffThreadMembers.size > 10_000) this.staffThreadMembers.clear();
+    this.staffThreadMembers.add(`${threadId}:${userId}`);
+  }
+
+  /**
+   * Closing: archives and locks the staff thread. Deleting (`deleteDelaySeconds`
+   * set): in channel mode the thread goes with the channel; in thread mode it
+   * is deleted too.
+   */
+  private async closeStaffThread(ticket: Ticket, threadId: string | undefined, settings: TicketSettings, actor: TicketActor, deleteDelaySeconds?: number): Promise<Ticket> {
+    const gateway = this.gateway;
+    if (!threadId || !gateway) return ticket;
+    if (deleteDelaySeconds !== undefined) {
+      if (settings.mode === "THREAD") await this.attempt(ticket.id, actor, "staff-thread-delete", () => gateway.deleteSpace(threadId, deleteDelaySeconds));
+      return this.repository.updateTicket(ticket.id, { staffThreadId: null });
+    }
+    const setArchived = gateway.setThreadArchived?.bind(gateway);
+    if (setArchived) await this.attempt(ticket.id, actor, "staff-thread-archive", () => setArchived(threadId, true));
+    return ticket;
+  }
+
+  /** Records a transcript DM the member did not receive and, while the ticket is still in Discord, tells them there. */
+  private async transcriptDmFailed(ticket: Ticket, actor: TicketActor, tellMember: boolean): Promise<void> {
+    await this.event(ticket.id, "transcript-dm-failed", actor, { reason: "The member's DMs are closed." });
+    if (tellMember)
+      await this.notice(ticket, actor, `<@${ticket.openerId}>, your DMs are closed, so the transcript could not be sent. Staff can send it to you from the portal.`);
+  }
+
+  /**
+   * The DM for the member: the `tickets.closed-dm` message, plus (with the
+   * transcript) a summary embed and the .txt and .html files without staff chat.
+   */
+  private async memberDirectMessage(ticket: Ticket, settings: TicketSettings, closeReason: string | undefined, include: { transcript: boolean; feedback: boolean }): Promise<TicketDirectMessage> {
+    const message = await this.closedDirectMessage(ticket, closeReason, include.feedback);
+    if (!include.transcript) return { userId: ticket.openerId, message, ...(include.feedback ? { feedbackTicketId: ticket.id } : {}) };
+    const files = await this.transcriptFiles(ticket, settings, false);
+    const messages = (await this.repository.listMessages(ticket.id)).filter((item) => !item.internal).length;
+    const server = this.gateway ? await this.gateway.guildName(ticket.guildId).catch(() => "the server") : "the server";
+    const closedAt = ticket.closedAt ?? this.now();
+    const summary = {
+      title: `Ticket #${ticket.number} transcript`,
+      color: colorValue(settings.embedColor),
+      fields: [
+        { name: "Ticket", value: `#${ticket.number}${ticket.categoryNumber ? ` · Reason #${ticket.categoryNumber}` : ""}`, inline: true },
+        { name: "Server", value: server.slice(0, 1024), inline: true },
+        { name: "Reason", value: (ticket.categoryName ?? "General support").slice(0, 1024), inline: true },
+        { name: "Opened", value: discordTime(ticket.createdAt), inline: true },
+        { name: "Closed", value: discordTime(closedAt), inline: true },
+        { name: "Closed by", value: ticket.closedById && ticket.closedById !== "0" ? `<@${ticket.closedById}>` : BRAND.name, inline: true },
+        { name: "Close reason", value: (closeReason ?? "No reason given").slice(0, 1024) },
+        { name: "Messages", value: String(messages), inline: true },
+      ],
+      footer: { text: "The .txt file previews here. Open the .html file in any browser and keep it." },
+    };
+    return {
+      userId: ticket.openerId,
+      message: { ...message, embeds: [...(message.embeds ?? []), summary].slice(0, 10) },
+      files,
+      ...(include.feedback ? { feedbackTicketId: ticket.id } : {}),
+    };
   }
 
   /** The `tickets.closed-dm` message for the member who opened the ticket. */
@@ -857,11 +1122,7 @@ function placeholderValues(ticket: Ticket, category: TicketCategory | undefined,
   };
 }
 
-/** "Ticket #12 - Donations #5" (reason and its own count when the ticket has one). */
-export function ticketLabel(ticket: Ticket): string {
-  const reason = ticket.categoryName ? ` - ${ticket.categoryName}${ticket.categoryNumber ? ` #${ticket.categoryNumber}` : ""}` : "";
-  return `Ticket #${ticket.number}${reason}`;
-}
+export { ticketLabel };
 
 function openingBody(message: string, ticket: Ticket): string {
   const parts = [message];
@@ -878,6 +1139,37 @@ function closeSummary(ticket: Ticket): string {
     `Closed by ${ticket.closedById && ticket.closedById !== "0" ? `<@${ticket.closedById}>` : BRAND.name}`,
     ...(ticket.closeReason ? [`Reason: ${ticket.closeReason}`] : []),
   ].join("\n");
+}
+
+/** True when tickets of this reason get a staff thread. */
+function staffThreadWanted(settings: TicketSettings, category: TicketCategory | undefined): boolean {
+  const mode = category?.staffThread ?? "INHERIT";
+  return mode === "INHERIT" ? settings.staffThreadEnabled : mode === "ON";
+}
+
+/** Why Discord refused to create the staff thread, in plain words. */
+function staffThreadFailureReason(error: unknown): string {
+  const code = typeof error === "object" && error !== null ? Reflect.get(error, "code") : undefined;
+  const message = error instanceof Error ? error.message : "";
+  if (code === 50013 || code === 50001 || /missing (permissions|access)/i.test(message)) return STAFF_THREAD_PERMISSION_REASON;
+  return `Discord refused: ${errorText(error)}`;
+}
+
+/** When a closed ticket is deleted under the server's retention, or undefined when kept forever. */
+function deletionDate(ticket: Ticket, settings: TicketSettings): Date | undefined {
+  if (settings.retentionMonths <= 0) return undefined;
+  return addMonths(ticket.closedAt ?? ticket.updatedAt, settings.retentionMonths);
+}
+
+function addMonths(date: Date, months: number): Date {
+  const result = new Date(date.getTime());
+  result.setUTCMonth(result.getUTCMonth() + months);
+  return result;
+}
+
+/** Discord timestamp markup, shown in each reader's own time zone. */
+function discordTime(date: Date): string {
+  return `<t:${Math.floor(date.getTime() / 1000)}:f>`;
 }
 
 function requireActive(ticket: Ticket): void {

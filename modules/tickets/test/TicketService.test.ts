@@ -238,7 +238,7 @@ describe("TicketService staff actions", () => {
     await service.addNote(GUILD, ticket.id, staff, "Known troublemaker");
     const staffCopy = await service.transcript(GUILD, ticket.id, true);
     const publicCopy = await service.transcript(GUILD, ticket.id, false);
-    expect(staffCopy.content).toContain("[internal note]");
+    expect(staffCopy.content).toContain("[staff chat]");
     expect(publicCopy.content).not.toContain("Known troublemaker");
     expect(publicCopy.content).toContain("attachment: https://cdn.example/a.png");
     expect((await service.ticket(GUILD, ticket.id)).firstResponseAt).toBeDefined();
@@ -251,8 +251,9 @@ describe("TicketService closing", () => {
     const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER) });
     const closed = await service.close(GUILD, ticket.id, actor(USER), "Solved");
     expect(closed).toMatchObject({ status: "CLOSED", closeReason: "Solved", transcriptMessageId: "900000000000000001" });
-    expect(gateway.transcripts[0]?.file.fileName).toBe("ticket-1-transcript.txt");
+    expect(gateway.transcripts[0]?.files.map((file) => file.fileName)).toEqual(["ticket-1-transcript.txt", "ticket-1-transcript.html"]);
     expect(gateway.dms[0]).toMatchObject({ userId: USER, feedbackTicketId: ticket.id, message: { content: "Your ticket #1 was closed: Solved\nHow did we do? Rate your support experience below." } });
+    expect(gateway.dms[0]?.files?.map((file) => file.fileName)).toEqual(["ticket-1-transcript.txt", "ticket-1-transcript.html"]);
     expect(gateway.access).toContainEqual(expect.objectContaining({ targetId: USER, access: "READ_ONLY" }));
     expect(gateway.closed[0]).toMatchObject({ action: "ARCHIVE", closedParentChannelId: CLOSED_CATEGORY });
     await expect(service.close(GUILD, ticket.id, actor(USER))).rejects.toMatchObject({ code: "INVALID_STATE" });
@@ -322,7 +323,8 @@ describe("TicketService message templates", () => {
       }],
     });
     await service.close(GUILD, ticket.id, actor(STAFF, [SUPPORT_ROLE]));
-    expect(gateway.dms[0]?.message).toEqual({ content: "Your ticket #1 was closed." });
+    expect(gateway.dms[0]?.message.content).toBe("Your ticket #1 was closed.");
+    expect(gateway.dms[0]?.message.embeds?.map((embed) => embed.title)).toEqual(["Ticket #1 transcript"]);
   });
 
   it("posts the server's custom opening message and closing DM", async () => {
@@ -333,7 +335,8 @@ describe("TicketService message templates", () => {
     expect(gateway.openings[0]?.mentionUserIds).toEqual([USER]);
     expect(seen[0]).toEqual({ key: "tickets.opened", values: { user: `<@${USER}>`, username: "user-01", number: "1", category: "support", reason: "support", reasonNumber: "1", subject: "Help", server: "Guildhall HQ" } });
     await service.close(GUILD, ticket.id, actor(STAFF, [SUPPORT_ROLE]), "Done");
-    expect(gateway.dms[0]?.message).toEqual({ content: "custom tickets.closed-dm" });
+    expect(gateway.dms[0]?.message.content).toBe("custom tickets.closed-dm");
+    expect(gateway.dms[0]?.message.embeds?.map((embed) => embed.title)).toEqual(["Ticket #1 transcript"]);
     expect(seen[1]).toEqual({ key: "tickets.closed-dm", values: { user: `<@${USER}>`, username: "user-01", number: 1, reason: "support", reasonNumber: 1, closeReason: "Done", ratingPrompt: "How did we do? Rate your support experience below." } });
   });
 });

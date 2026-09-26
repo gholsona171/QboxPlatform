@@ -15,7 +15,9 @@ import {
   type TicketPatch,
   type TicketQuestion,
   type TicketRepository,
+  type TicketRetentionPolicy,
   type TicketSettings,
+  type TicketStaffThreadMode,
   type TicketSettingsInput,
   type TicketStats,
 } from "@qbox/tickets";
@@ -113,6 +115,7 @@ export class PrismaTicketRepository implements TicketRepository {
       questions: input.questions.map((question) => ({ ...question })) as Prisma.InputJsonValue,
       requiredRoleIds: [...input.requiredRoleIds],
       maxOpenPerUser: input.maxOpenPerUser ?? null,
+      ...(input.staffThread === undefined ? {} : { staffThread: input.staffThread }),
       ...(input.position === undefined ? {} : { position: input.position }),
     };
     const row = input.id
@@ -199,6 +202,11 @@ export class PrismaTicketRepository implements TicketRepository {
     return row ? mapTicket(row) : undefined;
   }
 
+  public async findTicketByStaffThread(threadId: string): Promise<Ticket | undefined> {
+    const row = await this.client.ticket.findUnique({ where: { staffThreadId: threadId }, include: ticketInclude });
+    return row ? mapTicket(row) : undefined;
+  }
+
   public async findTicketByNumber(guildId: string, number: number): Promise<Ticket | undefined> {
     const row = await this.client.ticket.findFirst({ where: { number, guild: { discordGuildId: guildId } }, include: ticketInclude });
     return row ? mapTicket(row) : undefined;
@@ -249,6 +257,7 @@ export class PrismaTicketRepository implements TicketRepository {
   public async updateTicket(id: string, patch: TicketPatch): Promise<Ticket> {
     const data: Prisma.TicketUpdateInput = {};
     if (patch.channelId !== undefined) data.channelId = patch.channelId;
+    if (patch.staffThreadId !== undefined) data.staffThreadId = patch.staffThreadId;
     if (patch.status !== undefined) data.status = patch.status;
     if (patch.priority !== undefined) data.priority = patch.priority;
     if (patch.claimedById !== undefined) data.claimedById = patch.claimedById;
@@ -309,6 +318,32 @@ export class PrismaTicketRepository implements TicketRepository {
       select: { guild: { select: { discordGuildId: true } } },
     });
     return rows.map((row) => row.guild.discordGuildId);
+  }
+
+  public async listRetentionPolicies(): Promise<readonly TicketRetentionPolicy[]> {
+    const rows = await this.client.ticketSettings.findMany({
+      where: { retentionMonths: { gt: 0 } },
+      select: { retentionMonths: true, guild: { select: { discordGuildId: true } } },
+    });
+    return rows.map((row) => ({ guildId: row.guild.discordGuildId, retentionMonths: row.retentionMonths }));
+  }
+
+  public async deleteClosedTickets(guildId: string, closedBefore: Date, limit: number): Promise<number> {
+    const doomed = await this.client.ticket.findMany({
+      where: { guild: { discordGuildId: guildId }, status: "CLOSED", closedAt: { lt: closedBefore } },
+      select: { id: true },
+      orderBy: { closedAt: "asc" },
+      take: limit,
+    });
+    if (doomed.length === 0) return 0;
+    const ids = doomed.map((row) => row.id);
+    const [, , deleted] = await this.client.$transaction([
+      this.client.ticketMessage.deleteMany({ where: { ticketId: { in: ids } } }),
+      this.client.ticketEvent.deleteMany({ where: { ticketId: { in: ids } } }),
+      // Re-checked so a ticket reopened in the meantime is kept.
+      this.client.ticket.deleteMany({ where: { id: { in: ids }, status: "CLOSED" } }),
+    ]);
+    return deleted.count;
   }
 
   public async stats(guildId: string): Promise<TicketStats> {
@@ -387,6 +422,8 @@ function settingsData(input: TicketSettingsInput) {
     autoCloseExcludeClaimed: input.autoCloseExcludeClaimed,
     blockedUserIds: [...input.blockedUserIds],
     blockedRoleIds: [...input.blockedRoleIds],
+    ...(input.staffThreadEnabled === undefined ? {} : { staffThreadEnabled: input.staffThreadEnabled }),
+    ...(input.retentionMonths === undefined ? {} : { retentionMonths: input.retentionMonths }),
     lastOperationSource: input.source,
   };
 }
@@ -422,6 +459,8 @@ function mapSettings(guildId: string, row: SettingsRow): TicketSettings {
     autoCloseExcludeClaimed: row.autoCloseExcludeClaimed,
     blockedUserIds: row.blockedUserIds,
     blockedRoleIds: row.blockedRoleIds,
+    staffThreadEnabled: row.staffThreadEnabled,
+    retentionMonths: row.retentionMonths,
     nextNumber: row.nextNumber,
     revision: row.revision,
   };
@@ -446,7 +485,12 @@ function mapCategory(guildId: string, row: CategoryRow): TicketCategory {
     questions: parseQuestions(row.questions),
     requiredRoleIds: row.requiredRoleIds,
     ...optional("maxOpenPerUser", row.maxOpenPerUser),
+    staffThread: staffThreadMode(row.staffThread),
   };
+}
+
+function staffThreadMode(value: string): TicketStaffThreadMode {
+  return value === "ON" || value === "OFF" ? value : "INHERIT";
 }
 
 function mapPanel(guildId: string, row: PanelRow): TicketPanel {
@@ -487,6 +531,7 @@ function mapTicket(row: TicketRow): Ticket {
     openerId: row.openerId,
     openerName: row.openerName,
     ...optional("channelId", row.channelId),
+    ...optional("staffThreadId", row.staffThreadId),
     ...optional("subject", row.subject),
     answers: parseAnswers(row.answers),
     status: row.status,

@@ -47,6 +47,7 @@ export type TicketMinAggregateOutputType = {
   openerId: string | null
   openerName: string | null
   channelId: string | null
+  staffThreadId: string | null
   subject: string | null
   status: $Enums.TicketStatus | null
   priority: $Enums.TicketPriority | null
@@ -73,6 +74,7 @@ export type TicketMaxAggregateOutputType = {
   openerId: string | null
   openerName: string | null
   channelId: string | null
+  staffThreadId: string | null
   subject: string | null
   status: $Enums.TicketStatus | null
   priority: $Enums.TicketPriority | null
@@ -99,6 +101,7 @@ export type TicketCountAggregateOutputType = {
   openerId: number
   openerName: number
   channelId: number
+  staffThreadId: number
   subject: number
   answers: number
   status: number
@@ -142,6 +145,7 @@ export type TicketMinAggregateInputType = {
   openerId?: true
   openerName?: true
   channelId?: true
+  staffThreadId?: true
   subject?: true
   status?: true
   priority?: true
@@ -168,6 +172,7 @@ export type TicketMaxAggregateInputType = {
   openerId?: true
   openerName?: true
   channelId?: true
+  staffThreadId?: true
   subject?: true
   status?: true
   priority?: true
@@ -194,6 +199,7 @@ export type TicketCountAggregateInputType = {
   openerId?: true
   openerName?: true
   channelId?: true
+  staffThreadId?: true
   subject?: true
   answers?: true
   status?: true
@@ -310,6 +316,7 @@ export type TicketGroupByOutputType = {
   openerId: string
   openerName: string
   channelId: string | null
+  staffThreadId: string | null
   subject: string | null
   answers: runtime.JsonValue
   status: $Enums.TicketStatus
@@ -362,6 +369,7 @@ export type TicketWhereInput = {
   openerId?: Prisma.StringFilter<"Ticket"> | string
   openerName?: Prisma.StringFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableFilter<"Ticket"> | string | null
+  staffThreadId?: Prisma.StringNullableFilter<"Ticket"> | string | null
   subject?: Prisma.StringNullableFilter<"Ticket"> | string | null
   answers?: Prisma.JsonFilter<"Ticket">
   status?: Prisma.EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
@@ -395,6 +403,7 @@ export type TicketOrderByWithRelationInput = {
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  staffThreadId?: Prisma.SortOrderInput | Prisma.SortOrder
   subject?: Prisma.SortOrderInput | Prisma.SortOrder
   answers?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -422,6 +431,7 @@ export type TicketOrderByWithRelationInput = {
 export type TicketWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   channelId?: string
+  staffThreadId?: string
   guildId_number?: Prisma.TicketGuildIdNumberCompoundUniqueInput
   AND?: Prisma.TicketWhereInput | Prisma.TicketWhereInput[]
   OR?: Prisma.TicketWhereInput[]
@@ -454,7 +464,7 @@ export type TicketWhereUniqueInput = Prisma.AtLeast<{
   category?: Prisma.XOR<Prisma.TicketCategoryNullableScalarRelationFilter, Prisma.TicketCategoryWhereInput> | null
   messages?: Prisma.TicketMessageListRelationFilter
   events?: Prisma.TicketEventListRelationFilter
-}, "id" | "guildId_number" | "channelId">
+}, "id" | "guildId_number" | "channelId" | "staffThreadId">
 
 export type TicketOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -465,6 +475,7 @@ export type TicketOrderByWithAggregationInput = {
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  staffThreadId?: Prisma.SortOrderInput | Prisma.SortOrder
   subject?: Prisma.SortOrderInput | Prisma.SortOrder
   answers?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -502,6 +513,7 @@ export type TicketScalarWhereWithAggregatesInput = {
   openerId?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   openerName?: Prisma.StringWithAggregatesFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
+  staffThreadId?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
   subject?: Prisma.StringNullableWithAggregatesFilter<"Ticket"> | string | null
   answers?: Prisma.JsonWithAggregatesFilter<"Ticket">
   status?: Prisma.EnumTicketStatusWithAggregatesFilter<"Ticket"> | $Enums.TicketStatus
@@ -529,6 +541,7 @@ export type TicketCreateInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -562,6 +575,7 @@ export type TicketUncheckedCreateInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -591,6 +605,7 @@ export type TicketUpdateInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -624,6 +639,7 @@ export type TicketUncheckedUpdateInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -655,6 +671,7 @@ export type TicketCreateManyInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -682,6 +699,7 @@ export type TicketUpdateManyMutationInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -711,6 +729,7 @@ export type TicketUncheckedUpdateManyInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -755,6 +774,7 @@ export type TicketCountOrderByAggregateInput = {
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
+  staffThreadId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   answers?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -790,6 +810,7 @@ export type TicketMaxOrderByAggregateInput = {
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
+  staffThreadId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -816,6 +837,7 @@ export type TicketMinOrderByAggregateInput = {
   openerId?: Prisma.SortOrder
   openerName?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
+  staffThreadId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
@@ -985,6 +1007,7 @@ export type TicketCreateWithoutGuildInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1016,6 +1039,7 @@ export type TicketUncheckedCreateWithoutGuildInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1076,6 +1100,7 @@ export type TicketScalarWhereInput = {
   openerId?: Prisma.StringFilter<"Ticket"> | string
   openerName?: Prisma.StringFilter<"Ticket"> | string
   channelId?: Prisma.StringNullableFilter<"Ticket"> | string | null
+  staffThreadId?: Prisma.StringNullableFilter<"Ticket"> | string | null
   subject?: Prisma.StringNullableFilter<"Ticket"> | string | null
   answers?: Prisma.JsonFilter<"Ticket">
   status?: Prisma.EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
@@ -1103,6 +1128,7 @@ export type TicketCreateWithoutCategoryInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1134,6 +1160,7 @@ export type TicketUncheckedCreateWithoutCategoryInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1189,6 +1216,7 @@ export type TicketCreateWithoutMessagesInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1221,6 +1249,7 @@ export type TicketUncheckedCreateWithoutMessagesInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1265,6 +1294,7 @@ export type TicketUpdateWithoutMessagesInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1297,6 +1327,7 @@ export type TicketUncheckedUpdateWithoutMessagesInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1325,6 +1356,7 @@ export type TicketCreateWithoutEventsInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1357,6 +1389,7 @@ export type TicketUncheckedCreateWithoutEventsInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1401,6 +1434,7 @@ export type TicketUpdateWithoutEventsInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1433,6 +1467,7 @@ export type TicketUncheckedUpdateWithoutEventsInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1462,6 +1497,7 @@ export type TicketCreateManyGuildInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1489,6 +1525,7 @@ export type TicketUpdateWithoutGuildInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1520,6 +1557,7 @@ export type TicketUncheckedUpdateWithoutGuildInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1550,6 +1588,7 @@ export type TicketUncheckedUpdateManyWithoutGuildInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1578,6 +1617,7 @@ export type TicketCreateManyCategoryInput = {
   openerId: string
   openerName: string
   channelId?: string | null
+  staffThreadId?: string | null
   subject?: string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: $Enums.TicketStatus
@@ -1605,6 +1645,7 @@ export type TicketUpdateWithoutCategoryInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1636,6 +1677,7 @@ export type TicketUncheckedUpdateWithoutCategoryInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1666,6 +1708,7 @@ export type TicketUncheckedUpdateManyWithoutCategoryInput = {
   openerId?: Prisma.StringFieldUpdateOperationsInput | string
   openerName?: Prisma.StringFieldUpdateOperationsInput | string
   channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  staffThreadId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   subject?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   answers?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   status?: Prisma.EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -1735,6 +1778,7 @@ export type TicketSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
+  staffThreadId?: boolean
   subject?: boolean
   answers?: boolean
   status?: boolean
@@ -1769,6 +1813,7 @@ export type TicketSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
+  staffThreadId?: boolean
   subject?: boolean
   answers?: boolean
   status?: boolean
@@ -1800,6 +1845,7 @@ export type TicketSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
+  staffThreadId?: boolean
   subject?: boolean
   answers?: boolean
   status?: boolean
@@ -1831,6 +1877,7 @@ export type TicketSelectScalar = {
   openerId?: boolean
   openerName?: boolean
   channelId?: boolean
+  staffThreadId?: boolean
   subject?: boolean
   answers?: boolean
   status?: boolean
@@ -1851,7 +1898,7 @@ export type TicketSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "number" | "categoryId" | "categoryNumber" | "openerId" | "openerName" | "channelId" | "subject" | "answers" | "status" | "priority" | "claimedById" | "participantIds" | "tags" | "closedById" | "closeReason" | "rating" | "feedback" | "transcriptMessageId" | "autoCloseWarnedAt" | "firstResponseAt" | "lastActivityAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
+export type TicketOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "number" | "categoryId" | "categoryNumber" | "openerId" | "openerName" | "channelId" | "staffThreadId" | "subject" | "answers" | "status" | "priority" | "claimedById" | "participantIds" | "tags" | "closedById" | "closeReason" | "rating" | "feedback" | "transcriptMessageId" | "autoCloseWarnedAt" | "firstResponseAt" | "lastActivityAt" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticket"]>
 export type TicketInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   category?: boolean | Prisma.Ticket$categoryArgs<ExtArgs>
@@ -1889,6 +1936,10 @@ export type $TicketPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     openerId: string
     openerName: string
     channelId: string | null
+    /**
+     * Private staff-only thread for this ticket.
+     */
+    staffThreadId: string | null
     subject: string | null
     answers: runtime.JsonValue
     status: $Enums.TicketStatus
@@ -2342,6 +2393,7 @@ export interface TicketFieldRefs {
   readonly openerId: Prisma.FieldRef<"Ticket", 'String'>
   readonly openerName: Prisma.FieldRef<"Ticket", 'String'>
   readonly channelId: Prisma.FieldRef<"Ticket", 'String'>
+  readonly staffThreadId: Prisma.FieldRef<"Ticket", 'String'>
   readonly subject: Prisma.FieldRef<"Ticket", 'String'>
   readonly answers: Prisma.FieldRef<"Ticket", 'Json'>
   readonly status: Prisma.FieldRef<"Ticket", 'TicketStatus'>
