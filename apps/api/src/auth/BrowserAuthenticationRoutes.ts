@@ -50,7 +50,7 @@ import {
   setCurrentGuildId,
 } from "./CurrentGuild.js";
 import type { DiscordGuildAuthority } from "./DiscordGuildAuthority.js";
-import type { DiscordUserGuildSource, GuildDirectory, GuildListing } from "./GuildDirectory.js";
+import type { DiscordUserGuildSource, GuildDirectory, GuildListing, GuildSummary } from "./GuildDirectory.js";
 
 /** Dependencies for browser-visible authentication and dashboard routes. */
 export interface BrowserAuthenticationRouteDependencies {
@@ -767,22 +767,31 @@ async function requireSession(
 }
 
 /**
- * Resolves the current server for this request: the `qbox_guild` cookie when
- * the signed-in member and the bot share that server, else the configured
- * default, else none. A cookie for a server the member no longer shares is
- * cleared. When Discord cannot be reached the stored membership decides.
+ * Resolves the current server for this request.
+ *
+ * 1. The `qbox_guild` cookie, when the signed-in member and the bot still
+ *    share that server (a cookie for a server they no longer share is cleared).
+ * 2. Otherwise a server picked for them and remembered in the cookie: the
+ *    configured default when they manage it, else a server they own or
+ *    manage, else the default when they belong to it, else their only shared
+ *    server. So the owner of another server lands on their own server, not on
+ *    the host's default server where they have no access.
+ * 3. Otherwise none, and the portal shows the server picker.
+ *
+ * When Discord cannot be reached, the stored membership and the configured
+ * default decide, as before.
  */
 async function resolveCurrentGuild(
   request: FastifyRequest,
   reply: FastifyReply,
   dependencies: BrowserAuthenticationRouteDependencies,
 ): Promise<string | undefined> {
-  const fallback = dependencies.configuration.diagnostics().defaultGuildId;
-  const cookieGuild = readCookie(request, GUILD_COOKIE_NAME);
-  if (cookieGuild === undefined) return fallback;
-  if (!SNOWFLAKE.test(cookieGuild)) {
+  const diagnostics = dependencies.configuration.diagnostics();
+  const fallback = diagnostics.defaultGuildId;
+  let cookieGuild = readCookie(request, GUILD_COOKIE_NAME);
+  if (cookieGuild !== undefined && !SNOWFLAKE.test(cookieGuild)) {
     deleteCookie(reply, GUILD_COOKIE_NAME);
-    return fallback;
+    cookieGuild = undefined;
   }
   let identity: ExternalIdentity;
   try {
@@ -799,14 +808,51 @@ async function resolveCurrentGuild(
       { event: "api.guilds.directory-unavailable", category: safeErrorCategory(error) },
       "Could not read the member's servers; using the stored membership instead.",
     );
+    if (cookieGuild === undefined) return fallback;
     const membership = await dependencies.unitOfWork.run((repositories) =>
       repositories.guildMemberships.find(identity.id, discordGuildId(cookieGuild)),
     );
     return membership?.status === "PRESENT" ? cookieGuild : fallback;
   }
-  if (listing.guilds.some((guild) => guild.id === cookieGuild)) return cookieGuild;
-  deleteCookie(reply, GUILD_COOKIE_NAME);
-  return fallback;
+  if (cookieGuild !== undefined) {
+    if (listing.guilds.some((guild) => guild.id === cookieGuild)) return cookieGuild;
+    deleteCookie(reply, GUILD_COOKIE_NAME);
+  }
+  if (listing.reauthRequired) return fallback;
+  const chosen = chooseStartingGuild(listing.guilds, fallback);
+  if (chosen === undefined) return undefined;
+  const stored = await dependencies.unitOfWork.run((repositories) =>
+    repositories.guildMemberships.find(identity.id, discordGuildId(chosen)),
+  );
+  if (stored?.status !== "PRESENT") {
+    const membership = await verifyMembership(identity.id, chosen, "api-guild-auto-select", operationContext(request), request, dependencies);
+    if (membership.status !== "PRESENT") return undefined;
+  }
+  writeCookie(reply, GUILD_COOKIE_NAME, chosen, {
+    httpOnly: true,
+    secure: diagnostics.secureCookies,
+    sameSite: "lax",
+    path: "/",
+    maxAge: GUILD_COOKIE_MAX_AGE_SECONDS,
+  });
+  return chosen;
+}
+
+/**
+ * The server a member starts in when they have not picked one: the default
+ * when they manage it, else one they own, else one they manage (by name),
+ * else the default when they are in it, else their only shared server.
+ */
+export function chooseStartingGuild(guilds: readonly GuildSummary[], defaultGuildId: string | undefined): string | undefined {
+  const byName = (left: GuildSummary, right: GuildSummary) => left.name.localeCompare(right.name);
+  const managed = guilds.filter((guild) => guild.canManage);
+  if (defaultGuildId !== undefined && managed.some((guild) => guild.id === defaultGuildId)) return defaultGuildId;
+  const owned = managed.filter((guild) => guild.owner).sort(byName);
+  if (owned[0]) return owned[0].id;
+  const others = [...managed].sort(byName);
+  if (others[0]) return others[0].id;
+  if (defaultGuildId !== undefined && guilds.some((guild) => guild.id === defaultGuildId)) return defaultGuildId;
+  return guilds.length === 1 ? guilds[0]?.id : undefined;
 }
 
 /** Verifies and stores the member's current membership in one server, creating the guild row when new. */

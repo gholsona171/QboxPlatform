@@ -11,7 +11,7 @@ import {
   platformUserId,
 } from "@qbox/authentication";
 import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationConfiguration.js";
-import { registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
+import { chooseStartingGuild, registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
 import { createApiServer } from "../src/createApiServer.js";
 import { registerPortalStaticRoutes } from "../src/portal/PortalStaticRoutes.js";
@@ -35,6 +35,13 @@ const csrf = {
   origin: "http://127.0.0.1:3000",
   "x-csrf-token": "csrf-secret-value-000000000000000000000",
   "content-type": "application/json",
+};
+const unmanagedGuilds: GuildListing = {
+  guilds: [
+    { id: OTHER_GUILD, name: "Other Server", icon: null, owner: false, canManage: false },
+    { id: "1300000000000000003", name: "Third Server", icon: null, owner: false, canManage: false },
+  ],
+  reauthRequired: false,
 };
 const sharedGuilds: GuildListing = {
   guilds: [
@@ -99,8 +106,8 @@ describe("browser authentication routes", () => {
     await server.close();
   });
 
-  it("answers GUILD_REQUIRED when no server is selected and none is configured", async () => {
-    const server = serverWithRoutes({ defaultGuild: false });
+  it("answers GUILD_REQUIRED when no server is selected, none is configured, and none can be chosen", async () => {
+    const server = serverWithRoutes({ defaultGuild: false, listing: unmanagedGuilds });
     const response = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
     expect(response.statusCode).toBe(409);
     expect(response.headers["content-type"]).toContain("application/problem+json");
@@ -113,6 +120,37 @@ describe("browser authentication routes", () => {
     const feature = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
     expect(feature.statusCode).toBe(409);
     expect(feature.json().code).toBe("GUILD_REQUIRED");
+    await server.close();
+  });
+
+  it("opens a server the member owns instead of a default server they do not manage", async () => {
+    const listing: GuildListing = {
+      guilds: [
+        { id: DEFAULT_GUILD, name: "Host Server", icon: null, owner: false, canManage: false },
+        { id: OTHER_GUILD, name: "Their Server", icon: null, owner: true, canManage: true },
+      ],
+      reauthRequired: false,
+    };
+    const server = serverWithRoutes({ listing });
+    const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
+    expect(echoed.statusCode).toBe(200);
+    expect(echoed.json()).toEqual({ guildId: OTHER_GUILD });
+    expect(String(echoed.headers["set-cookie"])).toContain(`qbox_guild=${OTHER_GUILD}`);
+    await server.close();
+  });
+
+  it("keeps the default server when the member manages it", async () => {
+    const server = serverWithRoutes();
+    const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
+    expect(echoed.json()).toEqual({ guildId: DEFAULT_GUILD });
+    await server.close();
+  });
+
+  it("opens the only shared server when the member shares just one", async () => {
+    const listing: GuildListing = { guilds: [{ id: OTHER_GUILD, name: "Only", icon: null, owner: false, canManage: false }], reauthRequired: false };
+    const server = serverWithRoutes({ defaultGuild: false, listing });
+    const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
+    expect(echoed.json()).toEqual({ guildId: OTHER_GUILD });
     await server.close();
   });
 
@@ -192,8 +230,8 @@ describe("browser authentication routes", () => {
     const response = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: { ...session, cookie: `${session.cookie}; qbox_guild=1300000000000000099` } });
     expect(response.statusCode).toBe(200);
     expect(listed).toEqual([DEFAULT_GUILD]);
-    expect(String(response.headers["set-cookie"])).toContain("qbox_guild=;");
-    const none = serverWithRoutes({ defaultGuild: false });
+    expect(String(response.headers["set-cookie"])).toContain(`qbox_guild=${DEFAULT_GUILD}`);
+    const none = serverWithRoutes({ defaultGuild: false, listing: unmanagedGuilds });
     const rejected = await none.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: { ...session, cookie: `${session.cookie}; qbox_guild=1300000000000000099` } });
     expect(rejected.statusCode).toBe(409);
     await server.close();
@@ -568,3 +606,16 @@ function membership() {
     updatedAt: new Date("2026-08-01T00:00:00.000Z"),
   } as const;
 }
+
+describe("chooseStartingGuild", () => {
+  const guild = (id: string, name: string, owner: boolean, canManage: boolean) => ({ id, name, icon: null, owner, canManage });
+  it("prefers the default when managed, then owned, then managed, then the default, then a single server", () => {
+    expect(chooseStartingGuild([guild("1", "B", true, true), guild("2", "A", false, true)], "2")).toBe("2");
+    expect(chooseStartingGuild([guild("1", "B", false, true), guild("2", "A", true, true), guild("3", "C", false, false)], "3")).toBe("2");
+    expect(chooseStartingGuild([guild("1", "B", false, true), guild("2", "A", false, true)], undefined)).toBe("2");
+    expect(chooseStartingGuild([guild("1", "B", false, false), guild("2", "A", false, false)], "1")).toBe("1");
+    expect(chooseStartingGuild([guild("1", "B", false, false)], undefined)).toBe("1");
+    expect(chooseStartingGuild([guild("1", "B", false, false), guild("2", "A", false, false)], undefined)).toBeUndefined();
+    expect(chooseStartingGuild([], "9")).toBeUndefined();
+  });
+});
