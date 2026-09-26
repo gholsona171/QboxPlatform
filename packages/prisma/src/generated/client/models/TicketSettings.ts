@@ -31,6 +31,7 @@ export type TicketSettingsAvgAggregateOutputType = {
   deleteDelaySeconds: number | null
   autoCloseHours: number | null
   autoCloseWarningHours: number | null
+  retentionMonths: number | null
   nextNumber: number | null
   revision: number | null
 }
@@ -40,6 +41,7 @@ export type TicketSettingsSumAggregateOutputType = {
   deleteDelaySeconds: number | null
   autoCloseHours: number | null
   autoCloseWarningHours: number | null
+  retentionMonths: number | null
   nextNumber: number | null
   revision: number | null
 }
@@ -71,6 +73,8 @@ export type TicketSettingsMinAggregateOutputType = {
   autoCloseHours: number | null
   autoCloseWarningHours: number | null
   autoCloseExcludeClaimed: boolean | null
+  staffThreadEnabled: boolean | null
+  retentionMonths: number | null
   nextNumber: number | null
   revision: number | null
   lastOperationSource: string | null
@@ -105,6 +109,8 @@ export type TicketSettingsMaxAggregateOutputType = {
   autoCloseHours: number | null
   autoCloseWarningHours: number | null
   autoCloseExcludeClaimed: boolean | null
+  staffThreadEnabled: boolean | null
+  retentionMonths: number | null
   nextNumber: number | null
   revision: number | null
   lastOperationSource: string | null
@@ -142,6 +148,8 @@ export type TicketSettingsCountAggregateOutputType = {
   autoCloseExcludeClaimed: number
   blockedUserIds: number
   blockedRoleIds: number
+  staffThreadEnabled: number
+  retentionMonths: number
   nextNumber: number
   revision: number
   lastOperationSource: number
@@ -156,6 +164,7 @@ export type TicketSettingsAvgAggregateInputType = {
   deleteDelaySeconds?: true
   autoCloseHours?: true
   autoCloseWarningHours?: true
+  retentionMonths?: true
   nextNumber?: true
   revision?: true
 }
@@ -165,6 +174,7 @@ export type TicketSettingsSumAggregateInputType = {
   deleteDelaySeconds?: true
   autoCloseHours?: true
   autoCloseWarningHours?: true
+  retentionMonths?: true
   nextNumber?: true
   revision?: true
 }
@@ -196,6 +206,8 @@ export type TicketSettingsMinAggregateInputType = {
   autoCloseHours?: true
   autoCloseWarningHours?: true
   autoCloseExcludeClaimed?: true
+  staffThreadEnabled?: true
+  retentionMonths?: true
   nextNumber?: true
   revision?: true
   lastOperationSource?: true
@@ -230,6 +242,8 @@ export type TicketSettingsMaxAggregateInputType = {
   autoCloseHours?: true
   autoCloseWarningHours?: true
   autoCloseExcludeClaimed?: true
+  staffThreadEnabled?: true
+  retentionMonths?: true
   nextNumber?: true
   revision?: true
   lastOperationSource?: true
@@ -267,6 +281,8 @@ export type TicketSettingsCountAggregateInputType = {
   autoCloseExcludeClaimed?: true
   blockedUserIds?: true
   blockedRoleIds?: true
+  staffThreadEnabled?: true
+  retentionMonths?: true
   nextNumber?: true
   revision?: true
   lastOperationSource?: true
@@ -391,6 +407,8 @@ export type TicketSettingsGroupByOutputType = {
   autoCloseExcludeClaimed: boolean
   blockedUserIds: string[]
   blockedRoleIds: string[]
+  staffThreadEnabled: boolean
+  retentionMonths: number
   nextNumber: number
   revision: number
   lastOperationSource: string
@@ -451,6 +469,8 @@ export type TicketSettingsWhereInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFilter<"TicketSettings"> | boolean
   blockedUserIds?: Prisma.StringNullableListFilter<"TicketSettings">
   blockedRoleIds?: Prisma.StringNullableListFilter<"TicketSettings">
+  staffThreadEnabled?: Prisma.BoolFilter<"TicketSettings"> | boolean
+  retentionMonths?: Prisma.IntFilter<"TicketSettings"> | number
   nextNumber?: Prisma.IntFilter<"TicketSettings"> | number
   revision?: Prisma.IntFilter<"TicketSettings"> | number
   lastOperationSource?: Prisma.StringFilter<"TicketSettings"> | string
@@ -489,6 +509,8 @@ export type TicketSettingsOrderByWithRelationInput = {
   autoCloseExcludeClaimed?: Prisma.SortOrder
   blockedUserIds?: Prisma.SortOrder
   blockedRoleIds?: Prisma.SortOrder
+  staffThreadEnabled?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
   lastOperationSource?: Prisma.SortOrder
@@ -530,6 +552,8 @@ export type TicketSettingsWhereUniqueInput = Prisma.AtLeast<{
   autoCloseExcludeClaimed?: Prisma.BoolFilter<"TicketSettings"> | boolean
   blockedUserIds?: Prisma.StringNullableListFilter<"TicketSettings">
   blockedRoleIds?: Prisma.StringNullableListFilter<"TicketSettings">
+  staffThreadEnabled?: Prisma.BoolFilter<"TicketSettings"> | boolean
+  retentionMonths?: Prisma.IntFilter<"TicketSettings"> | number
   nextNumber?: Prisma.IntFilter<"TicketSettings"> | number
   revision?: Prisma.IntFilter<"TicketSettings"> | number
   lastOperationSource?: Prisma.StringFilter<"TicketSettings"> | string
@@ -568,6 +592,8 @@ export type TicketSettingsOrderByWithAggregationInput = {
   autoCloseExcludeClaimed?: Prisma.SortOrder
   blockedUserIds?: Prisma.SortOrder
   blockedRoleIds?: Prisma.SortOrder
+  staffThreadEnabled?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
   lastOperationSource?: Prisma.SortOrder
@@ -613,6 +639,8 @@ export type TicketSettingsScalarWhereWithAggregatesInput = {
   autoCloseExcludeClaimed?: Prisma.BoolWithAggregatesFilter<"TicketSettings"> | boolean
   blockedUserIds?: Prisma.StringNullableListFilter<"TicketSettings">
   blockedRoleIds?: Prisma.StringNullableListFilter<"TicketSettings">
+  staffThreadEnabled?: Prisma.BoolWithAggregatesFilter<"TicketSettings"> | boolean
+  retentionMonths?: Prisma.IntWithAggregatesFilter<"TicketSettings"> | number
   nextNumber?: Prisma.IntWithAggregatesFilter<"TicketSettings"> | number
   revision?: Prisma.IntWithAggregatesFilter<"TicketSettings"> | number
   lastOperationSource?: Prisma.StringWithAggregatesFilter<"TicketSettings"> | string
@@ -649,6 +677,8 @@ export type TicketSettingsCreateInput = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: Prisma.TicketSettingsCreateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsCreateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: boolean
+  retentionMonths?: number
   nextNumber?: number
   revision?: number
   lastOperationSource?: string
@@ -687,6 +717,8 @@ export type TicketSettingsUncheckedCreateInput = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: Prisma.TicketSettingsCreateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsCreateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: boolean
+  retentionMonths?: number
   nextNumber?: number
   revision?: number
   lastOperationSource?: string
@@ -723,6 +755,8 @@ export type TicketSettingsUpdateInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -761,6 +795,8 @@ export type TicketSettingsUncheckedUpdateInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -798,6 +834,8 @@ export type TicketSettingsCreateManyInput = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: Prisma.TicketSettingsCreateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsCreateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: boolean
+  retentionMonths?: number
   nextNumber?: number
   revision?: number
   lastOperationSource?: string
@@ -834,6 +872,8 @@ export type TicketSettingsUpdateManyMutationInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -871,6 +911,8 @@ export type TicketSettingsUncheckedUpdateManyInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -913,6 +955,8 @@ export type TicketSettingsCountOrderByAggregateInput = {
   autoCloseExcludeClaimed?: Prisma.SortOrder
   blockedUserIds?: Prisma.SortOrder
   blockedRoleIds?: Prisma.SortOrder
+  staffThreadEnabled?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
   lastOperationSource?: Prisma.SortOrder
@@ -925,6 +969,7 @@ export type TicketSettingsAvgOrderByAggregateInput = {
   deleteDelaySeconds?: Prisma.SortOrder
   autoCloseHours?: Prisma.SortOrder
   autoCloseWarningHours?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
 }
@@ -956,6 +1001,8 @@ export type TicketSettingsMaxOrderByAggregateInput = {
   autoCloseHours?: Prisma.SortOrder
   autoCloseWarningHours?: Prisma.SortOrder
   autoCloseExcludeClaimed?: Prisma.SortOrder
+  staffThreadEnabled?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
   lastOperationSource?: Prisma.SortOrder
@@ -990,6 +1037,8 @@ export type TicketSettingsMinOrderByAggregateInput = {
   autoCloseHours?: Prisma.SortOrder
   autoCloseWarningHours?: Prisma.SortOrder
   autoCloseExcludeClaimed?: Prisma.SortOrder
+  staffThreadEnabled?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
   lastOperationSource?: Prisma.SortOrder
@@ -1002,6 +1051,7 @@ export type TicketSettingsSumOrderByAggregateInput = {
   deleteDelaySeconds?: Prisma.SortOrder
   autoCloseHours?: Prisma.SortOrder
   autoCloseWarningHours?: Prisma.SortOrder
+  retentionMonths?: Prisma.SortOrder
   nextNumber?: Prisma.SortOrder
   revision?: Prisma.SortOrder
 }
@@ -1102,6 +1152,8 @@ export type TicketSettingsCreateWithoutGuildInput = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: Prisma.TicketSettingsCreateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsCreateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: boolean
+  retentionMonths?: number
   nextNumber?: number
   revision?: number
   lastOperationSource?: string
@@ -1138,6 +1190,8 @@ export type TicketSettingsUncheckedCreateWithoutGuildInput = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: Prisma.TicketSettingsCreateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsCreateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: boolean
+  retentionMonths?: number
   nextNumber?: number
   revision?: number
   lastOperationSource?: string
@@ -1190,6 +1244,8 @@ export type TicketSettingsUpdateWithoutGuildInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1226,6 +1282,8 @@ export type TicketSettingsUncheckedUpdateWithoutGuildInput = {
   autoCloseExcludeClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   blockedUserIds?: Prisma.TicketSettingsUpdateblockedUserIdsInput | string[]
   blockedRoleIds?: Prisma.TicketSettingsUpdateblockedRoleIdsInput | string[]
+  staffThreadEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  retentionMonths?: Prisma.IntFieldUpdateOperationsInput | number
   nextNumber?: Prisma.IntFieldUpdateOperationsInput | number
   revision?: Prisma.IntFieldUpdateOperationsInput | number
   lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1265,6 +1323,8 @@ export type TicketSettingsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: boolean
   blockedRoleIds?: boolean
+  staffThreadEnabled?: boolean
+  retentionMonths?: boolean
   nextNumber?: boolean
   revision?: boolean
   lastOperationSource?: boolean
@@ -1303,6 +1363,8 @@ export type TicketSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: boolean
   blockedRoleIds?: boolean
+  staffThreadEnabled?: boolean
+  retentionMonths?: boolean
   nextNumber?: boolean
   revision?: boolean
   lastOperationSource?: boolean
@@ -1341,6 +1403,8 @@ export type TicketSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: boolean
   blockedRoleIds?: boolean
+  staffThreadEnabled?: boolean
+  retentionMonths?: boolean
   nextNumber?: boolean
   revision?: boolean
   lastOperationSource?: boolean
@@ -1379,6 +1443,8 @@ export type TicketSettingsSelectScalar = {
   autoCloseExcludeClaimed?: boolean
   blockedUserIds?: boolean
   blockedRoleIds?: boolean
+  staffThreadEnabled?: boolean
+  retentionMonths?: boolean
   nextNumber?: boolean
   revision?: boolean
   lastOperationSource?: boolean
@@ -1386,7 +1452,7 @@ export type TicketSettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "mode" | "openCategoryChannelId" | "closedCategoryChannelId" | "threadParentChannelId" | "transcriptChannelId" | "logChannelId" | "supportRoleIds" | "pingSupportOnOpen" | "maxOpenPerUser" | "nameTemplate" | "openMessage" | "embedColor" | "allowUserClose" | "requireCloseReason" | "closeConfirmation" | "closeAction" | "deleteDelaySeconds" | "claimEnabled" | "claimRestrictsReplies" | "transcriptsEnabled" | "transcriptDmUser" | "feedbackEnabled" | "autoCloseHours" | "autoCloseWarningHours" | "autoCloseExcludeClaimed" | "blockedUserIds" | "blockedRoleIds" | "nextNumber" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketSettings"]>
+export type TicketSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "mode" | "openCategoryChannelId" | "closedCategoryChannelId" | "threadParentChannelId" | "transcriptChannelId" | "logChannelId" | "supportRoleIds" | "pingSupportOnOpen" | "maxOpenPerUser" | "nameTemplate" | "openMessage" | "embedColor" | "allowUserClose" | "requireCloseReason" | "closeConfirmation" | "closeAction" | "deleteDelaySeconds" | "claimEnabled" | "claimRestrictsReplies" | "transcriptsEnabled" | "transcriptDmUser" | "feedbackEnabled" | "autoCloseHours" | "autoCloseWarningHours" | "autoCloseExcludeClaimed" | "blockedUserIds" | "blockedRoleIds" | "staffThreadEnabled" | "retentionMonths" | "nextNumber" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketSettings"]>
 export type TicketSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -1432,6 +1498,14 @@ export type $TicketSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     autoCloseExcludeClaimed: boolean
     blockedUserIds: string[]
     blockedRoleIds: string[]
+    /**
+     * Open a private staff-only thread for every ticket (reasons can override).
+     */
+    staffThreadEnabled: boolean
+    /**
+     * Closed tickets older than this many months are deleted (6, 9 or 12); 0 keeps them forever.
+     */
+    retentionMonths: number
     nextNumber: number
     revision: number
     lastOperationSource: string
@@ -1890,6 +1964,8 @@ export interface TicketSettingsFieldRefs {
   readonly autoCloseExcludeClaimed: Prisma.FieldRef<"TicketSettings", 'Boolean'>
   readonly blockedUserIds: Prisma.FieldRef<"TicketSettings", 'String[]'>
   readonly blockedRoleIds: Prisma.FieldRef<"TicketSettings", 'String[]'>
+  readonly staffThreadEnabled: Prisma.FieldRef<"TicketSettings", 'Boolean'>
+  readonly retentionMonths: Prisma.FieldRef<"TicketSettings", 'Int'>
   readonly nextNumber: Prisma.FieldRef<"TicketSettings", 'Int'>
   readonly revision: Prisma.FieldRef<"TicketSettings", 'Int'>
   readonly lastOperationSource: Prisma.FieldRef<"TicketSettings", 'String'>

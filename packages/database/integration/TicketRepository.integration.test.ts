@@ -151,4 +151,54 @@ describe("PrismaTicketRepository", () => {
     expect(moved.messageId).toBeUndefined();
     expect(moved.publishedAt).toBeUndefined();
   });
+
+  it("stores the staff thread, retention, and per-reason staff thread columns", async () => {
+    await enable();
+    expect(await service.settings(guildId)).toMatchObject({ staffThreadEnabled: true, retentionMonths: 12, transcriptDmUser: true });
+    const { nextNumber: _n, revision, ...current } = await service.settings(guildId);
+    expect(await service.saveSettings({ ...current, staffThreadEnabled: false, retentionMonths: 9, expectedRevision: revision, source: "WEB" })).toMatchObject({ staffThreadEnabled: false, retentionMonths: 9 });
+    // Left out: kept.
+    const { staffThreadEnabled: _s, retentionMonths: _r, ...older } = current;
+    expect(await service.saveSettings({ ...older, expectedRevision: revision + 1, source: "WEB" })).toMatchObject({ staffThreadEnabled: false, retentionMonths: 9 });
+    expect(await repository.listRetentionPolicies()).toEqual([{ guildId, retentionMonths: 9 }]);
+
+    const base = { guildId, buttonStyle: "PRIMARY" as const, enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL" as const, questions: [], requiredRoleIds: [] };
+    const on = await service.saveCategory({ ...base, name: "Appeals", staffThread: "ON" });
+    expect(on.staffThread).toBe("ON");
+    expect((await service.saveCategory({ ...base, name: "General" })).staffThread).toBe("INHERIT");
+    const { id, position: _p, staffThread: _t, ...rest } = on;
+    expect((await service.saveCategory({ ...rest, id })).staffThread).toBe("ON");
+
+    const ticket = await service.openTicket({ guildId, actor: opener, categoryId: on.id });
+    const withThread = await repository.updateTicket(ticket.id, { staffThreadId: "1262656532902842499" });
+    expect(withThread.staffThreadId).toBe("1262656532902842499");
+    expect((await repository.findTicketByStaffThread("1262656532902842499"))?.id).toBe(ticket.id);
+    await service.recordMessage({ channelId: "1262656532902842499", discordMessageId: "1432100000000000020", authorId: staff.userId, authorName: "Staff", authorRoleIds: [], content: "staff only", attachments: [] });
+    expect((await service.detail(guildId, ticket.id)).messages).toMatchObject([{ internal: true, content: "staff only", source: "DISCORD" }]);
+    expect((await repository.updateTicket(ticket.id, { staffThreadId: null })).staffThreadId).toBeUndefined();
+    expect(await repository.findTicketByStaffThread("1262656532902842499")).toBeUndefined();
+  });
+
+  it("deletes old closed tickets with their messages and events, in batches, and never open ones", async () => {
+    await enable();
+    const make = async (closedAt?: Date) => {
+      const ticket = await repository.createTicket({ guildId, number: await repository.allocateNumber(guildId), openerId: opener.userId, openerName: "Opener", answers: [], priority: "NORMAL" });
+      await repository.addMessage({ ticketId: ticket.id, authorId: opener.userId, authorName: "Opener", content: "hi", attachments: [], source: "DISCORD", internal: false });
+      await repository.addEvent({ ticketId: ticket.id, action: "opened", actorId: opener.userId, source: "DISCORD", details: {} });
+      return closedAt ? repository.updateTicket(ticket.id, { status: "CLOSED", closedAt }) : ticket;
+    };
+    const old = [await make(new Date("2025-01-01T00:00:00Z")), await make(new Date("2025-02-01T00:00:00Z")), await make(new Date("2025-03-01T00:00:00Z"))];
+    const recent = await make(new Date("2026-09-01T00:00:00Z"));
+    const open = await make();
+    const cutoff = new Date("2025-09-26T00:00:00Z");
+    expect(await repository.deleteClosedTickets(guildId, cutoff, 2)).toBe(2);
+    expect(await repository.deleteClosedTickets(guildId, cutoff, 2)).toBe(1);
+    expect(await repository.deleteClosedTickets(guildId, cutoff, 2)).toBe(0);
+    for (const ticket of old) expect(await repository.getTicket(ticket.id)).toBeUndefined();
+    expect(await client.ticketMessage.count({ where: { ticketId: { in: old.map((ticket) => ticket.id) } } })).toBe(0);
+    expect(await client.ticketEvent.count({ where: { ticketId: { in: old.map((ticket) => ticket.id) } } })).toBe(0);
+    expect(await repository.getTicket(recent.id)).toBeDefined();
+    expect(await repository.getTicket(open.id)).toBeDefined();
+    expect(await client.ticketMessage.count({ where: { ticketId: recent.id } })).toBe(1);
+  });
 });

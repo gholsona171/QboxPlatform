@@ -11,6 +11,8 @@ import type {
   TicketReopenSpaceInput,
   TicketSpaceInput,
   TicketPanel,
+  TicketStaffThreadInput,
+  TicketTranscriptFile,
   TicketTranscriptPost,
 } from "./types.js";
 import { TicketError } from "./validation.js";
@@ -40,6 +42,8 @@ export const TICKET_CUSTOM_ID = {
   transcript: "qbox:ticket:transcript:",
   delete: "qbox:ticket:delete:",
   rate: "qbox:ticket:rate:",
+  /** "🔒 Staff chat" button on the opening message. */
+  staffChat: "qbox:tickets:staffchat:",
 } as const;
 
 const PERMISSION = {
@@ -119,6 +123,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
     const buttons = [
       button(`${TICKET_CUSTOM_ID.close}${input.ticket.id}`, "Close", "DANGER", "🔒"),
       ...(input.claimButton ? [button(`${TICKET_CUSTOM_ID.claim}${input.ticket.id}`, "Claim", "SUCCESS", "🙋")] : []),
+      ...(input.staffChatButton ? [button(`${TICKET_CUSTOM_ID.staffChat}${input.ticket.id}`, "Staff chat", "SECONDARY", "🔒")] : []),
     ];
     const mentions = [...input.mentionUserIds.map((id) => `<@${id}>`), ...input.mentionRoleIds.map((id) => `<@&${id}>`)].join(" ");
     await this.rest.post(`/channels/${input.channelId}/messages`, {
@@ -144,7 +149,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
       : [];
     const body = input.title
       ? { embeds: [{ title: input.title, description: input.content, color: colorValue(input.color ?? "#5865F2") }], components: controls, allowed_mentions: { parse: [] } }
-      : { content: input.content, components: controls, allowed_mentions: { parse: ["users"] } };
+      : { content: input.content, components: controls, allowed_mentions: { parse: input.silent ? [] : ["users"] } };
     const message = (await this.rest.post(`/channels/${input.channelId}/messages`, { body })) as IdResponse;
     return { messageId: message.id };
   }
@@ -267,7 +272,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
         embeds: [{ title: `Ticket #${input.ticket.number} transcript`, description: input.summary, color: colorValue("#5865F2") }],
         allowed_mentions: { parse: [] },
       },
-      files: [transcriptFile(input.file.fileName, input.file.content)],
+      files: input.files.map(transcriptFile),
     })) as IdResponse;
     return { messageId: message.id };
   }
@@ -283,12 +288,32 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
             : {}),
           allowed_mentions: { parse: [] },
         },
-        ...(input.file ? { files: [transcriptFile(input.file.fileName, input.file.content)] } : {}),
+        ...(input.files?.length ? { files: input.files.map(transcriptFile) } : {}),
       });
       return true;
     } catch {
       return false;
     }
+  }
+
+  public async createStaffThread(input: TicketStaffThreadInput): Promise<{ readonly threadId: string }> {
+    const thread = (await this.rest.post(`/channels/${input.parentChannelId}/threads`, {
+      body: { name: input.name.slice(0, 100), type: CHANNEL_TYPE_PRIVATE_THREAD, invitable: false, auto_archive_duration: 10080 },
+      reason: input.reason,
+    })) as IdResponse;
+    // Only the roles are pinged: a pinged member would be pulled into the private thread.
+    await this.rest.post(`/channels/${thread.id}/messages`, {
+      body: { content: input.content, allowed_mentions: { parse: [], roles: [...input.mentionRoleIds] } },
+    });
+    return { threadId: thread.id };
+  }
+
+  public async addThreadMember(threadId: string, userId: string): Promise<void> {
+    await this.rest.put(`/channels/${threadId}/thread-members/${userId}`);
+  }
+
+  public async setThreadArchived(threadId: string, archived: boolean): Promise<void> {
+    await this.rest.patch(`/channels/${threadId}`, { body: { archived, locked: archived } });
   }
 
   private async selfId(): Promise<string> {
@@ -347,8 +372,8 @@ function chunk<T>(items: readonly T[], size: number): T[][] {
   return rows;
 }
 
-function transcriptFile(name: string, content: string): DiscordRestFile {
-  return { name, data: Buffer.from(content, "utf8"), contentType: "text/plain; charset=utf-8" };
+function transcriptFile(file: TicketTranscriptFile): DiscordRestFile {
+  return { name: file.fileName, data: Buffer.from(file.content, "utf8"), contentType: file.contentType ?? "text/plain; charset=utf-8" };
 }
 
 function defaultSchedule(callback: () => void, delayMs: number): void {

@@ -58,13 +58,17 @@ model TicketSettings {
   claimEnabled            Boolean           @default(true) @map("claim_enabled")
   claimRestrictsReplies   Boolean           @default(false) @map("claim_restricts_replies")
   transcriptsEnabled      Boolean           @default(true) @map("transcripts_enabled")
-  transcriptDmUser        Boolean           @default(false) @map("transcript_dm_user")
+  transcriptDmUser        Boolean           @default(true) @map("transcript_dm_user")
   feedbackEnabled         Boolean           @default(true) @map("feedback_enabled")
   autoCloseHours          Int               @default(0) @map("auto_close_hours")
   autoCloseWarningHours   Int               @default(0) @map("auto_close_warning_hours")
   autoCloseExcludeClaimed Boolean           @default(true) @map("auto_close_exclude_claimed")
   blockedUserIds          String[]          @map("blocked_user_ids")
   blockedRoleIds          String[]          @map("blocked_role_ids")
+  /// Open a private staff-only thread for every ticket (reasons can override).
+  staffThreadEnabled      Boolean           @default(true) @map("staff_thread_enabled")
+  /// Closed tickets older than this many months are deleted (6, 9 or 12); 0 keeps them forever.
+  retentionMonths         Int               @default(12) @map("retention_months")
   nextNumber              Int               @default(1) @map("next_number")
   revision                Int               @default(1)
   lastOperationSource     String            @default("SYSTEM") @map("last_operation_source")
@@ -94,6 +98,8 @@ model TicketCategory {
   questions       Json           @default("[]") @db.JsonB
   requiredRoleIds String[]       @map("required_role_ids")
   maxOpenPerUser  Int?           @map("max_open_per_user")
+  /// Staff thread for this reason: INHERIT (server setting), ON or OFF.
+  staffThread     String         @default("INHERIT") @map("staff_thread")
   nextNumber      Int            @default(1) @map("next_number")
   createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -144,6 +150,8 @@ model Ticket {
   openerId            String         @map("opener_id")
   openerName          String         @map("opener_name")
   channelId           String?        @map("channel_id")
+  /// Private staff-only thread for this ticket.
+  staffThreadId       String?        @map("staff_thread_id")
   subject             String?
   answers             Json           @default("[]") @db.JsonB
   status              TicketStatus   @default(OPEN)
@@ -170,6 +178,8 @@ model Ticket {
 
   @@unique([guildId, number], map: "tickets_guild_number_key")
   @@unique([channelId], map: "tickets_channel_id_key")
+  @@unique([staffThreadId], map: "tickets_staff_thread_id_key")
+  @@index([guildId, status, closedAt], map: "tickets_guild_status_closed_idx")
   @@index([guildId, status, lastActivityAt], map: "tickets_guild_status_activity_idx")
   @@index([guildId, openerId, status], map: "tickets_guild_opener_status_idx")
   @@map("tickets")

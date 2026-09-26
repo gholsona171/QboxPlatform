@@ -19,6 +19,8 @@ import { TICKET_CUSTOM_ID, TicketError, type TicketCategory, type TicketService 
 import { TicketElevation, ticketActorFromInteraction } from "./ticketActor.js";
 
 const PREFIX = "qbox:ticket:";
+/** Custom ID prefixes this handler owns. */
+export const TICKET_INTERACTION_PREFIXES = [PREFIX, TICKET_CUSTOM_ID.staffChat] as const;
 
 /** Handles ticket panel buttons, select menus, forms, and in-ticket controls. */
 export class DiscordTicketInteractionHandler {
@@ -29,7 +31,7 @@ export class DiscordTicketInteractionHandler {
 
   public static handles(interaction: Interaction): boolean {
     if (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit())
-      return interaction.customId.startsWith(PREFIX);
+      return TICKET_INTERACTION_PREFIXES.some((prefix) => interaction.customId.startsWith(prefix));
     return false;
   }
 
@@ -51,6 +53,12 @@ export class DiscordTicketInteractionHandler {
     if (id.startsWith(TICKET_CUSTOM_ID.close)) return this.requestClose(interaction, id.slice(TICKET_CUSTOM_ID.close.length));
     const guildId = requireGuild(interaction);
     const actor = await ticketActorFromInteraction(interaction, this.elevation);
+    if (id.startsWith(TICKET_CUSTOM_ID.staffChat)) {
+      await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+      const chat = await this.tickets.openStaffChat(guildId, id.slice(TICKET_CUSTOM_ID.staffChat.length), actor);
+      await interaction.editReply({ content: `You're in the staff chat: <#${chat.threadId}> (${chat.url})` });
+      return;
+    }
     if (id.startsWith(TICKET_CUSTOM_ID.claim)) {
       await interaction.deferReply({ flags: MessageFlags.Ephemeral });
       await this.tickets.claim(guildId, id.slice(TICKET_CUSTOM_ID.claim.length), actor);

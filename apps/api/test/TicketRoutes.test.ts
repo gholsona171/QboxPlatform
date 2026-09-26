@@ -147,12 +147,75 @@ describe("ticket routes", () => {
     expect(detail.messages.map((message: { internal: boolean }) => message.internal)).toEqual([false, true]);
     const transcript = await server.inject({ method: "GET", url: `/api/v1/tickets/${ticket.id}/transcript`, headers: host });
     expect(transcript.headers["content-disposition"]).toContain("ticket-1-transcript.txt");
-    expect(transcript.body).toContain("[internal note]");
+    expect(transcript.body).toContain("[staff chat]");
     const closed = await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/close`, { reason: "Refunded" }));
     expect(closed.json().data.status).toBe("CLOSED");
     const again = await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/close`, {}));
     expect(again.statusCode).toBe(400);
     expect(again.json().errors[0].message).toBe("This ticket is already closed.");
+  });
+
+  it("saves the staff thread and retention settings and each reason's staff thread override", async () => {
+    const { server } = setup();
+    const saved = (await server.inject(json("PUT", "/api/v1/tickets/settings", settingsBody({ staffThreadEnabled: false, retentionMonths: 6 })))).json().data;
+    expect(saved).toMatchObject({ staffThreadEnabled: false, retentionMonths: 6, transcriptDmUser: true });
+    // Left out: the saved values stay.
+    const { staffThreadEnabled: _s, retentionMonths: _r, ...older } = settingsBody({ expectedRevision: 1 });
+    expect((await server.inject(json("PUT", "/api/v1/tickets/settings", older))).json().data).toMatchObject({ staffThreadEnabled: false, retentionMonths: 6 });
+    const forever = await server.inject(json("PUT", "/api/v1/tickets/settings", settingsBody({ expectedRevision: 2, retentionMonths: 0 })));
+    expect(forever.json().data.retentionMonths).toBe(0);
+    const invalid = await server.inject(json("PUT", "/api/v1/tickets/settings", settingsBody({ expectedRevision: 3, retentionMonths: 3 })));
+    expect(invalid.statusCode).toBe(400);
+    expect(invalid.json().errors[0].message).toContain("retentionMonths");
+    const category = (await server.inject(json("POST", "/api/v1/tickets/categories", { name: "Appeals", staffThread: "OFF" }))).json().data;
+    expect(category.staffThread).toBe("OFF");
+    expect((await server.inject(json("POST", "/api/v1/tickets/categories", { name: "General" }))).json().data.staffThread).toBe("INHERIT");
+    expect((await server.inject(json("PUT", `/api/v1/tickets/categories/${category.id}`, { name: "Appeals" }))).json().data.staffThread).toBe("OFF");
+    expect((await server.inject(json("POST", "/api/v1/tickets/categories", { name: "Bad", staffThread: "MAYBE" }))).statusCode).toBe(400);
+  });
+
+  it("downloads the HTML transcript and retries the transcript DM for closed tickets", async () => {
+    let dmsOpen = false;
+    const dms: unknown[] = [];
+    const tickets = new TicketService(new InMemoryTicketRepository(), { ...gateway, directMessage: async (input) => { dms.push(input); return dmsOpen; } });
+    const allowed = new Set(["tickets.manage"]);
+    const calls: string[] = [];
+    const server = createApiServer({
+      configuration: ApiConfiguration.from({ environment: "test", publicBaseUrl: "http://127.0.0.1:3000", buildVersion: "tickets-test" }),
+      registerRoutes: (instance) => registerTicketRoutes(instance, {
+        tickets,
+        currentGuildId: () => GUILD,
+        guard: async (_request, permission) => {
+          calls.push(permission);
+          if (!allowed.has(permission)) throw new AuthorizationDeniedApiError();
+          return { userId: STAFF, displayName: "Staff", roleIds: [] };
+        },
+      }),
+    });
+    await server.inject(json("PUT", "/api/v1/tickets/settings", settingsBody()));
+    const ticket = await tickets.openTicket({ guildId: GUILD, actor: { userId: "200000000000000001", displayName: "Member", roleIds: [], elevated: false, source: "DISCORD" }, subject: "<script>x</script>" });
+    // Not closed yet.
+    expect((await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/send-transcript`, {}))).statusCode).toBe(400);
+    await tickets.close(GUILD, ticket.id, { userId: STAFF, displayName: "Staff", roleIds: [], elevated: true, source: "WEB" });
+    calls.length = 0;
+    const refused = await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/send-transcript`, {}));
+    expect(refused.statusCode).toBe(400);
+    expect(refused.json().errors[0].message).toBe("The member's DMs are closed, so the transcript could not be sent.");
+    // A ticket manager without tickets.handle may send it.
+    expect(calls).toEqual(["tickets.handle", "tickets.manage"]);
+    dmsOpen = true;
+    const sent = await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/send-transcript`, {}));
+    expect(sent.json().data).toEqual({ sent: true });
+    expect((dms.at(-1) as { files: { fileName: string }[] }).files.map((file) => file.fileName)).toEqual(["ticket-1-transcript.txt", "ticket-1-transcript.html"]);
+    allowed.clear();
+    expect((await server.inject(json("POST", `/api/v1/tickets/${ticket.id}/send-transcript`, {}))).statusCode).toBe(403);
+
+    allowed.add("tickets.handle");
+    const html = await server.inject({ method: "GET", url: `/api/v1/tickets/${ticket.id}/transcript?format=html`, headers: host });
+    expect(html.headers["content-type"]).toContain("text/html");
+    expect(html.headers["content-disposition"]).toContain("ticket-1-transcript.html");
+    expect(html.body).toContain("&lt;script&gt;x&lt;/script&gt;");
+    expect(html.body).not.toContain("<script>");
   });
 
   it("returns 404 for unknown tickets", async () => {

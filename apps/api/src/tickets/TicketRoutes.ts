@@ -63,6 +63,10 @@ const settingsSchema = z.strictObject({
   autoCloseExcludeClaimed: z.boolean(),
   blockedUserIds: snowflakes,
   blockedRoleIds: snowflakes,
+  /** Left out: keeps the saved value. */
+  staffThreadEnabled: z.boolean().optional(),
+  /** 6, 9 or 12 months, or 0 to keep closed tickets forever. Left out: keeps the saved value. */
+  retentionMonths: z.number().int().optional(),
   expectedRevision: z.number().int().min(0),
 });
 
@@ -92,6 +96,8 @@ const categorySchema = z.strictObject({
   questions: z.array(questionSchema).max(5).default([]),
   requiredRoleIds: snowflakes,
   maxOpenPerUser: z.number().int().optional(),
+  /** Staff thread for this reason. Left out: keeps the saved value (INHERIT for new reasons). */
+  staffThread: z.enum(["INHERIT", "ON", "OFF"]).optional(),
 });
 
 const panelSchema = z.strictObject({
@@ -125,6 +131,7 @@ const prioritySchema = z.strictObject({ priority: z.enum(["LOW", "NORMAL", "HIGH
 const tagsSchema = z.strictObject({ tags: z.array(z.string()).max(10) });
 const waitingSchema = z.strictObject({ waiting: z.boolean() });
 const userSchema = z.strictObject({ userId: snowflake });
+const transcriptQuerySchema = z.object({ format: z.enum(["txt", "html"]).default("txt") });
 
 /** Registers `/api/v1/tickets/*` for the portal. */
 export function registerTicketRoutes(server: FastifyInstance, dependencies: TicketRouteDependencies): void {
@@ -225,9 +232,15 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
 
   server.get("/api/v1/tickets/:id/transcript", async (request, reply) => {
     await handler(request);
-    const file = await safe(() => tickets.transcript(currentGuildId(), param(request, "id"), true));
+    const { format } = parse(transcriptQuerySchema, request.query ?? {});
+    const file = await safe(async () => {
+      const guildId = currentGuildId();
+      const ticket = await tickets.ticket(guildId, param(request, "id"));
+      const [text, html] = await tickets.transcriptFiles(ticket, await tickets.settings(guildId), true);
+      return format === "html" ? html : text;
+    });
     return reply
-      .header("content-type", "text/plain; charset=utf-8")
+      .header("content-type", file.contentType ?? "text/plain; charset=utf-8")
       .header("content-disposition", `attachment; filename="${file.fileName}"`)
       .send(file.content);
   });
@@ -251,6 +264,18 @@ export function registerTicketRoutes(server: FastifyInstance, dependencies: Tick
   action("transfer", (id, staff, body) => tickets.transfer(currentGuildId(), id, staff, parse(userSchema, body).userId));
   action("participants", (id, staff, body) => tickets.addParticipant(currentGuildId(), id, staff, parse(userSchema, body).userId));
   action("delete-channel", (id, staff) => tickets.deleteChannel(currentGuildId(), id, staff));
+
+  // Retries the transcript DM for a closed ticket. Ticket handlers or ticket managers.
+  server.post("/api/v1/tickets/:id/send-transcript", async (request) => {
+    const identity = await handler(request, { mutation: true }).catch(async (error: unknown) => {
+      try {
+        return await manager(request);
+      } catch {
+        throw error;
+      }
+    });
+    return { data: await safe(() => tickets.sendTranscriptToMember(currentGuildId(), param(request, "id"), actor(identity))) };
+  });
 
   server.delete("/api/v1/tickets/:id/participants/:userId", async (request) => {
     const identity = await handler(request, { mutation: true });
