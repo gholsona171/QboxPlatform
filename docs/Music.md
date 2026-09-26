@@ -68,9 +68,8 @@ Links to web pages are refused: only direct audio links work.
    [developer.jamendo.com](https://developer.jamendo.com) and set
    `JAMENDO_CLIENT_ID`. Without it the portal hides Jamendo search.
 
-Large uploads over slow connections can run into the API's request time limit
-(`API_REQUEST_TIMEOUT_MS`, default 15 seconds). Raise it (for example to
-`120000`) if uploads of big files fail.
+An upload has two minutes to finish (`API_REQUEST_TIMEOUT_MS`, default
+120000). On a very slow connection, raise it or upload fewer files at once.
 
 ## Controls
 

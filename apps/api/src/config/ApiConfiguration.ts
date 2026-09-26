@@ -73,7 +73,7 @@ const inputSchema = z.strictObject({
   bodySizeLimitBytes: z.number().int().min(1_024).max(10 * 1024 * 1024).default(1024 * 1024),
   headerSizeLimitBytes: z.number().int().min(4_096).max(65_536).default(16_384),
   userAgentLimitChars: z.number().int().min(128).max(8_192).default(1_024),
-  requestTimeoutMs: z.number().int().min(100).max(300_000).default(15_000),
+  requestTimeoutMs: z.number().int().min(100).max(300_000).default(120_000),
   keepAliveTimeoutMs: z.number().int().min(100).max(300_000).default(5_000),
   shutdownTimeoutMs: z.number().int().min(100).max(300_000).default(10_000),
   trustProxy: z.union([z.literal(false), z.array(z.string().trim().min(1)).min(1)]).default(false),

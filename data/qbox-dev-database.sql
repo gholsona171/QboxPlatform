@@ -46,6 +46,8 @@ ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF 
 ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_platform_user_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_initiating_session_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_external_identity_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlist_tracks" DROP CONSTRAINT IF EXISTS "music_playlist_tracks_track_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlist_tracks" DROP CONSTRAINT IF EXISTS "music_playlist_tracks_playlist_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."knowledge_articles" DROP CONSTRAINT IF EXISTS "knowledge_articles_category_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."giveaway_entries" DROP CONSTRAINT IF EXISTS "giveaway_entries_giveaway_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."games_status_snapshots" DROP CONSTRAINT IF EXISTS "games_status_snapshots_server_id_fkey";
@@ -168,6 +170,13 @@ DROP INDEX IF EXISTS "public"."oauth_transactions_state_digest_key";
 DROP INDEX IF EXISTS "public"."oauth_transactions_browser_binding_digest_key";
 DROP INDEX IF EXISTS "public"."oauth_credentials_provider_expiry_idx";
 DROP INDEX IF EXISTS "public"."oauth_credentials_external_identity_key";
+DROP INDEX IF EXISTS "public"."music_tracks_guild_hash_key";
+DROP INDEX IF EXISTS "public"."music_tracks_guild_created_idx";
+DROP INDEX IF EXISTS "public"."music_stations_guild_url_key";
+DROP INDEX IF EXISTS "public"."music_settings_stay_connected_idx";
+DROP INDEX IF EXISTS "public"."music_sessions_state_idx";
+DROP INDEX IF EXISTS "public"."music_playlists_guild_name_idx";
+DROP INDEX IF EXISTS "public"."music_playlist_tracks_track_idx";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_type_active_idx";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_target_idx";
 DROP INDEX IF EXISTS "public"."moderation_cases_guild_number_key";
@@ -265,6 +274,12 @@ ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF
 ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF EXISTS "permission_assignments_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_tracks" DROP CONSTRAINT IF EXISTS "music_tracks_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_stations" DROP CONSTRAINT IF EXISTS "music_stations_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_settings" DROP CONSTRAINT IF EXISTS "music_settings_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_sessions" DROP CONSTRAINT IF EXISTS "music_sessions_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlists" DROP CONSTRAINT IF EXISTS "music_playlists_pkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlist_tracks" DROP CONSTRAINT IF EXISTS "music_playlist_tracks_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."moderation_settings" DROP CONSTRAINT IF EXISTS "moderation_settings_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."moderation_cases" DROP CONSTRAINT IF EXISTS "moderation_cases_pkey";
 ALTER TABLE IF EXISTS ONLY "public"."messages_templates" DROP CONSTRAINT IF EXISTS "messages_templates_pkey";
@@ -349,6 +364,12 @@ DROP TABLE IF EXISTS "public"."permission_audit_events";
 DROP TABLE IF EXISTS "public"."permission_assignments";
 DROP TABLE IF EXISTS "public"."oauth_transactions";
 DROP TABLE IF EXISTS "public"."oauth_credentials";
+DROP TABLE IF EXISTS "public"."music_tracks";
+DROP TABLE IF EXISTS "public"."music_stations";
+DROP TABLE IF EXISTS "public"."music_settings";
+DROP TABLE IF EXISTS "public"."music_sessions";
+DROP TABLE IF EXISTS "public"."music_playlists";
+DROP TABLE IF EXISTS "public"."music_playlist_tracks";
 DROP TABLE IF EXISTS "public"."moderation_settings";
 DROP TABLE IF EXISTS "public"."moderation_cases";
 DROP TABLE IF EXISTS "public"."messages_templates";
@@ -444,6 +465,8 @@ DROP TYPE IF EXISTS "public"."OAuthTransactionPurpose";
 DROP TYPE IF EXISTS "public"."OAuthTransactionFailureReason";
 DROP TYPE IF EXISTS "public"."OAuthPkceMode";
 DROP TYPE IF EXISTS "public"."OAuthCredentialRevocationReason";
+DROP TYPE IF EXISTS "public"."MusicPlayerState";
+DROP TYPE IF EXISTS "public"."MusicLoopMode";
 DROP TYPE IF EXISTS "public"."ModerationCaseType";
 DROP TYPE IF EXISTS "public"."ModerationCaseSource";
 DROP TYPE IF EXISTS "public"."LevelUpMode";
@@ -808,6 +831,29 @@ CREATE TYPE "public"."ModerationCaseType" AS ENUM (
     'unban',
     'softban',
     'note'
+);
+
+
+--
+-- Name: MusicLoopMode; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."MusicLoopMode" AS ENUM (
+    'off',
+    'track',
+    'queue'
+);
+
+
+--
+-- Name: MusicPlayerState; Type: TYPE; Schema: public; Owner: -
+--
+
+CREATE TYPE "public"."MusicPlayerState" AS ENUM (
+    'idle',
+    'playing',
+    'paused',
+    'buffering'
 );
 
 
@@ -2428,6 +2474,113 @@ CREATE TABLE "public"."moderation_settings" (
 
 
 --
+-- Name: music_playlist_tracks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_playlist_tracks" (
+    "playlist_id" "uuid" NOT NULL,
+    "position" integer NOT NULL,
+    "track_id" "uuid" NOT NULL
+);
+
+
+--
+-- Name: music_playlists; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_playlists" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "description" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: music_sessions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_sessions" (
+    "guild_id" "text" NOT NULL,
+    "channel_id" "text",
+    "text_channel_id" "text",
+    "panel_channel_id" "text",
+    "panel_message_id" "text",
+    "queue" "jsonb" DEFAULT '[]'::"jsonb" NOT NULL,
+    "index" integer DEFAULT 0 NOT NULL,
+    "position_seconds" integer DEFAULT 0 NOT NULL,
+    "state" "public"."MusicPlayerState" DEFAULT 'idle'::"public"."MusicPlayerState" NOT NULL,
+    "loop" "public"."MusicLoopMode" DEFAULT 'off'::"public"."MusicLoopMode" NOT NULL,
+    "shuffle" boolean DEFAULT false NOT NULL,
+    "volume" integer DEFAULT 60 NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: music_settings; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_settings" (
+    "guild_id" "text" NOT NULL,
+    "enabled" boolean DEFAULT false NOT NULL,
+    "dj_role_ids" "text"[] DEFAULT ARRAY[]::"text"[],
+    "default_volume" integer DEFAULT 60 NOT NULL,
+    "max_queue" integer DEFAULT 100 NOT NULL,
+    "announce_channel_id" "text",
+    "now_playing_panel" boolean DEFAULT true NOT NULL,
+    "stay_connected_247" boolean DEFAULT false NOT NULL,
+    "home_channel_id" "text",
+    "auto_leave_minutes" integer DEFAULT 5 NOT NULL,
+    "idle_radio_station_id" "uuid",
+    "revision" integer DEFAULT 1 NOT NULL,
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
+-- Name: music_stations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_stations" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "name" "text" NOT NULL,
+    "url" "text" NOT NULL,
+    "favicon_url" "text",
+    "tags" "text"[] DEFAULT ARRAY[]::"text"[],
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+--
+-- Name: music_tracks; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE "public"."music_tracks" (
+    "id" "uuid" NOT NULL,
+    "guild_id" "text" NOT NULL,
+    "title" "text" NOT NULL,
+    "artist" "text",
+    "album" "text",
+    "track_number" integer,
+    "duration_seconds" integer,
+    "file_name" "text" NOT NULL,
+    "cover_file_name" "text",
+    "content_type" "text" NOT NULL,
+    "size_bytes" integer NOT NULL,
+    "sha256" "text" NOT NULL,
+    "original_name" "text" NOT NULL,
+    "uploaded_by" "text",
+    "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp(3) with time zone NOT NULL
+);
+
+
+--
 -- Name: oauth_credentials; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -3410,6 +3563,7 @@ da7ce312-cdad-4306-9a30-a4bef765bb02	44978aae6e8f87770a99e5171243ded02b0b0b9ab0b
 843c8946-0b37-4a6c-880d-fcd74b6d558e	e19280bd9284443cbfb91456de506d2f9334783f02a12dc2550367766d4e2a6c	2026-09-25 07:42:04.697357+00	20260925168000_voice_rooms	\N	\N	2026-09-25 07:42:04.681984+00	1
 2e765162-1010-40f0-a08b-4dfe03eca212	b40b68c977037a7a44aa4e0911451f13b1f69bb3d6b825ab41347da9d7a07b94	2026-09-25 07:42:04.627499+00	20260925163000_polls	\N	\N	2026-09-25 07:42:04.605943+00	1
 f91c97f0-865b-4829-b57c-69f4e96365d0	455372482d8b81715b4ea5c0d609fff873a84dbbed3a890775ee284fa63d2929	2026-09-25 07:42:04.647395+00	20260925164000_giveaways	\N	\N	2026-09-25 07:42:04.628418+00	1
+7c358a9a-ac5b-4c95-9ef5-49750d88862f	639b27446f091919d7d9c757d98e2d3bf3a199ee016f5127fcc63c3e416b1d84	2026-09-26 07:49:47.465366+00	20260926030000_music	\N	\N	2026-09-26 07:49:47.264612+00	1
 9fe8cf79-532f-4ca5-b62b-c4952a1c283e	00f4cce54802da9352ef607578e84450fd476d6397b852ffa1d694bb602c9f52	2026-09-25 07:42:04.658922+00	20260925165000_birthdays	\N	\N	2026-09-25 07:42:04.647941+00	1
 9875bd80-dfdc-4631-9742-81bfe5dbb771	f8ae2ed6b899c9c275865a5488a8b556ac1859d62b31efb8e7002bf43599c39d	2026-09-25 22:44:14.377054+00	20260925205000_messages	\N	\N	2026-09-25 22:44:14.35872+00	1
 1e804714-dc58-43a6-8d41-c4a7c187986c	3eba4a12e252d7ffd258c4b79f13a9fcb5575421c1c589b87ed4312883a44fd0	2026-09-25 07:42:04.71291+00	20260925169000_knowledge_base	\N	\N	2026-09-25 07:42:04.698097+00	1
@@ -3730,6 +3884,54 @@ COPY "public"."moderation_cases" ("id", "guild_id", "number", "type", "target_id
 --
 
 COPY "public"."moderation_settings" ("guild_id", "log_channel_id", "dm_on_action", "dm_include_moderator", "appeal_message", "require_reason", "default_timeout_minutes", "ban_delete_message_hours", "warning_expiry_days", "protected_role_ids", "escalation", "automod", "record_external_actions", "next_case_number", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_playlist_tracks; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_playlist_tracks" ("playlist_id", "position", "track_id") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_playlists; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_playlists" ("id", "guild_id", "name", "description", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_sessions; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_sessions" ("guild_id", "channel_id", "text_channel_id", "panel_channel_id", "panel_message_id", "queue", "index", "position_seconds", "state", "loop", "shuffle", "volume", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_settings; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_settings" ("guild_id", "enabled", "dj_role_ids", "default_volume", "max_queue", "announce_channel_id", "now_playing_panel", "stay_connected_247", "home_channel_id", "auto_leave_minutes", "idle_radio_station_id", "revision", "created_at", "updated_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_stations; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_stations" ("id", "guild_id", "name", "url", "favicon_url", "tags", "created_at") FROM stdin;
+\.
+
+
+--
+-- Data for Name: music_tracks; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY "public"."music_tracks" ("id", "guild_id", "title", "artist", "album", "track_number", "duration_seconds", "file_name", "cover_file_name", "content_type", "size_bytes", "sha256", "original_name", "uploaded_by", "created_at", "updated_at") FROM stdin;
 \.
 
 
@@ -4427,6 +4629,54 @@ ALTER TABLE ONLY "public"."moderation_cases"
 
 ALTER TABLE ONLY "public"."moderation_settings"
     ADD CONSTRAINT "moderation_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: music_playlist_tracks music_playlist_tracks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlist_tracks"
+    ADD CONSTRAINT "music_playlist_tracks_pkey" PRIMARY KEY ("playlist_id", "position");
+
+
+--
+-- Name: music_playlists music_playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlists"
+    ADD CONSTRAINT "music_playlists_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: music_sessions music_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_sessions"
+    ADD CONSTRAINT "music_sessions_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: music_settings music_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_settings"
+    ADD CONSTRAINT "music_settings_pkey" PRIMARY KEY ("guild_id");
+
+
+--
+-- Name: music_stations music_stations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_stations"
+    ADD CONSTRAINT "music_stations_pkey" PRIMARY KEY ("id");
+
+
+--
+-- Name: music_tracks music_tracks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_tracks"
+    ADD CONSTRAINT "music_tracks_pkey" PRIMARY KEY ("id");
 
 
 --
@@ -5148,6 +5398,55 @@ CREATE INDEX "moderation_cases_guild_target_idx" ON "public"."moderation_cases" 
 --
 
 CREATE INDEX "moderation_cases_guild_type_active_idx" ON "public"."moderation_cases" USING "btree" ("guild_id", "type", "active", "expires_at");
+
+
+--
+-- Name: music_playlist_tracks_track_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "music_playlist_tracks_track_idx" ON "public"."music_playlist_tracks" USING "btree" ("track_id");
+
+
+--
+-- Name: music_playlists_guild_name_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "music_playlists_guild_name_idx" ON "public"."music_playlists" USING "btree" ("guild_id", "name");
+
+
+--
+-- Name: music_sessions_state_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "music_sessions_state_idx" ON "public"."music_sessions" USING "btree" ("state");
+
+
+--
+-- Name: music_settings_stay_connected_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "music_settings_stay_connected_idx" ON "public"."music_settings" USING "btree" ("stay_connected_247", "enabled");
+
+
+--
+-- Name: music_stations_guild_url_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "music_stations_guild_url_key" ON "public"."music_stations" USING "btree" ("guild_id", "url");
+
+
+--
+-- Name: music_tracks_guild_created_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "music_tracks_guild_created_idx" ON "public"."music_tracks" USING "btree" ("guild_id", "created_at");
+
+
+--
+-- Name: music_tracks_guild_hash_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "music_tracks_guild_hash_key" ON "public"."music_tracks" USING "btree" ("guild_id", "sha256");
 
 
 --
@@ -6029,6 +6328,22 @@ ALTER TABLE ONLY "public"."giveaway_entries"
 
 ALTER TABLE ONLY "public"."knowledge_articles"
     ADD CONSTRAINT "knowledge_articles_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."knowledge_categories"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: music_playlist_tracks music_playlist_tracks_playlist_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlist_tracks"
+    ADD CONSTRAINT "music_playlist_tracks_playlist_id_fkey" FOREIGN KEY ("playlist_id") REFERENCES "public"."music_playlists"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: music_playlist_tracks music_playlist_tracks_track_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlist_tracks"
+    ADD CONSTRAINT "music_playlist_tracks_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "public"."music_tracks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

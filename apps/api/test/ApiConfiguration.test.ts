@@ -15,7 +15,7 @@ describe("ApiConfiguration", () => {
       bodySizeLimitBytes: 1_048_576,
       headerSizeLimitBytes: 16_384,
       userAgentLimitChars: 1_024,
-      requestTimeoutMs: 15_000,
+      requestTimeoutMs: 120_000,
       keepAliveTimeoutMs: 5_000,
       shutdownTimeoutMs: 10_000,
       trustProxy: { mode: "disabled" },
