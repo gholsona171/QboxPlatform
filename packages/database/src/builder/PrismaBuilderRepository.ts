@@ -13,6 +13,7 @@ import {
   type BuilderRunItemCreateData,
   type BuilderRunItemPatch,
   type BuilderRunPatch,
+  type WipeSnapshot,
 } from "@qbox/server-builder";
 import type { Prisma, PrismaClient } from "@qbox/prisma";
 
@@ -60,6 +61,7 @@ export class PrismaBuilderRepository implements BuilderRepository {
         startedById: input.startedById,
         startedByName: input.startedByName,
         warnings: [],
+        ...(input.snapshot ? { snapshot: snapshotJson(input.snapshot) } : {}),
       },
     }));
   }
@@ -136,6 +138,10 @@ function json(value: BuilderAnswers | BuilderBlueprint): Prisma.InputJsonValue {
   return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
 }
 
+function snapshotJson(value: WipeSnapshot): Prisma.InputJsonValue {
+  return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+}
+
 function mapDraft(row: DraftRow): BuilderDraft {
   return {
     guildId: row.guildId,
@@ -162,6 +168,7 @@ function mapRun(row: RunRow): BuilderRun {
     startedByName: row.startedByName,
     warnings: row.warnings,
     ...(row.error === null ? {} : { error: row.error }),
+    ...(row.snapshot === null || row.snapshot === undefined ? {} : { snapshot: row.snapshot as unknown as WipeSnapshot }),
     ...(row.startedAt === null ? {} : { startedAt: row.startedAt }),
     ...(row.finishedAt === null ? {} : { finishedAt: row.finishedAt }),
     ...(row.undoneAt === null ? {} : { undoneAt: row.undoneAt }),

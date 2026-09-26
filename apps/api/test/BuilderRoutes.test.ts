@@ -18,12 +18,12 @@ const GUILD = "100000000000000001";
 const host = { host: "127.0.0.1:3000" };
 const json = (method: "POST" | "PUT", url: string, payload: unknown) => ({ method, url, payload: payload as Record<string, unknown>, headers: { ...host, "content-type": "application/json" } });
 
-function gateway(): BuilderGateway {
+function gateway(ownerId = "300000000000000001"): BuilderGateway {
   let next = 700000000000000001n;
   return {
     listRoles: async () => [],
     listChannels: async () => [],
-    botStatus: async () => ({ userId: "900000000000000001", permissions: 8n, topRolePosition: 5, highestRolePosition: 5, community: true }),
+    botStatus: async () => ({ userId: "900000000000000001", permissions: 8n, topRolePosition: 5, highestRolePosition: 5, community: true, ownerId }),
     createRole: async () => String(next++),
     setRolePositions: async () => undefined,
     createChannel: async () => String(next++),
@@ -31,25 +31,31 @@ function gateway(): BuilderGateway {
     pinForumPost: async () => undefined,
     deleteChannel: async () => undefined,
     deleteRole: async () => undefined,
+    readLayout: async () => ({ name: "Test City", community: false, roles: [], channels: [] }),
+    listEmojis: async () => [],
+    listStickers: async () => [],
+    deleteEmoji: async () => undefined,
+    deleteSticker: async () => undefined,
   };
 }
 
-function setup(allowed: readonly string[] = ["builder.manage"], designer?: BlueprintDesigner) {
+function setup(allowed: readonly string[] = ["builder.manage"], designer?: BlueprintDesigner, options: { ownerId?: string; platformOwner?: boolean } = {}) {
   const calls: { permission: string; mutation: boolean }[] = [];
   const context: ApiFeatureContext = {
     guildId: GUILD,
-    guard: async (_request, permission, options) => {
+    guard: async (_request, permission, opts) => {
       const name = typeof permission === "string" ? permission : permission.join("|");
-      calls.push({ permission: name, mutation: options.mutation });
+      calls.push({ permission: name, mutation: opts.mutation });
       if (!allowed.includes(name)) throw new AuthorizationDeniedApiError();
       return { userId: "300000000000000001", displayName: "Jay", roleIds: [] };
     },
     member: async () => ({ userId: "300000000000000001", displayName: "Jay", roleIds: [] }),
+    platformOwner: async () => options.platformOwner === true,
   };
   const tasks: (() => Promise<void>)[] = [];
   const links: BuilderLinkPort = { apply: async (link) => `${link} linked` };
   const repository = new InMemoryBuilderRepository();
-  const service = new BuilderService(repository, gateway(), links, { schedule: (task) => void tasks.push(task), designer });
+  const service = new BuilderService(repository, gateway(options.ownerId ?? "300000000000000001"), links, { schedule: (task) => void tasks.push(task), designer });
   const server = createApiServer({
     configuration: ApiConfiguration.from({ environment: "test", publicBaseUrl: "http://127.0.0.1:3000", buildVersion: "builder-test" }),
     registerRoutes: (instance) => builderApiFeature(service).register(instance, context),
@@ -192,6 +198,46 @@ describe("server builder routes", () => {
     const unexpected = await junk.server.inject(json("POST", "/api/v1/builder/design", { prompt: "Hi", expectedRevision: 0 }));
     expect(unexpected.statusCode).toBe(503);
     expect(unexpected.json().errors[0].message).toContain("unexpected");
+  });
+
+  it("previews and starts a wipe for the owner, and refuses non-owners", async () => {
+    const owner = setup();
+    const preview = await owner.server.inject({ method: "GET", url: "/api/v1/builder/wipe/preview", headers: host });
+    expect(preview.statusCode).toBe(200);
+    expect(preview.json().data).toMatchObject({ serverName: "Test City", channels: 0, roles: 0 });
+    const started = await owner.server.inject(json("POST", "/api/v1/builder/wipe", { confirmName: "Test City", include: { channels: true, roles: true, emojis: false } }));
+    expect(started.statusCode).toBe(202);
+    expect(started.json().data.mode).toBe("WIPE");
+    /* The name must match exactly. */
+    const mismatch = setup();
+    expect((await mismatch.server.inject(json("POST", "/api/v1/builder/wipe", { confirmName: "test city", include: { channels: true, roles: true, emojis: false } }))).statusCode).toBe(400);
+    /* A member who is not the owner, an admin, or a platform owner gets 403. */
+    const denied = setup(["builder.manage"], undefined, { ownerId: "999999999999999999" });
+    const forbidden = await denied.server.inject(json("POST", "/api/v1/builder/wipe", { confirmName: "Test City", include: { channels: true, roles: true, emojis: false } }));
+    expect(forbidden.statusCode).toBe(403);
+    expect(forbidden.json().detail).toBe("Only the server owner or an administrator can wipe the server.");
+    /* A platform owner is allowed even when not the guild owner. */
+    const platform = setup(["builder.manage"], undefined, { ownerId: "999999999999999999", platformOwner: true });
+    expect((await platform.server.inject(json("POST", "/api/v1/builder/wipe", { confirmName: "Test City", include: { channels: true, roles: true, emojis: false } }))).statusCode).toBe(202);
+    /* The overview tells the portal whether the viewer may wipe. */
+    expect((await owner.server.inject({ method: "GET", url: "/api/v1/builder/overview", headers: host })).json().data.wipe.allowed).toBe(true);
+    expect((await denied.server.inject({ method: "GET", url: "/api/v1/builder/overview", headers: host })).json().data.wipe.allowed).toBe(false);
+  });
+
+  it("wipes then builds, and can load a wipe snapshot back as a blueprint", async () => {
+    const { server, settle } = setup();
+    await server.inject(json("POST", "/api/v1/builder/generate", { answers: templateFor("COMMUNITY").answers, save: true, expectedRevision: 0 }));
+    const started = await server.inject(json("POST", "/api/v1/builder/runs", { mode: "WIPE_AND_BUILD", links: [], confirmName: "Test City", include: { channels: true, roles: true, emojis: false } }));
+    expect(started.statusCode).toBe(202);
+    const run = started.json().data;
+    expect(run.mode).toBe("WIPE_AND_BUILD");
+    await settle();
+    const detail = (await server.inject({ method: "GET", url: `/api/v1/builder/runs/${run.id}`, headers: host })).json().data;
+    expect(detail.run.status).toBe("SUCCEEDED");
+    expect(detail.run.snapshot).toBeUndefined();
+    const loaded = await server.inject(json("POST", `/api/v1/builder/runs/${run.id}/load-blueprint`, {}));
+    expect(loaded.statusCode).toBe(200);
+    expect(Array.isArray(loaded.json().data.notes)).toBe(true);
   });
 
   it("marks runs interrupted by a restart as failed when the server starts", async () => {

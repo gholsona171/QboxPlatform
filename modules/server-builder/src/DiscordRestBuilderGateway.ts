@@ -1,11 +1,14 @@
 import type { DiscordRestClient } from "@qbox/shared/discord-rest";
 
-import type { BotStatus, BuilderGateway, ChannelCreateInput, ExistingChannel, ExistingRole, ForumPostInput, RoleCreateInput } from "./types.js";
+import type { BotStatus, BuilderGateway, ChannelCreateInput, ExistingChannel, ExistingRole, ForumPostInput, RoleCreateInput, WipeExpression, WipeLayout, WipeLayoutChannel, WipeLayoutRole } from "./types.js";
 
-interface ApiRole { readonly id: string; readonly name: string; readonly position: number; readonly permissions: string; readonly managed?: boolean }
-interface ApiChannel { readonly id: string; readonly name: string; readonly type: number; readonly parent_id?: string | null }
-interface ApiGuild { readonly features?: readonly string[] }
+interface ApiRole { readonly id: string; readonly name: string; readonly position: number; readonly permissions: string; readonly managed?: boolean; readonly color?: number; readonly hoist?: boolean; readonly mentionable?: boolean }
+interface ApiOverwrite { readonly id: string; readonly type: number; readonly allow: string; readonly deny: string }
+interface ApiChannel { readonly id: string; readonly name: string; readonly type: number; readonly parent_id?: string | null; readonly topic?: string | null; readonly nsfw?: boolean; readonly rate_limit_per_user?: number; readonly user_limit?: number; readonly bitrate?: number; readonly position?: number; readonly permission_overwrites?: readonly ApiOverwrite[] }
+interface ApiGuild { readonly name?: string; readonly features?: readonly string[]; readonly owner_id?: string; readonly rules_channel_id?: string | null; readonly public_updates_channel_id?: string | null }
 interface ApiMember { readonly roles: readonly string[] }
+interface ApiEmoji { readonly id: string | null; readonly name: string | null }
+interface ApiSticker { readonly id: string; readonly name: string }
 
 /** Discord's PINNED flag for forum posts. */
 const PINNED = 2;
@@ -24,7 +27,7 @@ export class DiscordRestBuilderGateway implements BuilderGateway {
 
   public async listRoles(guildId: string): Promise<readonly ExistingRole[]> {
     const roles = (await this.rest.get(`/guilds/${guildId}/roles`)) as readonly ApiRole[];
-    return roles.map((role) => ({ id: role.id, name: role.name, position: role.position, managed: role.managed === true }));
+    return roles.map((role) => ({ id: role.id, name: role.name, position: role.position, managed: role.managed === true, permissions: role.permissions }));
   }
 
   public async listChannels(guildId: string): Promise<readonly ExistingChannel[]> {
@@ -46,6 +49,7 @@ export class DiscordRestBuilderGateway implements BuilderGateway {
       topRolePosition: mine.reduce((top, role) => Math.max(top, role.position), 0),
       highestRolePosition: roles.reduce((top, role) => Math.max(top, role.position), 0),
       community: guild.features?.includes("COMMUNITY") ?? false,
+      ...(guild.owner_id ? { ownerId: guild.owner_id } : {}),
     };
   }
 
@@ -101,10 +105,78 @@ export class DiscordRestBuilderGateway implements BuilderGateway {
     await this.rest.delete(`/guilds/${guildId}/roles/${roleId}`, { reason }).catch(ignoreMissing);
   }
 
+  public async readLayout(guildId: string): Promise<WipeLayout> {
+    const [guild, roles, channels] = await Promise.all([
+      this.rest.get(`/guilds/${guildId}`) as Promise<ApiGuild>,
+      this.rest.get(`/guilds/${guildId}/roles`) as Promise<readonly ApiRole[]>,
+      this.rest.get(`/guilds/${guildId}/channels`) as Promise<readonly ApiChannel[]>,
+    ]);
+    return {
+      name: guild.name ?? "",
+      community: guild.features?.includes("COMMUNITY") ?? false,
+      ...(guild.rules_channel_id ? { rulesChannelId: guild.rules_channel_id } : {}),
+      ...(guild.public_updates_channel_id ? { publicUpdatesChannelId: guild.public_updates_channel_id } : {}),
+      roles: roles.map(toLayoutRole),
+      channels: channels.map(toLayoutChannel),
+    };
+  }
+
+  public async listEmojis(guildId: string): Promise<readonly WipeExpression[]> {
+    const emojis = (await this.rest.get(`/guilds/${guildId}/emojis`)) as readonly ApiEmoji[];
+    return emojis.flatMap((emoji) => (emoji.id ? [{ id: emoji.id, name: emoji.name ?? emoji.id }] : []));
+  }
+
+  public async listStickers(guildId: string): Promise<readonly WipeExpression[]> {
+    const stickers = (await this.rest.get(`/guilds/${guildId}/stickers`)) as readonly ApiSticker[];
+    return stickers.map((sticker) => ({ id: sticker.id, name: sticker.name }));
+  }
+
+  public async deleteEmoji(guildId: string, emojiId: string, reason: string): Promise<void> {
+    await this.rest.delete(`/guilds/${guildId}/emojis/${emojiId}`, { reason }).catch(ignoreMissing);
+  }
+
+  public async deleteSticker(guildId: string, stickerId: string, reason: string): Promise<void> {
+    await this.rest.delete(`/guilds/${guildId}/stickers/${stickerId}`, { reason }).catch(ignoreMissing);
+  }
+
   private async selfId(): Promise<string> {
     if (!this.botUserId) this.botUserId = ((await this.rest.get("/users/@me")) as { readonly id: string }).id;
     return this.botUserId;
   }
+}
+
+function toLayoutRole(role: ApiRole): WipeLayoutRole {
+  return {
+    id: role.id,
+    name: role.name,
+    color: role.color ?? 0,
+    hoist: role.hoist === true,
+    mentionable: role.mentionable === true,
+    permissions: role.permissions,
+    position: role.position,
+    managed: role.managed === true,
+  };
+}
+
+function toLayoutChannel(channel: ApiChannel): WipeLayoutChannel {
+  return {
+    id: channel.id,
+    name: channel.name,
+    type: channel.type,
+    nsfw: channel.nsfw === true,
+    slowmodeSeconds: channel.rate_limit_per_user ?? 0,
+    userLimit: channel.user_limit ?? 0,
+    position: channel.position ?? 0,
+    ...(channel.topic ? { topic: channel.topic } : {}),
+    ...(typeof channel.bitrate === "number" ? { bitrate: channel.bitrate } : {}),
+    ...(channel.parent_id ? { parentId: channel.parent_id } : {}),
+    overwrites: (channel.permission_overwrites ?? []).map((overwrite) => ({
+      id: overwrite.id,
+      type: overwrite.type === 1 ? 1 : 0,
+      allow: overwrite.allow,
+      deny: overwrite.deny,
+    })),
+  };
 }
 
 function ignoreMissing(error: unknown): void {

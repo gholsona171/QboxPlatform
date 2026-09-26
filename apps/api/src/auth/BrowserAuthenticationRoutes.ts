@@ -699,6 +699,22 @@ export async function registerBrowserAuthenticationRoutes(
       const { account, roleIds } = await requireGuildMember(request, dependencies);
       return identityOf(account, roleIds);
     },
+    platformOwner: async (request) => {
+      const { account, roleIds } = await requireGuildMember(request, dependencies);
+      const guildDiscordId = requireCurrentGuildId();
+      const principals: PermissionPrincipal[] = [
+        { type: "discord-user", externalId: account.identity.providerSubjectId, guildId: guildDiscordId },
+        ...roleIds.map((roleId) => ({ type: "discord-role" as const, externalId: roleId, guildId: guildDiscordId })),
+      ];
+      const decision = await dependencies.authorizer.authorize({
+        principals,
+        scope: { type: "platform" },
+        required: ["platform.owner"],
+        mode: "all",
+        administratorOverride: false,
+      });
+      return decision.allowed;
+    },
   };
   for (const feature of dependencies.features ?? []) feature.register(server, featureContext);
 

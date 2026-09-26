@@ -24,7 +24,9 @@ set up for.
 | --- | --- |
 | `builder.manage` | Everything: answers, blueprint, building, undo, `/builder status` |
 
-Discord administrators can do everything.
+Discord administrators can do everything. Wiping the server is stricter: only
+the server owner, a member with the Discord Administrator permission, or a
+platform owner can wipe (see **Wiping a server**).
 
 ## Using it
 
@@ -201,6 +203,55 @@ build created, found by the IDs saved when they were made. Things that were
 skipped because they already existed are never touched. Deleted channels
 lose their messages. If some items can't be deleted, the build is marked
 "finished with problems" and you can try again.
+
+## Wiping a server
+
+The **Wipe server** card at the bottom of the Build tab erases everything
+inside Discord so you can start a server clean (for a first install). The
+Build tab also has a third build mode, **Wipe the server first, then build**,
+which wipes and then builds the current blueprint (Fresh) and connects the
+features, as one run.
+
+**Only the server owner, a member with the Discord Administrator permission,
+or a platform owner can wipe.** `builder.manage` alone (or Manage Server
+alone) is not enough. Everyone else sees the card with one line saying why.
+
+**What a wipe deletes** (the owner picks; all on by default except emojis):
+
+- Every channel and category (text, voice, forum, media, stage, announcement;
+  threads go with their channels).
+- Every role it can delete: not `@everyone`, not managed (bot, integration,
+  or booster) roles, and below the Guildhall role. Roles above the Guildhall
+  role are kept and listed as "above the Guildhall role" with a tip to move
+  the Guildhall role to the top.
+- Optionally, custom emojis and stickers.
+
+**Never deleted:** the server itself, members, bans, `@everyone`, and managed
+roles. While Community is on, Discord refuses to delete the rules channel and
+the public updates channel (error 50074); Guildhall keeps those two, records
+"Discord requires it for Community (turn Community off in Server Settings to
+remove it)", and carries on. Any other per-item failure is recorded and the
+wipe continues.
+
+**The confirmation** lists exact counts (channels, categories, roles, emojis,
+stickers, and what will be kept), states that messages and channels cannot be
+recovered, and requires typing the server name exactly (case-sensitive) plus
+ticking "I understand". The API re-checks the typed name.
+
+**Snapshot and rebuild.** Before deleting, Guildhall reads the full current
+layout (roles, categories, channels, and their permissions) and stores it with
+the run. The History entry for a wipe offers **Load as blueprint**, which turns
+that snapshot back into a blueprint and saves it as your draft, so you can
+rebuild the old layout. Member-specific permission overrides and permissions
+Guildhall does not manage are dropped with a note. **Messages cannot be
+recovered** — only the layout.
+
+A wipe runs in the background like a build, one at a time per server (a build
+and a wipe never overlap), with progress shown live. Undo is not offered for a
+wipe; the History entry offers **Load as blueprint** instead. The bot needs
+Manage Channels, Manage Roles, and (for emojis and stickers) Manage
+Expressions; the preview lists anything missing. At most one wipe per server
+every 10 minutes.
 
 ## Limits
 

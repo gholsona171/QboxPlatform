@@ -50,6 +50,13 @@ export class AuthorizationDeniedApiError extends ApiError {
   }
 }
 
+/** 403 with a feature-specific message (for example, only the server owner may wipe). */
+export class ForbiddenApiError extends ApiError {
+  public constructor(message: string, details?: readonly Readonly<Record<string, unknown>>[]) {
+    super("AUTHORIZATION_DENIED", 403, "Authorization denied", message, "warn", details);
+  }
+}
+
 export class NotFoundApiError extends ApiError {
   public constructor() {
     super("RESOURCE_NOT_FOUND", 404, "Resource not found", "The requested resource was not found.", "info");

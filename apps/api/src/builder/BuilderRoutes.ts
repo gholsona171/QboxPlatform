@@ -11,7 +11,7 @@ import {
   BUILDER_LINKS,
   BUILDER_PERMISSIONS,
   BUILDER_ROLE_PURPOSES,
-  BUILDER_RUN_MODES,
+  BUILDER_START_MODES,
   BUILDER_SECTIONS,
   BUILDER_SERVER_TYPES,
   BUILDER_STAFF_ACCESS,
@@ -19,11 +19,21 @@ import {
   type BuilderService,
 } from "@qbox/server-builder";
 
+import { ForbiddenApiError } from "../errors/ApiError.js";
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 import { errorOf, featureCall, parseInput as parse, routeParam, routeQuery } from "../features/routeHelpers.js";
 
 const isBuilderError = errorOf(BuilderError);
-const safe = <T>(operation: () => Promise<T>) => featureCall(operation, isBuilderError);
+/** Maps a builder FORBIDDEN to a 403 with its message; everything else goes through the usual mapping. */
+const safe = <T>(operation: () => Promise<T>) =>
+  featureCall(async () => {
+    try {
+      return await operation();
+    } catch (error) {
+      if (error instanceof BuilderError && error.code === "FORBIDDEN") throw new ForbiddenApiError(error.message);
+      throw error;
+    }
+  }, isBuilderError);
 
 const enumOf = <T extends string>(values: readonly T[]) => z.enum(values as [T, ...T[]]);
 const permission = enumOf(BUILDER_PERMISSIONS);
@@ -90,7 +100,14 @@ const answersSchema = z.strictObject({
 const draftSchema = z.strictObject({ answers: answersSchema, blueprint: blueprintSchema, expectedRevision: z.number().int().min(0) });
 const generateSchema = z.strictObject({ answers: answersSchema, save: z.boolean().optional(), expectedRevision: z.number().int().min(0).optional() });
 const designSchema = z.strictObject({ prompt: z.string().min(1).max(BUILDER_LIMITS.description), expectedRevision: z.number().int().min(0) });
-const runSchema = z.strictObject({ mode: enumOf(BUILDER_RUN_MODES), links: z.array(enumOf(BUILDER_LINKS)).max(BUILDER_LINKS.length) });
+const wipeIncludeSchema = z.strictObject({ channels: z.boolean(), roles: z.boolean(), emojis: z.boolean() });
+const runSchema = z.strictObject({
+  mode: enumOf(BUILDER_START_MODES),
+  links: z.array(enumOf(BUILDER_LINKS)).max(BUILDER_LINKS.length),
+  confirmName: z.string().min(1).max(100).optional(),
+  include: wipeIncludeSchema.optional(),
+});
+const wipeSchema = z.strictObject({ confirmName: z.string().min(1).max(100), include: wipeIncludeSchema });
 const listSchema = z.object({ limit: z.coerce.number().int().min(1).max(100).optional() });
 
 /** Server builder as a pluggable API feature under `/api/v1/builder`. */
@@ -110,10 +127,14 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
     }
   });
 
+  const platformOwnerOf = async (request: Parameters<typeof guard>[0]): Promise<boolean> =>
+    context.platformOwner ? context.platformOwner(request).catch(() => false) : false;
+
   server.get("/api/v1/builder/overview", async (request, reply) => {
     reply.header("cache-control", "no-store");
-    await guard(request, "builder.manage", { mutation: false });
-    return { data: await safe(() => builder.overview(context.guildId)) };
+    const identity = await guard(request, "builder.manage", { mutation: false });
+    const platformOwner = await platformOwnerOf(request);
+    return { data: await safe(() => builder.overview(context.guildId, { userId: identity.userId, displayName: identity.displayName, roleIds: identity.roleIds }, { platformOwner })) };
   });
 
   server.put("/api/v1/builder/draft", async (request) => {
@@ -159,9 +180,30 @@ function registerBuilderRoutes(server: FastifyInstance, context: ApiFeatureConte
   server.post("/api/v1/builder/runs", async (request, reply) => {
     const identity = await guard(request, "builder.manage", { mutation: true });
     const body = parse(runSchema, request.body);
-    const run = await safe(() => builder.startRun(context.guildId, body, { userId: identity.userId, displayName: identity.displayName }));
+    const platformOwner = body.mode === "WIPE_AND_BUILD" ? await platformOwnerOf(request) : false;
+    const run = await safe(() => builder.startRun(context.guildId, body, { userId: identity.userId, displayName: identity.displayName, roleIds: identity.roleIds }, { platformOwner }));
     reply.code(202);
     return { data: run };
+  });
+
+  server.get("/api/v1/builder/wipe/preview", async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await guard(request, "builder.manage", { mutation: false });
+    return { data: await safe(() => builder.wipePreview(context.guildId)) };
+  });
+
+  server.post("/api/v1/builder/wipe", async (request, reply) => {
+    const identity = await guard(request, "builder.manage", { mutation: true });
+    const body = parse(wipeSchema, request.body);
+    const platformOwner = await platformOwnerOf(request);
+    const run = await safe(() => builder.startWipe(context.guildId, body, { userId: identity.userId, displayName: identity.displayName, roleIds: identity.roleIds }, { platformOwner }));
+    reply.code(202);
+    return { data: run };
+  });
+
+  server.post("/api/v1/builder/runs/:id/load-blueprint", async (request) => {
+    const identity = await guard(request, "builder.manage", { mutation: true });
+    return { data: await safe(() => builder.loadBlueprintFromRun(context.guildId, routeParam(request, "id"), { userId: identity.userId, displayName: identity.displayName })) };
   });
 
   server.get("/api/v1/builder/runs/:id", async (request, reply) => {

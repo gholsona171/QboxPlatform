@@ -92,6 +92,7 @@ export type BuilderRunCountAggregateOutputType = {
   startedByName: number
   warnings: number
   error: number
+  snapshot: number
   startedAt: number
   finishedAt: number
   undoneAt: number
@@ -167,6 +168,7 @@ export type BuilderRunCountAggregateInputType = {
   startedByName?: true
   warnings?: true
   error?: true
+  snapshot?: true
   startedAt?: true
   finishedAt?: true
   undoneAt?: true
@@ -275,6 +277,7 @@ export type BuilderRunGroupByOutputType = {
   startedByName: string
   warnings: string[]
   error: string | null
+  snapshot: runtime.JsonValue | null
   startedAt: Date | null
   finishedAt: Date | null
   undoneAt: Date | null
@@ -319,6 +322,7 @@ export type BuilderRunWhereInput = {
   startedByName?: Prisma.StringFilter<"BuilderRun"> | string
   warnings?: Prisma.StringNullableListFilter<"BuilderRun">
   error?: Prisma.StringNullableFilter<"BuilderRun"> | string | null
+  snapshot?: Prisma.JsonNullableFilter<"BuilderRun">
   startedAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
   finishedAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
   undoneAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
@@ -341,6 +345,7 @@ export type BuilderRunOrderByWithRelationInput = {
   startedByName?: Prisma.SortOrder
   warnings?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
+  snapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   finishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   undoneAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -366,6 +371,7 @@ export type BuilderRunWhereUniqueInput = Prisma.AtLeast<{
   startedByName?: Prisma.StringFilter<"BuilderRun"> | string
   warnings?: Prisma.StringNullableListFilter<"BuilderRun">
   error?: Prisma.StringNullableFilter<"BuilderRun"> | string | null
+  snapshot?: Prisma.JsonNullableFilter<"BuilderRun">
   startedAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
   finishedAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
   undoneAt?: Prisma.DateTimeNullableFilter<"BuilderRun"> | Date | string | null
@@ -388,6 +394,7 @@ export type BuilderRunOrderByWithAggregationInput = {
   startedByName?: Prisma.SortOrder
   warnings?: Prisma.SortOrder
   error?: Prisma.SortOrderInput | Prisma.SortOrder
+  snapshot?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   finishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   undoneAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -417,6 +424,7 @@ export type BuilderRunScalarWhereWithAggregatesInput = {
   startedByName?: Prisma.StringWithAggregatesFilter<"BuilderRun"> | string
   warnings?: Prisma.StringNullableListFilter<"BuilderRun">
   error?: Prisma.StringNullableWithAggregatesFilter<"BuilderRun"> | string | null
+  snapshot?: Prisma.JsonNullableWithAggregatesFilter<"BuilderRun">
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BuilderRun"> | Date | string | null
   finishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BuilderRun"> | Date | string | null
   undoneAt?: Prisma.DateTimeNullableWithAggregatesFilter<"BuilderRun"> | Date | string | null
@@ -438,6 +446,7 @@ export type BuilderRunCreateInput = {
   startedByName: string
   warnings?: Prisma.BuilderRunCreatewarningsInput | string[]
   error?: string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Date | string | null
   finishedAt?: Date | string | null
   undoneAt?: Date | string | null
@@ -460,6 +469,7 @@ export type BuilderRunUncheckedCreateInput = {
   startedByName: string
   warnings?: Prisma.BuilderRunCreatewarningsInput | string[]
   error?: string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Date | string | null
   finishedAt?: Date | string | null
   undoneAt?: Date | string | null
@@ -482,6 +492,7 @@ export type BuilderRunUpdateInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -504,6 +515,7 @@ export type BuilderRunUncheckedUpdateInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -526,6 +538,7 @@ export type BuilderRunCreateManyInput = {
   startedByName: string
   warnings?: Prisma.BuilderRunCreatewarningsInput | string[]
   error?: string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Date | string | null
   finishedAt?: Date | string | null
   undoneAt?: Date | string | null
@@ -547,6 +560,7 @@ export type BuilderRunUpdateManyMutationInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -568,6 +582,7 @@ export type BuilderRunUncheckedUpdateManyInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -589,6 +604,7 @@ export type BuilderRunCountOrderByAggregateInput = {
   startedByName?: Prisma.SortOrder
   warnings?: Prisma.SortOrder
   error?: Prisma.SortOrder
+  snapshot?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   finishedAt?: Prisma.SortOrder
   undoneAt?: Prisma.SortOrder
@@ -707,6 +723,7 @@ export type BuilderRunCreateWithoutItemsInput = {
   startedByName: string
   warnings?: Prisma.BuilderRunCreatewarningsInput | string[]
   error?: string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Date | string | null
   finishedAt?: Date | string | null
   undoneAt?: Date | string | null
@@ -728,6 +745,7 @@ export type BuilderRunUncheckedCreateWithoutItemsInput = {
   startedByName: string
   warnings?: Prisma.BuilderRunCreatewarningsInput | string[]
   error?: string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Date | string | null
   finishedAt?: Date | string | null
   undoneAt?: Date | string | null
@@ -765,6 +783,7 @@ export type BuilderRunUpdateWithoutItemsInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -786,6 +805,7 @@ export type BuilderRunUncheckedUpdateWithoutItemsInput = {
   startedByName?: Prisma.StringFieldUpdateOperationsInput | string
   warnings?: Prisma.BuilderRunUpdatewarningsInput | string[]
   error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  snapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   finishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   undoneAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -838,6 +858,7 @@ export type BuilderRunSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   startedByName?: boolean
   warnings?: boolean
   error?: boolean
+  snapshot?: boolean
   startedAt?: boolean
   finishedAt?: boolean
   undoneAt?: boolean
@@ -861,6 +882,7 @@ export type BuilderRunSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   startedByName?: boolean
   warnings?: boolean
   error?: boolean
+  snapshot?: boolean
   startedAt?: boolean
   finishedAt?: boolean
   undoneAt?: boolean
@@ -882,6 +904,7 @@ export type BuilderRunSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   startedByName?: boolean
   warnings?: boolean
   error?: boolean
+  snapshot?: boolean
   startedAt?: boolean
   finishedAt?: boolean
   undoneAt?: boolean
@@ -903,6 +926,7 @@ export type BuilderRunSelectScalar = {
   startedByName?: boolean
   warnings?: boolean
   error?: boolean
+  snapshot?: boolean
   startedAt?: boolean
   finishedAt?: boolean
   undoneAt?: boolean
@@ -910,7 +934,7 @@ export type BuilderRunSelectScalar = {
   updatedAt?: boolean
 }
 
-export type BuilderRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "status" | "mode" | "links" | "planned" | "done" | "skipped" | "failed" | "startedById" | "startedByName" | "warnings" | "error" | "startedAt" | "finishedAt" | "undoneAt" | "createdAt" | "updatedAt", ExtArgs["result"]["builderRun"]>
+export type BuilderRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "status" | "mode" | "links" | "planned" | "done" | "skipped" | "failed" | "startedById" | "startedByName" | "warnings" | "error" | "snapshot" | "startedAt" | "finishedAt" | "undoneAt" | "createdAt" | "updatedAt", ExtArgs["result"]["builderRun"]>
 export type BuilderRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.BuilderRun$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.BuilderRunCountOutputTypeDefaultArgs<ExtArgs>
@@ -937,6 +961,7 @@ export type $BuilderRunPayload<ExtArgs extends runtime.Types.Extensions.Internal
     startedByName: string
     warnings: string[]
     error: string | null
+    snapshot: runtime.JsonValue | null
     startedAt: Date | null
     finishedAt: Date | null
     undoneAt: Date | null
@@ -1379,6 +1404,7 @@ export interface BuilderRunFieldRefs {
   readonly startedByName: Prisma.FieldRef<"BuilderRun", 'String'>
   readonly warnings: Prisma.FieldRef<"BuilderRun", 'String[]'>
   readonly error: Prisma.FieldRef<"BuilderRun", 'String'>
+  readonly snapshot: Prisma.FieldRef<"BuilderRun", 'Json'>
   readonly startedAt: Prisma.FieldRef<"BuilderRun", 'DateTime'>
   readonly finishedAt: Prisma.FieldRef<"BuilderRun", 'DateTime'>
   readonly undoneAt: Prisma.FieldRef<"BuilderRun", 'DateTime'>
