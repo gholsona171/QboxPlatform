@@ -612,7 +612,9 @@ CREATE TYPE "public"."BuilderItemKind" AS ENUM (
     'role',
     'category',
     'channel',
-    'link'
+    'link',
+    'emoji',
+    'sticker'
 );
 
 
@@ -624,7 +626,8 @@ CREATE TYPE "public"."BuilderItemStatus" AS ENUM (
     'created',
     'skipped',
     'failed',
-    'deleted'
+    'deleted',
+    'kept'
 );
 
 
@@ -634,7 +637,9 @@ CREATE TYPE "public"."BuilderItemStatus" AS ENUM (
 
 CREATE TYPE "public"."BuilderRunMode" AS ENUM (
     'add',
-    'fresh'
+    'fresh',
+    'wipe',
+    'wipe_and_build'
 );
 
 
@@ -1898,7 +1903,8 @@ CREATE TABLE "public"."builder_runs" (
     "finished_at" timestamp(3) with time zone,
     "undone_at" timestamp(3) with time zone,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "snapshot" "jsonb"
 );
 
 
@@ -3521,6 +3527,7 @@ f91c97f0-865b-4829-b57c-69f4e96365d0	455372482d8b81715b4ea5c0d609fff873a84dbbed3
 83621368-162d-480f-90c4-60103f4ed08a	f547136dec58f9520a0bbf7ba2b1d227ed33156e42a3ae34055489ba70a24843	2026-09-25 22:44:14.390756+00	20260925210000_streams	\N	\N	2026-09-25 22:44:14.377505+00	1
 9eb9d356-141e-4309-bf34-9f8a1d56f646	0ddfd72be5ffadcefde88a70aa8f800fe24cace46d91fecfbbe72a6d9a44b968	2026-09-25 22:44:14.405316+00	20260925220000_games	\N	\N	2026-09-25 22:44:14.391443+00	1
 54b08213-bec5-4adb-8d18-9afd4e24a6d5	0b4a704351426af0f7bd5ff75c79f44a0fab56a1da51aa5382efa35dd1a8cd3e	2026-09-26 18:54:13.566878+00	20260926090500_ticket_panel_rows	\N	\N	2026-09-26 18:54:13.562399+00	1
+d4d6d970-78c0-4510-97cd-3d0f0a81a6c6	afc641c6412ee758a111cf524d31d54c418996040df7b1186cddef63939126f7	2026-09-26 19:12:41.661899+00	20260926091000_builder_wipe	\N	\N	2026-09-26 19:12:41.654687+00	1
 \.
 
 
@@ -3633,7 +3640,7 @@ COPY "public"."builder_run_items" ("id", "run_id", "sequence", "kind", "key", "n
 -- Data for Name: builder_runs; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."builder_runs" ("id", "guild_id", "status", "mode", "links", "planned", "done", "skipped", "failed", "started_by_id", "started_by_name", "warnings", "error", "started_at", "finished_at", "undone_at", "created_at", "updated_at") FROM stdin;
+COPY "public"."builder_runs" ("id", "guild_id", "status", "mode", "links", "planned", "done", "skipped", "failed", "started_by_id", "started_by_name", "warnings", "error", "started_at", "finished_at", "undone_at", "created_at", "updated_at", "snapshot") FROM stdin;
 \.
 
 
