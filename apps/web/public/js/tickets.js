@@ -75,6 +75,8 @@ export async function renderTicketsPage(target) {
 }
 
 async function load() {
+  // Channels and roles do not depend on the tickets, so they load at the same time.
+  const directory = loadDirectory();
   try {
     const [overview, tickets] = await Promise.all([ticketsOverview(), listTickets(view.filters)]);
     view.overview = overview.data;
@@ -85,6 +87,7 @@ async function load() {
     return;
   }
   view.canManage = view.overview.canManage === true;
+  await directory;
   await loadDirectory([
     ...view.overview.categories.flatMap((category) => category.alertUserIds),
     ...view.tickets.flatMap((ticket) => [ticket.openerId, ...(ticket.claimedById ? [ticket.claimedById] : [])]),

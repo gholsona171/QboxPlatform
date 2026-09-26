@@ -63,10 +63,13 @@ export class PrismaPermissionPersistenceClient implements DatabaseClient {
       readonly ownerProtection?: OwnerProtectionService;
       readonly invalidations?: PermissionCacheInvalidationPublisher;
       readonly clientFactory?: PrismaClientFactory;
+      /** Receives each statement's duration (never the SQL); used for per-request timing. */
+      readonly onQuery?: (durationMs: number) => void;
     } = {},
   ) {
     this.client = (
-      dependencies.clientFactory ?? new PrismaClientFactory()
+      dependencies.clientFactory ??
+      new PrismaClientFactory(dependencies.onQuery ? { onQuery: dependencies.onQuery } : {})
     ).create(configuration);
     this.authentication = new PrismaAuthenticationPersistence(
       this.client,

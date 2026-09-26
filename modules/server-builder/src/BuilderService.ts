@@ -121,6 +121,8 @@ export interface BuilderServiceOptions {
   readonly schedule?: (task: () => Promise<void>) => void;
   /** Turns "Describe your server" text into answers and extras. Without one, describing is unavailable. */
   readonly designer?: BlueprintDesigner | undefined;
+  /** Called when a background build, wipe, or undo finishes (or fails), so cached server lists can be dropped. */
+  readonly onRunFinished?: ((guildId: string) => void) | undefined;
 }
 
 const FALLBACK: Readonly<Partial<Record<BuilderChannelType, BuilderChannelType>>> = { ANNOUNCEMENT: "TEXT", FORUM: "TEXT", MEDIA: "TEXT", STAGE: "VOICE" };
@@ -151,6 +153,7 @@ export class BuilderService {
   private readonly schedule: (task: () => Promise<void>) => void;
   private readonly active = new Set<string>();
   private readonly designer: BlueprintDesigner | undefined;
+  private readonly onRunFinished: ((guildId: string) => void) | undefined;
 
   public constructor(
     private readonly repository: BuilderRepository,
@@ -161,6 +164,7 @@ export class BuilderService {
     this.now = options.now ?? (() => new Date());
     this.schedule = options.schedule ?? ((task) => void task());
     this.designer = options.designer;
+    this.onRunFinished = options.onRunFinished;
   }
 
   public templates(): readonly BuilderTemplate[] {
@@ -736,6 +740,11 @@ export class BuilderService {
       await this.repository.updateRun(run.id, { status: "FAILED", error: messageOf(error), finishedAt: this.now() }).catch(() => undefined);
     } finally {
       this.active.delete(run.guildId);
+      try {
+        this.onRunFinished?.(run.guildId);
+      } catch {
+        // A listener failure never changes the run's outcome.
+      }
     }
   }
 

@@ -6,11 +6,13 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
+  PRISMA_POOL_OPTIONS,
   PRISMA_POSTGRES_SESSION_OPTIONS,
   PRISMA_SAFE_LOG_CONFIGURATION,
   Prisma,
   PrismaClient,
   PrismaClientFactory,
+  observeQueries,
 } from "../src/index.js";
 
 const packageDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -132,6 +134,47 @@ describe("PrismaClientFactory", () => {
     expect(
       PRISMA_SAFE_LOG_CONFIGURATION.map(({ level }) => level),
     ).not.toContain("query");
+  });
+
+  it("reuses a small pool of long-lived connections", () => {
+    expect(PRISMA_POOL_OPTIONS).toEqual({
+      max: 5,
+      idleTimeoutMillis: 120_000,
+      keepAlive: true,
+      keepAliveInitialDelayMillis: 10_000,
+    });
+    expect(PRISMA_POOL_OPTIONS.idleTimeoutMillis).toBeGreaterThanOrEqual(60_000);
+    const client = new PrismaClientFactory({ onQuery: () => undefined }).create({
+      connectionStringForClientFactory: () => placeholderUrl,
+    });
+    expect(client.$connect).toBeTypeOf("function");
+  });
+
+  it("reports the duration of every statement and transaction start, never the SQL", async () => {
+    const durations: number[] = [];
+    const transaction = {
+      queryRaw: async () => ({ rows: [] }),
+      executeRaw: async () => 1,
+      commit: async () => undefined,
+    };
+    const adapter = {
+      provider: "postgres",
+      queryRaw: async () => ({ rows: [] }),
+      startTransaction: async () => transaction,
+      getConnectionInfo: () => ({ schemaName: "public" }),
+    };
+    const factory = observeQueries({ adapterName: "fake", connect: async () => adapter }, (duration) => durations.push(duration));
+    expect(factory.adapterName).toBe("fake");
+    const connected = await factory.connect();
+    expect(connected.provider).toBe("postgres");
+    expect(connected.getConnectionInfo()).toEqual({ schemaName: "public" });
+    await connected.queryRaw();
+    const tx = await connected.startTransaction();
+    await tx.executeRaw();
+    await tx.queryRaw();
+    await tx.commit();
+    expect(durations).toHaveLength(4);
+    expect(durations.every((duration) => typeof duration === "number" && duration >= 0)).toBe(true);
   });
 
   it("does not print the raw connection string during construction", () => {

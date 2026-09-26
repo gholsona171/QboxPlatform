@@ -142,9 +142,12 @@ export class DiscordGuildDirectory implements GuildDirectory {
     context: AuthenticationOperationContext,
     signal: AbortSignal,
   ): Promise<GuildListing> {
+    // The bot's server list does not depend on the member's; read both at once.
+    const botGuilds = this.dependencies.bot?.listGuilds();
+    botGuilds?.catch(() => undefined);
     const memberGuilds = await this.memberGuilds(identity, context, signal);
     if (memberGuilds === undefined) return Object.freeze({ guilds: [], reauthRequired: true });
-    const shared = await this.shared(memberGuilds);
+    const shared = await this.shared(memberGuilds, botGuilds);
     const guilds = await Promise.all(
       shared.map(async ({ member, bot }) => {
         const discordManager = member.owner || hasDiscordManagerPermissions(member.permissions);
@@ -190,14 +193,15 @@ export class DiscordGuildDirectory implements GuildDirectory {
 
   private async shared(
     memberGuilds: readonly DiscordUserGuild[],
+    botGuildList: Promise<readonly BotGuild[]> | undefined,
   ): Promise<readonly { readonly member: DiscordUserGuild; readonly bot: BotGuild | undefined }[]> {
-    if (!this.dependencies.bot) {
+    if (!botGuildList) {
       const fallback = this.dependencies.defaultGuildId;
       return memberGuilds
         .filter((guild) => guild.id === fallback)
         .map((member) => ({ member, bot: undefined }));
     }
-    const botGuilds = new Map((await this.dependencies.bot.listGuilds()).map((guild) => [guild.id, guild] as const));
+    const botGuilds = new Map((await botGuildList).map((guild) => [guild.id, guild] as const));
     return memberGuilds
       .filter((guild) => botGuilds.has(guild.id))
       .map((member) => ({ member, bot: botGuilds.get(member.id) }));

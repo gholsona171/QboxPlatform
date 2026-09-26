@@ -21,6 +21,8 @@ import {
 } from "@qbox/tickets";
 import { Prisma, type PrismaClient } from "@qbox/prisma";
 
+import { GuildRowIds } from "../policies/GuildRowIds.js";
+
 type Client = Pick<
   PrismaClient,
   "guild" | "ticketSettings" | "ticketCategory" | "ticketPanel" | "ticket" | "ticketMessage" | "ticketEvent" | "$transaction"
@@ -40,7 +42,11 @@ const ticketInclude = {
 
 /** PostgreSQL ticket persistence. Guild IDs in and out are Discord snowflakes. */
 export class PrismaTicketRepository implements TicketRepository {
-  public constructor(private readonly client: Client) {}
+  private readonly guildRows: GuildRowIds;
+
+  public constructor(private readonly client: Client) {
+    this.guildRows = new GuildRowIds(client);
+  }
 
   public async getSettings(guildId: string): Promise<TicketSettings | undefined> {
     const row = await this.client.ticketSettings.findFirst({ where: { guild: { discordGuildId: guildId } } });
@@ -353,7 +359,7 @@ export class PrismaTicketRepository implements TicketRepository {
   }
 
   private ensureGuild(discordGuildId: string) {
-    return this.client.guild.upsert({ where: { discordGuildId }, create: { discordGuildId }, update: {}, select: { id: true } });
+    return this.guildRows.ensure(discordGuildId);
   }
 }
 

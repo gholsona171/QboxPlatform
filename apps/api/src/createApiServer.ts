@@ -33,6 +33,13 @@ import {
   type MetricsRecorder,
 } from "./metrics/MetricsRecorder.js";
 import {
+  createRequestTimings,
+  runWithRequestTimings,
+  serverTimingHeader,
+  SLOW_REQUEST_MS,
+  type RequestTimings,
+} from "./metrics/RequestTimings.js";
+import {
   noOpRateLimitEvaluator,
   type ApiRateLimitEvaluator,
 } from "./security/ApiTransportPolicies.js";
@@ -69,6 +76,8 @@ interface RequestObservation {
   readonly controller: AbortController;
   responseBytes?: number;
 }
+
+const requestTimings = new WeakMap<FastifyRequest, RequestTimings>();
 
 interface ApiTransportState {
   readonly activeControllers: Set<AbortController>;
@@ -118,6 +127,13 @@ export function createApiServer(
   transportStates.set(server, transportState);
 
   server.decorateRequest("apiContext");
+
+  // Database and Discord work done for this request is counted from here on.
+  server.addHook("onRequest", (request, _reply, done) => {
+    const timings = createRequestTimings();
+    requestTimings.set(request, timings);
+    runWithRequestTimings(timings, () => done());
+  });
 
   server.addHook("onRequest", async (request, reply) => {
     const controller = new AbortController();
@@ -178,8 +194,13 @@ export function createApiServer(
   });
 
   server.addHook("onSend", async (_request, reply, payload) => {
-    applySecurityHeaders(reply);
+    applySecurityHeaders(reply, { keepCacheControl: true });
     reply.header("x-qbox-version", diagnostics.buildVersion);
+    const timings = requestTimings.get(_request);
+    if (timings !== undefined && isApiPath(_request)) {
+      const startedAt = _request.apiContext?.startedAt;
+      reply.header("server-timing", serverTimingHeader(timings, startedAt === undefined ? 0 : Math.max(0, monotonicNow() - startedAt)));
+    }
     const observation = observations.get(_request);
     const responseBytes = responseByteCount(payload);
     if (observation !== undefined && responseBytes !== undefined)
@@ -203,10 +224,24 @@ export function createApiServer(
         ? {}
         : { responseBytes: observation.responseBytes }),
     };
+    const timings = requestTimings.get(request);
+    const work = timings === undefined
+      ? {}
+      : {
+          dbQueries: timings.dbQueries,
+          dbMs: Math.round(timings.dbMs),
+          discordCalls: timings.discordCalls,
+          discordMs: Math.round(timings.discordMs),
+        };
     context.logger.info(
-      { event: "api.request.completed", ...measurement },
+      { event: "api.request.completed", ...measurement, ...work },
       "API request completed.",
     );
+    if (durationMs > SLOW_REQUEST_MS && isApiPath(request))
+      context.logger.warn(
+        { event: "api.request.slow", ...measurement, ...work },
+        "Slow API request.",
+      );
     try {
       metrics.recordRequest(measurement);
     } catch {
@@ -341,10 +376,18 @@ function responseByteCount(payload: unknown): number | undefined {
   return undefined;
 }
 
-function applySecurityHeaders(reply: FastifyReply): void {
+/**
+ * Security headers for every response. Responses are `no-store` unless a
+ * route chose its own caching (the portal's static files revalidate by ETag).
+ */
+function applySecurityHeaders(reply: FastifyReply, options: { readonly keepCacheControl?: boolean } = {}): void {
   reply.header("x-content-type-options", "nosniff");
   reply.header("referrer-policy", "no-referrer");
-  reply.header("cache-control", "no-store");
+  if (!options.keepCacheControl || !reply.hasHeader("cache-control")) reply.header("cache-control", "no-store");
+}
+
+function isApiPath(request: FastifyRequest): boolean {
+  return (request.raw.url ?? request.url).startsWith("/api/");
 }
 
 function validateHeaders(

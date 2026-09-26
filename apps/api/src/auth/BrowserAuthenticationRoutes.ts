@@ -40,6 +40,8 @@ import {
 } from "../errors/ApiError.js";
 import type { ApiLogger } from "../logging/ApiLogger.js";
 import { cookieSecret, type ApiAuthenticationConfiguration } from "./ApiAuthenticationConfiguration.js";
+import { AuthenticationCaches, membershipCacheKey } from "./AuthenticationCaches.js";
+import { requestMemo, setRequestMemo } from "../cache/RequestMemo.js";
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 import {
   GUILD_COOKIE_MAX_AGE_SECONDS,
@@ -76,7 +78,11 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly serveDashboard?: boolean;
   readonly unitOfWork: AuthenticationUnitOfWork;
   readonly logger: ApiLogger;
+  /** Short in-process caches for session, account, membership, and guild-row reads; created when absent. */
+  readonly caches?: AuthenticationCaches;
 }
+
+type RouteDependencies = BrowserAuthenticationRouteDependencies & { readonly caches: AuthenticationCaches };
 
 const SESSION_COOKIE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const OAUTH_COOKIE_MAX_AGE_SECONDS = 10 * 60;
@@ -87,15 +93,18 @@ const verifiedSessions = new WeakMap<FastifyRequest, Promise<Awaited<ReturnType<
 /** Registers the QboxPlatform browser dashboard and proof-of-concept auth routes. */
 export async function registerBrowserAuthenticationRoutes(
   server: FastifyInstance,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  input: BrowserAuthenticationRouteDependencies,
 ): Promise<void> {
+  const dependencies: RouteDependencies = { ...input, caches: input.caches ?? new AuthenticationCaches(input.sessions) };
   const diagnostics = dependencies.configuration.diagnostics();
   await server.register(cookie);
 
   server.addHook("onRequest", (_request, _reply, done) => {
     runInGuildScope(() => done());
   });
+  // Only API routes use the current server; portal files and sign-in routes skip the lookup.
   server.addHook("preHandler", async (request, reply) => {
+    if (!isApiRequest(request)) return;
     setCurrentGuildId(await resolveCurrentGuild(request, reply, dependencies));
   });
 
@@ -163,6 +172,7 @@ export async function registerBrowserAuthenticationRoutes(
         context,
       });
       dependencies.directory.forget(account.externalIdentity.id);
+      dependencies.caches.forgetIdentity(account.externalIdentity.id);
       if (diagnostics.defaultGuildId !== undefined)
         await verifyDefaultGuildMembership(
           account.externalIdentity.id,
@@ -208,10 +218,10 @@ export async function registerBrowserAuthenticationRoutes(
 
   server.get("/api/v1/me", async (request) => {
     const verified = await requireSession(request, dependencies);
-    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
     const guildDiscordId = currentGuildId();
     const listing = await safeDirectoryCall(() =>
-      dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal),
+      listGuilds(request, account.identity, dependencies),
     );
     const refresh = queryFlag(request, "refresh");
     const membership =
@@ -219,18 +229,18 @@ export async function registerBrowserAuthenticationRoutes(
         ? undefined
         : refresh && listing.guilds.some((entry) => entry.id === guildDiscordId)
           ? await verifyMembership(account.identity.id, guildDiscordId, "api-authentication-me", operationContext(request), request, dependencies)
-          : await dependencies.unitOfWork.run((repositories) =>
-              repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
-            );
-    const permissions = await permissionSummary(account.identity, membership, dependencies);
-    const discordManager =
-      guildDiscordId !== undefined &&
-      membership?.status === "PRESENT" &&
-      ((await dependencies.guildAuthority?.isManager(
-        guildDiscordId,
-        account.identity.providerSubjectId,
-        membership.roles.map((role) => role.roleId),
-      )) ?? false);
+          : await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
+    // Qbox permissions and Discord's owner/administrator facts are independent; read them together.
+    const [permissions, discordManager] = await Promise.all([
+      permissionSummary(account.identity, membership, dependencies),
+      guildDiscordId !== undefined && membership?.status === "PRESENT"
+        ? dependencies.guildAuthority?.isManager(
+            guildDiscordId,
+            account.identity.providerSubjectId,
+            membership.roles.map((role) => role.roleId),
+          ).then((manager) => manager, () => false) ?? false
+        : false,
+    ]);
     const guild =
       guildDiscordId === undefined
         ? null
@@ -268,7 +278,7 @@ export async function registerBrowserAuthenticationRoutes(
 
   server.get("/api/v1/guilds", async (request) => {
     const verified = await requireSession(request, dependencies);
-    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
     const listing = await safeDirectoryCall(() =>
       dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal, {
         refresh: queryFlag(request, "refresh"),
@@ -280,12 +290,12 @@ export async function registerBrowserAuthenticationRoutes(
   server.post("/api/v1/guilds/select", async (request, reply) => {
     await requireCsrf(request, dependencies);
     const verified = await requireSession(request, dependencies);
-    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
     const selected = stringField(objectBody(request), "guildId");
     if (!SNOWFLAKE.test(selected))
       throw new ValidationApiError([{ path: ["body", "guildId"], code: "invalid_type", message: "guildId must be a Discord server ID." }]);
     const listing = await safeDirectoryCall(() =>
-      dependencies.directory.list(account.identity, operationContext(request), request.apiContext.signal),
+      listGuilds(request, account.identity, dependencies),
     );
     const guild = listing.guilds.find((entry) => entry.id === selected);
     if (!guild) throw new AuthorizationDeniedApiError();
@@ -310,14 +320,12 @@ export async function registerBrowserAuthenticationRoutes(
 
   server.get("/api/v1/admin-check", async (request) => {
     const verified = await requireSession(request, dependencies);
-    const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+    const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
     const guildDiscordId = currentGuildId();
     const membership =
       guildDiscordId === undefined
         ? undefined
-        : await dependencies.unitOfWork.run((repositories) =>
-            repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
-          );
+        : await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
     const permissions = await permissionSummary(account.identity, membership, dependencies);
     if (!permissions.platformAdmin.allowed) throw new AuthorizationDeniedApiError();
     return { allowed: true, decision: permissions.platformAdmin };
@@ -699,7 +707,7 @@ export async function registerBrowserAuthenticationRoutes(
       const { account, roleIds } = await requireGuildMember(request, dependencies);
       return identityOf(account, roleIds);
     },
-    platformOwner: async (request) => {
+    platformOwner: (request) => requestMemo(request, "platform-owner", async () => {
       const { account, roleIds } = await requireGuildMember(request, dependencies);
       const guildDiscordId = requireCurrentGuildId();
       const principals: PermissionPrincipal[] = [
@@ -714,7 +722,7 @@ export async function registerBrowserAuthenticationRoutes(
         administratorOverride: false,
       });
       return decision.allowed;
-    },
+    }),
   };
   for (const feature of dependencies.features ?? []) feature.register(server, featureContext);
 
@@ -729,11 +737,14 @@ export async function registerBrowserAuthenticationRoutes(
       sessionSecret,
       csrfHeader,
     );
+    dependencies.caches.sessions.forget(sessionSecret);
     await dependencies.sessions.revokeCurrentSession(sessionSecret, {
       correlationId: authenticationCorrelationId(request.apiContext.correlationId),
       requestId: authenticationRequestId(request.apiContext.requestId),
       actor: { type: "platform-user", id: verified.actor.platformUserId },
     });
+    dependencies.caches.sessions.forget(sessionSecret);
+    dependencies.caches.forgetIdentity(verified.actor.authentication.loginIdentityId);
     clearSessionCookies(reply, dependencies.configuration);
     return { success: true };
   });
@@ -741,7 +752,7 @@ export async function registerBrowserAuthenticationRoutes(
 
 async function requireSession(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ) {
   if (request.headers.authorization !== undefined)
     throw new AuthenticationRequiredApiError();
@@ -749,7 +760,7 @@ async function requireSession(
   const secret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
   if (!secret) throw new AuthenticationRequiredApiError();
   try {
-    const pending = verifiedSessions.get(request) ?? dependencies.sessions.verifySession(secret);
+    const pending = verifiedSessions.get(request) ?? dependencies.caches.sessions.verifySession(secret);
     verifiedSessions.set(request, pending);
     const verified = await pending;
     request.apiContext = Object.freeze({
@@ -784,7 +795,7 @@ async function requireSession(
 async function resolveCurrentGuild(
   request: FastifyRequest,
   reply: FastifyReply,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ): Promise<string | undefined> {
   const diagnostics = dependencies.configuration.diagnostics();
   const fallback = diagnostics.defaultGuildId;
@@ -796,22 +807,20 @@ async function resolveCurrentGuild(
   let identity: ExternalIdentity;
   try {
     const verified = await requireSession(request, dependencies);
-    identity = (await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies)).identity;
+    identity = (await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies)).identity;
   } catch {
     return fallback;
   }
   let listing: GuildListing;
   try {
-    listing = await dependencies.directory.list(identity, operationContext(request), request.apiContext.signal);
+    listing = await listGuilds(request, identity, dependencies);
   } catch (error) {
     request.apiContext.logger.warn(
       { event: "api.guilds.directory-unavailable", category: safeErrorCategory(error) },
       "Could not read the member's servers; using the stored membership instead.",
     );
     if (cookieGuild === undefined) return fallback;
-    const membership = await dependencies.unitOfWork.run((repositories) =>
-      repositories.guildMemberships.find(identity.id, discordGuildId(cookieGuild)),
-    );
+    const membership = await storedMembership(request, identity.id, cookieGuild, dependencies);
     return membership?.status === "PRESENT" ? cookieGuild : fallback;
   }
   if (cookieGuild !== undefined) {
@@ -821,9 +830,7 @@ async function resolveCurrentGuild(
   if (listing.reauthRequired) return fallback;
   const chosen = chooseStartingGuild(listing.guilds, fallback);
   if (chosen === undefined) return undefined;
-  const stored = await dependencies.unitOfWork.run((repositories) =>
-    repositories.guildMemberships.find(identity.id, discordGuildId(chosen)),
-  );
+  const stored = await storedMembership(request, identity.id, chosen, dependencies);
   if (stored?.status !== "PRESENT") {
     const membership = await verifyMembership(identity.id, chosen, "api-guild-auto-select", operationContext(request), request, dependencies);
     if (membership.status !== "PRESENT") return undefined;
@@ -862,18 +869,29 @@ async function verifyMembership(
   source: string,
   context: ReturnType<typeof operationContext>,
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ): Promise<DiscordGuildMembership> {
-  const guild =
+  const guild = await dependencies.caches.guildRows.getOrLoad(guildDiscordId, async () =>
     (await dependencies.guilds.findByDiscordId(guildDiscordId)) ??
-    (await dependencies.guilds.create(guildDiscordId, { source }));
-  return dependencies.memberships.verifyCurrentMembership({
+    (await dependencies.guilds.create(guildDiscordId, { source })),
+  );
+  const key = membershipCacheKey(externalIdentityId, guildDiscordId);
+  dependencies.caches.memberships.delete(key);
+  const membership = await dependencies.memberships.verifyCurrentMembership({
     externalIdentityId,
     guildId: guildId(guild.id),
     discordGuildId: discordGuildId(guildDiscordId),
     context,
     signal: request.apiContext.signal,
   });
+  dependencies.caches.memberships.set(key, { membership });
+  setRequestMemo(request, `membership:${key}`, membership);
+  // An ABSENT snapshot ends the member's sessions in the database; stop reusing them here too.
+  if (membership.status === "ABSENT") {
+    const actor = request.apiContext.actor;
+    if (actor.type === "platform-user") dependencies.caches.sessions.forgetAccount(actor.platformUserId);
+  }
+  return membership;
 }
 
 /**
@@ -887,7 +905,7 @@ async function verifyDefaultGuildMembership(
   accessToken: OpaqueAuthenticationSecret,
   context: ReturnType<typeof operationContext>,
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ): Promise<void> {
   let inDefaultGuild = true;
   try {
@@ -914,6 +932,10 @@ async function safeDirectoryCall<T>(operation: () => Promise<T>): Promise<T> {
   }
 }
 
+function isApiRequest(request: FastifyRequest): boolean {
+  return (request.raw.url ?? request.url).startsWith("/api/");
+}
+
 function queryFlag(request: FastifyRequest, name: string): boolean {
   return Boolean(request.query && typeof request.query === "object" && Reflect.get(request.query, name) === "1");
 }
@@ -926,7 +948,7 @@ function inviteUrl(clientId: string): string {
 /** Double-submit CSRF check bound to the current browser session. */
 async function requireCsrf(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ): Promise<void> {
   const diagnostics = dependencies.configuration.diagnostics();
   const sessionSecret = cookieSecret(readCookie(request, diagnostics.sessionCookieName));
@@ -935,7 +957,7 @@ async function requireCsrf(
   if (!sessionSecret || !csrfCookie || !csrfHeader || csrfCookie !== csrfHeader)
     throw new AuthenticationRequiredApiError();
   try {
-    await dependencies.sessions.verifySessionCsrf(sessionSecret, csrfHeader);
+    await dependencies.caches.sessions.verifySessionCsrf(sessionSecret, csrfHeader);
   } catch {
     throw new AuthenticationRequiredApiError();
   }
@@ -943,29 +965,44 @@ async function requireCsrf(
 
 async function requireRoleMenuManager(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ) {
   return requireDiscordManager(request, dependencies, "discord.role-menus.manage");
 }
 
-async function requireGuildMember(
+function requireGuildMember(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
+) {
+  return requestMemo(request, "guild-member", () => loadGuildMember(request, dependencies));
+}
+
+async function loadGuildMember(
+  request: FastifyRequest,
+  dependencies: RouteDependencies,
 ) {
   const verified = await requireSession(request, dependencies);
-  const account = await loadAccountSummary(verified.actor.authentication.loginIdentityId, dependencies);
+  const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
   const guildDiscordId = requireCurrentGuildId();
-  const membership = await dependencies.unitOfWork.run((repositories) =>
-    repositories.guildMemberships.find(account.identity.id, discordGuildId(guildDiscordId)),
-  );
+  const membership = await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
   if (!membership || membership.status !== "PRESENT")
     throw new AuthorizationDeniedApiError();
   return { verified, account, roleIds: membership.roles.map((role) => role.roleId) };
 }
 
-async function requireDiscordManager(
+/** Permission decisions are made once per request and permission (list). */
+function requireDiscordManager(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
+  permission: Permission | readonly Permission[],
+) {
+  const key = typeof permission === "string" ? permission : [...permission].join(",");
+  return requestMemo(request, `manager:${key}`, () => decideDiscordManager(request, dependencies, permission));
+}
+
+async function decideDiscordManager(
+  request: FastifyRequest,
+  dependencies: RouteDependencies,
   permission: Permission | readonly Permission[],
 ) {
   const { verified, account, roleIds } = await requireGuildMember(request, dependencies);
@@ -1055,7 +1092,7 @@ async function safeRoleCall<T>(operation: () => Promise<T>): Promise<T> {
 
 async function roleAdministratorAllowed(
   request: FastifyRequest,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
   body: Record<string, unknown>,
 ): Promise<boolean> {
   if (optionalBooleanField(body, "allowAdministrator") !== true) return false;
@@ -1174,22 +1211,66 @@ function optionalEnumField<const T extends readonly string[]>(
   return value;
 }
 
+/**
+ * The signed-in member's Discord identity. Read once per request and reused
+ * across requests for `ACCOUNT_CACHE_MS`; only usable identities are cached.
+ */
 async function loadAccountSummary(
+  request: FastifyRequest,
   externalIdentityId: string,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ) {
-  const identity = await dependencies.unitOfWork.run((repositories) =>
-    repositories.externalIdentities.findById(externalIdentityId as never),
-  );
+  const identity = await requestMemo(request, `account:${externalIdentityId}`, async () => {
+    const cached = dependencies.caches.accounts.get(externalIdentityId);
+    if (cached !== undefined) return cached;
+    const found = await dependencies.unitOfWork.run((repositories) =>
+      repositories.externalIdentities.findById(externalIdentityId as never),
+    );
+    if (found && found.enabled && !found.unlinkedAt) dependencies.caches.accounts.set(externalIdentityId, found);
+    return found;
+  });
   if (!identity || !identity.enabled || identity.unlinkedAt)
     throw new AuthenticationRequiredApiError();
   return { identity };
 }
 
+/**
+ * The stored membership snapshot for one member and server. Read once per
+ * request and reused across requests for `MEMBERSHIP_CACHE_MS`; a fresh
+ * verification, a server switch, a sign-in, and logout replace or drop it.
+ */
+function storedMembership(
+  request: FastifyRequest,
+  externalIdentityId: ExternalIdentity["id"],
+  guildDiscordId: string,
+  dependencies: RouteDependencies,
+): Promise<DiscordGuildMembership | undefined> {
+  const key = membershipCacheKey(externalIdentityId, guildDiscordId);
+  return requestMemo(request, `membership:${key}`, async () => {
+    const cached = await dependencies.caches.memberships.getOrLoad(key, async () => ({
+      membership: await dependencies.unitOfWork.run((repositories) =>
+        repositories.guildMemberships.find(externalIdentityId, discordGuildId(guildDiscordId)),
+      ),
+    }));
+    return cached.membership;
+  });
+}
+
+/** The member's shared servers (the directory keeps its own one-minute cache), read once per request. */
+function listGuilds(
+  request: FastifyRequest,
+  identity: ExternalIdentity,
+  dependencies: RouteDependencies,
+): Promise<GuildListing> {
+  return requestMemo(request, `guilds:${identity.id}`, () =>
+    dependencies.directory.list(identity, operationContext(request), request.apiContext.signal),
+  );
+}
+
 async function permissionSummary(
   identity: ExternalIdentity,
   membership: DiscordGuildMembership | undefined,
-  dependencies: BrowserAuthenticationRouteDependencies,
+  dependencies: RouteDependencies,
 ): Promise<{
   readonly platformOwner: PermissionAuthorizationDecision;
   readonly platformAdmin: PermissionAuthorizationDecision;

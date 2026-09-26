@@ -59,8 +59,9 @@ export function ticketsOverview() {
   return requestJson("/api/v1/tickets/overview");
 }
 
-export function loadDirectoryData() {
-  return requestJson("/api/v1/directory");
+/** Channels and roles of the current server; refresh=true skips the API's short cache. */
+export function loadDirectoryData(refresh = false) {
+  return requestJson(`/api/v1/directory${refresh ? "?refresh=1" : ""}`);
 }
 
 export function searchMembers(query) {

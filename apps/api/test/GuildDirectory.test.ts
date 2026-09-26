@@ -98,6 +98,29 @@ describe("DiscordGuildDirectory", () => {
     expect(listing.guilds.find((guild) => guild.id === "1300000000000000004")?.canManage).toBe(true);
   });
 
+  it("reads the bot's servers while the member's are still loading", async () => {
+    let botStarted = false;
+    let botStartedBeforeMember = false;
+    const directory = new DiscordGuildDirectory(
+      dependencies({
+        provider: {
+          fetchGuilds: async () => {
+            botStartedBeforeMember = botStarted;
+            return memberGuilds;
+          },
+        },
+        bot: {
+          listGuilds: async () => {
+            botStarted = true;
+            return botGuilds;
+          },
+        },
+      }),
+    );
+    expect((await directory.list(identity, context, signal)).guilds).toHaveLength(4);
+    expect(botStartedBeforeMember).toBe(true);
+  });
+
   it("caches per identity for a minute and re-reads on refresh", async () => {
     const calls: string[] = [];
     let now = 0;

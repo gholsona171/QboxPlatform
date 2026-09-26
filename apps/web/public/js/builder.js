@@ -73,8 +73,12 @@ async function load() {
     view.answers ??= view.overview.draft?.answers ?? view.overview.templates[0].answers;
     const active = view.runs.find((run) => run.status === "QUEUED" || run.status === "RUNNING");
     const selectedId = active?.id ?? view.selected?.run.id ?? view.overview.lastRun?.id;
-    view.selected = selectedId ? (await getJson(`builder/runs/${encodeURIComponent(selectedId)}`)).data : undefined;
-    view.wipePreview = view.overview.wipe?.allowed ? await getJson("builder/wipe/preview").then((response) => response.data).catch(() => undefined) : undefined;
+    const [selected, wipePreview] = await Promise.all([
+      selectedId ? getJson(`builder/runs/${encodeURIComponent(selectedId)}`).then((response) => response.data) : undefined,
+      view.overview.wipe?.allowed ? getJson("builder/wipe/preview").then((response) => response.data).catch(() => undefined) : undefined,
+    ]);
+    view.selected = selected;
+    view.wipePreview = wipePreview;
     view.error = undefined;
     if (active) schedulePoll();
   } catch (error) {

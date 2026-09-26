@@ -71,6 +71,32 @@ The bot registers permission persistence and `DiscordModule`. The API registers 
 
 `createApiServer()` applies body/header limits, strict host and proxy policy, bodyless health semantics, JSON-only write-route content policy, normalized Problem Details, safe response headers, cooperative deadlines, and request cancellation. Route/application adapters use reusable strict Zod schemas and `parseRouteInput()` rather than Fastify JSON Schema or direct untyped input access. CORS and rate limiting remain explicitly disabled policy boundaries.
 
+### Portal request speed
+
+The hosted database sits behind a TLS session pooler in another cloud (every round trip costs about 20-40 ms) and Discord REST calls cost 50-150 ms, so the API avoids repeating them. `scripts/measure-portal.mjs` measures this with simulated latency (see the script header).
+
+Within one request (`apps/api/src/cache/RequestMemo.ts`), the session check, the account (Discord identity) lookup, the stored membership lookup, the member's server list, and each permission decision run once, however many times the current-server lookup, guards, and handler ask for them. The current-server lookup runs only for `/api/` routes; portal files and sign-in routes skip it.
+
+Short in-process caches (bounded, per process, `apps/api/src/auth/AuthenticationCaches.ts` and friends):
+
+| What | Kept for | Dropped early by |
+| --- | --- | --- |
+| Successful session verification, keyed by a SHA-256 digest of the session secret | 10 seconds, never past the session's idle or absolute expiry | logout in this process; an ABSENT membership check for the account |
+| Successful session + CSRF verification (mutations), keyed by digests of both secrets | 10 seconds, same limits | same |
+| Account summary (Discord identity row) | 60 seconds | sign-in, logout |
+| Stored membership snapshot per member and server | 30 seconds | a fresh membership check (server select, auto-select, `/me?refresh=1`), sign-in, logout |
+| Guild row ID by Discord server ID for membership checks (rows never change) | 10 minutes | - |
+| Channel and role lists for `GET /api/v1/directory` | 15 seconds per server | a finished builder, wipe, or undo run; `?refresh=1` (the portal's refresh buttons) |
+| The bot's status in a server (owner, roles, bot member) for the builder | 60 seconds per server | builder role changes; a finished run |
+
+The ticket and community repositories read the guild row before falling back to Prisma's upsert, which cost a five-round-trip transaction on every save. Existing caches are unchanged: the member's shared-server list and the bot's server list (60 seconds), Discord owner/manager facts (60 seconds), and permission assignments (`PERMISSION_CACHE_TTL_MS`). Failed verifications are never cached. The session's "last seen" write already happens at most once every 5 minutes per session (`BrowserSessionService` touch interval).
+
+Security trade-off: a session revoked by another process (the bot, another API instance, a database edit, or "sign out everywhere" run elsewhere) keeps working in this API process for up to 10 seconds, and a membership or account change made elsewhere shows up within 30 or 60 seconds. Logout in the same process takes effect immediately.
+
+Every `/api/` response carries `Server-Timing: db;dur=…;desc="N queries", discord;dur=…;desc="N calls", total;dur=…`, and a request slower than 800 ms is logged at warn (`api.request.slow`) with its route, database query count and time, and Discord call count and time. The Prisma pool keeps at most 5 connections, keeps idle ones for 2 minutes (pg's default was 10 seconds, so a quiet portal reopened TLS connections to the pooler), and uses TCP keep-alive (`PRISMA_POOL_OPTIONS`).
+
+Portal files are served with an ETag and `cache-control: no-cache` (a repeat visit gets `304 Not Modified`), gzip or brotli for text files, and `index.html` preloads every module so the browser fetches them in parallel.
+
 ## Bot startup flow
 
 The bot follows this sequence:

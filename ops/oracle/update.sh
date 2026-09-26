@@ -33,6 +33,13 @@ fi
 sudo /usr/bin/systemctl restart qbox-api qbox-bot
 echo "Updated and restarted"
 
+# Services created by an older setup run the API without a heap cap. This
+# script cannot edit systemd units (no daemon-reload rights), so say how.
+if [ -f /etc/systemd/system/qbox-api.service ] && ! grep -q -- '--max-old-space-size' /etc/systemd/system/qbox-api.service; then
+  echo "Note: cap the API's memory once with (see docs/Hosting.md, Memory):" >&2
+  echo "  sudo sed -i 's| dist/run.js\$| --max-old-space-size=256 dist/run.js|' /etc/systemd/system/qbox-api.service && sudo systemctl daemon-reload && sudo systemctl restart qbox-api" >&2
+fi
+
 # Global commands can take a few minutes to appear in Discord after a change.
 (cd apps/bot && node dist/deployCommands.js global --confirm-global --confirm-global-removals)
 

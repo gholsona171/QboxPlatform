@@ -13,6 +13,7 @@ import {
 import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationConfiguration.js";
 import { chooseStartingGuild, registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
+import { AuthenticationCaches } from "../src/auth/AuthenticationCaches.js";
 import { createApiServer } from "../src/createApiServer.js";
 import { registerPortalStaticRoutes } from "../src/portal/PortalStaticRoutes.js";
 import type { ApiFeature } from "../src/features/ApiFeature.js";
@@ -352,7 +353,21 @@ interface ServerOptions {
   readonly onList?: (refresh: boolean) => void;
   readonly onVerify?: (guildId: string) => void;
   readonly onListByGuild?: (guildId: string) => void;
+  /** Counts reads the caches should save. */
+  readonly counts?: ReadCounts;
+  /** Clock for the in-process caches. */
+  readonly now?: () => number;
 }
+
+interface ReadCounts {
+  sessions: number;
+  csrf: number;
+  accounts: number;
+  memberships: number;
+  guildRows: number;
+}
+
+const newCounts = (): ReadCounts => ({ sessions: 0, csrf: 0, accounts: 0, memberships: 0, guildRows: 0 });
 
 /** Test feature that reports the request's current server after an optional delay. */
 const echoGuildFeature: ApiFeature = {
@@ -369,6 +384,23 @@ const echoGuildFeature: ApiFeature = {
 
 function serverWithRoutes(options: ServerOptions = {}) {
   const auth = authenticationConfiguration(options.defaultGuild !== false);
+  const counts = options.counts ?? newCounts();
+  const sessions = {
+    verifySession: async () => {
+      counts.sessions += 1;
+      return verifiedSession();
+    },
+    verifySessionCsrf: async () => {
+      counts.csrf += 1;
+      return verifiedSession();
+    },
+    createSession: async () => ({
+      session: verifiedSession().session,
+      sessionSecret: opaqueAuthenticationSecret("session-secret-value-000000000000000000"),
+      csrfSecret: opaqueAuthenticationSecret("csrf-secret-value-000000000000000000000"),
+    }),
+    revokeCurrentSession: async () => undefined,
+  } as never;
   return createApiServer({
     configuration: ApiConfiguration.from({
       environment: "test",
@@ -429,16 +461,8 @@ function serverWithRoutes(options: ServerOptions = {}) {
           }),
         } as never,
         credentials: { persistLoginGrant: async () => undefined } as never,
-        sessions: {
-          verifySession: async () => verifiedSession(),
-          verifySessionCsrf: async () => verifiedSession(),
-          createSession: async () => ({
-            session: verifiedSession().session,
-            sessionSecret: opaqueAuthenticationSecret("session-secret-value-000000000000000000"),
-            csrfSecret: opaqueAuthenticationSecret("csrf-secret-value-000000000000000000000"),
-          }),
-          revokeCurrentSession: async () => undefined,
-        } as never,
+        sessions,
+        caches: new AuthenticationCaches(sessions, options.now ? { now: options.now } : {}),
         memberships: {
           verifyCurrentMembership: async (input: { readonly discordGuildId: string }) => {
             options.onVerify?.(input.discordGuildId);
@@ -446,7 +470,7 @@ function serverWithRoutes(options: ServerOptions = {}) {
           },
         } as never,
         guilds: {
-          findByDiscordId: async () => ({ id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
+          findByDiscordId: async () => (counts.guildRows += 1, { id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
           create: async () => ({ id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
         },
         authorizer: {
@@ -466,8 +490,18 @@ function serverWithRoutes(options: ServerOptions = {}) {
         unitOfWork: {
           run: async (operation) =>
             operation({
-              externalIdentities: { findById: async () => externalIdentity() },
-              guildMemberships: { find: async () => membership() },
+              externalIdentities: {
+                findById: async () => {
+                  counts.accounts += 1;
+                  return externalIdentity();
+                },
+              },
+              guildMemberships: {
+                find: async () => {
+                  counts.memberships += 1;
+                  return membership();
+                },
+              },
           } as never),
         },
         roleMenus: {
@@ -606,6 +640,98 @@ function membership() {
     updatedAt: new Date("2026-08-01T00:00:00.000Z"),
   } as const;
 }
+
+describe("request and short cross-request caching", () => {
+  const cookie = "qbox_session=session-secret-value-000000000000000000; qbox_guild=1257928923048837201";
+  const headers = { host: "127.0.0.1:3000", cookie };
+
+  it("reads the session, account, and membership once per request although the guard, server lookup, and handler all need them", async () => {
+    const counts = newCounts();
+    const server = serverWithRoutes({ counts, discordManager: false });
+    const response = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers });
+    expect(response.statusCode).toBe(200);
+    expect(counts).toMatchObject({ sessions: 1, accounts: 1, memberships: 1 });
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers });
+    expect(me.statusCode).toBe(200);
+    await server.close();
+  });
+
+  it("reuses a verified session for 10 seconds, the account for 60, and the membership for 30", async () => {
+    let clock = 1_000_000;
+    const counts = newCounts();
+    const server = serverWithRoutes({ counts, now: () => clock });
+    const get = async () => expect((await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers })).statusCode).toBe(200);
+    await get();
+    await get();
+    expect(counts).toMatchObject({ sessions: 1, accounts: 1, memberships: 1 });
+    clock += 10_001;
+    await get();
+    expect(counts).toMatchObject({ sessions: 2, accounts: 1, memberships: 1 });
+    clock += 20_000;
+    await get();
+    expect(counts).toMatchObject({ sessions: 3, accounts: 1, memberships: 2 });
+    clock += 30_000;
+    await get();
+    expect(counts).toMatchObject({ sessions: 4, accounts: 2, memberships: 3 });
+    await server.close();
+  });
+
+  it("verifies a CSRF pair once for repeated changes and never caches a failed check", async () => {
+    const counts = newCounts();
+    // Cached verifications never outlive the session's idle expiry, so the clock sits inside the fixture session.
+    const server = serverWithRoutes({ counts, now: () => Date.parse("2026-08-01T00:00:00.000Z") });
+    const csrfHeaders = { ...csrf, cookie: `${csrf.cookie}; qbox_guild=1257928923048837201` };
+    for (let index = 0; index < 2; index += 1) {
+      const response = await server.inject({ method: "POST", url: "/api/v1/guilds/clear", headers: csrfHeaders, payload: {} });
+      expect(response.statusCode).toBe(200);
+    }
+    expect(counts.csrf).toBe(1);
+    await server.close();
+  });
+
+  it("forgets the session at logout so the next request checks the database again", async () => {
+    const counts = newCounts();
+    const server = serverWithRoutes({ counts, now: () => Date.parse("2026-08-01T00:00:00.000Z") });
+    await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers });
+    await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers });
+    expect(counts.sessions).toBe(1);
+    const logout = await server.inject({ method: "POST", url: "/auth/logout", headers: { ...csrf, "content-type": "application/json" }, payload: {} });
+    expect(logout.statusCode).toBe(200);
+    await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers });
+    expect(counts.sessions).toBe(2);
+    await server.close();
+  });
+
+  it("stores a fresh membership check and reuses the guild row for later checks", async () => {
+    const counts = newCounts();
+    const server = serverWithRoutes({ counts });
+    for (let index = 0; index < 2; index += 1) {
+      const selected = await server.inject({ method: "POST", url: "/api/v1/guilds/select", headers: csrf, payload: { guildId: DEFAULT_GUILD } });
+      expect(selected.statusCode).toBe(200);
+    }
+    expect(counts.guildRows).toBe(1);
+    const readsBefore = counts.memberships;
+    const response = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers });
+    expect(response.statusCode).toBe(200);
+    expect(counts.memberships).toBe(readsBefore);
+    await server.close();
+  });
+
+  it("does not look up the current server for portal files", async () => {
+    const directory = mkdtempSync(join(tmpdir(), "qbox-portal-"));
+    writeFileSync(join(directory, "index.html"), "<!doctype html><title>Qbox portal</title>");
+    try {
+      const counts = newCounts();
+      const server = serverWithRoutes({ counts, portalDirectory: directory });
+      const page = await server.inject({ method: "GET", url: "/tickets", headers });
+      expect(page.statusCode).toBe(200);
+      expect(counts).toMatchObject({ sessions: 0, accounts: 0, memberships: 0 });
+      await server.close();
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+});
 
 describe("chooseStartingGuild", () => {
   const guild = (id: string, name: string, owner: boolean, canManage: boolean) => ({ id, name, icon: null, owner, canManage });

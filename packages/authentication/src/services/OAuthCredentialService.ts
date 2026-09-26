@@ -172,10 +172,12 @@ export class OAuthCredentialService {
     context: AuthenticationOperationContext,
     signal: AbortSignal,
   ): Promise<UsableOAuthAccessCredential> {
-    const credential = await this.#readCredential(externalIdentityId);
-    if (credential.providerExpiresAt.getTime() - this.#clock.now().getTime() <= this.#refreshSkewMs)
+    let current = await this.#readCredential(externalIdentityId);
+    // Read again only after a refresh; an unexpired credential is used as read.
+    if (current.providerExpiresAt.getTime() - this.#clock.now().getTime() <= this.#refreshSkewMs) {
       await this.refreshGrant(externalIdentityId, context, signal);
-    const current = await this.#readCredential(externalIdentityId);
+      current = await this.#readCredential(externalIdentityId);
+    }
     const accessToken = await this.#decryptToken(current, "access");
     return Object.freeze({
       credentialId: current.id,

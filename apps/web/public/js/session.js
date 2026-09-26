@@ -7,15 +7,15 @@ export const session = {
   error: undefined,
 };
 
+/** Loads health and the signed-in account at the same time (one /me per page load). */
 export async function refreshSession({ refreshAccount = false } = {}) {
-  session.health = await loadHealth();
-  try {
-    session.account = await loadMe(refreshAccount);
-    session.error = undefined;
-  } catch (error) {
-    session.account = undefined;
-    session.error = error;
-  }
+  const [health, account] = await Promise.all([
+    loadHealth(),
+    loadMe(refreshAccount).then((value) => ({ value }), (error) => ({ error })),
+  ]);
+  session.health = health;
+  session.account = account.value;
+  session.error = account.error;
   return session;
 }
 

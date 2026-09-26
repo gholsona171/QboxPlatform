@@ -306,6 +306,27 @@ describe("BuilderService builds", () => {
     await expect(service.undo(GUILD, run.id)).rejects.toMatchObject({ code: "INVALID_STATE" });
   });
 
+  it("reports every finished run so cached server lists can be dropped", async () => {
+    const repository = new InMemoryBuilderRepository();
+    const gateway = new MemoryGateway();
+    gateway.status = { ...gateway.status, topRolePosition: 10 };
+    const tasks: Promise<void>[] = [];
+    const finished: string[] = [];
+    const service = new BuilderService(repository, gateway, new FakeLinks(), {
+      schedule: (task) => void tasks.push(task()),
+      onRunFinished: (guildId) => {
+        finished.push(guildId);
+        throw new Error("listener failures are ignored");
+      },
+    });
+    await service.saveDraft({ guildId: GUILD, answers: templateFor("COMMUNITY").answers, blueprint: small, expectedRevision: 0 });
+    const run = await service.startRun(GUILD, { mode: "ADD", links: [] }, starter);
+    expect(finished).toEqual([]);
+    await Promise.all(tasks.splice(0));
+    expect(finished).toEqual([GUILD]);
+    expect((await service.run(GUILD, run.id)).run.status).toBe("SUCCEEDED");
+  });
+
   it("allows one run at a time and recovers interrupted runs", async () => {
     const { service, repository } = await setup();
     const repositoryOnly = new BuilderService(repository, new MemoryGateway(), undefined, { schedule: () => undefined });

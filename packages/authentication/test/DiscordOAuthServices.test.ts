@@ -56,6 +56,12 @@ describe("OAuthCredentialService", () => {
 
     expect(JSON.stringify(stored)).not.toContain("access-initial");
     expect(JSON.stringify(stored)).not.toContain("refresh-initial");
+    const run = unitOfWork.run.bind(unitOfWork);
+    let transactions = 0;
+    unitOfWork.run = ((...args: Parameters<typeof run>) => {
+      transactions += 1;
+      return run(...args);
+    }) as typeof unitOfWork.run;
     const access = await service.loadUsableAccessCredential(
       UUIDS.identity,
       context(),
@@ -63,6 +69,8 @@ describe("OAuthCredentialService", () => {
     );
     expect(access.accessToken).toBe("access-initial-" + "x".repeat(32));
     expect(provider.refreshCount).toBe(0);
+    // An unexpired credential is read once, not re-read.
+    expect(transactions).toBe(1);
   });
 
   it("refreshes expiring credentials with optimistic replacement and local revocation", async () => {

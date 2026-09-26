@@ -28,6 +28,8 @@ import type {
 } from "@qbox/discord-community";
 import type { Prisma, PrismaClient } from "@qbox/prisma";
 
+import { GuildRowIds } from "../policies/GuildRowIds.js";
+
 type Client = Pick<
   PrismaClient,
   | "guild"
@@ -46,7 +48,11 @@ type Client = Pick<
 >;
 
 export class PrismaDiscordCommunityRepository implements CommunityRepository {
-  public constructor(private readonly client: Client) {}
+  private readonly guildRows: GuildRowIds;
+
+  public constructor(private readonly client: Client) {
+    this.guildRows = new GuildRowIds(client);
+  }
 
   public async getSettings(guildId: string): Promise<CommunitySettings> {
     const guild = await this.ensureGuild(guildId);
@@ -263,11 +269,7 @@ export class PrismaDiscordCommunityRepository implements CommunityRepository {
   }
 
   private async ensureGuild(discordGuildId: string) {
-    return this.client.guild.upsert({
-      where: { discordGuildId },
-      create: { discordGuildId },
-      update: {},
-    });
+    return this.guildRows.ensure(discordGuildId);
   }
 
   private async updateAutoroles(

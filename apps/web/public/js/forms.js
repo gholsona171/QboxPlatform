@@ -39,7 +39,7 @@ export async function loadDirectory(memberIds = [], options = {}) {
   }
   try {
     const stale = !loadedAt || Date.now() - loadedAt > DIRECTORY_MAX_AGE_MS || loadedFor !== currentGuildId();
-    if (options.refresh || stale) await fetchChannelsAndRoles();
+    if (options.refresh || stale) await fetchChannelsAndRoles(options.refresh === true);
     const missing = [...new Set(memberIds)].filter((id) => !directory.members.some((member) => member.id === id));
     if (missing.length) rememberMembers((await lookupMembers(missing)).data);
   } catch {
@@ -48,11 +48,11 @@ export async function loadDirectory(memberIds = [], options = {}) {
   return directory;
 }
 
-async function fetchChannelsAndRoles() {
+async function fetchChannelsAndRoles(refresh = false) {
   inFlight ??= (async () => {
     try {
       const guild = currentGuildId();
-      const data = (await loadDirectoryData()).data;
+      const data = (await loadDirectoryData(refresh)).data;
       directory.channels = data.channels;
       directory.roles = data.roles;
       loadedAt = Date.now();

@@ -135,6 +135,9 @@ fi
 
 say "Creating services"
 NODE_BIN="$(command -v node)"
+# The API's heap stays under about 100 MB (scripts/measure-portal.mjs); capping
+# it at 256 MB keeps it from growing into swap on a 1 GB server.
+API_NODE_FLAGS="--max-old-space-size=256"
 unit() {
   local name="$1" dir="$2" entry="$3"
   sudo tee "/etc/systemd/system/${name}.service" >/dev/null <<UNIT
@@ -154,7 +157,7 @@ RestartSec=5
 WantedBy=multi-user.target
 UNIT
 }
-unit qbox-api apps/api dist/run.js
+unit qbox-api apps/api "${API_NODE_FLAGS} dist/run.js"
 unit qbox-bot apps/bot dist/index.js
 
 sudo tee /etc/systemd/system/qbox-update.service >/dev/null <<UNIT

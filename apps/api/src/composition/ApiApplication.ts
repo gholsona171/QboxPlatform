@@ -43,6 +43,7 @@ import { ApiModule } from "../lifecycle/ApiModule.js";
 import { ApiPermissionPersistenceModule } from "../lifecycle/ApiPermissionPersistenceModule.js";
 import { registerPortalStaticRoutes } from "../portal/PortalStaticRoutes.js";
 import { apiFeatures } from "../features.js";
+import { installDiscordCallTiming, recordDatabaseQuery, timeDiscordCall } from "../metrics/RequestTimings.js";
 
 /** Validated composition input supplied by the executable environment layer. */
 export interface ApiApplicationInput {
@@ -121,7 +122,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
   );
   const persistence = new PrismaPermissionPersistenceClient(
     databaseConfiguration,
-    { invalidations },
+    { invalidations, onQuery: recordDatabaseQuery },
   );
   const database = new DatabaseService(databaseConfiguration, {
     create: () => persistence,
@@ -140,6 +141,8 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
       : undefined,
   );
   const discordRest = input.discord?.token ? new REST({ version: "10" }).setToken(input.discord.token) : undefined;
+  // Discord calls count toward the request that made them (Server-Timing, slow-request log).
+  if (discordRest) installDiscordCallTiming(discordRest);
   const templates = new MessageTemplateService(new PrismaMessagesRepository(persistence.prisma), { gateway: discordRest ? new DiscordRestMessagesGateway(discordRest) : undefined });
   // Every embed the API posts gets the server's look (see docs/Messages.md).
   if (discordRest) installThemedRequests(discordRest, guildResolver(discordRest), templates);
@@ -158,6 +161,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
   const metadata = new MetadataHashingService(crypto, keyRing);
   const provider = new NativeDiscordOAuthProvider(
     authenticationConfiguration.discord(),
+    (endpoint, init) => timeDiscordCall(() => fetch(endpoint, init)),
   );
   const oauthTransactions = new OAuthTransactionService({
     unitOfWork: persistence.authentication.unitOfWork,

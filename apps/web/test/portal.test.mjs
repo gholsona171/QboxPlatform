@@ -68,3 +68,34 @@ test("portal shows the Guildhall name and no visible Qbox", async () => {
     assert.equal(/\bQbox(Platform)?\b/.test(visible), false, `${file} still shows Qbox`);
   }
 });
+
+test("the page shell preloads every portal module so they download in parallel", async () => {
+  const html = await readFile(new URL("index.html", publicDirectory), "utf8");
+  const preloaded = new Set([...html.matchAll(/<link rel="modulepreload" href="(js\/[^"]+)">/g)].map((match) => match[1]));
+  const scripts = (await readdir(new URL("js/", publicDirectory))).filter((name) => name.endsWith(".js")).map((name) => `js/${name}`);
+  for (const script of scripts) assert.ok(preloaded.has(script), `${script} is missing a modulepreload link in index.html`);
+  for (const link of preloaded) assert.ok(scripts.includes(link), `${link} is preloaded but does not exist`);
+});
+
+test("a page load asks for health and the account at the same time, once", async () => {
+  const session = await readFile(new URL("js/session.js", publicDirectory), "utf8");
+  assert.match(session, /Promise\.all\(\[\s*loadHealth\(\),\s*loadMe\(refreshAccount\)/);
+  const app = await readFile(new URL("js/app.js", publicDirectory), "utf8");
+  assert.equal(app.match(/refreshSession\(/g)?.length, 2, "boot and sign-out refresh the session; page renders do not");
+});
+
+test("picker refresh buttons bypass the API's directory cache", async () => {
+  const api = await readFile(new URL("js/api.js", publicDirectory), "utf8");
+  const forms = await readFile(new URL("js/forms.js", publicDirectory), "utf8");
+  assert.match(api, /\/api\/v1\/directory\$\{refresh \? "\?refresh=1" : ""\}/);
+  assert.match(forms, /fetchChannelsAndRoles\(options\.refresh === true\)/);
+  assert.match(forms, /loadDirectoryData\(refresh\)/);
+});
+
+test("feature pages load independent data in parallel", async () => {
+  const read = (file) => readFile(new URL(`js/${file}`, publicDirectory), "utf8");
+  assert.match(await read("tickets.js"), /const directory = loadDirectory\(\);\s*try \{\s*const \[overview, tickets\] = await Promise\.all/);
+  assert.match(await read("moderation.js"), /Promise\.all\(\[getJson\("moderation\/overview"\), getJson\(`moderation\/cases\?\$\{casesQuery\(\)\}`\), directory\]\)/);
+  assert.match(await read("music.js"), /Promise\.all\(\[getJson\("music\/overview"\), getJson\("music\/library"\), getJson\("music\/playlists"\), loadDirectory\(\), player\]\)/);
+  assert.match(await read("builder.js"), /const \[selected, wipePreview\] = await Promise\.all/);
+});

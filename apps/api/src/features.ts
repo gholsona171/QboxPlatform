@@ -25,7 +25,8 @@ import { applicationsApiFeature } from "./applications/ApplicationRoutes.js";
 import { birthdaysApiFeature } from "./birthdays/BirthdayRoutes.js";
 import { builderApiFeature } from "./builder/BuilderRoutes.js";
 import { ServiceBuilderLinks } from "./builder/builderLinks.js";
-import { directoryApiFeature } from "./directory/DirectoryRoutes.js";
+import { CachedBuilderGateway } from "./builder/CachedBuilderGateway.js";
+import { DirectoryCache, directoryApiFeature } from "./directory/DirectoryRoutes.js";
 import type { ApiFeature } from "./features/ApiFeature.js";
 import { giveawaysApiFeature } from "./giveaways/GiveawayRoutes.js";
 import { levelsApiFeature } from "./levels/LevelRoutes.js";
@@ -70,8 +71,10 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
       ? async (guildId) => ((await discordRest.get(`/guilds/${guildId}/channels`)) as readonly { readonly id: string }[]).map((item) => item.id)
       : undefined,
   });
+  const directoryCache = new DirectoryCache();
+  const builderGateway = discordRest ? new CachedBuilderGateway(new DiscordRestBuilderGateway(discordRest)) : undefined;
   return [
-    directoryApiFeature(discordRest),
+    directoryApiFeature(discordRest, directoryCache),
     ticketsApiFeature(tickets),
     moderationApiFeature(moderation),
     verificationApiFeature(verification),
@@ -89,8 +92,13 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
     musicApiFeature(musicService(persistence), new HttpMusicControlClient(env.DISCORD_TOKEN, `http://127.0.0.1:${Number(env.MUSIC_CONTROL_PORT)}`), musicHost(discordRest)),
     streamsApiFeature(new StreamsService(new PrismaStreamsRepository(persistence.prisma), createStreamPlatformClients(streamCredentials()), discordRest ? new DiscordRestStreamsGateway(discordRest) : undefined, { templates })),
     gamesApiFeature(new GamesService(new PrismaGamesRepository(persistence.prisma), new ProtocolQueryClient(), discordRest ? new DiscordRestGamesGateway(discordRest) : undefined, templates)),
-    builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), discordRest ? new DiscordRestBuilderGateway(discordRest) : undefined, builderLinks, {
+    builderApiFeature(new BuilderService(new PrismaBuilderRepository(persistence.prisma), builderGateway, builderLinks, {
       designer: env.OPENAI_API_KEY ? new OpenAiBlueprintDesigner(env.OPENAI_API_KEY, env.OPENAI_MODEL) : undefined,
+      // A finished build, wipe, or undo changed the server's channels and roles.
+      onRunFinished: (guildId) => {
+        directoryCache.forget(guildId);
+        builderGateway?.forget(guildId);
+      },
     })),
   ];
 }

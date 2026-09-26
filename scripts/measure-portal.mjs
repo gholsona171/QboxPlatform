@@ -23,6 +23,9 @@
  * Each endpoint is measured on a fresh API process (cold: no in-process
  * caches) and then again right away (warm). The same session cookie is reused
  * across processes; it was created through the real Discord sign-in callback.
+ *
+ * MEASURE_ONLY="GET /api/v1/me" (or "page tickets") limits the run,
+ * MEASURE_SQL=1 prints each statement, MEASURE_VERBOSE=1 lists Discord calls.
  */
 import { createServer } from "node:net";
 import { createRequire } from "node:module";
@@ -74,6 +77,7 @@ pg.Client.prototype.query = function delayedQuery(config, values, callback) {
   if (!stats.enabled) return originalQuery.call(this, config, values, callback);
   stats.db += 1;
   stats.dbMs += DB_DELAY_MS;
+  if (process.env.MEASURE_SQL) console.log(`  sql: ${String(typeof config === "string" ? config : config?.text).replace(/\s+/g, " ").slice(0, 140)}`);
   if (typeof values === "function" || typeof callback === "function") {
     setTimeout(() => originalQuery.call(this, config, values, callback), DB_DELAY_MS);
     return undefined;
@@ -116,6 +120,7 @@ globalThis.fetch = async (input, init = {}) => {
 
 function fakeBotRoute(method, route) {
   const path = route.split("?")[0];
+  if (method === "GET" && path === "/users/@me") return { id: BOT, username: "guildhall", bot: true };
   if (method === "GET" && path === "/users/@me/guilds") return [{ id: GUILD, name: "Speed Test", icon: null }];
   if (method === "GET" && path === `/guilds/${GUILD}`) return { id: GUILD, name: "Speed Test", icon: null, owner_id: USER, roles: [] };
   if (method === "GET" && path === `/guilds/${GUILD}/roles`)
@@ -201,14 +206,26 @@ async function request(method, path, { body, cache = false } = {}) {
     ms,
     db: stats.db - beforeDb,
     discord: stats.discord - beforeDiscord,
-    bytes: raw.length,
+    bytes: Number(response.headers.get("content-length") ?? raw.length),
     encoding: response.headers.get("content-encoding") ?? "",
     headers: response.headers,
     text: () => raw.toString("utf8"),
   };
 }
 
+/** Heap of one API process: sampled while it runs, above the harness baseline taken just before it started. */
+const heap = { firstBaseline: undefined, baseline: 0, peakAbove: 0, peakTotal: 0, peakRss: 0 };
+const heapTimer = setInterval(() => {
+  const usage = process.memoryUsage();
+  heap.peakTotal = Math.max(heap.peakTotal, usage.heapUsed);
+  heap.peakRss = Math.max(heap.peakRss, usage.rss);
+  heap.peakAbove = Math.max(heap.peakAbove, usage.heapUsed - heap.baseline);
+}, 10);
+
 async function withApp(operation) {
+  globalThis.gc?.();
+  heap.baseline = process.memoryUsage().heapUsed;
+  heap.firstBaseline ??= heap.baseline;
   const app = application();
   await app.start();
   await sleep(150); // let startup work (permission sync, builder recovery) finish
@@ -263,13 +280,11 @@ const ENDPOINTS = [
 ];
 
 const rows = [];
-let peakHeap = 0;
-const heapTimer = setInterval(() => {
-  peakHeap = Math.max(peakHeap, process.memoryUsage().heapUsed);
-}, 20);
 
-for (const [method, path] of ENDPOINTS) {
+const only = process.env.MEASURE_ONLY;
+for (const [method, path] of ENDPOINTS.filter(([method, path]) => !only || `${method} ${path}`.includes(only))) {
   await withApp(async () => {
+    if (process.env.MEASURE_SQL) console.log(`${method} ${path}`);
     const run = async () => {
       if (method === "PUT") {
         stats.enabled = false;
@@ -289,35 +304,61 @@ for (const [method, path] of ENDPOINTS) {
 // ---------------------------------------------------------------------------
 // Full page loads as the browser makes them.
 //
-// Mirrors apps/web/public: index.html, then styles.css and the js/app.js module
-// graph (each module's imports are requested once it arrives), then app.js
-// boot (session.js refreshSession: health + /me), then the page's own requests
-// in the order its load() makes them. At most 6 requests run at once per
-// origin, as in an HTTP/1.1 browser.
+// Mirrors apps/web/public: index.html, then styles.css, the modules index.html
+// preloads, and the js/app.js module graph (each module's imports are
+// requested once it arrives), then app.js boot (session.js refreshSession:
+// health + /me), then the page's own requests in the order its load() makes
+// them. At most 6 requests run at once per origin, as in an HTTP/1.1 browser.
+// Keep these plans in step with the portal code.
 const PAGE_PLANS = {
   overview: [[["GET", "/api/v1/tickets/overview"]]],
+  // tickets.js load(): directory starts with overview + list.
   tickets: [
-    [["GET", "/api/v1/tickets/overview"], ["GET", "/api/v1/tickets"]],
-    [["GET", "/api/v1/directory"]],
+    [["GET", "/api/v1/tickets/overview"], ["GET", "/api/v1/tickets"], ["GET", "/api/v1/directory"]],
   ],
+  // moderation.js load(): directory starts with overview + cases.
   moderation: [
-    [["GET", "/api/v1/moderation/overview"], ["GET", "/api/v1/moderation/cases?limit=50"]],
-    [["GET", "/api/v1/directory"]],
+    [["GET", "/api/v1/moderation/overview"], ["GET", "/api/v1/moderation/cases?limit=100"], ["GET", "/api/v1/directory"]],
   ],
+  // builder.js load(): overview + runs, then the selected run and the wipe preview together.
   builder: [
     [["GET", "/api/v1/builder/overview"], ["GET", "/api/v1/builder/runs?limit=25"]],
+    [["GET", "/api/v1/builder/wipe/preview"]],
   ],
+  // music.js load(): everything at once.
   music: [
-    [["GET", "/api/v1/music/overview"]],
-    [["GET", "/api/v1/music/library"], ["GET", "/api/v1/music/playlists"], ["GET", "/api/v1/directory"]],
-    [["GET", "/api/v1/music/state"]],
+    [["GET", "/api/v1/music/overview"], ["GET", "/api/v1/music/library"], ["GET", "/api/v1/music/playlists"], ["GET", "/api/v1/directory"], ["GET", "/api/v1/music/state"]],
   ],
 };
 /** Boot requests in app.js/session.js order: groups run one after another. */
 const BOOT_PLAN = [
-  [["GET", "/health/live"], ["GET", "/health/ready"]],
-  [["GET", "/api/v1/me"]],
+  [["GET", "/health/live"], ["GET", "/health/ready"], ["GET", "/api/v1/me"]],
 ];
+
+/**
+ * The portal's request order before the speed work (commit 31d3850): no
+ * module preloads, health before /me, and page data loaded in steps. Run with
+ * PORTAL_PLAN=31d3850 against a build of that commit to reproduce the BEFORE table.
+ */
+const LEGACY = process.env.PORTAL_PLAN === "31d3850";
+if (LEGACY) {
+  Object.assign(PAGE_PLANS, {
+    tickets: [
+      [["GET", "/api/v1/tickets/overview"], ["GET", "/api/v1/tickets"]],
+      [["GET", "/api/v1/directory"]],
+    ],
+    moderation: [
+      [["GET", "/api/v1/moderation/overview"], ["GET", "/api/v1/moderation/cases?limit=100"]],
+      [["GET", "/api/v1/directory"]],
+    ],
+    music: [
+      [["GET", "/api/v1/music/overview"]],
+      [["GET", "/api/v1/music/library"], ["GET", "/api/v1/music/playlists"], ["GET", "/api/v1/directory"]],
+      [["GET", "/api/v1/music/state"]],
+    ],
+  });
+  BOOT_PLAN.splice(0, BOOT_PLAN.length, [["GET", "/health/live"], ["GET", "/health/ready"]], [["GET", "/api/v1/me"]]);
+}
 
 function limiter(limit) {
   let active = 0;
@@ -362,14 +403,15 @@ async function pageLoad(page) {
     const imports = [...source.matchAll(/^\s*import\s[^;]*?from\s+"(\.\/[^"]+)"/gms)].map((match) => join(dirname(file), match[1]));
     await Promise.all(imports.map(loadModule));
   };
-  await Promise.all([get("/styles.css", { cache: true }), loadModule("js/app.js")]);
+  const preloads = LEGACY ? [] : [...readFileSync(join(WEB_ROOT, "index.html"), "utf8").matchAll(/<link rel="modulepreload" href="([^"]+)">/g)].map((match) => match[1]);
+  await Promise.all([get("/styles.css", { cache: true }), loadModule("js/app.js"), ...preloads.map(loadModule)]);
   const staticMs = performance.now() - started;
   for (const group of [...BOOT_PLAN, ...PAGE_PLANS[page]]) await Promise.all(group.map(([, path]) => get(path)));
   return { ms: performance.now() - started, staticMs, ...totals, db: stats.db - beforeDb, discord: stats.discord - beforeDiscord };
 }
 
 const pageRows = [];
-for (const page of Object.keys(PAGE_PLANS)) {
+for (const page of Object.keys(PAGE_PLANS).filter((name) => !only || only === `page ${name}`)) {
   browserCache.clear();
   await withApp(async () => {
     const cold = await pageLoad(page);
@@ -391,7 +433,9 @@ console.log(`\n${"page load".padEnd(12)} | ${pad("cold ms", 7)} ${pad("static", 
 console.log("-".repeat(96));
 for (const { page, cold, warm } of pageRows)
   console.log(`${page.padEnd(12)} | ${pad(fmt(cold.ms), 7)} ${pad(fmt(cold.staticMs), 6)} ${pad(cold.requests, 4)} ${pad(cold.db, 4)} ${pad(cold.discord, 4)} ${pad(Math.round(cold.bytes / 1024), 5)} | ${pad(fmt(warm.ms), 7)} ${pad(fmt(warm.staticMs), 6)} ${pad(warm.notModified, 4)} ${pad(warm.db, 4)} ${pad(warm.discord, 4)} ${pad(Math.round(warm.bytes / 1024), 5)}`);
-console.log(`\nPeak heap used in this process: ${Math.round(peakHeap / 1024 / 1024)} MB (API plus this harness).`);
+const mb = (bytes) => Math.round(bytes / 1024 / 1024);
+console.log(`\nHeap estimate for one API process: ${mb(heap.firstBaseline + heap.peakAbove)} MB (code loaded before the first start, ${mb(heap.firstBaseline)} MB, plus the most one process added, ${mb(heap.peakAbove)} MB).`);
+console.log(`Heap: one API process added at most ${mb(heap.peakAbove)} MB over the harness baseline; peak heap ${mb(heap.peakTotal)} MB, peak RSS ${mb(heap.peakRss)} MB for the whole harness process${globalThis.gc ? "" : " (run with node --expose-gc for a clean baseline)"}.`);
 if (process.env.MEASURE_VERBOSE) console.log("\nDiscord calls:", Object.fromEntries(discordLog));
 
 async function freePort() {

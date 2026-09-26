@@ -220,6 +220,25 @@ describe("PersistentPermissionService authorization", () => {
     expect(find).toHaveBeenCalledTimes(4);
   });
 
+  it("reads the platform and server scopes at the same time", async () => {
+    const repository = new InMemoryPermissionRepository([
+      assignment("moderation.warn"),
+    ]);
+    const original = repository.findAssignments.bind(repository);
+    let active = 0;
+    let peak = 0;
+    vi.spyOn(repository, "findAssignments").mockImplementation(async (query) => {
+      active += 1;
+      peak = Math.max(peak, active);
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      active -= 1;
+      return original(query);
+    });
+    const decision = await new PersistentPermissionService(repository).authorize(request());
+    expect(decision.allowed).toBe(true);
+    expect(peak).toBe(2);
+  });
+
   it("falls back after cache failure and fails closed after repository failure", async () => {
     const repository = new InMemoryPermissionRepository([
       assignment("moderation.warn"),

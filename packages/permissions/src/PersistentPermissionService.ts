@@ -227,16 +227,16 @@ export class PersistentPermissionService implements PermissionAuthorizer {
   ) {
     const scopes: readonly PermissionScope[] =
       scope.type === "platform" ? [scope] : [{ type: "platform" }, scope];
-    const snapshots = [];
-    for (const candidateScope of scopes) {
-      const snapshot = await this.loadAssignmentsForScope(
-        principals,
-        candidateScope,
-        now,
-      );
-      if (!snapshot) return undefined;
-      snapshots.push(snapshot);
-    }
+    // The platform and server scopes are independent reads; load them together.
+    const loaded = await Promise.all(
+      scopes.map((candidateScope) =>
+        this.loadAssignmentsForScope(principals, candidateScope, now),
+      ),
+    );
+    if (loaded.some((snapshot) => snapshot === undefined)) return undefined;
+    const snapshots = loaded.filter(
+      (snapshot): snapshot is NonNullable<typeof snapshot> => snapshot !== undefined,
+    );
     return {
       assignments: snapshots.flatMap((snapshot) => snapshot.assignments),
       usedCache: snapshots.every((snapshot) => snapshot.usedCache),

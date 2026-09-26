@@ -58,8 +58,10 @@ export async function renderModerationPage(target) {
 }
 
 async function load() {
+  // Channels and roles do not depend on the cases, so they load at the same time.
+  const directory = loadDirectory();
   try {
-    const [overview, cases] = await Promise.all([getJson("moderation/overview"), getJson(`moderation/cases?${casesQuery()}`)]);
+    const [overview, cases] = await Promise.all([getJson("moderation/overview"), getJson(`moderation/cases?${casesQuery()}`), directory]);
     view.overview = overview.data;
     view.cases = cases.data;
     view.error = undefined;

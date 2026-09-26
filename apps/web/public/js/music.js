@@ -52,12 +52,13 @@ export async function renderMusicPage(target) {
 
 async function load() {
   try {
-    view.overview = (await getJson("music/overview")).data;
-    const [library, playlists] = await Promise.all([getJson("music/library"), getJson("music/playlists"), loadDirectory()]);
+    // Everything the page shows loads at the same time.
+    const player = syncPlayer();
+    const [overview, library, playlists] = await Promise.all([getJson("music/overview"), getJson("music/library"), getJson("music/playlists"), loadDirectory(), player]);
+    view.overview = overview.data;
     view.tracks = library.data.tracks;
     view.playlists = playlists.data;
     view.error = undefined;
-    await syncPlayer();
   } catch (error) {
     view.error = error;
   }

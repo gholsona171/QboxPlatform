@@ -53,4 +53,19 @@ Settings are stored per Discord server, so each server starts fresh and keeps it
 systemctl status qbox-api qbox-bot
 journalctl -u qbox-bot -f
 journalctl -u qbox-update -n 50
+journalctl -u qbox-api | grep api.request.slow
 ```
+
+Portal requests slower than 800 ms are logged by `qbox-api` as `api.request.slow` with the route, the number of database queries and their time, and the number of Discord calls and their time. Every API response also carries a `Server-Timing` header (browser developer tools > Network > Timing) with the same numbers. See "Portal request speed" in [Architecture](Architecture.md) for the caches the API keeps and how long a sign-out made elsewhere takes to apply (up to 10 seconds).
+
+## Memory
+
+The API runs with `--max-old-space-size=256` (its heap stays under about 100 MB while serving the portal), so a leak or a burst cannot grow it into the 1 GB server's swap. New setups get this from `setup.sh`. A server set up before this change needs it once; `update.sh` prints the reminder until it is done:
+
+```text
+sudo sed -i 's| dist/run.js$| --max-old-space-size=256 dist/run.js|' /etc/systemd/system/qbox-api.service
+sudo systemctl daemon-reload
+sudo systemctl restart qbox-api
+```
+
+Putting `NODE_OPTIONS` in `.env` does not work: the services load `.env` from inside Node, after the heap size is fixed. The bot has no cap; its memory was not measured.

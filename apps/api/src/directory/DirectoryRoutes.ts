@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { PERMISSIONS, type Permission } from "@qbox/permissions";
 import type { REST } from "discord.js";
 
+import { TtlCache } from "../cache/TtlCache.js";
 import { DependencyUnavailableApiError, ValidationApiError } from "../errors/ApiError.js";
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 
@@ -18,16 +19,47 @@ const CHANNEL_TYPES: Readonly<Record<number, string>> = { 0: "TEXT", 2: "VOICE",
 /** Anyone who can manage a feature can see the server's channels, roles, and members. */
 export const DIRECTORY_PERMISSIONS: readonly Permission[] = PERMISSIONS.filter((permission) => permission.endsWith(".manage") || permission === "platform.admin");
 
+/** Channel and role lists are reused for this long per server. */
+export const DIRECTORY_CACHE_MS = 15_000;
+
+interface DirectoryData {
+  readonly channels: readonly ApiChannel[];
+  readonly roles: readonly ApiRole[];
+}
+
+/**
+ * Per-server cache of the Discord channel and role lists behind the portal
+ * pickers. Builder and wipe runs call `forget` when they finish, and the
+ * portal's refresh buttons ask for `?refresh=1`.
+ */
+export class DirectoryCache {
+  private readonly cache: TtlCache<string, DirectoryData>;
+
+  public constructor(options: { readonly ttlMs?: number; readonly now?: () => number } = {}) {
+    this.cache = new TtlCache({ ttlMs: options.ttlMs ?? DIRECTORY_CACHE_MS, maxEntries: 500, ...(options.now ? { now: options.now } : {}) });
+  }
+
+  public load(guildId: string, read: () => Promise<DirectoryData>, options: { readonly refresh?: boolean } = {}): Promise<DirectoryData> {
+    if (options.refresh) this.cache.delete(guildId);
+    return this.cache.getOrLoad(guildId, read);
+  }
+
+  /** Drops one server's lists (after its channels or roles changed). */
+  public forget(guildId: string): void {
+    this.cache.delete(guildId);
+  }
+}
+
 /**
  * Discord server directory for portal pickers:
  * `GET /api/v1/directory` (channels, roles) and
  * `GET /api/v1/directory/members?query=` or `?ids=a,b`.
  */
-export function directoryApiFeature(rest: REST | undefined): ApiFeature {
-  return { name: "directory", register: (server, context) => registerDirectoryRoutes(server, context, rest) };
+export function directoryApiFeature(rest: REST | undefined, cache: DirectoryCache = new DirectoryCache()): ApiFeature {
+  return { name: "directory", register: (server, context) => registerDirectoryRoutes(server, context, rest, cache) };
 }
 
-function registerDirectoryRoutes(server: FastifyInstance, context: ApiFeatureContext, rest: REST | undefined): void {
+function registerDirectoryRoutes(server: FastifyInstance, context: ApiFeatureContext, rest: REST | undefined, cache: DirectoryCache): void {
   const discord = () => {
     if (!rest) throw new DependencyUnavailableApiError();
     return rest;
@@ -36,10 +68,18 @@ function registerDirectoryRoutes(server: FastifyInstance, context: ApiFeatureCon
   server.get("/api/v1/directory", async (request, reply) => {
     reply.header("cache-control", "no-store");
     await context.guard(request, DIRECTORY_PERMISSIONS, { mutation: false });
-    const [channels, roles] = await Promise.all([
-      discord().get(`/guilds/${context.guildId}/channels`) as Promise<ApiChannel[]>,
-      discord().get(`/guilds/${context.guildId}/roles`) as Promise<ApiRole[]>,
-    ]).catch(() => { throw new DependencyUnavailableApiError(); });
+    const guildId = context.guildId;
+    const refresh = Reflect.get((request.query ?? {}) as object, "refresh") === "1";
+    const { channels, roles } = await cache.load(guildId, async () => {
+      const [channelList, roleList] = await Promise.all([
+        discord().get(`/guilds/${guildId}/channels`) as Promise<ApiChannel[]>,
+        discord().get(`/guilds/${guildId}/roles`) as Promise<ApiRole[]>,
+      ]);
+      return { channels: channelList, roles: roleList };
+    }, { refresh }).catch((error: unknown) => {
+      if (error instanceof DependencyUnavailableApiError) throw error;
+      throw new DependencyUnavailableApiError();
+    });
     return {
       data: {
         channels: channels
