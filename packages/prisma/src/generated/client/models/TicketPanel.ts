@@ -74,6 +74,7 @@ export type TicketPanelCountAggregateOutputType = {
   imageUrl: number
   footer: number
   categoryIds: number
+  buttonRows: number
   publishedAt: number
   createdAt: number
   updatedAt: number
@@ -131,6 +132,7 @@ export type TicketPanelCountAggregateInputType = {
   imageUrl?: true
   footer?: true
   categoryIds?: true
+  buttonRows?: true
   publishedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -223,6 +225,7 @@ export type TicketPanelGroupByOutputType = {
   imageUrl: string | null
   footer: string | null
   categoryIds: string[]
+  buttonRows: runtime.JsonValue | null
   publishedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -263,6 +266,7 @@ export type TicketPanelWhereInput = {
   imageUrl?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   footer?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   categoryIds?: Prisma.StringNullableListFilter<"TicketPanel">
+  buttonRows?: Prisma.JsonNullableFilter<"TicketPanel">
   publishedAt?: Prisma.DateTimeNullableFilter<"TicketPanel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
@@ -283,6 +287,7 @@ export type TicketPanelOrderByWithRelationInput = {
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   footer?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryIds?: Prisma.SortOrder
+  buttonRows?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -307,6 +312,7 @@ export type TicketPanelWhereUniqueInput = Prisma.AtLeast<{
   imageUrl?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   footer?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   categoryIds?: Prisma.StringNullableListFilter<"TicketPanel">
+  buttonRows?: Prisma.JsonNullableFilter<"TicketPanel">
   publishedAt?: Prisma.DateTimeNullableFilter<"TicketPanel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
@@ -327,6 +333,7 @@ export type TicketPanelOrderByWithAggregationInput = {
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   footer?: Prisma.SortOrderInput | Prisma.SortOrder
   categoryIds?: Prisma.SortOrder
+  buttonRows?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -352,6 +359,7 @@ export type TicketPanelScalarWhereWithAggregatesInput = {
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"TicketPanel"> | string | null
   footer?: Prisma.StringNullableWithAggregatesFilter<"TicketPanel"> | string | null
   categoryIds?: Prisma.StringNullableListFilter<"TicketPanel">
+  buttonRows?: Prisma.JsonNullableWithAggregatesFilter<"TicketPanel">
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"TicketPanel"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TicketPanel"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TicketPanel"> | Date | string
@@ -370,6 +378,7 @@ export type TicketPanelCreateInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -390,6 +399,7 @@ export type TicketPanelUncheckedCreateInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -408,6 +418,7 @@ export type TicketPanelUpdateInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,6 +439,7 @@ export type TicketPanelUncheckedUpdateInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -447,6 +459,7 @@ export type TicketPanelCreateManyInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -465,6 +478,7 @@ export type TicketPanelUpdateManyMutationInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -484,6 +498,7 @@ export type TicketPanelUncheckedUpdateManyInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -518,6 +533,7 @@ export type TicketPanelCountOrderByAggregateInput = {
   imageUrl?: Prisma.SortOrder
   footer?: Prisma.SortOrder
   categoryIds?: Prisma.SortOrder
+  buttonRows?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -627,6 +643,7 @@ export type TicketPanelCreateWithoutGuildInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -645,6 +662,7 @@ export type TicketPanelUncheckedCreateWithoutGuildInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -693,6 +711,7 @@ export type TicketPanelScalarWhereInput = {
   imageUrl?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   footer?: Prisma.StringNullableFilter<"TicketPanel"> | string | null
   categoryIds?: Prisma.StringNullableListFilter<"TicketPanel">
+  buttonRows?: Prisma.JsonNullableFilter<"TicketPanel">
   publishedAt?: Prisma.DateTimeNullableFilter<"TicketPanel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TicketPanel"> | Date | string
@@ -711,6 +730,7 @@ export type TicketPanelCreateManyGuildInput = {
   imageUrl?: string | null
   footer?: string | null
   categoryIds?: Prisma.TicketPanelCreatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -729,6 +749,7 @@ export type TicketPanelUpdateWithoutGuildInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -747,6 +768,7 @@ export type TicketPanelUncheckedUpdateWithoutGuildInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -765,6 +787,7 @@ export type TicketPanelUncheckedUpdateManyWithoutGuildInput = {
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   footer?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   categoryIds?: Prisma.TicketPanelUpdatecategoryIdsInput | string[]
+  buttonRows?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -786,6 +809,7 @@ export type TicketPanelSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   imageUrl?: boolean
   footer?: boolean
   categoryIds?: boolean
+  buttonRows?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -806,6 +830,7 @@ export type TicketPanelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   imageUrl?: boolean
   footer?: boolean
   categoryIds?: boolean
+  buttonRows?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -826,6 +851,7 @@ export type TicketPanelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   imageUrl?: boolean
   footer?: boolean
   categoryIds?: boolean
+  buttonRows?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -846,12 +872,13 @@ export type TicketPanelSelectScalar = {
   imageUrl?: boolean
   footer?: boolean
   categoryIds?: boolean
+  buttonRows?: boolean
   publishedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TicketPanelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "channelId" | "messageId" | "title" | "description" | "color" | "style" | "placeholder" | "imageUrl" | "footer" | "categoryIds" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketPanel"]>
+export type TicketPanelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "channelId" | "messageId" | "title" | "description" | "color" | "style" | "placeholder" | "imageUrl" | "footer" | "categoryIds" | "buttonRows" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketPanel"]>
 export type TicketPanelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -881,6 +908,10 @@ export type $TicketPanelPayload<ExtArgs extends runtime.Types.Extensions.Interna
     imageUrl: string | null
     footer: string | null
     categoryIds: string[]
+    /**
+     * Button rows (category IDs per row) for the buttons style; null arranges them automatically.
+     */
+    buttonRows: runtime.JsonValue | null
     publishedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1321,6 +1352,7 @@ export interface TicketPanelFieldRefs {
   readonly imageUrl: Prisma.FieldRef<"TicketPanel", 'String'>
   readonly footer: Prisma.FieldRef<"TicketPanel", 'String'>
   readonly categoryIds: Prisma.FieldRef<"TicketPanel", 'String[]'>
+  readonly buttonRows: Prisma.FieldRef<"TicketPanel", 'Json'>
   readonly publishedAt: Prisma.FieldRef<"TicketPanel", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"TicketPanel", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TicketPanel", 'DateTime'>

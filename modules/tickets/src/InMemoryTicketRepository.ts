@@ -98,6 +98,14 @@ export class InMemoryTicketRepository implements TicketRepository {
     return saved;
   }
 
+  public async clearPanelMessage(_guildId: string, id: string): Promise<TicketPanel> {
+    const panel = this.panels.get(id);
+    if (!panel) throw new TicketError("NOT_FOUND", "Ticket panel was not found.");
+    const { messageId: _message, publishedAt: _published, ...rest } = panel;
+    this.panels.set(id, rest);
+    return rest;
+  }
+
   public async deletePanel(_guildId: string, id: string): Promise<void> {
     this.panels.delete(id);
   }

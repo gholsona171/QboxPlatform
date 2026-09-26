@@ -120,6 +120,8 @@ model TicketPanel {
   imageUrl    String?          @map("image_url")
   footer      String?
   categoryIds String[]         @map("category_ids")
+  /// Button rows (category IDs per row) for the buttons style; null arranges them automatically.
+  buttonRows  Json?            @map("button_rows")
   publishedAt DateTime?        @map("published_at") @db.Timestamptz(3)
   createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt   DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)

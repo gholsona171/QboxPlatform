@@ -1,7 +1,8 @@
-import { colorValue, emojiObject, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import { MISSING_PANEL_CHANNEL_MESSAGE, colorValue, emojiObject, isMissingChannelError, type DiscordRestClient } from "@qbox/shared/discord-rest";
 
 import type { ApplicationEmbed, ApplicationForm, ApplicationGateway, ApplicationPanel, ButtonStyle, ReviewMessage } from "./types.js";
 import { APPLICATION_CUSTOM_ID } from "./types.js";
+import { ApplicationError } from "./validation.js";
 import { BRAND } from "@qbox/shared/brand";
 
 interface IdResponse { readonly id: string }
@@ -78,12 +79,18 @@ export class DiscordRestApplicationGateway implements ApplicationGateway {
       try {
         await this.rest.patch(`/channels/${panel.channelId}/messages/${panel.messageId}`, { body });
         return { messageId: panel.messageId };
-      } catch {
-        // The old panel message was deleted; post a fresh one.
+      } catch (error) {
+        // A deleted channel cannot take a new post either; otherwise the old panel message was deleted, so post a fresh one.
+        if (isMissingChannelError(error)) throw new ApplicationError("INVALID_STATE", MISSING_PANEL_CHANNEL_MESSAGE);
       }
     }
-    const message = (await this.rest.post(`/channels/${panel.channelId}/messages`, { body })) as IdResponse;
-    return { messageId: message.id };
+    try {
+      const message = (await this.rest.post(`/channels/${panel.channelId}/messages`, { body })) as IdResponse;
+      return { messageId: message.id };
+    } catch (error) {
+      if (isMissingChannelError(error)) throw new ApplicationError("INVALID_STATE", MISSING_PANEL_CHANNEL_MESSAGE);
+      throw error;
+    }
   }
 
   public async deleteMessage(channelId: string, messageId: string): Promise<void> {

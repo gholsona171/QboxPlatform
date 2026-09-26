@@ -7,11 +7,11 @@ import { InMemoryLevelRepository, LevelService } from "@qbox/levels";
 import { InMemoryModerationRepository, ModerationService } from "@qbox/moderation";
 import type { BuilderResolvedIds } from "@qbox/server-builder";
 import { InMemoryStaffRepository, StaffService } from "@qbox/staff";
-import { InMemoryTicketRepository, TicketService } from "@qbox/tickets";
+import { InMemoryTicketRepository, TicketError, TicketService, defaultTicketSettings, type TicketDiscordGateway, type TicketPanelPublishInput } from "@qbox/tickets";
 import { InMemoryVerificationRepository, VerificationService } from "@qbox/verification";
 import { InMemoryVoiceRepository, VoiceRoomService } from "@qbox/voice-rooms";
 
-import { ServiceBuilderLinks } from "../src/builder/builderLinks.js";
+import { ServiceBuilderLinks, type BuilderLinkOptions } from "../src/builder/builderLinks.js";
 
 const GUILD = "100000000000000001";
 const ID = {
@@ -64,7 +64,7 @@ class MemoryCommunity implements Pick<CommunityRepository, "getSettings" | "save
   public async saveRules(input: RulesConfig) { this.settings = { ...this.settings, rules: input }; return input; }
 }
 
-function setup() {
+function setup(options: { ticketGateway?: TicketDiscordGateway; links?: BuilderLinkOptions } = {}) {
   const repositories = {
     moderation: new InMemoryModerationRepository(),
     verification: new InMemoryVerificationRepository(),
@@ -80,7 +80,7 @@ function setup() {
   const services = {
     moderation: new ModerationService(repositories.moderation),
     verification: new VerificationService(repositories.verification),
-    tickets: new TicketService(repositories.tickets),
+    tickets: new TicketService(repositories.tickets, options.ticketGateway),
     applications: new ApplicationService(repositories.applications),
     staff: new StaffService(repositories.staff),
     levels: new LevelService(repositories.levels),
@@ -89,7 +89,7 @@ function setup() {
     voice: new VoiceRoomService(repositories.voice),
     community: new DiscordCommunityService(repositories.community as unknown as CommunityRepository),
   };
-  return { services, repositories, links: new ServiceBuilderLinks(services) };
+  return { services, repositories, links: new ServiceBuilderLinks(services, options.links) };
 }
 
 describe("ServiceBuilderLinks", () => {
@@ -172,5 +172,107 @@ describe("ServiceBuilderLinks", () => {
     expect(settings.starboard).toMatchObject({ destinationChannelId: ID.starboard, threshold: 3 });
     expect(settings.rules).toMatchObject({ channelId: ID.rules, messageText: "Be nice", expectedRevision: 3 });
     expect(settings.rules?.messageId).toBeUndefined();
+  });
+});
+
+describe("ServiceBuilderLinks after a server was wiped and rebuilt", () => {
+  const OLD = {
+    panel: "510000000000000001",
+    openCategory: "510000000000000002",
+    closedCategory: "510000000000000003",
+    transcripts: "510000000000000004",
+    log: "510000000000000005",
+    verify: "510000000000000006",
+    welcome: "510000000000000007",
+    review: "510000000000000008",
+    appPanel: "510000000000000009",
+  };
+  const LIVE = "520000000000000001";
+  const MISSING = "The panel's channel no longer exists. Pick a new channel for this panel and post it again.";
+  const deleted = new Set(Object.values(OLD));
+  const rebuilt: BuilderResolvedIds = { ...ids, names: { ...ids.names, [ID.panel]: "open-a-ticket", [ID.transcripts]: "ticket-transcripts" } };
+  /** Every channel the rebuilt server has: the new ones plus one the owner kept. */
+  const listChannels = async () => [...Object.values(rebuilt.channels), ...Object.values(rebuilt.categories), LIVE];
+
+  /** Posts panels like Discord would: a panel in a deleted channel fails with the plain channel-missing error. */
+  class PanelGateway {
+    public readonly published: TicketPanelPublishInput[] = [];
+    public async publishPanel(input: TicketPanelPublishInput) {
+      if (deleted.has(input.panel.channelId)) throw new TicketError("INVALID_STATE", MISSING);
+      this.published.push(input);
+      return { messageId: `80000000000000000${this.published.length}` };
+    }
+    public async deletePanelMessage() {}
+  }
+
+  async function staleTickets(options: { links?: BuilderLinkOptions } = {}) {
+    const gateway = new PanelGateway();
+    const context = setup({ ticketGateway: gateway as unknown as TicketDiscordGateway, ...options });
+    const { tickets } = context.services;
+    const { nextNumber: _next, revision: _revision, ...defaults } = defaultTicketSettings(GUILD);
+    await tickets.saveSettings({
+      ...defaults, enabled: true, openCategoryChannelId: OLD.openCategory, closedCategoryChannelId: OLD.closedCategory,
+      transcriptChannelId: OLD.transcripts, logChannelId: OLD.log, expectedRevision: 0,
+    });
+    const reason = await tickets.saveCategory({ guildId: GUILD, name: "Support", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [], parentChannelId: OLD.openCategory });
+    const panel = { guildId: GUILD, title: "Need help?", description: "Pick", color: "#5865F2", style: "BUTTONS" as const, placeholder: "Pick", categoryIds: [reason.id] };
+    const kept = await tickets.savePanel({ ...panel, name: "Kept", channelId: LIVE });
+    await context.repositories.tickets.markPanelPublished(GUILD, kept.id, "700000000000000001");
+    const stale = await tickets.savePanel({ ...panel, name: "Main", channelId: OLD.panel });
+    await context.repositories.tickets.markPanelPublished(GUILD, stale.id, "700000000000000002");
+    return { ...context, gateway, reason, kept, stale };
+  }
+
+  it("moves the stale ticket panel to the new channel, posts it, and repairs settings", async () => {
+    const { services, links, gateway, reason, kept, stale } = await staleTickets({ links: { listChannels } });
+    const summary = await links.apply("tickets", rebuilt);
+    expect(summary).toContain("ticket panel moved to #open-a-ticket and posted");
+    expect(summary).toContain("open ticket category moved to #SUPPORT");
+    expect(summary).toContain("closed ticket category cleared because its channel was deleted");
+    expect(summary).toContain("ticket log channel moved to #ticket-transcripts");
+    expect(summary).toContain("1 ticket reason now open in #SUPPORT");
+    const settings = await services.tickets.settings(GUILD);
+    expect(settings).toMatchObject({ openCategoryChannelId: ID.ticketsCategory, transcriptChannelId: ID.transcripts, logChannelId: ID.transcripts });
+    expect(settings.closedCategoryChannelId).toBeUndefined();
+    expect((await services.tickets.categories(GUILD)).find((item) => item.id === reason.id)?.parentChannelId).toBe(ID.ticketsCategory);
+    const panels = await services.tickets.panels(GUILD);
+    expect(panels.find((item) => item.id === stale.id)).toMatchObject({ channelId: ID.panel, messageId: "800000000000000001" });
+    expect(panels.find((item) => item.id === kept.id)).toMatchObject({ channelId: LIVE, messageId: "700000000000000001" });
+    expect(gateway.published.map((item) => item.panel.channelId)).toEqual([ID.panel]);
+    expect(panels).toHaveLength(2);
+    // A second run finds nothing stale and leaves the posted panels alone.
+    expect(await links.apply("tickets", rebuilt)).not.toContain("moved");
+    expect(gateway.published).toHaveLength(1);
+  });
+
+  it("finds the stale panel by trying to post it when the channel list is unavailable", async () => {
+    const { services, links, stale } = await staleTickets({ links: { listChannels: async () => { throw new Error("Discord is down"); } } });
+    const summary = await links.apply("tickets", rebuilt);
+    expect(summary).toContain("ticket panel moved to #open-a-ticket and posted");
+    expect((await services.tickets.panels(GUILD)).find((item) => item.id === stale.id)).toMatchObject({ channelId: ID.panel, messageId: expect.any(String) });
+  });
+
+  it("clears verification channels that no longer exist when the build made no replacement", async () => {
+    const { services, links } = setup({ links: { listChannels } });
+    const { revision: _revision, panelChannelId: _channel, panelMessageId: _message, ...current } = await services.verification.settings(GUILD);
+    await services.verification.saveSettings({ ...current, channelId: OLD.verify, welcomeChannelId: OLD.welcome, welcomeMessage: "Welcome {user}!", expectedRevision: 0 });
+    const withoutVerify: BuilderResolvedIds = { ...rebuilt, channels: { ...rebuilt.channels, verify: undefined } };
+    const summary = await links.apply("verification", withoutVerify);
+    expect(summary).toContain("The verification channel and welcome channel no longer existed, so they were cleared");
+    const saved = await services.verification.settings(GUILD);
+    expect(saved.channelId).toBeUndefined();
+    expect(saved.welcomeChannelId).toBeUndefined();
+    expect(saved.logChannelId).toBe(ID.modLog);
+  });
+
+  it("moves application review channels off deleted channels and flags panels in deleted channels", async () => {
+    const { services, links, repositories } = setup({ links: { listChannels } });
+    const base = { guildId: GUILD, enabled: true, questions: [{ id: "why", label: "Why?", type: "PARAGRAPH" as const, required: true, choices: [] }], cooldownDays: 0, onePending: true, requiredRoleIds: [], blockedRoleIds: [], pingMemberIds: [], acceptRoleIds: [], removeRoleIds: [], buttonStyle: "PRIMARY" as const, position: 0 };
+    const form = await services.applications.saveForm({ ...base, name: "Staff", reviewChannelId: OLD.review, reviewerRoleIds: [ID.existingRole] });
+    await repositories.applications.createPanel({ guildId: GUILD, channelId: OLD.appPanel, title: "Apply", description: "Pick", color: "#5865F2", formIds: [] });
+    const summary = await links.apply("applications", rebuilt);
+    expect(summary).toContain("1 form had a deleted review channel and was moved to #500000000000000006.");
+    expect(summary).toContain("1 application panel is in a deleted channel; pick a new channel for it and post again.");
+    expect((await services.applications.forms(GUILD)).find((item) => item.id === form.id)?.reviewChannelId).toBe(ID.review);
   });
 });

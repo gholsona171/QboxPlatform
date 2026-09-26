@@ -8540,6 +8540,7 @@ export const TicketPanelScalarFieldEnum = {
   imageUrl: 'imageUrl',
   footer: 'footer',
   categoryIds: 'categoryIds',
+  buttonRows: 'buttonRows',
   publishedAt: 'publishedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -1,8 +1,9 @@
-import { colorValue, type DiscordRestClient } from "@qbox/shared/discord-rest";
+import { MISSING_PANEL_CHANNEL_MESSAGE, colorValue, isMissingChannelError, type DiscordRestClient } from "@qbox/shared/discord-rest";
 import type { OutgoingMessage } from "@qbox/shared/messages";
 
 import type { GuildMemberInfo, VerificationEmbed, VerificationGateway, VerificationPanel } from "./types.js";
 import { VERIFICATION_CUSTOM_ID } from "./types.js";
+import { VerificationError } from "./validation.js";
 
 interface ApiMember {
   readonly nick?: string | null;
@@ -83,11 +84,17 @@ export class DiscordRestVerificationGateway implements VerificationGateway {
       try {
         await this.rest.patch(`/channels/${channelId}/messages/${existingMessageId}`, { body });
         return { messageId: existingMessageId };
-      } catch {
-        // The old panel was deleted; post a new one below.
+      } catch (error) {
+        // A deleted channel cannot take a new post either; otherwise the old panel was deleted, so post a new one below.
+        if (isMissingChannelError(error)) throw new VerificationError("INVALID_STATE", MISSING_PANEL_CHANNEL_MESSAGE);
       }
     }
-    const message = (await this.rest.post(`/channels/${channelId}/messages`, { body })) as { readonly id: string };
-    return { messageId: message.id };
+    try {
+      const message = (await this.rest.post(`/channels/${channelId}/messages`, { body })) as { readonly id: string };
+      return { messageId: message.id };
+    } catch (error) {
+      if (isMissingChannelError(error)) throw new VerificationError("INVALID_STATE", MISSING_PANEL_CHANNEL_MESSAGE);
+      throw error;
+    }
   }
 }

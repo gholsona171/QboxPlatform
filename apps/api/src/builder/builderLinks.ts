@@ -6,7 +6,8 @@ import type { LevelService } from "@qbox/levels";
 import type { ModerationService } from "@qbox/moderation";
 import { BuilderError, type BuilderChannelPurpose, type BuilderLink, type BuilderLinkPort, type BuilderResolvedIds } from "@qbox/server-builder";
 import type { StaffService } from "@qbox/staff";
-import type { TicketService } from "@qbox/tickets";
+import { MISSING_PANEL_CHANNEL_MESSAGE } from "@qbox/shared/discord-rest";
+import { TicketError, type TicketPanel, type TicketService } from "@qbox/tickets";
 import type { VerificationService } from "@qbox/verification";
 import type { VoiceRoomService } from "@qbox/voice-rooms";
 
@@ -24,15 +25,43 @@ export interface BuilderLinkServices {
   readonly community: DiscordCommunityService;
 }
 
+export interface BuilderLinkOptions {
+  /**
+   * IDs of every channel and category the server has right now (after the
+   * build). Used to repair settings and panels that still point at channels
+   * deleted before a rebuild. Without it, only a failed panel post reveals a
+   * deleted channel.
+   */
+  readonly listChannels?: ((guildId: string) => Promise<readonly string[]>) | undefined;
+}
+
+/** true: the channel exists; false: it was deleted; undefined: unknown. */
+type ChannelCheck = (channelId: string | undefined) => boolean | undefined;
+
 const unique = (values: readonly string[]) => [...new Set(values)];
 
 /**
  * Saves a finished build into existing Qbox features. Each link loads the
  * feature's current settings and saves them back with only the builder's
  * changes, so everything else the owner configured is kept. Nothing is deleted.
+ * Settings and panels that point at channels which no longer exist (the owner
+ * deleted everything and rebuilt) are moved to the newly built equivalents, or
+ * cleared when the build made none.
  */
 export class ServiceBuilderLinks implements BuilderLinkPort {
-  public constructor(private readonly services: BuilderLinkServices) {}
+  public constructor(
+    private readonly services: BuilderLinkServices,
+    private readonly options: BuilderLinkOptions = {},
+  ) {}
+
+  /** Asks Discord which channels exist; unknown when it cannot be asked. */
+  private async channelCheck(guildId: string): Promise<ChannelCheck> {
+    const { listChannels } = this.options;
+    if (!listChannels) return () => undefined;
+    const existing = await listChannels(guildId).then((channels) => new Set(channels), () => undefined);
+    if (!existing) return () => undefined;
+    return (channelId) => (channelId === undefined ? undefined : existing.has(channelId));
+  }
 
   public async apply(link: BuilderLink, ids: BuilderResolvedIds): Promise<string> {
     switch (link) {
@@ -66,8 +95,17 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     const verifiedRoleIds = unique([...current.verifiedRoleIds, ...(ids.verifiedRoleId ? [ids.verifiedRoleId] : [])]).slice(0, 10);
     if (verifiedRoleIds.length === 0) throw new BuilderError("INVALID_STATE", "There is no Verified role to give, so verification was not set up.");
     const unverifiedRoleId = ids.unverifiedRoleId ?? current.unverifiedRoleId;
-    const channelId = ids.channels.verify ?? current.channelId;
-    const logChannelId = ids.channels["mod-log"] ?? ids.channels["server-log"] ?? current.logChannelId;
+    const exists = await this.channelCheck(ids.guildId);
+    const gone = (id: string | undefined) => exists(id) === false;
+    const cleared: string[] = [];
+    const keep = (label: string, id: string | undefined) => {
+      if (!gone(id)) return id;
+      cleared.push(label);
+      return undefined;
+    };
+    const channelId = ids.channels.verify ?? keep("verification channel", current.channelId);
+    const logChannelId = ids.channels["mod-log"] ?? ids.channels["server-log"] ?? keep("log channel", current.logChannelId);
+    const welcomeChannelId = keep("welcome channel", current.welcomeChannelId);
     await this.services.verification.saveSettings({
       ...current,
       enabled: true,
@@ -75,8 +113,10 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
       unverifiedRoleId: unverifiedRoleId && !verifiedRoleIds.includes(unverifiedRoleId) ? unverifiedRoleId : undefined,
       channelId,
       logChannelId,
+      welcomeChannelId,
       expectedRevision: revision,
     });
+    const repairs = cleared.length ? ` The ${cleared.join(" and ")} no longer existed, so ${cleared.length === 1 ? "it was" : "they were"} cleared; choose ${cleared.length === 1 ? "a new one" : "new ones"} on the Verification page.` : "";
     let panel = "";
     if (channelId) {
       panel = await this.services.verification.publishPanel(ids.guildId).then(
@@ -84,28 +124,41 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
         (error: unknown) => `, but the panel was not posted (${reason(error)})`,
       );
     }
-    return `Verification turned on with the ${verifiedRoleIds.map((id) => role(ids, id)).join(", ")} role${panel}. Existing members need to verify or be given the role.`;
+    return `Verification turned on with the ${verifiedRoleIds.map((id) => role(ids, id)).join(", ")} role${panel}. Existing members need to verify or be given the role.${repairs}`;
   }
 
   private async tickets(ids: BuilderResolvedIds): Promise<string> {
     const { tickets } = this.services;
     const { nextNumber: _next, revision, ...current } = await tickets.settings(ids.guildId);
+    const exists = await this.channelCheck(ids.guildId);
+    const gone = (id: string | undefined) => exists(id) === false;
+    const parts: string[] = [];
+    /** A setting that points at a deleted channel moves to the built one, or is cleared. */
+    const repoint = (label: string, id: string | undefined, replacement: string | undefined): string | undefined => {
+      if (!gone(id)) return id;
+      parts.push(replacement ? `${label} moved to ${channel(ids, replacement)}` : `${label} cleared because its channel was deleted`);
+      return replacement;
+    };
     const transcripts = ids.channels["ticket-transcripts"];
-    const openCategory = current.openCategoryChannelId ?? ids.categories.tickets;
+    const builtCategory = ids.categories.tickets;
+    const openCategory = repoint("open ticket category", current.openCategoryChannelId, builtCategory) ?? builtCategory;
+    const closedCategory = repoint("closed ticket category", current.closedCategoryChannelId, undefined);
+    const transcriptChannel = transcripts ?? repoint("transcript channel", current.transcriptChannelId, undefined);
+    const logChannel = repoint("ticket log channel", current.logChannelId, transcripts) ?? transcripts;
     const staffIds = ids.staffRoles.map((role) => role.id);
     await tickets.saveSettings({
       ...current,
       enabled: current.enabled || current.mode === "CHANNEL",
-      transcriptChannelId: transcripts ?? current.transcriptChannelId,
-      logChannelId: current.logChannelId ?? transcripts,
+      transcriptChannelId: transcriptChannel,
+      logChannelId: logChannel,
       openCategoryChannelId: openCategory,
+      closedCategoryChannelId: closedCategory,
       supportRoleIds: unique([...current.supportRoleIds, ...staffIds]).slice(0, 25),
       source: "SYSTEM",
       expectedRevision: revision,
     });
-    const parts: string[] = [];
     if (transcripts) parts.push(`transcripts go to ${channel(ids, transcripts)}`);
-    if (openCategory && openCategory === ids.categories.tickets) parts.push(`new tickets open in ${channel(ids, openCategory)}`);
+    if (openCategory && openCategory === builtCategory && !gone(current.openCategoryChannelId)) parts.push(`new tickets open in ${channel(ids, openCategory)}`);
     if (staffIds.length) parts.push("staff can answer tickets");
     const categories = await tickets.categories(ids.guildId);
     if (categories.length === 0) {
@@ -121,35 +174,77 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
         defaultPriority: "NORMAL",
         questions: [],
         requiredRoleIds: [],
-        ...(ids.categories.tickets ? { parentChannelId: ids.categories.tickets } : {}),
+        ...(builtCategory ? { parentChannelId: builtCategory } : {}),
       });
       parts.push("a Support ticket type was added");
     }
-    const panelChannel = ids.channels["tickets-panel"];
-    if (panelChannel) {
-      const panels = await tickets.panels(ids.guildId);
-      const unpublished = panels.length > 0 && panels.every((panel) => !panel.messageId) ? panels[0] : undefined;
-      if (panels.length === 0 || unpublished) {
-        const saved = unpublished
-          ? await tickets.savePanel({ ...panelInput(unpublished), channelId: panelChannel })
-          : await tickets.savePanel({
-              guildId: ids.guildId,
-              name: "Support",
-              channelId: panelChannel,
-              title: "Need help?",
-              description: "Click a button below to open a private ticket with the team.",
-              color: "#5865F2",
-              style: "BUTTONS",
-              placeholder: "Choose a ticket type",
-              categoryIds: [],
-            });
-        parts.push(await tickets.publishPanel(ids.guildId, saved.id).then(
-          () => `panel posted in ${channel(ids, panelChannel)}`,
-          (error: unknown) => `panel saved for ${channel(ids, panelChannel)} but not posted (${reason(error)})`,
-        ));
-      }
+    const staleReasons = categories.filter((category) => gone(category.parentChannelId));
+    for (const category of staleReasons) {
+      const { parentChannelId: _parent, ...rest } = category;
+      await tickets.saveCategory({ ...rest, ...(builtCategory ? { parentChannelId: builtCategory } : {}) });
     }
+    if (staleReasons.length > 0) {
+      const count = `${staleReasons.length} ticket reason${staleReasons.length === 1 ? "" : "s"}`;
+      parts.push(builtCategory ? `${count} now open in ${channel(ids, builtCategory)} (${staleReasons.length === 1 ? "its" : "their"} category was deleted)` : `${count} no longer point at a deleted category`);
+    }
+    const panelChannel = ids.channels["tickets-panel"];
+    if (panelChannel) parts.push(await this.ticketPanel(ids, panelChannel, gone, exists));
     return sentence("Tickets", parts);
+  }
+
+  /**
+   * Makes sure the built panel channel has a posted ticket panel: creates one
+   * when there are none, posts a panel that was never posted, or moves the first
+   * panel whose channel was deleted to the new channel and posts it there.
+   */
+  private async ticketPanel(ids: BuilderResolvedIds, panelChannel: string, gone: (id: string | undefined) => boolean, exists: ChannelCheck): Promise<string> {
+    const { tickets } = this.services;
+    const panels = await tickets.panels(ids.guildId);
+    const where = channel(ids, panelChannel);
+    const post = (saved: TicketPanel, success: string, saving: string) => tickets.publishPanel(ids.guildId, saved.id).then(
+      () => success,
+      (error: unknown) => `${saving} but not posted (${reason(error)})`,
+    );
+    if (panels.length === 0) {
+      const saved = await tickets.savePanel({
+        guildId: ids.guildId,
+        name: "Support",
+        channelId: panelChannel,
+        title: "Need help?",
+        description: "Click a button below to open a private ticket with the team.",
+        color: "#5865F2",
+        style: "BUTTONS",
+        placeholder: "Choose a ticket type",
+        categoryIds: [],
+      });
+      return post(saved, `panel posted in ${where}`, `panel saved for ${where}`);
+    }
+    let stale = panels.find((panel) => gone(panel.channelId));
+    if (!stale && exists(panels[0]?.channelId) === undefined) stale = await this.probeTicketPanels(ids.guildId, panels, panelChannel);
+    if (stale) {
+      const saved = await tickets.savePanel({ ...panelInput(stale), channelId: panelChannel });
+      return post(saved, `ticket panel moved to ${where} and posted`, `ticket panel moved to ${where}`);
+    }
+    const unpublished = panels.every((panel) => !panel.messageId) ? panels[0] : undefined;
+    if (!unpublished) return "";
+    const saved = await tickets.savePanel({ ...panelInput(unpublished), channelId: panelChannel });
+    return post(saved, `panel posted in ${where}`, `panel saved for ${where}`);
+  }
+
+  /**
+   * Without a channel list, re-posts each posted panel outside the new panel
+   * channel until one fails because its channel is gone; that one is moved.
+   */
+  private async probeTicketPanels(guildId: string, panels: readonly TicketPanel[], panelChannel: string): Promise<TicketPanel | undefined> {
+    for (const panel of panels) {
+      if (!panel.messageId || panel.channelId === panelChannel) continue;
+      const missing = await this.services.tickets.publishPanel(guildId, panel.id).then(
+        () => false,
+        (error: unknown) => error instanceof TicketError && error.code === "INVALID_STATE" && error.message === MISSING_PANEL_CHANNEL_MESSAGE,
+      );
+      if (missing) return panel;
+    }
+    return undefined;
   }
 
   private async applications(ids: BuilderResolvedIds): Promise<string> {
@@ -158,21 +253,34 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     const staffIds = ids.staffRoles.map((role) => role.id);
     const forms = await applications.forms(ids.guildId);
     if (forms.length === 0) return `Applications: no forms yet. Choose ${review ? channel(ids, review) : "a review channel"} when you create one.`;
+    const exists = await this.channelCheck(ids.guildId);
+    const gone = (id: string | undefined) => exists(id) === false;
     let changed = 0;
+    let moved = 0;
+    let cleared = 0;
     for (const form of forms) {
-      const needsChannel = !form.reviewChannelId && review !== undefined;
+      const stale = gone(form.reviewChannelId);
+      const needsChannel = (!form.reviewChannelId || stale) && review !== undefined;
       const needsReviewers = form.reviewerRoleIds.length === 0 && staffIds.length > 0;
-      if (!needsChannel && !needsReviewers) continue;
+      if (!needsChannel && !needsReviewers && !stale) continue;
       const { id, revision, createdAt: _created, updatedAt: _updated, ...input } = form;
       await applications.saveForm({
         ...input,
-        reviewChannelId: form.reviewChannelId ?? review,
+        reviewChannelId: stale ? review : form.reviewChannelId ?? review,
         reviewerRoleIds: needsReviewers ? staffIds.slice(0, 25) : form.reviewerRoleIds,
         expectedRevision: revision,
       }, id);
-      changed += 1;
+      if (stale && review) moved += 1;
+      else if (stale) cleared += 1;
+      if (needsChannel || needsReviewers) changed += 1;
     }
-    return changed === 0 ? "Applications: every form already has a review channel and reviewers." : `Applications: ${changed} form${changed === 1 ? "" : "s"} now reviewed in ${review ? channel(ids, review) : "their channel"}${staffIds.length ? " by staff" : ""}.`;
+    const summary = changed === 0 ? "Applications: every form already has a review channel and reviewers." : `Applications: ${changed} form${changed === 1 ? "" : "s"} now reviewed in ${review ? channel(ids, review) : "their channel"}${staffIds.length ? " by staff" : ""}.`;
+    const repairs: string[] = [];
+    if (moved > 0) repairs.push(`${plural(moved, "form")} had a deleted review channel and ${moved === 1 ? "was" : "were"} moved to ${channel(ids, review as string)}.`);
+    if (cleared > 0) repairs.push(`${plural(cleared, "form")} had a deleted review channel; choose a new one on the Applications page.`);
+    const stalePanels = (await applications.panels(ids.guildId)).filter((panel) => gone(panel.channelId));
+    if (stalePanels.length > 0) repairs.push(`${plural(stalePanels.length, "application panel")} ${stalePanels.length === 1 ? "is" : "are"} in a deleted channel; pick a new channel for ${stalePanels.length === 1 ? "it" : "them"} and post again.`);
+    return [summary, ...repairs].join(" ");
   }
 
   private async staff(ids: BuilderResolvedIds): Promise<string> {
@@ -293,6 +401,10 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
 
 function channel(ids: BuilderResolvedIds, id: string): string {
   return `#${ids.names[id] ?? id}`;
+}
+
+function plural(count: number, noun: string): string {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`;
 }
 
 function role(ids: BuilderResolvedIds, id: string): string {

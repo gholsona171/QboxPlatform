@@ -129,6 +129,32 @@ export function validatePanel(input: TicketPanelInput): void {
   if (input.imageUrl !== undefined && !/^https:\/\/\S{1,2000}$/.test(input.imageUrl))
     invalid("imageUrl must be an https URL.");
   if (input.categoryIds.length > 25) invalid("A panel can offer at most 25 categories.");
+  // No rows (null, absent, or empty) means automatic: five buttons per row.
+  if (input.rows && input.rows.length > 0) validatePanelRows(input.rows, input.categoryIds);
+}
+
+/** Discord limits: at most 5 rows of at most 5 buttons. */
+export const TICKET_PANEL_MAX_ROWS = 5;
+export const TICKET_PANEL_MAX_ROW_BUTTONS = 5;
+
+/**
+ * Button rows must place every reason the panel offers exactly once, in 1 to 5
+ * rows of 1 to 5 buttons.
+ */
+export function validatePanelRows(rows: readonly (readonly string[])[], categoryIds: readonly string[]): void {
+  if (categoryIds.length === 0) invalid("Choose which reasons the panel offers before arranging its buttons into rows.");
+  if (rows.length === 0 || rows.length > TICKET_PANEL_MAX_ROWS) invalid(`Button rows must have between 1 and ${TICKET_PANEL_MAX_ROWS} rows.`);
+  const offered = new Set(categoryIds);
+  const placed = new Set<string>();
+  for (const row of rows) {
+    if (row.length === 0 || row.length > TICKET_PANEL_MAX_ROW_BUTTONS) invalid(`Each button row must have between 1 and ${TICKET_PANEL_MAX_ROW_BUTTONS} buttons.`);
+    for (const id of row) {
+      if (!offered.has(id)) invalid("Button rows can only contain reasons the panel offers.");
+      if (placed.has(id)) invalid("Each reason can appear in only one button row.");
+      placed.add(id);
+    }
+  }
+  if (placed.size !== offered.size) invalid("Every reason the panel offers must be placed in a button row.");
 }
 
 /** Turns a name template into a Discord-safe channel name. */

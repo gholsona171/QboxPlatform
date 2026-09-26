@@ -61,6 +61,31 @@ export function emojiObject(value: string): { readonly id?: string; readonly nam
   return { name: value.trim() };
 }
 
+/** Discord JSON error codes the adapters tell apart. */
+export const DISCORD_ERROR = {
+  unknownChannel: 10003,
+  unknownMessage: 10008,
+  missingAccess: 50001,
+} as const;
+
+/** The Discord JSON error code on a REST failure (discord.js `DiscordAPIError.code`), if any. */
+export function discordErrorCode(error: unknown): number | undefined {
+  if (typeof error !== "object" || error === null) return undefined;
+  const code = (error as { readonly code?: unknown }).code;
+  if (typeof code === "number") return code;
+  if (typeof code === "string" && /^\d+$/.test(code)) return Number(code);
+  return undefined;
+}
+
+/** The channel was deleted (Unknown Channel) or the bot can no longer see it (Missing Access). */
+export function isMissingChannelError(error: unknown): boolean {
+  const code = discordErrorCode(error);
+  return code === DISCORD_ERROR.unknownChannel || code === DISCORD_ERROR.missingAccess;
+}
+
+/** Plain message shown when a stored panel channel is gone. */
+export const MISSING_PANEL_CHANNEL_MESSAGE = "The panel's channel no longer exists. Pick a new channel for this panel and post it again.";
+
 /** Discord permission bits used by feature adapters. */
 export const DISCORD_PERMISSION = {
   createInstantInvite: 1n << 0n,

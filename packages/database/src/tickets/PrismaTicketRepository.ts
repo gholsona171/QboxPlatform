@@ -19,7 +19,7 @@ import {
   type TicketSettingsInput,
   type TicketStats,
 } from "@qbox/tickets";
-import type { Prisma, PrismaClient } from "@qbox/prisma";
+import { Prisma, type PrismaClient } from "@qbox/prisma";
 
 type Client = Pick<
   PrismaClient,
@@ -143,6 +143,7 @@ export class PrismaTicketRepository implements TicketRepository {
       imageUrl: input.imageUrl ?? null,
       footer: input.footer ?? null,
       categoryIds: [...input.categoryIds],
+      buttonRows: input.rows && input.rows.length > 0 ? input.rows.map((row) => [...row]) : Prisma.DbNull,
     };
     const row = input.id
       ? await this.client.ticketPanel.update({ where: { id: input.id, guildId: guild.id }, data })
@@ -153,6 +154,12 @@ export class PrismaTicketRepository implements TicketRepository {
   public async markPanelPublished(guildId: string, id: string, messageId: string): Promise<TicketPanel> {
     const guild = await this.ensureGuild(guildId);
     const row = await this.client.ticketPanel.update({ where: { id, guildId: guild.id }, data: { messageId, publishedAt: new Date() } });
+    return mapPanel(guildId, row);
+  }
+
+  public async clearPanelMessage(guildId: string, id: string): Promise<TicketPanel> {
+    const guild = await this.ensureGuild(guildId);
+    const row = await this.client.ticketPanel.update({ where: { id, guildId: guild.id }, data: { messageId: null, publishedAt: null } });
     return mapPanel(guildId, row);
   }
 
@@ -457,8 +464,16 @@ function mapPanel(guildId: string, row: PanelRow): TicketPanel {
     ...optional("imageUrl", row.imageUrl),
     ...optional("footer", row.footer),
     categoryIds: row.categoryIds,
+    rows: buttonRows(row.buttonRows),
     ...optional("publishedAt", row.publishedAt),
   };
+}
+
+/** Stored button rows, or null (automatic) when missing or malformed. */
+function buttonRows(value: Prisma.JsonValue | null): string[][] | null {
+  if (!Array.isArray(value) || value.length === 0) return null;
+  const rows = value.map((row) => (Array.isArray(row) ? row.filter((id): id is string => typeof id === "string") : []));
+  return rows.every((row) => row.length > 0) ? rows : null;
 }
 
 function mapTicket(row: TicketRow): Ticket {

@@ -120,6 +120,11 @@ export interface TicketPanel {
   readonly footer?: string | undefined;
   /** Categories offered by this panel, in display order. Empty means all enabled. */
   readonly categoryIds: readonly string[];
+  /**
+   * Button rows for the BUTTONS style: category IDs per row, up to 5 rows of 5.
+   * Null or absent arranges the buttons automatically, five per row.
+   */
+  readonly rows?: readonly (readonly string[])[] | null | undefined;
   readonly publishedAt?: Date | undefined;
 }
 
@@ -271,6 +276,8 @@ export interface TicketRepository {
   listPanels(guildId: string): Promise<readonly TicketPanel[]>;
   savePanel(input: TicketPanelInput): Promise<TicketPanel>;
   markPanelPublished(guildId: string, id: string, messageId: string): Promise<TicketPanel>;
+  /** Forgets the posted message (after the panel moves to another channel). */
+  clearPanelMessage(guildId: string, id: string): Promise<TicketPanel>;
   deletePanel(guildId: string, id: string): Promise<void>;
   createTicket(input: TicketCreateData): Promise<Ticket>;
   getTicket(id: string): Promise<Ticket | undefined>;

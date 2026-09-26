@@ -1,6 +1,7 @@
 import type {
   TicketAccessInput,
   TicketButtonStyle,
+  TicketCategory,
   TicketCloseSpaceInput,
   TicketDirectMessage,
   TicketDiscordGateway,
@@ -9,9 +10,19 @@ import type {
   TicketPanelPublishInput,
   TicketReopenSpaceInput,
   TicketSpaceInput,
+  TicketPanel,
   TicketTranscriptPost,
 } from "./types.js";
-import { GuildNameCache, colorValue, emojiObject, type DiscordRestClient, type DiscordRestFile } from "@qbox/shared/discord-rest";
+import { TicketError } from "./validation.js";
+import {
+  GuildNameCache,
+  MISSING_PANEL_CHANNEL_MESSAGE,
+  colorValue,
+  emojiObject,
+  isMissingChannelError,
+  type DiscordRestClient,
+  type DiscordRestFile,
+} from "@qbox/shared/discord-rest";
 import { BRAND } from "@qbox/shared/brand";
 
 export type { DiscordRestClient, DiscordRestFile, DiscordRestRequest } from "@qbox/shared/discord-rest";
@@ -212,7 +223,7 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
             })),
           }],
         }]
-      : chunk(categories, 5).map((row) => ({
+      : panelButtonRows(panel, categories).map((row) => ({
           type: 1,
           components: row.map((category) => button(`${TICKET_CUSTOM_ID.open}${category.id}`, category.name, category.buttonStyle, category.emoji)),
         }));
@@ -231,12 +242,19 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
       try {
         await this.rest.patch(`/channels/${panel.channelId}/messages/${panel.messageId}`, { body });
         return { messageId: panel.messageId };
-      } catch {
-        // The old panel message was deleted or moved; post a fresh one.
+      } catch (error) {
+        // A deleted channel cannot take a new post either. Anything else
+        // (usually Unknown Message: the old panel was deleted) posts a fresh one.
+        if (isMissingChannelError(error)) throw missingPanelChannel();
       }
     }
-    const message = (await this.rest.post(`/channels/${panel.channelId}/messages`, { body })) as IdResponse;
-    return { messageId: message.id };
+    try {
+      const message = (await this.rest.post(`/channels/${panel.channelId}/messages`, { body })) as IdResponse;
+      return { messageId: message.id };
+    } catch (error) {
+      if (isMissingChannelError(error)) throw missingPanelChannel();
+      throw error;
+    }
   }
 
   public async deletePanelMessage(channelId: string, messageId: string): Promise<void> {
@@ -287,6 +305,40 @@ function button(customId: string, label: string, style: TicketButtonStyle, emoji
     label: label.slice(0, 80),
     ...(emojiText ? { emoji: emojiObject(emojiText) } : {}),
   };
+}
+
+/**
+ * Button rows for a BUTTONS panel: the owner's arrangement when set (unknown or
+ * disabled reasons dropped, empty rows removed), otherwise five per row.
+ * Offered reasons missing from the arrangement fill the remaining space.
+ * Discord allows at most 5 rows of 5 buttons.
+ */
+export function panelButtonRows(panel: Pick<TicketPanel, "rows">, categories: readonly TicketCategory[]): TicketCategory[][] {
+  if (!panel.rows || panel.rows.length === 0) return chunk(categories, 5).slice(0, 5);
+  const byId = new Map(categories.map((category) => [category.id, category]));
+  const used = new Set<string>();
+  const rows: TicketCategory[][] = [];
+  for (const ids of panel.rows) {
+    const row: TicketCategory[] = [];
+    for (const id of ids) {
+      const category = byId.get(id);
+      if (!category || used.has(id) || row.length >= 5) continue;
+      used.add(id);
+      row.push(category);
+    }
+    if (row.length > 0) rows.push(row);
+  }
+  for (const category of categories) {
+    if (used.has(category.id)) continue;
+    const open = rows.find((row) => row.length < 5);
+    if (open) open.push(category);
+    else rows.push([category]);
+  }
+  return rows.slice(0, 5);
+}
+
+function missingPanelChannel(): TicketError {
+  return new TicketError("INVALID_STATE", MISSING_PANEL_CHANNEL_MESSAGE);
 }
 
 function chunk<T>(items: readonly T[], size: number): T[][] {

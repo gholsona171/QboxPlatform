@@ -171,6 +171,8 @@ async function chooseGuild(button) {
   button.disabled = true;
   try {
     await selectGuild(guildId);
+    // Cached channel and role lists belong to the old server.
+    window.dispatchEvent(new CustomEvent("qbox:guild-changed", { detail: { guildId } }));
     location.reload();
   } catch (error) {
     button.disabled = false;

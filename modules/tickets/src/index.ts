@@ -1,5 +1,5 @@
 export * from "./types.js";
-export { TicketError, channelName, renderText, type TicketErrorCode } from "./validation.js";
+export { TicketError, TICKET_PANEL_MAX_ROWS, TICKET_PANEL_MAX_ROW_BUTTONS, channelName, renderText, validatePanelRows, type TicketErrorCode } from "./validation.js";
 export {
   DEFAULT_REASON_NAME_TEMPLATE,
   TicketService,
@@ -14,6 +14,7 @@ export {
 export {
   DiscordRestTicketGateway,
   TICKET_CUSTOM_ID,
+  panelButtonRows,
   emoji,
   type DiscordRestClient,
   type DiscordRestFile,

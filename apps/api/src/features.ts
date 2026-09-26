@@ -65,7 +65,11 @@ export function apiFeatures({ persistence, discordRest, ...dependencies }: ApiFe
   const voice = new VoiceRoomService(new PrismaVoiceRepository(persistence.prisma), discordRest ? new DiscordRestVoiceGateway(discordRest) : undefined);
   const fivem = new FivemService(new PrismaFivemRepository(persistence.prisma), new HttpFivemQueryClient(), discordRest ? new DiscordRestFivemGateway(discordRest) : undefined);
   const community = new DiscordCommunityService(persistence.repositories.discordCommunity, undefined, templates);
-  const builderLinks = new ServiceBuilderLinks({ moderation, verification, tickets, applications, staff, levels, birthdays, fivem, voice, community });
+  const builderLinks = new ServiceBuilderLinks({ moderation, verification, tickets, applications, staff, levels, birthdays, fivem, voice, community }, {
+    listChannels: discordRest
+      ? async (guildId) => ((await discordRest.get(`/guilds/${guildId}/channels`)) as readonly { readonly id: string }[]).map((item) => item.id)
+      : undefined,
+  });
   return [
     directoryApiFeature(discordRest),
     ticketsApiFeature(tickets),

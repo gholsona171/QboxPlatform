@@ -133,4 +133,22 @@ describe("PrismaTicketRepository", () => {
     expect(reloaded.categoryId).toBeUndefined();
     expect(reloaded.status).toBe("OPEN");
   });
+
+  it("stores panel button rows and forgets the message when the panel moves channel", async () => {
+    await enable();
+    const reason = (name: string) => service.saveCategory({ guildId, name, buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+    const [a, b, c] = [await reason("A"), await reason("B"), await reason("C")].map((item) => item.id) as [string, string, string];
+    const input = { guildId, name: "Rows", channelId: "1262656532902842426", title: "Support", description: "Pick", color: "#5865F2", style: "BUTTONS" as const, placeholder: "Pick", categoryIds: [a, b, c] };
+    const saved = await service.savePanel({ ...input, rows: [[c], [a, b]] });
+    expect(saved.rows).toEqual([[c], [a, b]]);
+    expect((await repository.listPanels(guildId)).find((panel) => panel.id === saved.id)?.rows).toEqual([[c], [a, b]]);
+    const posted = await service.publishPanel(guildId, saved.id);
+    expect(posted).toMatchObject({ messageId: "1432100000000000002", rows: [[c], [a, b]] });
+    const automatic = await service.savePanel({ ...input, id: saved.id, rows: null });
+    expect(automatic.rows).toBeNull();
+    expect(automatic.messageId).toBe("1432100000000000002");
+    const moved = await service.savePanel({ ...input, id: saved.id, channelId: "1262656532902842427" });
+    expect(moved.messageId).toBeUndefined();
+    expect(moved.publishedAt).toBeUndefined();
+  });
 });

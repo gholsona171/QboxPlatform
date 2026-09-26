@@ -171,7 +171,18 @@ export class TicketService {
     const known = new Set(categories.map((category) => category.id));
     for (const categoryId of input.categoryIds)
       if (!known.has(categoryId)) invalid("Panels can only offer existing ticket categories.");
-    return this.repository.savePanel({ ...input, name: input.name.trim(), color: normalizeColor(input.color), categoryIds: unique(input.categoryIds) });
+    const saved = await this.repository.savePanel({
+      ...input,
+      name: input.name.trim(),
+      color: normalizeColor(input.color),
+      categoryIds: unique(input.categoryIds),
+      rows: input.rows && input.rows.length > 0 ? input.rows.map((row) => [...row]) : null,
+    });
+    const previous = panels.find((panel) => panel.id === input.id);
+    if (!previous?.messageId || previous.channelId === saved.channelId) return saved;
+    // Moved to another channel: the old message is removed (when it still exists) and the next publish posts anew.
+    if (this.gateway) await this.gateway.deletePanelMessage(previous.channelId, previous.messageId).catch(() => undefined);
+    return this.repository.clearPanelMessage(saved.guildId, saved.id);
   }
 
   public async publishPanel(guildId: string, id: string): Promise<TicketPanel> {

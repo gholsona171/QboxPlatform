@@ -260,4 +260,22 @@ describe("DiscordRestVerificationGateway", () => {
     expect(result.messageId).toBe("600000000000000009");
     expect(requests[0]).toContain("qbox:verification:start");
   });
+
+  it.each([[10003, "patch"], [50001, "patch"], [10003, "post"]] as const)("reports a deleted channel (%i on %s) in plain words", async (code, failing) => {
+    const failure = Object.assign(new Error("Unknown Channel"), { code });
+    const rest = {
+      get: async () => ({}),
+      post: async () => { if (failing === "post") throw failure; return { id: "600000000000000009" }; },
+      patch: async () => { throw failure; },
+      put: async () => ({}),
+      delete: async () => ({}),
+    };
+    const gateway = new DiscordRestVerificationGateway(rest);
+    const existing = failing === "patch" ? "600000000000000001" : undefined;
+    await expect(gateway.publishPanel(PANEL_CHANNEL, { title: "Verify", description: "Click", color: "#5865F2", buttonLabel: "Verify" }, existing)).rejects.toMatchObject({
+      name: "VerificationError",
+      code: "INVALID_STATE",
+      message: "The panel's channel no longer exists. Pick a new channel for this panel and post it again.",
+    });
+  });
 });

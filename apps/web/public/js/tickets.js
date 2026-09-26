@@ -15,6 +15,7 @@ import {
 import { appPath } from "./config.js";
 import {
   bindPickers,
+  channelExists,
   channelLabel,
   channelSelect,
   checkbox,
@@ -55,6 +56,9 @@ const view = {
   detail: undefined,
   editingReason: undefined,
   editingPanel: undefined,
+  /** Button rows being arranged in the panel editor (null = automatic), and which panel they belong to. */
+  panelRows: null,
+  rowsFor: undefined,
   canManage: false,
   error: undefined,
 };
@@ -288,14 +292,25 @@ function panelsTab() {
   const { panels, categories } = view.overview;
   const editing = panels.find((item) => item.id === view.editingPanel);
   const list = panels.length
-    ? `<ul class="reason-list">${panels.map((panel) => `
+    ? `<ul class="reason-list">${panels.map((panel) => {
+        const missing = channelExists(panel.channelId) === false;
+        const post = missing
+          ? `<button class="button compact primary" data-t-action="repick-panel-channel" data-value="${escapeHtml(panel.id)}" title="The channel was deleted. Pick a new one, save, then post.">Post in Discord</button>`
+          : `<button class="button compact primary" data-t-action="publish-panel" data-value="${escapeHtml(panel.id)}">${panel.messageId ? "Update in Discord" : "Post in Discord"}</button>`;
+        return `
         <li class="${panel.id === view.editingPanel ? "selected" : ""}">
-          <div><strong>${escapeHtml(panel.name)}</strong> ${badge(panel.messageId ? "posted" : "not posted")}
-            <small>${escapeHtml(channelLabel(panel.channelId) || panel.channelId)} · ${panel.style === "SELECT_MENU" ? "Dropdown" : "Buttons"} · ${panel.categoryIds.length || "All"} reason(s)</small></div>
-          <div class="toolbar"><button class="button compact primary" data-t-action="publish-panel" data-value="${escapeHtml(panel.id)}">${panel.messageId ? "Update in Discord" : "Post in Discord"}</button><button class="button compact" data-t-action="edit-panel" data-value="${escapeHtml(panel.id)}">Edit</button><button class="button compact danger" data-t-action="delete-panel" data-value="${escapeHtml(panel.id)}">Delete</button></div>
-        </li>`).join("")}</ul>`
+          <div><strong>${escapeHtml(panel.name)}</strong> ${missing ? `<span class="badge danger">Channel missing</span>` : badge(panel.messageId ? "posted" : "not posted")}
+            <small>${missing ? "#deleted-channel" : escapeHtml(channelLabel(panel.channelId) || panel.channelId)} · ${panel.style === "SELECT_MENU" ? "Dropdown" : "Buttons"} · ${panel.categoryIds.length || "All"} reason(s)${panel.style !== "SELECT_MENU" && panel.rows?.length ? ` · ${panel.rows.length} row(s)` : ""}</small></div>
+          <div class="toolbar">${post}<button class="button compact" data-t-action="edit-panel" data-value="${escapeHtml(panel.id)}">Edit</button><button class="button compact danger" data-t-action="delete-panel" data-value="${escapeHtml(panel.id)}">Delete</button></div>
+        </li>`;
+      }).join("")}</ul>`
     : `<div class="empty-state">No panels yet. A panel is the message in your support channel with one button per ticket reason.</div>`;
-  const p = editing ?? { name: "Support", title: "Need help?", description: "Pick a reason below and our team will be with you shortly.", color: view.overview.settings.embedColor, style: "BUTTONS", placeholder: "Select a reason", categoryIds: categories.filter((category) => category.enabled).map((category) => category.id) };
+  const p = editing ?? { name: "Support", title: "Need help?", description: "Pick a reason below and our team will be with you shortly.", color: view.overview.settings.embedColor, style: "BUTTONS", placeholder: "Select a reason", categoryIds: categories.filter((category) => category.enabled).map((category) => category.id), rows: null };
+  const rowsKey = editing?.id ?? "new";
+  if (view.rowsFor !== rowsKey) {
+    view.rowsFor = rowsKey;
+    view.panelRows = p.rows?.length ? p.rows.map((row) => [...row]) : null;
+  }
   return `
     <section class="grid editor-layout">
       <div class="grid">${list}${editing ? `<button class="button full" data-t-action="new-panel">+ New panel</button>` : ""}
@@ -314,18 +329,148 @@ function panelsTab() {
         <fieldset class="full"><legend>Reasons on this panel</legend>
           ${categories.length ? categories.map((category) => checkbox(`reason-${category.id}`, `${category.emoji || "🎫"} ${category.name}${category.enabled ? "" : " (off)"}`, p.categoryIds.includes(category.id))).join("") : '<p class="microcopy">Add ticket reasons first.</p>'}
         </fieldset>
+        <div class="full" id="panelRowsEditor">${rowsEditor(p.style, p.categoryIds)}</div>
         <button class="button primary full">${editing ? "Save panel" : "Create panel"}</button>
       </form>
     </section>`;
 }
 
+const MAX_ROWS = 5;
+const MAX_ROW_BUTTONS = 5;
+
+function categoryById(id) {
+  return view.overview.categories.find((category) => category.id === id);
+}
+
+/** Splits items into rows of five, the way Discord lays out automatic buttons. */
+function chunkRows(items) {
+  const rows = [];
+  for (let index = 0; index < items.length; index += MAX_ROW_BUTTONS) rows.push(items.slice(index, index + MAX_ROW_BUTTONS));
+  return rows;
+}
+
+/**
+ * Button rows exactly as the bot posts them: the arranged rows (reasons that
+ * are off or unknown dropped, empty rows removed), otherwise five per row.
+ */
+function previewRows(panel, categories) {
+  if (!panel.rows?.length) return chunkRows(categories).slice(0, MAX_ROWS);
+  const shown = new Map(categories.map((category) => [category.id, category]));
+  const used = new Set();
+  const rows = panel.rows
+    .map((row) => row.flatMap((id) => {
+      const category = shown.get(id);
+      if (!category || used.has(id)) return [];
+      used.add(id);
+      return [category];
+    }).slice(0, MAX_ROW_BUTTONS))
+    .filter((row) => row.length > 0);
+  for (const category of categories) {
+    if (used.has(category.id)) continue;
+    const open = rows.find((row) => row.length < MAX_ROW_BUTTONS);
+    if (open) open.push(category);
+    else rows.push([category]);
+  }
+  return rows.slice(0, MAX_ROWS);
+}
+
+/** Keeps the arranged rows in step with the ticked reasons: unticked ones leave, newly ticked ones join the last row with space. */
+function syncRows(categoryIds) {
+  if (!view.panelRows) return;
+  const wanted = new Set(categoryIds);
+  const rows = view.panelRows.map((row) => row.filter((id) => wanted.has(id)));
+  const placed = new Set(rows.flat());
+  for (const id of categoryIds) {
+    if (placed.has(id)) continue;
+    let target = [...rows].reverse().find((row) => row.length < MAX_ROW_BUTTONS);
+    if (!target) {
+      if (rows.length >= MAX_ROWS) continue;
+      target = [];
+      rows.push(target);
+    }
+    target.push(id);
+  }
+  view.panelRows = rows.length ? rows : [[]];
+}
+
+/** Row editor for the buttons style: each row is a box of reason chips that can move between and within rows. */
+function rowsEditor(style, categoryIds) {
+  if (style === "SELECT_MENU") return `<fieldset><legend>Button rows</legend><p class="microcopy">Dropdown panels show every reason in one menu, so rows do not apply.</p></fieldset>`;
+  if (!categoryIds.length) return `<fieldset><legend>Button rows</legend><p class="microcopy">Tick the reasons this panel offers to arrange their buttons into rows.</p></fieldset>`;
+  const arranged = Array.isArray(view.panelRows);
+  const toggle = `<label class="checkbox full"><input type="checkbox" data-rows-toggle ${arranged ? "checked" : ""}> Arrange the buttons into rows myself</label>`;
+  if (!arranged)
+    return `<fieldset><legend>Button rows</legend>${toggle}<p class="microcopy">Automatic: up to five buttons per row, in the order above.</p></fieldset>`;
+  const rows = view.panelRows;
+  const box = (row, rowIndex) => `
+    <div class="panel-row" role="group" aria-label="Row ${rowIndex + 1}">
+      <div class="panel-row-head"><strong>Row ${rowIndex + 1}</strong><small>${row.length}/${MAX_ROW_BUTTONS}</small>
+        ${row.length === 0 ? `<button type="button" class="button compact" data-row-action="remove-row" data-row="${rowIndex}">Remove row</button>` : ""}</div>
+      ${row.length ? `<ul class="panel-row-chips">${row.map((id, position) => {
+        const category = categoryById(id);
+        const name = category ? `${category.emoji || "🎫"} ${category.name}` : "Deleted reason";
+        const label = escapeHtml(category?.name ?? "this reason");
+        const nextFull = rows[rowIndex + 1] && rows[rowIndex + 1].length >= MAX_ROW_BUTTONS;
+        const previousFull = rows[rowIndex - 1] && rows[rowIndex - 1].length >= MAX_ROW_BUTTONS;
+        const button = (action, text, title, disabled) => `<button type="button" class="row-move" data-row-action="${action}" data-row="${rowIndex}" data-index="${position}" title="${title}" aria-label="${title}" ${disabled ? "disabled" : ""}>${text}</button>`;
+        return `<li class="panel-row-chip ${category?.buttonStyle?.toLowerCase() ?? ""}"><span>${escapeHtml(name)}</span>
+          <span class="row-moves">
+            ${button("previous-row", "←", `Move ${label} to the previous row`, rowIndex === 0 || previousFull)}
+            ${button("up", "↑", `Move ${label} earlier in this row`, position === 0)}
+            ${button("down", "↓", `Move ${label} later in this row`, position === row.length - 1)}
+            ${button("next-row", "→", `Move ${label} to the next row`, rowIndex === rows.length - 1 || nextFull)}
+          </span></li>`;
+      }).join("")}</ul>` : `<p class="microcopy">Empty. Move a button here or remove the row.</p>`}
+    </div>`;
+  return `<fieldset><legend>Button rows</legend>${toggle}
+    <div class="panel-rows">${rows.map(box).join("")}</div>
+    <div class="toolbar"><button type="button" class="button compact" data-row-action="add-row" ${rows.length >= MAX_ROWS ? "disabled" : ""}>+ Add row</button>
+      <small class="microcopy">Up to ${MAX_ROWS} rows of ${MAX_ROW_BUTTONS} buttons. Empty rows are left out.</small></div>
+  </fieldset>`;
+}
+
+/** Applies one row editor button. */
+function moveInRows(action, rowIndex, index) {
+  const rows = view.panelRows;
+  if (!rows) return;
+  const row = rows[rowIndex];
+  switch (action) {
+    case "add-row":
+      if (rows.length < MAX_ROWS) rows.push([]);
+      return;
+    case "remove-row":
+      if (row && row.length === 0 && rows.length > 1) rows.splice(rowIndex, 1);
+      return;
+    case "up":
+      if (row && index > 0) [row[index - 1], row[index]] = [row[index], row[index - 1]];
+      return;
+    case "down":
+      if (row && index < row.length - 1) [row[index + 1], row[index]] = [row[index], row[index + 1]];
+      return;
+    case "previous-row":
+    case "next-row": {
+      const target = rows[rowIndex + (action === "next-row" ? 1 : -1)];
+      if (!row || !target || target.length >= MAX_ROW_BUTTONS) return;
+      const [id] = row.splice(index, 1);
+      if (action === "next-row") target.unshift(id);
+      else target.push(id);
+      return;
+    }
+    default:
+  }
+}
+
 /** Renders the panel the way Discord shows it, from the current form values. */
 function panelPreview(panel) {
-  const categories = view.overview.categories.filter((category) => panel.categoryIds.includes(category.id) && category.enabled);
+  const offered = panel.categoryIds.length ? panel.categoryIds.map(categoryById).filter(Boolean) : view.overview.categories;
+  const categories = offered.filter((category) => category.enabled);
   const color = /^#?[0-9a-f]{6}$/i.test(panel.color || "") ? (panel.color.startsWith("#") ? panel.color : `#${panel.color}`) : "#5865F2";
+  const buttonRow = (row) => `<div class="dc-buttons">${row.map((category) => `<span class="dc-button ${category.buttonStyle.toLowerCase()}">${escapeHtml(category.emoji || "")} ${escapeHtml(category.name)}</span>`).join("")}</div>`;
   const controls = panel.style === "SELECT_MENU"
     ? `<div class="dc-select">${escapeHtml(panel.placeholder || "Select a reason")}<span>⌄</span></div>`
-    : `<div class="dc-buttons">${categories.map((category) => `<span class="dc-button ${category.buttonStyle.toLowerCase()}">${escapeHtml(category.emoji || "")} ${escapeHtml(category.name)}</span>`).join("") || '<span class="microcopy">No reasons selected</span>'}</div>`;
+    : categories.length
+      ? `<div class="dc-rows">${previewRows(panel, categories).map(buttonRow).join("")}</div>`
+      : '<div class="dc-buttons"><span class="microcopy">No reasons selected</span></div>';
   return `<div class="dc-message">
     <div class="dc-avatar">QB</div>
     <div class="dc-body">
@@ -426,8 +571,33 @@ function bind() {
   }));
   bindPickers(container);
   const panelForm = container.querySelector('form[data-t-form="panel"]');
-  panelForm?.addEventListener("input", () => {
+  if (!panelForm) return;
+  const refresh = () => {
+    const payload = panelPayload(new FormData(panelForm));
+    syncRows(payload.categoryIds);
+    const rowsBox = document.getElementById("panelRowsEditor");
+    const focused = document.activeElement?.closest?.("#panelRowsEditor") ? document.activeElement.getAttribute("aria-label") : undefined;
+    if (rowsBox) rowsBox.innerHTML = rowsEditor(payload.style, payload.categoryIds);
+    if (focused) rowsBox?.querySelector(`[aria-label="${CSS.escape(focused)}"]:not([disabled])`)?.focus();
     document.getElementById("panelPreview").innerHTML = panelPreview(panelPayload(new FormData(panelForm)));
+  };
+  panelForm.addEventListener("input", (event) => {
+    if (event.target.matches?.("[data-rows-toggle]")) {
+      const categoryIds = panelPayload(new FormData(panelForm)).categoryIds;
+      view.panelRows = event.target.checked ? chunkRows(categoryIds).slice(0, MAX_ROWS) : null;
+    }
+    refresh();
+  });
+  panelForm.addEventListener("change", (event) => {
+    // Redrawn pickers (↻) announce themselves with a change event only.
+    if (event.target.matches?.("select[name=channelId]")) refresh();
+  });
+  panelForm.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-row-action]");
+    if (!button) return;
+    event.preventDefault();
+    moveInRows(button.dataset.rowAction, Number(button.dataset.row), Number(button.dataset.index));
+    refresh();
   });
 }
 
@@ -474,14 +644,41 @@ async function action(name, value) {
     case "delete-reason":
       if (!(await confirmAction({ title: "Delete this ticket reason?", body: "Existing tickets keep their history. Update your panels afterwards so the button disappears.", confirmText: "Delete" }))) return undefined;
       return run("Ticket reason deleted.", () => deleteTicketCategory(value));
-    case "edit-panel": view.editingPanel = value; return render();
-    case "new-panel": view.editingPanel = undefined; return render();
-    case "publish-panel": return run("Panel posted in Discord.", () => publishTicketPanel(value));
+    case "edit-panel": view.editingPanel = value; view.rowsFor = undefined; return render();
+    case "new-panel": view.editingPanel = undefined; view.rowsFor = undefined; return render();
+    case "repick-panel-channel": return repickPanelChannel(value);
+    case "publish-panel":
+      try {
+        await publishTicketPanel(value);
+        notify("Panel posted in Discord.");
+        await load();
+        render();
+      } catch (error) {
+        notify(error.message || "That did not work.", "error");
+        // The panel's channel was deleted: open the panel with its channel picker so a new one can be chosen.
+        if (/no longer exists/i.test(error.message ?? "")) {
+          await load();
+          return repickPanelChannel(value, false);
+        }
+      }
+      return undefined;
     case "delete-panel":
       if (!(await confirmAction({ title: "Delete this panel?", body: "The panel message is removed from Discord.", confirmText: "Delete" }))) return undefined;
       return run("Panel deleted.", () => deleteTicketPanel(value));
     default: return undefined;
   }
+}
+
+/** Opens a panel whose channel is gone in the editor with the channel picker focused, and reloads the channel list first. */
+async function repickPanelChannel(id, explain = true) {
+  view.editingPanel = id;
+  view.rowsFor = undefined;
+  await loadDirectory({ refresh: true });
+  render();
+  const select = container.querySelector('form[data-t-form="panel"] [name="channelId"]');
+  select?.scrollIntoView({ block: "center", behavior: "smooth" });
+  select?.focus();
+  if (explain) notify("This panel's channel no longer exists. Pick a new channel, save the panel, then post it.", "warning");
 }
 
 async function submit(name, form) {
@@ -509,6 +706,7 @@ async function submit(name, form) {
       return run(view.editingPanel ? "Panel saved. Click “Update in Discord” to refresh it." : "Panel created. Click “Post in Discord” to send it.", async () => {
         await saveTicketPanel(panelPayload(data), view.editingPanel);
         view.editingPanel = undefined;
+        view.rowsFor = undefined;
       });
     default: return undefined;
   }
@@ -579,6 +777,7 @@ function reasonPayload(form, data) {
 
 function panelPayload(data) {
   const text = (name) => String(data.get(name) ?? "").trim();
+  const categoryIds = [...data.keys()].filter((key) => key.startsWith("reason-")).map((key) => key.slice("reason-".length));
   return {
     name: text("name"),
     channelId: text("channelId"),
@@ -589,8 +788,16 @@ function panelPayload(data) {
     placeholder: text("placeholder") || "Select a reason",
     ...(text("imageUrl") ? { imageUrl: text("imageUrl") } : {}),
     ...(text("footer") ? { footer: text("footer") } : {}),
-    categoryIds: [...data.keys()].filter((key) => key.startsWith("reason-")).map((key) => key.slice("reason-".length)),
+    categoryIds,
+    rows: arrangedRows(categoryIds),
   };
+}
+
+/** The arranged rows to save (empty rows left out), or null for automatic rows. */
+function arrangedRows(categoryIds) {
+  if (!view.panelRows || !categoryIds.length) return null;
+  const rows = view.panelRows.map((row) => row.filter((id) => categoryIds.includes(id))).filter((row) => row.length > 0);
+  return rows.length ? rows : null;
 }
 
 

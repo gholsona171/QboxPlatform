@@ -255,4 +255,28 @@ describe("helpers", () => {
       components: [{ components: [{ custom_id: "qbox:applications:accept:abc" }, { custom_id: "qbox:applications:deny:abc" }, { label: "2" }, { label: "0" }] }],
     });
   });
+
+  it("reports a deleted panel channel in plain words and still re-posts a deleted message", async () => {
+    const panel: ApplicationPanel = { id: "p", guildId: GUILD, channelId: REVIEW_CHANNEL, messageId: "700000000000000001", title: "Apply", description: "Pick", color: "#5865F2", formIds: [], createdAt: new Date(), updatedAt: new Date() };
+    const form = { id: "f", name: "Staff", buttonStyle: "PRIMARY" } as unknown as ApplicationForm;
+    let patchError: Error = Object.assign(new Error("Unknown Channel"), { code: 10003 });
+    const posts: string[] = [];
+    const rest = {
+      get: async () => ({}),
+      post: async (route: string) => { posts.push(route); return { id: "700000000000000002" }; },
+      patch: async () => { throw patchError; },
+      put: async () => undefined,
+      delete: async () => undefined,
+    };
+    const gateway = new DiscordRestApplicationGateway(rest);
+    await expect(gateway.publishPanel(panel, [form])).rejects.toMatchObject({
+      name: "ApplicationError",
+      code: "INVALID_STATE",
+      message: "The panel's channel no longer exists. Pick a new channel for this panel and post it again.",
+    });
+    expect(posts).toEqual([]);
+    patchError = Object.assign(new Error("Unknown Message"), { code: 10008 });
+    expect(await gateway.publishPanel(panel, [form])).toEqual({ messageId: "700000000000000002" });
+    expect(posts).toEqual([`/channels/${REVIEW_CHANNEL}/messages`]);
+  });
 });

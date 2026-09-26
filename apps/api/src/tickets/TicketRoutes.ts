@@ -105,6 +105,8 @@ const panelSchema = z.strictObject({
   imageUrl: z.string().optional(),
   footer: z.string().optional(),
   categoryIds: z.array(z.string().uuid()).max(25).default([]),
+  /** Button rows (reason IDs per row); null or absent arranges them automatically. */
+  rows: z.array(z.array(z.string().uuid()).max(25)).max(25).nullable().default(null),
 });
 
 const listQuerySchema = z.object({
