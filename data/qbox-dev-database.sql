@@ -15,6 +15,58 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE IF EXISTS ONLY "public"."welcome_goodbye_configs" DROP CONSTRAINT IF EXISTS "welcome_goodbye_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."voice_rooms" DROP CONSTRAINT IF EXISTS "voice_rooms_hub_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."tickets" DROP CONSTRAINT IF EXISTS "tickets_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."tickets" DROP CONSTRAINT IF EXISTS "tickets_category_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_settings" DROP CONSTRAINT IF EXISTS "ticket_settings_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_panels" DROP CONSTRAINT IF EXISTS "ticket_panels_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_messages" DROP CONSTRAINT IF EXISTS "ticket_messages_ticket_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_events" DROP CONSTRAINT IF EXISTS "ticket_events_ticket_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."ticket_categories" DROP CONSTRAINT IF EXISTS "ticket_categories_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."suggestions" DROP CONSTRAINT IF EXISTS "suggestions_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."starboard_entries" DROP CONSTRAINT IF EXISTS "starboard_entries_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."starboard_configs" DROP CONSTRAINT IF EXISTS "starboard_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."staff_members" DROP CONSTRAINT IF EXISTS "staff_members_rank_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."server_log_configs" DROP CONSTRAINT IF EXISTS "server_log_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."scheduled_message_runs" DROP CONSTRAINT IF EXISTS "scheduled_message_runs_message_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."rules_configs" DROP CONSTRAINT IF EXISTS "rules_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."role_menus" DROP CONSTRAINT IF EXISTS "role_menus_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."role_menu_options" DROP CONSTRAINT IF EXISTS "role_menu_options_role_menu_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."poll_votes" DROP CONSTRAINT IF EXISTS "poll_votes_poll_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_principals" DROP CONSTRAINT IF EXISTS "permission_principals_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF EXISTS "permission_audit_events_target_principal_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF EXISTS "permission_audit_events_scope_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF EXISTS "permission_audit_events_permission_definition_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF EXISTS "permission_audit_events_assignment_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_audit_events" DROP CONSTRAINT IF EXISTS "permission_audit_events_actor_principal_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF EXISTS "permission_assignments_principal_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF EXISTS "permission_assignments_permission_definition_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."permission_assignments" DROP CONSTRAINT IF EXISTS "permission_assignments_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_platform_user_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."oauth_transactions" DROP CONSTRAINT IF EXISTS "oauth_transactions_initiating_session_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."oauth_credentials" DROP CONSTRAINT IF EXISTS "oauth_credentials_external_identity_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlist_tracks" DROP CONSTRAINT IF EXISTS "music_playlist_tracks_track_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."music_playlist_tracks" DROP CONSTRAINT IF EXISTS "music_playlist_tracks_playlist_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."knowledge_articles" DROP CONSTRAINT IF EXISTS "knowledge_articles_category_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."giveaway_entries" DROP CONSTRAINT IF EXISTS "giveaway_entries_giveaway_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."games_status_snapshots" DROP CONSTRAINT IF EXISTS "games_status_snapshots_server_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."external_identities" DROP CONSTRAINT IF EXISTS "external_identities_platform_user_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."embed_templates" DROP CONSTRAINT IF EXISTS "embed_templates_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."discord_role_audit_events" DROP CONSTRAINT IF EXISTS "discord_role_audit_events_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."discord_guild_memberships" DROP CONSTRAINT IF EXISTS "discord_guild_memberships_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."discord_guild_memberships" DROP CONSTRAINT IF EXISTS "discord_guild_memberships_external_identity_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."discord_guild_membership_roles" DROP CONSTRAINT IF EXISTS "discord_guild_membership_roles_membership_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."custom_commands" DROP CONSTRAINT IF EXISTS "custom_commands_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."community_counters" DROP CONSTRAINT IF EXISTS "community_counters_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."builder_run_items" DROP CONSTRAINT IF EXISTS "builder_run_items_run_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_rotated_from_session_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_platform_user_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."browser_sessions" DROP CONSTRAINT IF EXISTS "browser_sessions_login_identity_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."autorole_rules" DROP CONSTRAINT IF EXISTS "autorole_rules_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."autorole_configs" DROP CONSTRAINT IF EXISTS "autorole_configs_guild_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_target_platform_user_id_fkey";
+ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_target_oauth_transaction_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_target_oauth_credential_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_target_guild_membership_id_fkey";
 ALTER TABLE IF EXISTS ONLY "public"."authentication_audit_events" DROP CONSTRAINT IF EXISTS "authentication_audit_events_target_external_identity_id_fkey";
@@ -54,6 +106,8 @@ DROP INDEX IF EXISTS "public"."verification_pending_members_guild_joined_idx";
 DROP INDEX IF EXISTS "public"."verification_attempts_guild_user_idx";
 DROP INDEX IF EXISTS "public"."verification_attempts_guild_result_idx";
 DROP INDEX IF EXISTS "public"."verification_attempts_guild_created_idx";
+DROP INDEX IF EXISTS "public"."tickets_staff_thread_id_key";
+DROP INDEX IF EXISTS "public"."tickets_guild_status_closed_idx";
 DROP INDEX IF EXISTS "public"."tickets_guild_status_activity_idx";
 DROP INDEX IF EXISTS "public"."tickets_guild_opener_status_idx";
 DROP INDEX IF EXISTS "public"."tickets_guild_number_key";
@@ -3199,7 +3253,8 @@ CREATE TABLE "public"."ticket_categories" (
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
     "alert_user_ids" "text"[],
-    "next_number" integer DEFAULT 1 NOT NULL
+    "next_number" integer DEFAULT 1 NOT NULL,
+    "staff_thread" "text" DEFAULT 'INHERIT'::"text" NOT NULL
 );
 
 
@@ -3288,7 +3343,7 @@ CREATE TABLE "public"."ticket_settings" (
     "claim_enabled" boolean DEFAULT true NOT NULL,
     "claim_restricts_replies" boolean DEFAULT false NOT NULL,
     "transcripts_enabled" boolean DEFAULT true NOT NULL,
-    "transcript_dm_user" boolean DEFAULT false NOT NULL,
+    "transcript_dm_user" boolean DEFAULT true NOT NULL,
     "feedback_enabled" boolean DEFAULT true NOT NULL,
     "auto_close_hours" integer DEFAULT 0 NOT NULL,
     "auto_close_warning_hours" integer DEFAULT 0 NOT NULL,
@@ -3299,7 +3354,9 @@ CREATE TABLE "public"."ticket_settings" (
     "revision" integer DEFAULT 1 NOT NULL,
     "last_operation_source" "text" DEFAULT 'SYSTEM'::"text" NOT NULL,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    "updated_at" timestamp(3) with time zone NOT NULL
+    "updated_at" timestamp(3) with time zone NOT NULL,
+    "retention_months" integer DEFAULT 12 NOT NULL,
+    "staff_thread_enabled" boolean DEFAULT true NOT NULL
 );
 
 
@@ -3333,7 +3390,8 @@ CREATE TABLE "public"."tickets" (
     "closed_at" timestamp(3) with time zone,
     "created_at" timestamp(3) with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     "updated_at" timestamp(3) with time zone NOT NULL,
-    "category_number" integer
+    "category_number" integer,
+    "staff_thread_id" "text"
 );
 
 
@@ -3525,9 +3583,10 @@ f91c97f0-865b-4829-b57c-69f4e96365d0	455372482d8b81715b4ea5c0d609fff873a84dbbed3
 51247960-fd61-4055-aa9f-95e96be6c45f	307a135d5b688fd524951a4f5541f9fee6d8a4ee929a1f1890aa7241ac8cae63	2026-09-25 07:42:04.722688+00	20260925170000_fivem	\N	\N	2026-09-25 07:42:04.713943+00	1
 41dc8833-4765-450f-9552-198e68947c00	9e39f3479ce16199453aa68b3a54bd306959b87b5bc2b3333ec48767db69ff91	2026-09-25 20:10:28.93473+00	20260925180000_server_builder	\N	\N	2026-09-25 20:10:28.905477+00	1
 83621368-162d-480f-90c4-60103f4ed08a	f547136dec58f9520a0bbf7ba2b1d227ed33156e42a3ae34055489ba70a24843	2026-09-25 22:44:14.390756+00	20260925210000_streams	\N	\N	2026-09-25 22:44:14.377505+00	1
+306b4033-4b41-4c49-a75a-22f40e621808	0b4a704351426af0f7bd5ff75c79f44a0fab56a1da51aa5382efa35dd1a8cd3e	2026-09-26 19:13:05.878187+00	20260926090500_ticket_panel_rows	\N	\N	2026-09-26 19:13:05.86954+00	1
 9eb9d356-141e-4309-bf34-9f8a1d56f646	0ddfd72be5ffadcefde88a70aa8f800fe24cace46d91fecfbbe72a6d9a44b968	2026-09-25 22:44:14.405316+00	20260925220000_games	\N	\N	2026-09-25 22:44:14.391443+00	1
-54b08213-bec5-4adb-8d18-9afd4e24a6d5	0b4a704351426af0f7bd5ff75c79f44a0fab56a1da51aa5382efa35dd1a8cd3e	2026-09-26 18:54:13.566878+00	20260926090500_ticket_panel_rows	\N	\N	2026-09-26 18:54:13.562399+00	1
-d4d6d970-78c0-4510-97cd-3d0f0a81a6c6	afc641c6412ee758a111cf524d31d54c418996040df7b1186cddef63939126f7	2026-09-26 19:12:41.661899+00	20260926091000_builder_wipe	\N	\N	2026-09-26 19:12:41.654687+00	1
+b81660b0-1ca0-4f3b-9d13-140caa0dd66c	c9d06624055c6864cf67773e425240f462a32220e0e631b87d3cdf0795363a04	2026-09-26 22:06:25.121846+00	20260926120000_ticket_staff_thread	\N	\N	2026-09-26 22:06:24.865694+00	1
+33d4c1e0-7865-4ab4-9553-355ccafcb057	afc641c6412ee758a111cf524d31d54c418996040df7b1186cddef63939126f7	2026-09-26 19:13:05.952909+00	20260926091000_builder_wipe	\N	\N	2026-09-26 19:13:05.878983+00	1
 \.
 
 
@@ -4153,7 +4212,7 @@ COPY "public"."suggestions" ("id", "guild_id", "submitter_id", "content", "statu
 -- Data for Name: ticket_categories; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at", "alert_user_ids", "next_number") FROM stdin;
+COPY "public"."ticket_categories" ("id", "guild_id", "name", "description", "emoji", "button_style", "enabled", "position", "support_role_ids", "parent_channel_id", "name_template", "open_message", "default_priority", "questions", "required_role_ids", "max_open_per_user", "created_at", "updated_at", "alert_user_ids", "next_number", "staff_thread") FROM stdin;
 \.
 
 
@@ -4185,7 +4244,7 @@ COPY "public"."ticket_panels" ("id", "guild_id", "name", "channel_id", "message_
 -- Data for Name: ticket_settings; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."ticket_settings" ("guild_id", "enabled", "mode", "open_category_channel_id", "closed_category_channel_id", "thread_parent_channel_id", "transcript_channel_id", "log_channel_id", "support_role_ids", "ping_support_on_open", "max_open_per_user", "name_template", "open_message", "embed_color", "allow_user_close", "require_close_reason", "close_confirmation", "close_action", "delete_delay_seconds", "claim_enabled", "claim_restricts_replies", "transcripts_enabled", "transcript_dm_user", "feedback_enabled", "auto_close_hours", "auto_close_warning_hours", "auto_close_exclude_claimed", "blocked_user_ids", "blocked_role_ids", "next_number", "revision", "last_operation_source", "created_at", "updated_at") FROM stdin;
+COPY "public"."ticket_settings" ("guild_id", "enabled", "mode", "open_category_channel_id", "closed_category_channel_id", "thread_parent_channel_id", "transcript_channel_id", "log_channel_id", "support_role_ids", "ping_support_on_open", "max_open_per_user", "name_template", "open_message", "embed_color", "allow_user_close", "require_close_reason", "close_confirmation", "close_action", "delete_delay_seconds", "claim_enabled", "claim_restricts_replies", "transcripts_enabled", "transcript_dm_user", "feedback_enabled", "auto_close_hours", "auto_close_warning_hours", "auto_close_exclude_claimed", "blocked_user_ids", "blocked_role_ids", "next_number", "revision", "last_operation_source", "created_at", "updated_at", "retention_months", "staff_thread_enabled") FROM stdin;
 \.
 
 
@@ -4193,7 +4252,7 @@ COPY "public"."ticket_settings" ("guild_id", "enabled", "mode", "open_category_c
 -- Data for Name: tickets; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY "public"."tickets" ("id", "guild_id", "number", "category_id", "opener_id", "opener_name", "channel_id", "subject", "answers", "status", "priority", "claimed_by_id", "participant_ids", "tags", "closed_by_id", "close_reason", "rating", "feedback", "transcript_message_id", "auto_close_warned_at", "first_response_at", "last_activity_at", "closed_at", "created_at", "updated_at", "category_number") FROM stdin;
+COPY "public"."tickets" ("id", "guild_id", "number", "category_id", "opener_id", "opener_name", "channel_id", "subject", "answers", "status", "priority", "claimed_by_id", "participant_ids", "tags", "closed_by_id", "close_reason", "rating", "feedback", "transcript_message_id", "auto_close_warned_at", "first_response_at", "last_activity_at", "closed_at", "created_at", "updated_at", "category_number", "staff_thread_id") FROM stdin;
 \.
 
 
@@ -5855,6 +5914,20 @@ CREATE INDEX "tickets_guild_status_activity_idx" ON "public"."tickets" USING "bt
 
 
 --
+-- Name: tickets_guild_status_closed_idx; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX "tickets_guild_status_closed_idx" ON "public"."tickets" USING "btree" ("guild_id", "status", "closed_at");
+
+
+--
+-- Name: tickets_staff_thread_id_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX "tickets_staff_thread_id_key" ON "public"."tickets" USING "btree" ("staff_thread_id");
+
+
+--
 -- Name: verification_attempts_guild_created_idx; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -6133,6 +6206,422 @@ ALTER TABLE ONLY "public"."authentication_audit_events"
 
 ALTER TABLE ONLY "public"."authentication_audit_events"
     ADD CONSTRAINT "authentication_audit_events_target_oauth_credential_id_fkey" FOREIGN KEY ("target_oauth_credential_id") REFERENCES "public"."oauth_credentials"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: authentication_audit_events authentication_audit_events_target_oauth_transaction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."authentication_audit_events"
+    ADD CONSTRAINT "authentication_audit_events_target_oauth_transaction_id_fkey" FOREIGN KEY ("target_oauth_transaction_id") REFERENCES "public"."oauth_transactions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: authentication_audit_events authentication_audit_events_target_platform_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."authentication_audit_events"
+    ADD CONSTRAINT "authentication_audit_events_target_platform_user_id_fkey" FOREIGN KEY ("target_platform_user_id") REFERENCES "public"."platform_users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: autorole_configs autorole_configs_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."autorole_configs"
+    ADD CONSTRAINT "autorole_configs_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: autorole_rules autorole_rules_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."autorole_rules"
+    ADD CONSTRAINT "autorole_rules_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: browser_sessions browser_sessions_login_identity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."browser_sessions"
+    ADD CONSTRAINT "browser_sessions_login_identity_id_fkey" FOREIGN KEY ("login_identity_id") REFERENCES "public"."external_identities"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: browser_sessions browser_sessions_platform_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."browser_sessions"
+    ADD CONSTRAINT "browser_sessions_platform_user_id_fkey" FOREIGN KEY ("platform_user_id") REFERENCES "public"."platform_users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: browser_sessions browser_sessions_rotated_from_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."browser_sessions"
+    ADD CONSTRAINT "browser_sessions_rotated_from_session_id_fkey" FOREIGN KEY ("rotated_from_session_id") REFERENCES "public"."browser_sessions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: builder_run_items builder_run_items_run_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."builder_run_items"
+    ADD CONSTRAINT "builder_run_items_run_id_fkey" FOREIGN KEY ("run_id") REFERENCES "public"."builder_runs"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: community_counters community_counters_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."community_counters"
+    ADD CONSTRAINT "community_counters_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: custom_commands custom_commands_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."custom_commands"
+    ADD CONSTRAINT "custom_commands_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: discord_guild_membership_roles discord_guild_membership_roles_membership_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."discord_guild_membership_roles"
+    ADD CONSTRAINT "discord_guild_membership_roles_membership_id_fkey" FOREIGN KEY ("membership_id") REFERENCES "public"."discord_guild_memberships"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: discord_guild_memberships discord_guild_memberships_external_identity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."discord_guild_memberships"
+    ADD CONSTRAINT "discord_guild_memberships_external_identity_id_fkey" FOREIGN KEY ("external_identity_id") REFERENCES "public"."external_identities"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: discord_guild_memberships discord_guild_memberships_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."discord_guild_memberships"
+    ADD CONSTRAINT "discord_guild_memberships_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: discord_role_audit_events discord_role_audit_events_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."discord_role_audit_events"
+    ADD CONSTRAINT "discord_role_audit_events_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: embed_templates embed_templates_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."embed_templates"
+    ADD CONSTRAINT "embed_templates_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: external_identities external_identities_platform_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."external_identities"
+    ADD CONSTRAINT "external_identities_platform_user_id_fkey" FOREIGN KEY ("platform_user_id") REFERENCES "public"."platform_users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: games_status_snapshots games_status_snapshots_server_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."games_status_snapshots"
+    ADD CONSTRAINT "games_status_snapshots_server_id_fkey" FOREIGN KEY ("server_id") REFERENCES "public"."games_servers"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: giveaway_entries giveaway_entries_giveaway_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."giveaway_entries"
+    ADD CONSTRAINT "giveaway_entries_giveaway_id_fkey" FOREIGN KEY ("giveaway_id") REFERENCES "public"."giveaways"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: knowledge_articles knowledge_articles_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."knowledge_articles"
+    ADD CONSTRAINT "knowledge_articles_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."knowledge_categories"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: music_playlist_tracks music_playlist_tracks_playlist_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlist_tracks"
+    ADD CONSTRAINT "music_playlist_tracks_playlist_id_fkey" FOREIGN KEY ("playlist_id") REFERENCES "public"."music_playlists"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: music_playlist_tracks music_playlist_tracks_track_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."music_playlist_tracks"
+    ADD CONSTRAINT "music_playlist_tracks_track_id_fkey" FOREIGN KEY ("track_id") REFERENCES "public"."music_tracks"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: oauth_credentials oauth_credentials_external_identity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."oauth_credentials"
+    ADD CONSTRAINT "oauth_credentials_external_identity_id_fkey" FOREIGN KEY ("external_identity_id") REFERENCES "public"."external_identities"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: oauth_transactions oauth_transactions_initiating_session_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."oauth_transactions"
+    ADD CONSTRAINT "oauth_transactions_initiating_session_id_fkey" FOREIGN KEY ("initiating_session_id") REFERENCES "public"."browser_sessions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: oauth_transactions oauth_transactions_platform_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."oauth_transactions"
+    ADD CONSTRAINT "oauth_transactions_platform_user_id_fkey" FOREIGN KEY ("platform_user_id") REFERENCES "public"."platform_users"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_assignments permission_assignments_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_assignments"
+    ADD CONSTRAINT "permission_assignments_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_assignments permission_assignments_permission_definition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_assignments"
+    ADD CONSTRAINT "permission_assignments_permission_definition_id_fkey" FOREIGN KEY ("permission_definition_id") REFERENCES "public"."permission_definitions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_assignments permission_assignments_principal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_assignments"
+    ADD CONSTRAINT "permission_assignments_principal_id_fkey" FOREIGN KEY ("principal_id") REFERENCES "public"."permission_principals"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_audit_events permission_audit_events_actor_principal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_audit_events"
+    ADD CONSTRAINT "permission_audit_events_actor_principal_id_fkey" FOREIGN KEY ("actor_principal_id") REFERENCES "public"."permission_principals"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_audit_events permission_audit_events_assignment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_audit_events"
+    ADD CONSTRAINT "permission_audit_events_assignment_id_fkey" FOREIGN KEY ("assignment_id") REFERENCES "public"."permission_assignments"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_audit_events permission_audit_events_permission_definition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_audit_events"
+    ADD CONSTRAINT "permission_audit_events_permission_definition_id_fkey" FOREIGN KEY ("permission_definition_id") REFERENCES "public"."permission_definitions"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_audit_events permission_audit_events_scope_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_audit_events"
+    ADD CONSTRAINT "permission_audit_events_scope_guild_id_fkey" FOREIGN KEY ("scope_guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_audit_events permission_audit_events_target_principal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_audit_events"
+    ADD CONSTRAINT "permission_audit_events_target_principal_id_fkey" FOREIGN KEY ("target_principal_id") REFERENCES "public"."permission_principals"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: permission_principals permission_principals_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."permission_principals"
+    ADD CONSTRAINT "permission_principals_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: poll_votes poll_votes_poll_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."poll_votes"
+    ADD CONSTRAINT "poll_votes_poll_id_fkey" FOREIGN KEY ("poll_id") REFERENCES "public"."polls"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: role_menu_options role_menu_options_role_menu_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."role_menu_options"
+    ADD CONSTRAINT "role_menu_options_role_menu_id_fkey" FOREIGN KEY ("role_menu_id") REFERENCES "public"."role_menus"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: role_menus role_menus_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."role_menus"
+    ADD CONSTRAINT "role_menus_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: rules_configs rules_configs_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."rules_configs"
+    ADD CONSTRAINT "rules_configs_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: scheduled_message_runs scheduled_message_runs_message_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."scheduled_message_runs"
+    ADD CONSTRAINT "scheduled_message_runs_message_id_fkey" FOREIGN KEY ("message_id") REFERENCES "public"."scheduled_messages"("id") ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: server_log_configs server_log_configs_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."server_log_configs"
+    ADD CONSTRAINT "server_log_configs_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: staff_members staff_members_rank_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."staff_members"
+    ADD CONSTRAINT "staff_members_rank_id_fkey" FOREIGN KEY ("rank_id") REFERENCES "public"."staff_ranks"("id") ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: starboard_configs starboard_configs_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."starboard_configs"
+    ADD CONSTRAINT "starboard_configs_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: starboard_entries starboard_entries_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."starboard_entries"
+    ADD CONSTRAINT "starboard_entries_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: suggestions suggestions_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."suggestions"
+    ADD CONSTRAINT "suggestions_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_categories ticket_categories_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_categories"
+    ADD CONSTRAINT "ticket_categories_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_events ticket_events_ticket_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_events"
+    ADD CONSTRAINT "ticket_events_ticket_id_fkey" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: ticket_messages ticket_messages_ticket_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_messages"
+    ADD CONSTRAINT "ticket_messages_ticket_id_fkey" FOREIGN KEY ("ticket_id") REFERENCES "public"."tickets"("id") ON UPDATE RESTRICT ON DELETE CASCADE;
+
+
+--
+-- Name: ticket_panels ticket_panels_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_panels"
+    ADD CONSTRAINT "ticket_panels_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: ticket_settings ticket_settings_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."ticket_settings"
+    ADD CONSTRAINT "ticket_settings_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: tickets tickets_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."tickets"
+    ADD CONSTRAINT "tickets_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "public"."ticket_categories"("id") ON UPDATE RESTRICT ON DELETE SET NULL;
+
+
+--
+-- Name: tickets tickets_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."tickets"
+    ADD CONSTRAINT "tickets_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
+
+
+--
+-- Name: voice_rooms voice_rooms_hub_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."voice_rooms"
+    ADD CONSTRAINT "voice_rooms_hub_id_fkey" FOREIGN KEY ("hub_id") REFERENCES "public"."voice_hubs"("id") ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: welcome_goodbye_configs welcome_goodbye_configs_guild_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY "public"."welcome_goodbye_configs"
+    ADD CONSTRAINT "welcome_goodbye_configs_guild_id_fkey" FOREIGN KEY ("guild_id") REFERENCES "public"."guilds"("id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 
 --
