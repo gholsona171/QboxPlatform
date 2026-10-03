@@ -1,0 +1,290 @@
+/**
+ * Custom messages and embeds (`@qbox/shared/messages`). Side-effect free.
+ *
+ * Every message the bot sends has a *key* (for example `tickets.opened`).
+ * A server can replace the default message for a key with its own text and
+ * embed, written in the portal or pasted as Discord embed JSON, using
+ * `{placeholders}` the key provides. Feature services ask `MessageTemplates`
+ * for the server's version and fall back to their built-in default.
+ */
+/** Default when message customization is not wired: every message stays as built. */
+export const passthroughTemplates = {
+    apply: async (_guildId, _key, _values, fallback) => fallback,
+};
+function valueText(value) {
+    if (value === null || value === undefined)
+        return "";
+    if (value instanceof Date)
+        return `<t:${Math.floor(value.getTime() / 1000)}:f>`;
+    return String(value);
+}
+/** Replaces `{name}` tokens. Unknown tokens are left as written. */
+export function renderPlaceholders(text, values) {
+    return text.replaceAll(/\{([a-zA-Z0-9_.]+)\}/g, (token, name) => (name in values ? valueText(values[name]) : token));
+}
+/** Renders every text field of a message template with the given values. */
+export function renderMessage(template, values) {
+    return {
+        ...(template.content === undefined ? {} : { content: renderPlaceholders(template.content, values) }),
+        ...(template.embeds === undefined
+            ? {}
+            : {
+                embeds: template.embeds.map((embed) => ({
+                    ...embed,
+                    ...(embed.title === undefined ? {} : { title: renderPlaceholders(embed.title, values) }),
+                    ...(embed.description === undefined ? {} : { description: renderPlaceholders(embed.description, values) }),
+                    ...(embed.url === undefined ? {} : { url: renderPlaceholders(embed.url, values) }),
+                    ...(embed.footer === undefined ? {} : { footer: { ...embed.footer, text: renderPlaceholders(embed.footer.text, values) } }),
+                    ...(embed.author === undefined ? {} : { author: { ...embed.author, name: renderPlaceholders(embed.author.name, values) } }),
+                    ...(embed.image === undefined ? {} : { image: { url: renderPlaceholders(embed.image.url, values) } }),
+                    ...(embed.thumbnail === undefined ? {} : { thumbnail: { url: renderPlaceholders(embed.thumbnail.url, values) } }),
+                    ...(embed.fields === undefined
+                        ? {}
+                        : { fields: embed.fields.map((field) => ({ ...field, name: renderPlaceholders(field.name, values), value: renderPlaceholders(field.value, values) })) }),
+                })),
+            }),
+    };
+}
+/**
+ * Every customizable message, grouped by feature. Each feature that sends a
+ * customizable message appends its keys here; the portal lists them from
+ * this catalog. Keep entries sorted by feature, then by key.
+ */
+const GAMES_PLACEHOLDERS = [
+    { name: "name", description: "Name the game server reports (falls back to the name you gave it)" },
+    { name: "server", description: "Name you gave the server in the portal" },
+    { name: "game", description: "Game label, for example Minecraft or Rust" },
+    { name: "address", description: "Server address (host:port)" },
+    { name: "players", description: "Players online" },
+    { name: "maxPlayers", description: "Player slots" },
+    { name: "map", description: "Current map, when the game reports one" },
+    { name: "version", description: "Server version, when the game reports one" },
+    { name: "latency", description: "Query latency in milliseconds" },
+    { name: "playerList", description: "Player names, one per line (up to 20)" },
+    { name: "connectUrl", description: "Connect link, when set" },
+    { name: "downFor", description: "How long the server was down (back-online message only)" },
+];
+export const MESSAGE_CATALOG = [
+    {
+        key: "birthdays.announcement",
+        feature: "birthdays",
+        name: "Birthday announcement",
+        description: "Posted in the birthday channel on a member's birthday.",
+        placeholders: [
+            { name: "user", description: "Mention of the birthday member" },
+            { name: "username", description: "Display name of the birthday member" },
+            { name: "age", description: "Age they turn today, empty when hidden" },
+            { name: "date", description: "The birthday date" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "community.goodbye",
+        feature: "discord",
+        name: "Goodbye message",
+        description: "Posted in the goodbye channel when a member leaves.",
+        placeholders: [
+            { name: "user", description: "Mention of the member" },
+            { name: "username", description: "Display name of the member" },
+            { name: "server", description: "Server name" },
+            { name: "memberCount", description: "Members in the server" },
+        ],
+    },
+    {
+        key: "community.welcome",
+        feature: "discord",
+        name: "Welcome message",
+        description: "Posted in the welcome channel when a member joins.",
+        placeholders: [
+            { name: "user", description: "Mention of the new member" },
+            { name: "username", description: "Display name of the new member" },
+            { name: "server", description: "Server name" },
+            { name: "memberCount", description: "Members in the server" },
+        ],
+    },
+    { key: "games.down", feature: "games", name: "Game server down", description: "Posted in the alert channel after three failed checks in a row.", placeholders: GAMES_PLACEHOLDERS },
+    { key: "games.status", feature: "games", name: "Game server status", description: "The auto-updating status message in the status channel.", placeholders: GAMES_PLACEHOLDERS },
+    { key: "games.up", feature: "games", name: "Game server back online", description: "Posted in the alert channel when a server answers again after being down.", placeholders: GAMES_PLACEHOLDERS },
+    {
+        key: "giveaways.ended",
+        feature: "giveaways",
+        name: "Giveaway winners",
+        description: "Posted when a giveaway ends or is rerolled.",
+        placeholders: [
+            { name: "prize", description: "The prize" },
+            { name: "winners", description: "Mentions of the winners, or none" },
+            { name: "host", description: "Mention of the host" },
+            { name: "endsAt", description: "When the giveaway ended" },
+            { name: "entries", description: "Number of entries" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "giveaways.started",
+        feature: "giveaways",
+        name: "Giveaway post",
+        description: "The giveaway message with the Enter button while it runs.",
+        placeholders: [
+            { name: "prize", description: "The prize" },
+            { name: "winners", description: "Number of winners" },
+            { name: "host", description: "Mention of the host" },
+            { name: "endsAt", description: "When the giveaway ends" },
+            { name: "entries", description: "Entries so far" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "levels.level-up",
+        feature: "levels",
+        name: "Level-up message",
+        description: "Sent when a member reaches a new level.",
+        placeholders: [
+            { name: "user", description: "Mention of the member" },
+            { name: "username", description: "Display name of the member" },
+            { name: "level", description: "The new level" },
+            { name: "xp", description: "Total XP" },
+            { name: "rank", description: "Place on the leaderboard" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "moderation.case-log",
+        feature: "moderation",
+        name: "Case log",
+        description: "Posted in the moderation log channel for every case.",
+        placeholders: [
+            { name: "user", description: "Mention of the member" },
+            { name: "username", description: "Display name of the member" },
+            { name: "moderator", description: "Mention of the moderator" },
+            { name: "caseNumber", description: "Case number" },
+            { name: "action", description: "Warning, Timeout, Kick, Ban ..." },
+            { name: "duration", description: "Length for timeouts and temporary bans" },
+            { name: "reason", description: "The reason" },
+            { name: "rule", description: "The rule that was broken, when known" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "moderation.warn-dm",
+        feature: "moderation",
+        name: "Member notice",
+        description: "Direct message to the member for a warning, timeout, kick, or ban.",
+        directMessage: true,
+        placeholders: [
+            { name: "user", description: "Mention of the member" },
+            { name: "username", description: "Display name of the member" },
+            { name: "moderator", description: "Mention of the moderator" },
+            { name: "caseNumber", description: "Case number" },
+            { name: "action", description: "Warning, Timeout, Kick, Ban ..." },
+            { name: "duration", description: "Length for timeouts and temporary bans" },
+            { name: "reason", description: "The reason" },
+            { name: "rule", description: "The rule that was broken, when known" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "music.now-playing",
+        feature: "music",
+        name: "Now playing",
+        description: "Posted (or the now-playing panel updated) when a new song starts in voice.",
+        placeholders: [
+            { name: "title", description: "Song or station title" },
+            { name: "artist", description: "Artist, when known" },
+            { name: "album", description: "Album, when known" },
+            { name: "source", description: "Library, Link, Radio, or Jamendo" },
+            { name: "duration", description: "Length, or Live for streams" },
+            { name: "progress", description: "Progress bar with the time, for example ▬▬🔘▬▬ 1:23 / 3:45" },
+            { name: "requester", description: "Mention of who asked for the song" },
+            { name: "upNext", description: "Title of the next song, or nothing" },
+            { name: "volume", description: "Volume, for example 60%" },
+            { name: "loop", description: "Off, This song, or Queue" },
+            { name: "shuffle", description: "On or Off" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+    {
+        key: "streams.ended",
+        feature: "streams",
+        name: "Stream ended",
+        description: "What the live announcement becomes when the stream ends (with the \"edit\" ended behavior).",
+        placeholders: [
+            { name: "creator", description: "The creator's display name" },
+            { name: "platform", description: "Twitch, Kick, or YouTube" },
+            { name: "duration", description: "How long the stream was live, for example 2h 15m" },
+            { name: "url", description: "Link to the creator's channel" },
+        ],
+    },
+    {
+        key: "streams.live",
+        feature: "streams",
+        name: "Creator went live",
+        description: "Posted when a followed creator starts streaming.",
+        placeholders: [
+            { name: "creator", description: "The creator's display name" },
+            { name: "platform", description: "Twitch, Kick, or YouTube" },
+            { name: "title", description: "Stream title" },
+            { name: "game", description: "Game or category, when known" },
+            { name: "viewers", description: "Current viewer count, when known" },
+            { name: "url", description: "Link to the stream" },
+            { name: "thumbnail", description: "Stream preview image link, when available" },
+            { name: "startedAt", description: "When the stream started" },
+            { name: "server", description: "This server's name" },
+            { name: "ping", description: "The role mention, or nothing when no ping role is set" },
+        ],
+    },
+    {
+        key: "streams.video",
+        feature: "streams",
+        name: "New video",
+        description: "Posted when a followed YouTube channel uploads a video.",
+        placeholders: [
+            { name: "creator", description: "The channel's name" },
+            { name: "title", description: "Video title" },
+            { name: "url", description: "Link to the video" },
+            { name: "publishedAt", description: "When the video was published" },
+        ],
+    },
+    {
+        key: "tickets.closed-dm",
+        feature: "tickets",
+        name: "Ticket closed notice",
+        description: "Direct message to the member who opened the ticket when it closes.",
+        directMessage: true,
+        placeholders: [
+            { name: "user", description: "Mention of the member who opened the ticket" },
+            { name: "username", description: "Display name of the member" },
+            { name: "number", description: "Ticket number" },
+            { name: "reason", description: "Ticket reason (category)" },
+            { name: "reasonNumber", description: "Ticket number within its reason" },
+            { name: "closeReason", description: "Why the ticket was closed" },
+            { name: "ratingPrompt", description: "The rating request when feedback is on" },
+        ],
+    },
+    {
+        key: "tickets.opened",
+        feature: "tickets",
+        name: "Ticket opening message",
+        description: "Posted in the new ticket channel.",
+        placeholders: [
+            { name: "user", description: "Mention of the member who opened the ticket" },
+            { name: "username", description: "Display name of the member" },
+            { name: "server", description: "Server name" },
+            { name: "number", description: "Ticket number" },
+            { name: "reason", description: "Ticket reason (category)" },
+            { name: "reasonNumber", description: "Ticket number within its reason" },
+            { name: "subject", description: "Subject the member entered" },
+        ],
+    },
+    {
+        key: "verification.welcome",
+        feature: "verification",
+        name: "Verified welcome",
+        description: "Posted in the welcome channel when a member passes verification.",
+        placeholders: [
+            { name: "user", description: "Mention of the member" },
+            { name: "username", description: "Display name of the member" },
+            { name: "server", description: "Server name" },
+        ],
+    },
+];
+//# sourceMappingURL=messages.js.map

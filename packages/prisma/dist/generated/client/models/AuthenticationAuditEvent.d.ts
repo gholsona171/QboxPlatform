@@ -1,0 +1,3332 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model AuthenticationAuditEvent
+ *
+ */
+export type AuthenticationAuditEventModel = runtime.Types.Result.DefaultSelection<Prisma.$AuthenticationAuditEventPayload>;
+export type AggregateAuthenticationAuditEvent = {
+    _count: AuthenticationAuditEventCountAggregateOutputType | null;
+    _avg: AuthenticationAuditEventAvgAggregateOutputType | null;
+    _sum: AuthenticationAuditEventSumAggregateOutputType | null;
+    _min: AuthenticationAuditEventMinAggregateOutputType | null;
+    _max: AuthenticationAuditEventMaxAggregateOutputType | null;
+};
+export type AuthenticationAuditEventAvgAggregateOutputType = {
+    metadataKeyVersion: number | null;
+};
+export type AuthenticationAuditEventSumAggregateOutputType = {
+    metadataKeyVersion: number | null;
+};
+export type AuthenticationAuditEventMinAggregateOutputType = {
+    id: string | null;
+    action: $Enums.AuthenticationAuditAction | null;
+    outcome: $Enums.AuthenticationAuditOutcome | null;
+    reasonCode: $Enums.AuthenticationAuditReasonCode | null;
+    requestId: string | null;
+    correlationId: string | null;
+    actorType: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId: string | null;
+    actorServiceIdentityId: string | null;
+    targetPlatformUserId: string | null;
+    targetExternalIdentityId: string | null;
+    targetBrowserSessionId: string | null;
+    targetOAuthTransactionId: string | null;
+    targetOAuthCredentialId: string | null;
+    targetGuildMembershipId: string | null;
+    provider: $Enums.AuthenticationProvider | null;
+    purpose: $Enums.OAuthTransactionPurpose | null;
+    ipHmac: string | null;
+    userAgentHmac: string | null;
+    deviceHmac: string | null;
+    metadataKeyVersion: number | null;
+    occurredAt: Date | null;
+    createdAt: Date | null;
+};
+export type AuthenticationAuditEventMaxAggregateOutputType = {
+    id: string | null;
+    action: $Enums.AuthenticationAuditAction | null;
+    outcome: $Enums.AuthenticationAuditOutcome | null;
+    reasonCode: $Enums.AuthenticationAuditReasonCode | null;
+    requestId: string | null;
+    correlationId: string | null;
+    actorType: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId: string | null;
+    actorServiceIdentityId: string | null;
+    targetPlatformUserId: string | null;
+    targetExternalIdentityId: string | null;
+    targetBrowserSessionId: string | null;
+    targetOAuthTransactionId: string | null;
+    targetOAuthCredentialId: string | null;
+    targetGuildMembershipId: string | null;
+    provider: $Enums.AuthenticationProvider | null;
+    purpose: $Enums.OAuthTransactionPurpose | null;
+    ipHmac: string | null;
+    userAgentHmac: string | null;
+    deviceHmac: string | null;
+    metadataKeyVersion: number | null;
+    occurredAt: Date | null;
+    createdAt: Date | null;
+};
+export type AuthenticationAuditEventCountAggregateOutputType = {
+    id: number;
+    action: number;
+    outcome: number;
+    reasonCode: number;
+    requestId: number;
+    correlationId: number;
+    actorType: number;
+    actorPlatformUserId: number;
+    actorServiceIdentityId: number;
+    targetPlatformUserId: number;
+    targetExternalIdentityId: number;
+    targetBrowserSessionId: number;
+    targetOAuthTransactionId: number;
+    targetOAuthCredentialId: number;
+    targetGuildMembershipId: number;
+    provider: number;
+    purpose: number;
+    metadata: number;
+    ipHmac: number;
+    userAgentHmac: number;
+    deviceHmac: number;
+    metadataKeyVersion: number;
+    occurredAt: number;
+    createdAt: number;
+    _all: number;
+};
+export type AuthenticationAuditEventAvgAggregateInputType = {
+    metadataKeyVersion?: true;
+};
+export type AuthenticationAuditEventSumAggregateInputType = {
+    metadataKeyVersion?: true;
+};
+export type AuthenticationAuditEventMinAggregateInputType = {
+    id?: true;
+    action?: true;
+    outcome?: true;
+    reasonCode?: true;
+    requestId?: true;
+    correlationId?: true;
+    actorType?: true;
+    actorPlatformUserId?: true;
+    actorServiceIdentityId?: true;
+    targetPlatformUserId?: true;
+    targetExternalIdentityId?: true;
+    targetBrowserSessionId?: true;
+    targetOAuthTransactionId?: true;
+    targetOAuthCredentialId?: true;
+    targetGuildMembershipId?: true;
+    provider?: true;
+    purpose?: true;
+    ipHmac?: true;
+    userAgentHmac?: true;
+    deviceHmac?: true;
+    metadataKeyVersion?: true;
+    occurredAt?: true;
+    createdAt?: true;
+};
+export type AuthenticationAuditEventMaxAggregateInputType = {
+    id?: true;
+    action?: true;
+    outcome?: true;
+    reasonCode?: true;
+    requestId?: true;
+    correlationId?: true;
+    actorType?: true;
+    actorPlatformUserId?: true;
+    actorServiceIdentityId?: true;
+    targetPlatformUserId?: true;
+    targetExternalIdentityId?: true;
+    targetBrowserSessionId?: true;
+    targetOAuthTransactionId?: true;
+    targetOAuthCredentialId?: true;
+    targetGuildMembershipId?: true;
+    provider?: true;
+    purpose?: true;
+    ipHmac?: true;
+    userAgentHmac?: true;
+    deviceHmac?: true;
+    metadataKeyVersion?: true;
+    occurredAt?: true;
+    createdAt?: true;
+};
+export type AuthenticationAuditEventCountAggregateInputType = {
+    id?: true;
+    action?: true;
+    outcome?: true;
+    reasonCode?: true;
+    requestId?: true;
+    correlationId?: true;
+    actorType?: true;
+    actorPlatformUserId?: true;
+    actorServiceIdentityId?: true;
+    targetPlatformUserId?: true;
+    targetExternalIdentityId?: true;
+    targetBrowserSessionId?: true;
+    targetOAuthTransactionId?: true;
+    targetOAuthCredentialId?: true;
+    targetGuildMembershipId?: true;
+    provider?: true;
+    purpose?: true;
+    metadata?: true;
+    ipHmac?: true;
+    userAgentHmac?: true;
+    deviceHmac?: true;
+    metadataKeyVersion?: true;
+    occurredAt?: true;
+    createdAt?: true;
+    _all?: true;
+};
+export type AuthenticationAuditEventAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuthenticationAuditEvent to aggregate.
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AuthenticationAuditEvents to fetch.
+     */
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AuthenticationAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AuthenticationAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned AuthenticationAuditEvents
+    **/
+    _count?: true | AuthenticationAuditEventCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: AuthenticationAuditEventAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: AuthenticationAuditEventSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuthenticationAuditEventMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuthenticationAuditEventMaxAggregateInputType;
+};
+export type GetAuthenticationAuditEventAggregateType<T extends AuthenticationAuditEventAggregateArgs> = {
+    [P in keyof T & keyof AggregateAuthenticationAuditEvent]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateAuthenticationAuditEvent[P]> : Prisma.GetScalarType<T[P], AggregateAuthenticationAuditEvent[P]>;
+};
+export type AuthenticationAuditEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithAggregationInput | Prisma.AuthenticationAuditEventOrderByWithAggregationInput[];
+    by: Prisma.AuthenticationAuditEventScalarFieldEnum[] | Prisma.AuthenticationAuditEventScalarFieldEnum;
+    having?: Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: AuthenticationAuditEventCountAggregateInputType | true;
+    _avg?: AuthenticationAuditEventAvgAggregateInputType;
+    _sum?: AuthenticationAuditEventSumAggregateInputType;
+    _min?: AuthenticationAuditEventMinAggregateInputType;
+    _max?: AuthenticationAuditEventMaxAggregateInputType;
+};
+export type AuthenticationAuditEventGroupByOutputType = {
+    id: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId: string | null;
+    correlationId: string;
+    actorType: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId: string | null;
+    actorServiceIdentityId: string | null;
+    targetPlatformUserId: string | null;
+    targetExternalIdentityId: string | null;
+    targetBrowserSessionId: string | null;
+    targetOAuthTransactionId: string | null;
+    targetOAuthCredentialId: string | null;
+    targetGuildMembershipId: string | null;
+    provider: $Enums.AuthenticationProvider | null;
+    purpose: $Enums.OAuthTransactionPurpose | null;
+    metadata: runtime.JsonValue;
+    ipHmac: string | null;
+    userAgentHmac: string | null;
+    deviceHmac: string | null;
+    metadataKeyVersion: number | null;
+    occurredAt: Date;
+    createdAt: Date;
+    _count: AuthenticationAuditEventCountAggregateOutputType | null;
+    _avg: AuthenticationAuditEventAvgAggregateOutputType | null;
+    _sum: AuthenticationAuditEventSumAggregateOutputType | null;
+    _min: AuthenticationAuditEventMinAggregateOutputType | null;
+    _max: AuthenticationAuditEventMaxAggregateOutputType | null;
+};
+export type GetAuthenticationAuditEventGroupByPayload<T extends AuthenticationAuditEventGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<AuthenticationAuditEventGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof AuthenticationAuditEventGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], AuthenticationAuditEventGroupByOutputType[P]> : Prisma.GetScalarType<T[P], AuthenticationAuditEventGroupByOutputType[P]>;
+}>>;
+export type AuthenticationAuditEventWhereInput = {
+    AND?: Prisma.AuthenticationAuditEventWhereInput | Prisma.AuthenticationAuditEventWhereInput[];
+    OR?: Prisma.AuthenticationAuditEventWhereInput[];
+    NOT?: Prisma.AuthenticationAuditEventWhereInput | Prisma.AuthenticationAuditEventWhereInput[];
+    id?: Prisma.UuidFilter<"AuthenticationAuditEvent"> | string;
+    action?: Prisma.EnumAuthenticationAuditActionFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"AuthenticationAuditEvent"> | string;
+    actorType?: Prisma.EnumAuthenticationAuditActorTypeNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    actorServiceIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetExternalIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetBrowserSessionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthTransactionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthCredentialId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetGuildMembershipId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    provider?: Prisma.EnumAuthenticationProviderNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.EnumOAuthTransactionPurposeNullableFilter<"AuthenticationAuditEvent"> | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonFilter<"AuthenticationAuditEvent">;
+    ipHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    userAgentHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    deviceHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    metadataKeyVersion?: Prisma.IntNullableFilter<"AuthenticationAuditEvent"> | number | null;
+    occurredAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+    actorPlatformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    targetPlatformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    targetExternalIdentity?: Prisma.XOR<Prisma.ExternalIdentityNullableScalarRelationFilter, Prisma.ExternalIdentityWhereInput> | null;
+    targetBrowserSession?: Prisma.XOR<Prisma.BrowserSessionNullableScalarRelationFilter, Prisma.BrowserSessionWhereInput> | null;
+    targetOAuthTransaction?: Prisma.XOR<Prisma.OAuthTransactionNullableScalarRelationFilter, Prisma.OAuthTransactionWhereInput> | null;
+    targetOAuthCredential?: Prisma.XOR<Prisma.OAuthCredentialNullableScalarRelationFilter, Prisma.OAuthCredentialWhereInput> | null;
+    targetGuildMembership?: Prisma.XOR<Prisma.DiscordGuildMembershipNullableScalarRelationFilter, Prisma.DiscordGuildMembershipWhereInput> | null;
+};
+export type AuthenticationAuditEventOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    outcome?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    requestId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorPlatformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorServiceIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPlatformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetExternalIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetBrowserSessionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetOAuthTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetOAuthCredentialId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetGuildMembershipId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    provider?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purpose?: Prisma.SortOrderInput | Prisma.SortOrder;
+    metadata?: Prisma.SortOrder;
+    ipHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    userAgentHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    deviceHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    metadataKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    actorPlatformUser?: Prisma.PlatformUserOrderByWithRelationInput;
+    targetPlatformUser?: Prisma.PlatformUserOrderByWithRelationInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityOrderByWithRelationInput;
+    targetBrowserSession?: Prisma.BrowserSessionOrderByWithRelationInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionOrderByWithRelationInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialOrderByWithRelationInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipOrderByWithRelationInput;
+};
+export type AuthenticationAuditEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    AND?: Prisma.AuthenticationAuditEventWhereInput | Prisma.AuthenticationAuditEventWhereInput[];
+    OR?: Prisma.AuthenticationAuditEventWhereInput[];
+    NOT?: Prisma.AuthenticationAuditEventWhereInput | Prisma.AuthenticationAuditEventWhereInput[];
+    action?: Prisma.EnumAuthenticationAuditActionFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"AuthenticationAuditEvent"> | string;
+    actorType?: Prisma.EnumAuthenticationAuditActorTypeNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    actorServiceIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetExternalIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetBrowserSessionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthTransactionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthCredentialId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetGuildMembershipId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    provider?: Prisma.EnumAuthenticationProviderNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.EnumOAuthTransactionPurposeNullableFilter<"AuthenticationAuditEvent"> | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonFilter<"AuthenticationAuditEvent">;
+    ipHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    userAgentHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    deviceHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    metadataKeyVersion?: Prisma.IntNullableFilter<"AuthenticationAuditEvent"> | number | null;
+    occurredAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+    actorPlatformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    targetPlatformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    targetExternalIdentity?: Prisma.XOR<Prisma.ExternalIdentityNullableScalarRelationFilter, Prisma.ExternalIdentityWhereInput> | null;
+    targetBrowserSession?: Prisma.XOR<Prisma.BrowserSessionNullableScalarRelationFilter, Prisma.BrowserSessionWhereInput> | null;
+    targetOAuthTransaction?: Prisma.XOR<Prisma.OAuthTransactionNullableScalarRelationFilter, Prisma.OAuthTransactionWhereInput> | null;
+    targetOAuthCredential?: Prisma.XOR<Prisma.OAuthCredentialNullableScalarRelationFilter, Prisma.OAuthCredentialWhereInput> | null;
+    targetGuildMembership?: Prisma.XOR<Prisma.DiscordGuildMembershipNullableScalarRelationFilter, Prisma.DiscordGuildMembershipWhereInput> | null;
+}, "id">;
+export type AuthenticationAuditEventOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    outcome?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    requestId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorPlatformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorServiceIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPlatformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetExternalIdentityId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetBrowserSessionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetOAuthTransactionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetOAuthCredentialId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetGuildMembershipId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    provider?: Prisma.SortOrderInput | Prisma.SortOrder;
+    purpose?: Prisma.SortOrderInput | Prisma.SortOrder;
+    metadata?: Prisma.SortOrder;
+    ipHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    userAgentHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    deviceHmac?: Prisma.SortOrderInput | Prisma.SortOrder;
+    metadataKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    _count?: Prisma.AuthenticationAuditEventCountOrderByAggregateInput;
+    _avg?: Prisma.AuthenticationAuditEventAvgOrderByAggregateInput;
+    _max?: Prisma.AuthenticationAuditEventMaxOrderByAggregateInput;
+    _min?: Prisma.AuthenticationAuditEventMinOrderByAggregateInput;
+    _sum?: Prisma.AuthenticationAuditEventSumOrderByAggregateInput;
+};
+export type AuthenticationAuditEventScalarWhereWithAggregatesInput = {
+    AND?: Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput | Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput[];
+    OR?: Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput | Prisma.AuthenticationAuditEventScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"AuthenticationAuditEvent"> | string;
+    action?: Prisma.EnumAuthenticationAuditActionWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidWithAggregatesFilter<"AuthenticationAuditEvent"> | string;
+    actorType?: Prisma.EnumAuthenticationAuditActorTypeNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    actorServiceIdentityId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetPlatformUserId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetExternalIdentityId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetBrowserSessionId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthTransactionId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthCredentialId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    targetGuildMembershipId?: Prisma.UuidNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    provider?: Prisma.EnumAuthenticationProviderNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.EnumOAuthTransactionPurposeNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonWithAggregatesFilter<"AuthenticationAuditEvent">;
+    ipHmac?: Prisma.StringNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    userAgentHmac?: Prisma.StringNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    deviceHmac?: Prisma.StringNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | string | null;
+    metadataKeyVersion?: Prisma.IntNullableWithAggregatesFilter<"AuthenticationAuditEvent"> | number | null;
+    occurredAt?: Prisma.DateTimeWithAggregatesFilter<"AuthenticationAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"AuthenticationAuditEvent"> | Date | string;
+};
+export type AuthenticationAuditEventCreateInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventListRelationFilter = {
+    every?: Prisma.AuthenticationAuditEventWhereInput;
+    some?: Prisma.AuthenticationAuditEventWhereInput;
+    none?: Prisma.AuthenticationAuditEventWhereInput;
+};
+export type AuthenticationAuditEventOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    outcome?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    requestId?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPlatformUserId?: Prisma.SortOrder;
+    actorServiceIdentityId?: Prisma.SortOrder;
+    targetPlatformUserId?: Prisma.SortOrder;
+    targetExternalIdentityId?: Prisma.SortOrder;
+    targetBrowserSessionId?: Prisma.SortOrder;
+    targetOAuthTransactionId?: Prisma.SortOrder;
+    targetOAuthCredentialId?: Prisma.SortOrder;
+    targetGuildMembershipId?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    metadata?: Prisma.SortOrder;
+    ipHmac?: Prisma.SortOrder;
+    userAgentHmac?: Prisma.SortOrder;
+    deviceHmac?: Prisma.SortOrder;
+    metadataKeyVersion?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventAvgOrderByAggregateInput = {
+    metadataKeyVersion?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    outcome?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    requestId?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPlatformUserId?: Prisma.SortOrder;
+    actorServiceIdentityId?: Prisma.SortOrder;
+    targetPlatformUserId?: Prisma.SortOrder;
+    targetExternalIdentityId?: Prisma.SortOrder;
+    targetBrowserSessionId?: Prisma.SortOrder;
+    targetOAuthTransactionId?: Prisma.SortOrder;
+    targetOAuthCredentialId?: Prisma.SortOrder;
+    targetGuildMembershipId?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    ipHmac?: Prisma.SortOrder;
+    userAgentHmac?: Prisma.SortOrder;
+    deviceHmac?: Prisma.SortOrder;
+    metadataKeyVersion?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    outcome?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    requestId?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPlatformUserId?: Prisma.SortOrder;
+    actorServiceIdentityId?: Prisma.SortOrder;
+    targetPlatformUserId?: Prisma.SortOrder;
+    targetExternalIdentityId?: Prisma.SortOrder;
+    targetBrowserSessionId?: Prisma.SortOrder;
+    targetOAuthTransactionId?: Prisma.SortOrder;
+    targetOAuthCredentialId?: Prisma.SortOrder;
+    targetGuildMembershipId?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    ipHmac?: Prisma.SortOrder;
+    userAgentHmac?: Prisma.SortOrder;
+    deviceHmac?: Prisma.SortOrder;
+    metadataKeyVersion?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventSumOrderByAggregateInput = {
+    metadataKeyVersion?: Prisma.SortOrder;
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutActorPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutActorPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutActorPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutActorPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutActorPlatformUserInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutActorPlatformUserInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetPlatformUserInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetPlatformUserInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutActorPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutActorPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutActorPlatformUserInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutActorPlatformUserInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutActorPlatformUserInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetPlatformUserInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetPlatformUserInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetPlatformUserInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetPlatformUserInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetExternalIdentityInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetExternalIdentityInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetExternalIdentityNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetExternalIdentityInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetExternalIdentityInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetExternalIdentityInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetExternalIdentityNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetExternalIdentityInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetExternalIdentityInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetExternalIdentityInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetExternalIdentityInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetBrowserSessionInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetBrowserSessionInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetBrowserSessionNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetBrowserSessionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetBrowserSessionInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetBrowserSessionInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetBrowserSessionNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetBrowserSessionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetBrowserSessionInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetBrowserSessionInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetBrowserSessionInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetOAuthTransactionInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetOAuthTransactionInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetOAuthTransactionNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthTransactionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthTransactionInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthTransactionInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthTransactionInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthTransactionInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthTransactionInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetOAuthCredentialInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetOAuthCredentialInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetOAuthCredentialNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthCredentialInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthCredentialInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthCredentialInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthCredentialNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthCredentialInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthCredentialInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthCredentialInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventCreateNestedManyWithoutTargetGuildMembershipInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetGuildMembershipInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInputEnvelope;
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+};
+export type AuthenticationAuditEventUpdateManyWithoutTargetGuildMembershipNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetGuildMembershipInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetGuildMembershipInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetGuildMembershipInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipNestedInput = {
+    create?: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput> | Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput[] | Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput[];
+    connectOrCreate?: Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput[];
+    upsert?: Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetGuildMembershipInput[];
+    createMany?: Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInputEnvelope;
+    set?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    delete?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    connect?: Prisma.AuthenticationAuditEventWhereUniqueInput | Prisma.AuthenticationAuditEventWhereUniqueInput[];
+    update?: Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetGuildMembershipInput[];
+    updateMany?: Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetGuildMembershipInput | Prisma.AuthenticationAuditEventUpdateManyWithWhereWithoutTargetGuildMembershipInput[];
+    deleteMany?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+};
+export type EnumAuthenticationAuditActionFieldUpdateOperationsInput = {
+    set?: $Enums.AuthenticationAuditAction;
+};
+export type EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput = {
+    set?: $Enums.AuthenticationAuditOutcome;
+};
+export type EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput = {
+    set?: $Enums.AuthenticationAuditReasonCode;
+};
+export type NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AuthenticationAuditActorType | null;
+};
+export type NullableEnumAuthenticationProviderFieldUpdateOperationsInput = {
+    set?: $Enums.AuthenticationProvider | null;
+};
+export type NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput = {
+    set?: $Enums.OAuthTransactionPurpose | null;
+};
+export type AuthenticationAuditEventCreateWithoutActorPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutActorPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput>;
+};
+export type AuthenticationAuditEventCreateManyActorPlatformUserInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInput | Prisma.AuthenticationAuditEventCreateManyActorPlatformUserInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventCreateWithoutTargetPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetPlatformUserInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInput | Prisma.AuthenticationAuditEventCreateManyTargetPlatformUserInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutActorPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutActorPlatformUserInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutActorPlatformUserInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutActorPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutActorPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutActorPlatformUserInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutActorPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutActorPlatformUserInput>;
+};
+export type AuthenticationAuditEventScalarWhereInput = {
+    AND?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+    OR?: Prisma.AuthenticationAuditEventScalarWhereInput[];
+    NOT?: Prisma.AuthenticationAuditEventScalarWhereInput | Prisma.AuthenticationAuditEventScalarWhereInput[];
+    id?: Prisma.UuidFilter<"AuthenticationAuditEvent"> | string;
+    action?: Prisma.EnumAuthenticationAuditActionFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"AuthenticationAuditEvent"> | string;
+    actorType?: Prisma.EnumAuthenticationAuditActorTypeNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    actorServiceIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetPlatformUserId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetExternalIdentityId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetBrowserSessionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthTransactionId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetOAuthCredentialId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    targetGuildMembershipId?: Prisma.UuidNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    provider?: Prisma.EnumAuthenticationProviderNullableFilter<"AuthenticationAuditEvent"> | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.EnumOAuthTransactionPurposeNullableFilter<"AuthenticationAuditEvent"> | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonFilter<"AuthenticationAuditEvent">;
+    ipHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    userAgentHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    deviceHmac?: Prisma.StringNullableFilter<"AuthenticationAuditEvent"> | string | null;
+    metadataKeyVersion?: Prisma.IntNullableFilter<"AuthenticationAuditEvent"> | number | null;
+    occurredAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"AuthenticationAuditEvent"> | Date | string;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetPlatformUserInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetPlatformUserInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetPlatformUserInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetPlatformUserInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetPlatformUserInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetPlatformUserInput>;
+};
+export type AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetExternalIdentityInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetExternalIdentityInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInput | Prisma.AuthenticationAuditEventCreateManyTargetExternalIdentityInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetExternalIdentityInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetExternalIdentityInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetExternalIdentityInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetExternalIdentityInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetExternalIdentityInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetExternalIdentityInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetExternalIdentityInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetExternalIdentityInput>;
+};
+export type AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetBrowserSessionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetBrowserSessionInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInput | Prisma.AuthenticationAuditEventCreateManyTargetBrowserSessionInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetBrowserSessionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetBrowserSessionInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetBrowserSessionInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetBrowserSessionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetBrowserSessionInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetBrowserSessionInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetBrowserSessionInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetBrowserSessionInput>;
+};
+export type AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthTransactionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetOAuthTransactionInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInput | Prisma.AuthenticationAuditEventCreateManyTargetOAuthTransactionInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthTransactionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthTransactionInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthTransactionInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthTransactionInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetOAuthTransactionInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthTransactionInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthTransactionInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionInput>;
+};
+export type AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetOAuthCredentialInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetOAuthCredentialInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInput | Prisma.AuthenticationAuditEventCreateManyTargetOAuthCredentialInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetOAuthCredentialInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthCredentialInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetOAuthCredentialInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetOAuthCredentialInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetOAuthCredentialInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthCredentialInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetOAuthCredentialInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthCredentialInput>;
+};
+export type AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditActorEventsInput;
+    targetPlatformUser?: Prisma.PlatformUserCreateNestedOneWithoutAuditTargetEventsInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityCreateNestedOneWithoutAuditTargetEventsInput;
+    targetBrowserSession?: Prisma.BrowserSessionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialCreateNestedOneWithoutAuditTargetEventsInput;
+};
+export type AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateOrConnectWithoutTargetGuildMembershipInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput>;
+};
+export type AuthenticationAuditEventCreateManyTargetGuildMembershipInputEnvelope = {
+    data: Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInput | Prisma.AuthenticationAuditEventCreateManyTargetGuildMembershipInput[];
+    skipDuplicates?: boolean;
+};
+export type AuthenticationAuditEventUpsertWithWhereUniqueWithoutTargetGuildMembershipInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetGuildMembershipInput>;
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedCreateWithoutTargetGuildMembershipInput>;
+};
+export type AuthenticationAuditEventUpdateWithWhereUniqueWithoutTargetGuildMembershipInput = {
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateWithoutTargetGuildMembershipInput, Prisma.AuthenticationAuditEventUncheckedUpdateWithoutTargetGuildMembershipInput>;
+};
+export type AuthenticationAuditEventUpdateManyWithWhereWithoutTargetGuildMembershipInput = {
+    where: Prisma.AuthenticationAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipInput>;
+};
+export type AuthenticationAuditEventCreateManyActorPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetPlatformUserInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutActorPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutActorPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutActorPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetExternalIdentityInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetBrowserSessionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetBrowserSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetBrowserSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetBrowserSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetOAuthTransactionInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetOAuthTransactionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthTransactionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetOAuthCredentialInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetGuildMembershipId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetOAuthCredentialInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetGuildMembership?: Prisma.DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetOAuthCredentialInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthCredentialInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildMembershipId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventCreateManyTargetGuildMembershipInput = {
+    id?: string;
+    action: $Enums.AuthenticationAuditAction;
+    outcome: $Enums.AuthenticationAuditOutcome;
+    reasonCode: $Enums.AuthenticationAuditReasonCode;
+    requestId?: string | null;
+    correlationId: string;
+    actorType?: $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: string | null;
+    actorServiceIdentityId?: string | null;
+    targetPlatformUserId?: string | null;
+    targetExternalIdentityId?: string | null;
+    targetBrowserSessionId?: string | null;
+    targetOAuthTransactionId?: string | null;
+    targetOAuthCredentialId?: string | null;
+    provider?: $Enums.AuthenticationProvider | null;
+    purpose?: $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: string | null;
+    userAgentHmac?: string | null;
+    deviceHmac?: string | null;
+    metadataKeyVersion?: number | null;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type AuthenticationAuditEventUpdateWithoutTargetGuildMembershipInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPlatformUser?: Prisma.PlatformUserUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetExternalIdentity?: Prisma.ExternalIdentityUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetBrowserSession?: Prisma.BrowserSessionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthTransaction?: Prisma.OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput;
+    targetOAuthCredential?: Prisma.OAuthCredentialUpdateOneWithoutAuditTargetEventsNestedInput;
+};
+export type AuthenticationAuditEventUncheckedUpdateWithoutTargetGuildMembershipInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumAuthenticationAuditActionFieldUpdateOperationsInput | $Enums.AuthenticationAuditAction;
+    outcome?: Prisma.EnumAuthenticationAuditOutcomeFieldUpdateOperationsInput | $Enums.AuthenticationAuditOutcome;
+    reasonCode?: Prisma.EnumAuthenticationAuditReasonCodeFieldUpdateOperationsInput | $Enums.AuthenticationAuditReasonCode;
+    requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    actorType?: Prisma.NullableEnumAuthenticationAuditActorTypeFieldUpdateOperationsInput | $Enums.AuthenticationAuditActorType | null;
+    actorPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorServiceIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPlatformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetExternalIdentityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetBrowserSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthTransactionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetOAuthCredentialId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    provider?: Prisma.NullableEnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider | null;
+    purpose?: Prisma.NullableEnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose | null;
+    metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    ipHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    userAgentHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    deviceHmac?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    metadataKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type AuthenticationAuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    outcome?: boolean;
+    reasonCode?: boolean;
+    requestId?: boolean;
+    correlationId?: boolean;
+    actorType?: boolean;
+    actorPlatformUserId?: boolean;
+    actorServiceIdentityId?: boolean;
+    targetPlatformUserId?: boolean;
+    targetExternalIdentityId?: boolean;
+    targetBrowserSessionId?: boolean;
+    targetOAuthTransactionId?: boolean;
+    targetOAuthCredentialId?: boolean;
+    targetGuildMembershipId?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    metadata?: boolean;
+    ipHmac?: boolean;
+    userAgentHmac?: boolean;
+    deviceHmac?: boolean;
+    metadataKeyVersion?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+}, ExtArgs["result"]["authenticationAuditEvent"]>;
+export type AuthenticationAuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    outcome?: boolean;
+    reasonCode?: boolean;
+    requestId?: boolean;
+    correlationId?: boolean;
+    actorType?: boolean;
+    actorPlatformUserId?: boolean;
+    actorServiceIdentityId?: boolean;
+    targetPlatformUserId?: boolean;
+    targetExternalIdentityId?: boolean;
+    targetBrowserSessionId?: boolean;
+    targetOAuthTransactionId?: boolean;
+    targetOAuthCredentialId?: boolean;
+    targetGuildMembershipId?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    metadata?: boolean;
+    ipHmac?: boolean;
+    userAgentHmac?: boolean;
+    deviceHmac?: boolean;
+    metadataKeyVersion?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+}, ExtArgs["result"]["authenticationAuditEvent"]>;
+export type AuthenticationAuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    outcome?: boolean;
+    reasonCode?: boolean;
+    requestId?: boolean;
+    correlationId?: boolean;
+    actorType?: boolean;
+    actorPlatformUserId?: boolean;
+    actorServiceIdentityId?: boolean;
+    targetPlatformUserId?: boolean;
+    targetExternalIdentityId?: boolean;
+    targetBrowserSessionId?: boolean;
+    targetOAuthTransactionId?: boolean;
+    targetOAuthCredentialId?: boolean;
+    targetGuildMembershipId?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    metadata?: boolean;
+    ipHmac?: boolean;
+    userAgentHmac?: boolean;
+    deviceHmac?: boolean;
+    metadataKeyVersion?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+}, ExtArgs["result"]["authenticationAuditEvent"]>;
+export type AuthenticationAuditEventSelectScalar = {
+    id?: boolean;
+    action?: boolean;
+    outcome?: boolean;
+    reasonCode?: boolean;
+    requestId?: boolean;
+    correlationId?: boolean;
+    actorType?: boolean;
+    actorPlatformUserId?: boolean;
+    actorServiceIdentityId?: boolean;
+    targetPlatformUserId?: boolean;
+    targetExternalIdentityId?: boolean;
+    targetBrowserSessionId?: boolean;
+    targetOAuthTransactionId?: boolean;
+    targetOAuthCredentialId?: boolean;
+    targetGuildMembershipId?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    metadata?: boolean;
+    ipHmac?: boolean;
+    userAgentHmac?: boolean;
+    deviceHmac?: boolean;
+    metadataKeyVersion?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+};
+export type AuthenticationAuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "action" | "outcome" | "reasonCode" | "requestId" | "correlationId" | "actorType" | "actorPlatformUserId" | "actorServiceIdentityId" | "targetPlatformUserId" | "targetExternalIdentityId" | "targetBrowserSessionId" | "targetOAuthTransactionId" | "targetOAuthCredentialId" | "targetGuildMembershipId" | "provider" | "purpose" | "metadata" | "ipHmac" | "userAgentHmac" | "deviceHmac" | "metadataKeyVersion" | "occurredAt" | "createdAt", ExtArgs["result"]["authenticationAuditEvent"]>;
+export type AuthenticationAuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+};
+export type AuthenticationAuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+};
+export type AuthenticationAuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>;
+    targetPlatformUser?: boolean | Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>;
+    targetExternalIdentity?: boolean | Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>;
+    targetBrowserSession?: boolean | Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>;
+    targetOAuthTransaction?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>;
+    targetOAuthCredential?: boolean | Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>;
+    targetGuildMembership?: boolean | Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>;
+};
+export type $AuthenticationAuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "AuthenticationAuditEvent";
+    objects: {
+        actorPlatformUser: Prisma.$PlatformUserPayload<ExtArgs> | null;
+        targetPlatformUser: Prisma.$PlatformUserPayload<ExtArgs> | null;
+        targetExternalIdentity: Prisma.$ExternalIdentityPayload<ExtArgs> | null;
+        targetBrowserSession: Prisma.$BrowserSessionPayload<ExtArgs> | null;
+        targetOAuthTransaction: Prisma.$OAuthTransactionPayload<ExtArgs> | null;
+        targetOAuthCredential: Prisma.$OAuthCredentialPayload<ExtArgs> | null;
+        targetGuildMembership: Prisma.$DiscordGuildMembershipPayload<ExtArgs> | null;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        action: $Enums.AuthenticationAuditAction;
+        outcome: $Enums.AuthenticationAuditOutcome;
+        reasonCode: $Enums.AuthenticationAuditReasonCode;
+        requestId: string | null;
+        correlationId: string;
+        actorType: $Enums.AuthenticationAuditActorType | null;
+        actorPlatformUserId: string | null;
+        actorServiceIdentityId: string | null;
+        targetPlatformUserId: string | null;
+        targetExternalIdentityId: string | null;
+        targetBrowserSessionId: string | null;
+        targetOAuthTransactionId: string | null;
+        targetOAuthCredentialId: string | null;
+        targetGuildMembershipId: string | null;
+        provider: $Enums.AuthenticationProvider | null;
+        purpose: $Enums.OAuthTransactionPurpose | null;
+        metadata: runtime.JsonValue;
+        ipHmac: string | null;
+        userAgentHmac: string | null;
+        deviceHmac: string | null;
+        metadataKeyVersion: number | null;
+        occurredAt: Date;
+        createdAt: Date;
+    }, ExtArgs["result"]["authenticationAuditEvent"]>;
+    composites: {};
+};
+export type AuthenticationAuditEventGetPayload<S extends boolean | null | undefined | AuthenticationAuditEventDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload, S>;
+export type AuthenticationAuditEventCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<AuthenticationAuditEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: AuthenticationAuditEventCountAggregateInputType | true;
+};
+export interface AuthenticationAuditEventDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['AuthenticationAuditEvent'];
+        meta: {
+            name: 'AuthenticationAuditEvent';
+        };
+    };
+    /**
+     * Find zero or one AuthenticationAuditEvent that matches the filter.
+     * @param {AuthenticationAuditEventFindUniqueArgs} args - Arguments to find a AuthenticationAuditEvent
+     * @example
+     * // Get one AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuthenticationAuditEventFindUniqueArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventFindUniqueArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one AuthenticationAuditEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuthenticationAuditEventFindUniqueOrThrowArgs} args - Arguments to find a AuthenticationAuditEvent
+     * @example
+     * // Get one AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuthenticationAuditEventFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first AuthenticationAuditEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventFindFirstArgs} args - Arguments to find a AuthenticationAuditEvent
+     * @example
+     * // Get one AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuthenticationAuditEventFindFirstArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventFindFirstArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first AuthenticationAuditEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventFindFirstOrThrowArgs} args - Arguments to find a AuthenticationAuditEvent
+     * @example
+     * // Get one AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuthenticationAuditEventFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more AuthenticationAuditEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuthenticationAuditEvents
+     * const authenticationAuditEvents = await prisma.authenticationAuditEvent.findMany()
+     *
+     * // Get first 10 AuthenticationAuditEvents
+     * const authenticationAuditEvents = await prisma.authenticationAuditEvent.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const authenticationAuditEventWithIdOnly = await prisma.authenticationAuditEvent.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends AuthenticationAuditEventFindManyArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a AuthenticationAuditEvent.
+     * @param {AuthenticationAuditEventCreateArgs} args - Arguments to create a AuthenticationAuditEvent.
+     * @example
+     * // Create one AuthenticationAuditEvent
+     * const AuthenticationAuditEvent = await prisma.authenticationAuditEvent.create({
+     *   data: {
+     *     // ... data to create a AuthenticationAuditEvent
+     *   }
+     * })
+     *
+     */
+    create<T extends AuthenticationAuditEventCreateArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventCreateArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many AuthenticationAuditEvents.
+     * @param {AuthenticationAuditEventCreateManyArgs} args - Arguments to create many AuthenticationAuditEvents.
+     * @example
+     * // Create many AuthenticationAuditEvents
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends AuthenticationAuditEventCreateManyArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many AuthenticationAuditEvents and returns the data saved in the database.
+     * @param {AuthenticationAuditEventCreateManyAndReturnArgs} args - Arguments to create many AuthenticationAuditEvents.
+     * @example
+     * // Create many AuthenticationAuditEvents
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many AuthenticationAuditEvents and only return the `id`
+     * const authenticationAuditEventWithIdOnly = await prisma.authenticationAuditEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends AuthenticationAuditEventCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a AuthenticationAuditEvent.
+     * @param {AuthenticationAuditEventDeleteArgs} args - Arguments to delete one AuthenticationAuditEvent.
+     * @example
+     * // Delete one AuthenticationAuditEvent
+     * const AuthenticationAuditEvent = await prisma.authenticationAuditEvent.delete({
+     *   where: {
+     *     // ... filter to delete one AuthenticationAuditEvent
+     *   }
+     * })
+     *
+     */
+    delete<T extends AuthenticationAuditEventDeleteArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventDeleteArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one AuthenticationAuditEvent.
+     * @param {AuthenticationAuditEventUpdateArgs} args - Arguments to update one AuthenticationAuditEvent.
+     * @example
+     * // Update one AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends AuthenticationAuditEventUpdateArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventUpdateArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more AuthenticationAuditEvents.
+     * @param {AuthenticationAuditEventDeleteManyArgs} args - Arguments to filter AuthenticationAuditEvents to delete.
+     * @example
+     * // Delete a few AuthenticationAuditEvents
+     * const { count } = await prisma.authenticationAuditEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends AuthenticationAuditEventDeleteManyArgs>(args?: Prisma.SelectSubset<T, AuthenticationAuditEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more AuthenticationAuditEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuthenticationAuditEvents
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends AuthenticationAuditEventUpdateManyArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more AuthenticationAuditEvents and returns the data updated in the database.
+     * @param {AuthenticationAuditEventUpdateManyAndReturnArgs} args - Arguments to update many AuthenticationAuditEvents.
+     * @example
+     * // Update many AuthenticationAuditEvents
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more AuthenticationAuditEvents and only return the `id`
+     * const authenticationAuditEventWithIdOnly = await prisma.authenticationAuditEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends AuthenticationAuditEventUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one AuthenticationAuditEvent.
+     * @param {AuthenticationAuditEventUpsertArgs} args - Arguments to update or create a AuthenticationAuditEvent.
+     * @example
+     * // Update or create a AuthenticationAuditEvent
+     * const authenticationAuditEvent = await prisma.authenticationAuditEvent.upsert({
+     *   create: {
+     *     // ... data to create a AuthenticationAuditEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuthenticationAuditEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuthenticationAuditEventUpsertArgs>(args: Prisma.SelectSubset<T, AuthenticationAuditEventUpsertArgs<ExtArgs>>): Prisma.Prisma__AuthenticationAuditEventClient<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of AuthenticationAuditEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventCountArgs} args - Arguments to filter AuthenticationAuditEvents to count.
+     * @example
+     * // Count the number of AuthenticationAuditEvents
+     * const count = await prisma.authenticationAuditEvent.count({
+     *   where: {
+     *     // ... the filter for the AuthenticationAuditEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuthenticationAuditEventCountArgs>(args?: Prisma.Subset<T, AuthenticationAuditEventCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], AuthenticationAuditEventCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a AuthenticationAuditEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuthenticationAuditEventAggregateArgs>(args: Prisma.Subset<T, AuthenticationAuditEventAggregateArgs>): Prisma.PrismaPromise<GetAuthenticationAuditEventAggregateType<T>>;
+    /**
+     * Group by AuthenticationAuditEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuthenticationAuditEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends AuthenticationAuditEventGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: AuthenticationAuditEventGroupByArgs['orderBy'];
+    } : {
+        orderBy?: AuthenticationAuditEventGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, AuthenticationAuditEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuthenticationAuditEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the AuthenticationAuditEvent model
+     */
+    readonly fields: AuthenticationAuditEventFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for AuthenticationAuditEvent.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__AuthenticationAuditEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    actorPlatformUser<T extends Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs>>): Prisma.Prisma__PlatformUserClient<runtime.Types.Result.GetResult<Prisma.$PlatformUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetPlatformUser<T extends Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs>>): Prisma.Prisma__PlatformUserClient<runtime.Types.Result.GetResult<Prisma.$PlatformUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetExternalIdentity<T extends Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs>>): Prisma.Prisma__ExternalIdentityClient<runtime.Types.Result.GetResult<Prisma.$ExternalIdentityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetBrowserSession<T extends Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs>>): Prisma.Prisma__BrowserSessionClient<runtime.Types.Result.GetResult<Prisma.$BrowserSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetOAuthTransaction<T extends Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetOAuthCredential<T extends Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs>>): Prisma.Prisma__OAuthCredentialClient<runtime.Types.Result.GetResult<Prisma.$OAuthCredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetGuildMembership<T extends Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the AuthenticationAuditEvent model
+ */
+export interface AuthenticationAuditEventFieldRefs {
+    readonly id: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly action: Prisma.FieldRef<"AuthenticationAuditEvent", 'AuthenticationAuditAction'>;
+    readonly outcome: Prisma.FieldRef<"AuthenticationAuditEvent", 'AuthenticationAuditOutcome'>;
+    readonly reasonCode: Prisma.FieldRef<"AuthenticationAuditEvent", 'AuthenticationAuditReasonCode'>;
+    readonly requestId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly correlationId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly actorType: Prisma.FieldRef<"AuthenticationAuditEvent", 'AuthenticationAuditActorType'>;
+    readonly actorPlatformUserId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly actorServiceIdentityId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetPlatformUserId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetExternalIdentityId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetBrowserSessionId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetOAuthTransactionId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetOAuthCredentialId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly targetGuildMembershipId: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly provider: Prisma.FieldRef<"AuthenticationAuditEvent", 'AuthenticationProvider'>;
+    readonly purpose: Prisma.FieldRef<"AuthenticationAuditEvent", 'OAuthTransactionPurpose'>;
+    readonly metadata: Prisma.FieldRef<"AuthenticationAuditEvent", 'Json'>;
+    readonly ipHmac: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly userAgentHmac: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly deviceHmac: Prisma.FieldRef<"AuthenticationAuditEvent", 'String'>;
+    readonly metadataKeyVersion: Prisma.FieldRef<"AuthenticationAuditEvent", 'Int'>;
+    readonly occurredAt: Prisma.FieldRef<"AuthenticationAuditEvent", 'DateTime'>;
+    readonly createdAt: Prisma.FieldRef<"AuthenticationAuditEvent", 'DateTime'>;
+}
+/**
+ * AuthenticationAuditEvent findUnique
+ */
+export type AuthenticationAuditEventFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which AuthenticationAuditEvent to fetch.
+     */
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+};
+/**
+ * AuthenticationAuditEvent findUniqueOrThrow
+ */
+export type AuthenticationAuditEventFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which AuthenticationAuditEvent to fetch.
+     */
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+};
+/**
+ * AuthenticationAuditEvent findFirst
+ */
+export type AuthenticationAuditEventFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which AuthenticationAuditEvent to fetch.
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AuthenticationAuditEvents to fetch.
+     */
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for AuthenticationAuditEvents.
+     */
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AuthenticationAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AuthenticationAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of AuthenticationAuditEvents.
+     */
+    distinct?: Prisma.AuthenticationAuditEventScalarFieldEnum | Prisma.AuthenticationAuditEventScalarFieldEnum[];
+};
+/**
+ * AuthenticationAuditEvent findFirstOrThrow
+ */
+export type AuthenticationAuditEventFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which AuthenticationAuditEvent to fetch.
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AuthenticationAuditEvents to fetch.
+     */
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for AuthenticationAuditEvents.
+     */
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AuthenticationAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AuthenticationAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of AuthenticationAuditEvents.
+     */
+    distinct?: Prisma.AuthenticationAuditEventScalarFieldEnum | Prisma.AuthenticationAuditEventScalarFieldEnum[];
+};
+/**
+ * AuthenticationAuditEvent findMany
+ */
+export type AuthenticationAuditEventFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which AuthenticationAuditEvents to fetch.
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of AuthenticationAuditEvents to fetch.
+     */
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing AuthenticationAuditEvents.
+     */
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` AuthenticationAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` AuthenticationAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of AuthenticationAuditEvents.
+     */
+    distinct?: Prisma.AuthenticationAuditEventScalarFieldEnum | Prisma.AuthenticationAuditEventScalarFieldEnum[];
+};
+/**
+ * AuthenticationAuditEvent create
+ */
+export type AuthenticationAuditEventCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a AuthenticationAuditEvent.
+     */
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventCreateInput, Prisma.AuthenticationAuditEventUncheckedCreateInput>;
+};
+/**
+ * AuthenticationAuditEvent createMany
+ */
+export type AuthenticationAuditEventCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuthenticationAuditEvents.
+     */
+    data: Prisma.AuthenticationAuditEventCreateManyInput | Prisma.AuthenticationAuditEventCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * AuthenticationAuditEvent createManyAndReturn
+ */
+export type AuthenticationAuditEventCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * The data used to create many AuthenticationAuditEvents.
+     */
+    data: Prisma.AuthenticationAuditEventCreateManyInput | Prisma.AuthenticationAuditEventCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * AuthenticationAuditEvent update
+ */
+export type AuthenticationAuditEventUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a AuthenticationAuditEvent.
+     */
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateInput, Prisma.AuthenticationAuditEventUncheckedUpdateInput>;
+    /**
+     * Choose, which AuthenticationAuditEvent to update.
+     */
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+};
+/**
+ * AuthenticationAuditEvent updateMany
+ */
+export type AuthenticationAuditEventUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuthenticationAuditEvents.
+     */
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyInput>;
+    /**
+     * Filter which AuthenticationAuditEvents to update
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * Limit how many AuthenticationAuditEvents to update.
+     */
+    limit?: number;
+};
+/**
+ * AuthenticationAuditEvent updateManyAndReturn
+ */
+export type AuthenticationAuditEventUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * The data used to update AuthenticationAuditEvents.
+     */
+    data: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateManyMutationInput, Prisma.AuthenticationAuditEventUncheckedUpdateManyInput>;
+    /**
+     * Filter which AuthenticationAuditEvents to update
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * Limit how many AuthenticationAuditEvents to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * AuthenticationAuditEvent upsert
+ */
+export type AuthenticationAuditEventUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the AuthenticationAuditEvent to update in case it exists.
+     */
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    /**
+     * In case the AuthenticationAuditEvent found by the `where` argument doesn't exist, create a new AuthenticationAuditEvent with this data.
+     */
+    create: Prisma.XOR<Prisma.AuthenticationAuditEventCreateInput, Prisma.AuthenticationAuditEventUncheckedCreateInput>;
+    /**
+     * In case the AuthenticationAuditEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.AuthenticationAuditEventUpdateInput, Prisma.AuthenticationAuditEventUncheckedUpdateInput>;
+};
+/**
+ * AuthenticationAuditEvent delete
+ */
+export type AuthenticationAuditEventDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter which AuthenticationAuditEvent to delete.
+     */
+    where: Prisma.AuthenticationAuditEventWhereUniqueInput;
+};
+/**
+ * AuthenticationAuditEvent deleteMany
+ */
+export type AuthenticationAuditEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuthenticationAuditEvents to delete
+     */
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    /**
+     * Limit how many AuthenticationAuditEvents to delete.
+     */
+    limit?: number;
+};
+/**
+ * AuthenticationAuditEvent.actorPlatformUser
+ */
+export type AuthenticationAuditEvent$actorPlatformUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformUser
+     */
+    select?: Prisma.PlatformUserSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PlatformUser
+     */
+    omit?: Prisma.PlatformUserOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PlatformUserInclude<ExtArgs> | null;
+    where?: Prisma.PlatformUserWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetPlatformUser
+ */
+export type AuthenticationAuditEvent$targetPlatformUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformUser
+     */
+    select?: Prisma.PlatformUserSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PlatformUser
+     */
+    omit?: Prisma.PlatformUserOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PlatformUserInclude<ExtArgs> | null;
+    where?: Prisma.PlatformUserWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetExternalIdentity
+ */
+export type AuthenticationAuditEvent$targetExternalIdentityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExternalIdentity
+     */
+    select?: Prisma.ExternalIdentitySelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ExternalIdentity
+     */
+    omit?: Prisma.ExternalIdentityOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ExternalIdentityInclude<ExtArgs> | null;
+    where?: Prisma.ExternalIdentityWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetBrowserSession
+ */
+export type AuthenticationAuditEvent$targetBrowserSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BrowserSession
+     */
+    select?: Prisma.BrowserSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BrowserSession
+     */
+    omit?: Prisma.BrowserSessionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BrowserSessionInclude<ExtArgs> | null;
+    where?: Prisma.BrowserSessionWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetOAuthTransaction
+ */
+export type AuthenticationAuditEvent$targetOAuthTransactionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    where?: Prisma.OAuthTransactionWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetOAuthCredential
+ */
+export type AuthenticationAuditEvent$targetOAuthCredentialArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthCredential
+     */
+    select?: Prisma.OAuthCredentialSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthCredential
+     */
+    omit?: Prisma.OAuthCredentialOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthCredentialInclude<ExtArgs> | null;
+    where?: Prisma.OAuthCredentialWhereInput;
+};
+/**
+ * AuthenticationAuditEvent.targetGuildMembership
+ */
+export type AuthenticationAuditEvent$targetGuildMembershipArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+};
+/**
+ * AuthenticationAuditEvent without action
+ */
+export type AuthenticationAuditEventDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=AuthenticationAuditEvent.d.ts.map

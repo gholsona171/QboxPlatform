@@ -1,0 +1,445 @@
+import * as Prisma from './internal/prismaNamespaceBrowser.js';
+export { Prisma };
+export * as $Enums from './enums.js';
+export * from './enums.js';
+/**
+ * Model ApplicationCounter
+ *
+ */
+export type ApplicationCounter = Prisma.ApplicationCounterModel;
+/**
+ * Model ApplicationForm
+ *
+ */
+export type ApplicationForm = Prisma.ApplicationFormModel;
+/**
+ * Model ApplicationPanel
+ *
+ */
+export type ApplicationPanel = Prisma.ApplicationPanelModel;
+/**
+ * Model Application
+ *
+ */
+export type Application = Prisma.ApplicationModel;
+/**
+ * Model ApplicationVote
+ *
+ */
+export type ApplicationVote = Prisma.ApplicationVoteModel;
+/**
+ * Model ApplicationNote
+ *
+ */
+export type ApplicationNote = Prisma.ApplicationNoteModel;
+/**
+ * Model Guild
+ *
+ */
+export type Guild = Prisma.GuildModel;
+/**
+ * Model RoleMenu
+ *
+ */
+export type RoleMenu = Prisma.RoleMenuModel;
+/**
+ * Model RoleMenuOption
+ *
+ */
+export type RoleMenuOption = Prisma.RoleMenuOptionModel;
+/**
+ * Model WelcomeGoodbyeConfig
+ *
+ */
+export type WelcomeGoodbyeConfig = Prisma.WelcomeGoodbyeConfigModel;
+/**
+ * Model AutoroleConfig
+ *
+ */
+export type AutoroleConfig = Prisma.AutoroleConfigModel;
+/**
+ * Model AutoroleRule
+ *
+ */
+export type AutoroleRule = Prisma.AutoroleRuleModel;
+/**
+ * Model RulesConfig
+ *
+ */
+export type RulesConfig = Prisma.RulesConfigModel;
+/**
+ * Model DiscordRoleAuditEvent
+ *
+ */
+export type DiscordRoleAuditEvent = Prisma.DiscordRoleAuditEventModel;
+/**
+ * Model CommunityCounter
+ *
+ */
+export type CommunityCounter = Prisma.CommunityCounterModel;
+/**
+ * Model ServerLogConfig
+ *
+ */
+export type ServerLogConfig = Prisma.ServerLogConfigModel;
+/**
+ * Model EmbedTemplate
+ *
+ */
+export type EmbedTemplate = Prisma.EmbedTemplateModel;
+/**
+ * Model CustomCommand
+ *
+ */
+export type CustomCommand = Prisma.CustomCommandModel;
+/**
+ * Model Suggestion
+ *
+ */
+export type Suggestion = Prisma.SuggestionModel;
+/**
+ * Model StarboardConfig
+ *
+ */
+export type StarboardConfig = Prisma.StarboardConfigModel;
+/**
+ * Model StarboardEntry
+ *
+ */
+export type StarboardEntry = Prisma.StarboardEntryModel;
+/**
+ * Model PermissionPrincipal
+ *
+ */
+export type PermissionPrincipal = Prisma.PermissionPrincipalModel;
+/**
+ * Model PermissionDefinition
+ *
+ */
+export type PermissionDefinition = Prisma.PermissionDefinitionModel;
+/**
+ * Model PermissionAssignment
+ *
+ */
+export type PermissionAssignment = Prisma.PermissionAssignmentModel;
+/**
+ * Model PermissionAuditEvent
+ *
+ */
+export type PermissionAuditEvent = Prisma.PermissionAuditEventModel;
+/**
+ * Model PermissionCatalogState
+ *
+ */
+export type PermissionCatalogState = Prisma.PermissionCatalogStateModel;
+/**
+ * Model PlatformUser
+ *
+ */
+export type PlatformUser = Prisma.PlatformUserModel;
+/**
+ * Model ExternalIdentity
+ *
+ */
+export type ExternalIdentity = Prisma.ExternalIdentityModel;
+/**
+ * Model BrowserSession
+ *
+ */
+export type BrowserSession = Prisma.BrowserSessionModel;
+/**
+ * Model OAuthTransaction
+ *
+ */
+export type OAuthTransaction = Prisma.OAuthTransactionModel;
+/**
+ * Model OAuthCredential
+ *
+ */
+export type OAuthCredential = Prisma.OAuthCredentialModel;
+/**
+ * Model DiscordGuildMembership
+ *
+ */
+export type DiscordGuildMembership = Prisma.DiscordGuildMembershipModel;
+/**
+ * Model DiscordGuildMembershipRole
+ *
+ */
+export type DiscordGuildMembershipRole = Prisma.DiscordGuildMembershipRoleModel;
+/**
+ * Model AuthenticationAuditEvent
+ *
+ */
+export type AuthenticationAuditEvent = Prisma.AuthenticationAuditEventModel;
+/**
+ * Model BirthdaySettings
+ *
+ */
+export type BirthdaySettings = Prisma.BirthdaySettingsModel;
+/**
+ * Model Birthday
+ *
+ */
+export type Birthday = Prisma.BirthdayModel;
+/**
+ * Model BuilderDraft
+ *
+ */
+export type BuilderDraft = Prisma.BuilderDraftModel;
+/**
+ * Model BuilderRun
+ *
+ */
+export type BuilderRun = Prisma.BuilderRunModel;
+/**
+ * Model BuilderRunItem
+ *
+ */
+export type BuilderRunItem = Prisma.BuilderRunItemModel;
+/**
+ * Model FivemSettings
+ *
+ */
+export type FivemSettings = Prisma.FivemSettingsModel;
+/**
+ * Model FivemStatusSnapshot
+ *
+ */
+export type FivemStatusSnapshot = Prisma.FivemStatusSnapshotModel;
+/**
+ * Model GamesSettings
+ *
+ */
+export type GamesSettings = Prisma.GamesSettingsModel;
+/**
+ * Model GamesServer
+ *
+ */
+export type GamesServer = Prisma.GamesServerModel;
+/**
+ * Model GamesStatusSnapshot
+ *
+ */
+export type GamesStatusSnapshot = Prisma.GamesStatusSnapshotModel;
+/**
+ * Model GiveawayCounter
+ *
+ */
+export type GiveawayCounter = Prisma.GiveawayCounterModel;
+/**
+ * Model Giveaway
+ *
+ */
+export type Giveaway = Prisma.GiveawayModel;
+/**
+ * Model GiveawayEntry
+ *
+ */
+export type GiveawayEntry = Prisma.GiveawayEntryModel;
+/**
+ * Model KnowledgeSettings
+ *
+ */
+export type KnowledgeSettings = Prisma.KnowledgeSettingsModel;
+/**
+ * Model KnowledgeCategory
+ *
+ */
+export type KnowledgeCategory = Prisma.KnowledgeCategoryModel;
+/**
+ * Model KnowledgeArticle
+ *
+ */
+export type KnowledgeArticle = Prisma.KnowledgeArticleModel;
+/**
+ * Model LevelSettings
+ *
+ */
+export type LevelSettings = Prisma.LevelSettingsModel;
+/**
+ * Model LevelMember
+ *
+ */
+export type LevelMember = Prisma.LevelMemberModel;
+/**
+ * Model MessagesLook
+ *
+ */
+export type MessagesLook = Prisma.MessagesLookModel;
+/**
+ * Model MessagesTemplate
+ *
+ */
+export type MessagesTemplate = Prisma.MessagesTemplateModel;
+/**
+ * Model ModerationSettings
+ *
+ */
+export type ModerationSettings = Prisma.ModerationSettingsModel;
+/**
+ * Model ModerationCase
+ *
+ */
+export type ModerationCase = Prisma.ModerationCaseModel;
+/**
+ * Model MusicSettings
+ *
+ */
+export type MusicSettings = Prisma.MusicSettingsModel;
+/**
+ * Model MusicTrack
+ * An audio file a manager uploaded. Files live on disk under MUSIC_STORAGE_DIR/<guildId>/<fileName>.
+ */
+export type MusicTrack = Prisma.MusicTrackModel;
+/**
+ * Model MusicPlaylist
+ *
+ */
+export type MusicPlaylist = Prisma.MusicPlaylistModel;
+/**
+ * Model MusicPlaylistTrack
+ *
+ */
+export type MusicPlaylistTrack = Prisma.MusicPlaylistTrackModel;
+/**
+ * Model MusicStation
+ *
+ */
+export type MusicStation = Prisma.MusicStationModel;
+/**
+ * Model MusicSession
+ * Player state per server, saved on every change so playback survives bot restarts.
+ */
+export type MusicSession = Prisma.MusicSessionModel;
+/**
+ * Model PollCounter
+ *
+ */
+export type PollCounter = Prisma.PollCounterModel;
+/**
+ * Model Poll
+ *
+ */
+export type Poll = Prisma.PollModel;
+/**
+ * Model PollVote
+ *
+ */
+export type PollVote = Prisma.PollVoteModel;
+/**
+ * Model ScheduledMessage
+ *
+ */
+export type ScheduledMessage = Prisma.ScheduledMessageModel;
+/**
+ * Model ScheduledMessageRun
+ *
+ */
+export type ScheduledMessageRun = Prisma.ScheduledMessageRunModel;
+/**
+ * Model StaffSettings
+ *
+ */
+export type StaffSettings = Prisma.StaffSettingsModel;
+/**
+ * Model StaffRank
+ *
+ */
+export type StaffRank = Prisma.StaffRankModel;
+/**
+ * Model StaffMember
+ *
+ */
+export type StaffMember = Prisma.StaffMemberModel;
+/**
+ * Model StaffRecord
+ *
+ */
+export type StaffRecord = Prisma.StaffRecordModel;
+/**
+ * Model StaffStrike
+ *
+ */
+export type StaffStrike = Prisma.StaffStrikeModel;
+/**
+ * Model StaffLeave
+ *
+ */
+export type StaffLeave = Prisma.StaffLeaveModel;
+/**
+ * Model StaffShift
+ *
+ */
+export type StaffShift = Prisma.StaffShiftModel;
+/**
+ * Model StreamsSettings
+ *
+ */
+export type StreamsSettings = Prisma.StreamsSettingsModel;
+/**
+ * Model StreamsSubscription
+ *
+ */
+export type StreamsSubscription = Prisma.StreamsSubscriptionModel;
+/**
+ * Model TicketSettings
+ *
+ */
+export type TicketSettings = Prisma.TicketSettingsModel;
+/**
+ * Model TicketCategory
+ *
+ */
+export type TicketCategory = Prisma.TicketCategoryModel;
+/**
+ * Model TicketPanel
+ *
+ */
+export type TicketPanel = Prisma.TicketPanelModel;
+/**
+ * Model Ticket
+ *
+ */
+export type Ticket = Prisma.TicketModel;
+/**
+ * Model TicketMessage
+ *
+ */
+export type TicketMessage = Prisma.TicketMessageModel;
+/**
+ * Model TicketEvent
+ *
+ */
+export type TicketEvent = Prisma.TicketEventModel;
+/**
+ * Model VerificationSettings
+ *
+ */
+export type VerificationSettings = Prisma.VerificationSettingsModel;
+/**
+ * Model VerificationAttempt
+ *
+ */
+export type VerificationAttempt = Prisma.VerificationAttemptModel;
+/**
+ * Model VerificationPendingMember
+ *
+ */
+export type VerificationPendingMember = Prisma.VerificationPendingMemberModel;
+/**
+ * Model VoiceSettings
+ *
+ */
+export type VoiceSettings = Prisma.VoiceSettingsModel;
+/**
+ * Model VoiceHub
+ *
+ */
+export type VoiceHub = Prisma.VoiceHubModel;
+/**
+ * Model VoiceRoom
+ *
+ */
+export type VoiceRoom = Prisma.VoiceRoomModel;
+//# sourceMappingURL=browser.d.ts.map

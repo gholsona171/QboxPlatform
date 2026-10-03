@@ -1,0 +1,1 @@
+{"version":3,"file":"LevelsFeature.d.ts","sourceRoot":"","sources":["../../src/levels/LevelsFeature.ts"],"names":[],"mappings":"AACA,OAAO,EAAuD,KAAK,eAAe,EAAyB,MAAM,cAAc,CAAC;AAChI,OAAO,EAAwB,KAAK,gBAAgB,EAAE,MAAM,uBAAuB,CAAC;AAMpF,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,+BAA+B,CAAC;AAI3E,wFAAwF;AACxF,wBAAgB,aAAa,CAAC,UAAU,EAAE,eAAe,EAAE,SAAS,GAAE,gBAAuC,GAAG,qBAAqB,CAWpI"}

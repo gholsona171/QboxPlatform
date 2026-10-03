@@ -1,0 +1,2398 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model OAuthTransaction
+ *
+ */
+export type OAuthTransactionModel = runtime.Types.Result.DefaultSelection<Prisma.$OAuthTransactionPayload>;
+export type AggregateOAuthTransaction = {
+    _count: OAuthTransactionCountAggregateOutputType | null;
+    _avg: OAuthTransactionAvgAggregateOutputType | null;
+    _sum: OAuthTransactionSumAggregateOutputType | null;
+    _min: OAuthTransactionMinAggregateOutputType | null;
+    _max: OAuthTransactionMaxAggregateOutputType | null;
+};
+export type OAuthTransactionAvgAggregateOutputType = {
+    pkceKeyVersion: number | null;
+};
+export type OAuthTransactionSumAggregateOutputType = {
+    pkceKeyVersion: number | null;
+};
+export type OAuthTransactionMinAggregateOutputType = {
+    id: string | null;
+    provider: $Enums.AuthenticationProvider | null;
+    purpose: $Enums.OAuthTransactionPurpose | null;
+    state: $Enums.OAuthTransactionState | null;
+    stateDigest: string | null;
+    browserBindingDigest: string | null;
+    platformUserId: string | null;
+    initiatingSessionId: string | null;
+    redirectKey: string | null;
+    returnTargetKey: string | null;
+    pkceMode: $Enums.OAuthPkceMode | null;
+    pkceCiphertext: runtime.Bytes | null;
+    pkceNonce: runtime.Bytes | null;
+    pkceAuthenticationTag: runtime.Bytes | null;
+    pkceKeyVersion: number | null;
+    expiresAt: Date | null;
+    claimedAt: Date | null;
+    claimExpiresAt: Date | null;
+    completedAt: Date | null;
+    failedAt: Date | null;
+    cancelledAt: Date | null;
+    expiredAt: Date | null;
+    failureReason: $Enums.OAuthTransactionFailureReason | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type OAuthTransactionMaxAggregateOutputType = {
+    id: string | null;
+    provider: $Enums.AuthenticationProvider | null;
+    purpose: $Enums.OAuthTransactionPurpose | null;
+    state: $Enums.OAuthTransactionState | null;
+    stateDigest: string | null;
+    browserBindingDigest: string | null;
+    platformUserId: string | null;
+    initiatingSessionId: string | null;
+    redirectKey: string | null;
+    returnTargetKey: string | null;
+    pkceMode: $Enums.OAuthPkceMode | null;
+    pkceCiphertext: runtime.Bytes | null;
+    pkceNonce: runtime.Bytes | null;
+    pkceAuthenticationTag: runtime.Bytes | null;
+    pkceKeyVersion: number | null;
+    expiresAt: Date | null;
+    claimedAt: Date | null;
+    claimExpiresAt: Date | null;
+    completedAt: Date | null;
+    failedAt: Date | null;
+    cancelledAt: Date | null;
+    expiredAt: Date | null;
+    failureReason: $Enums.OAuthTransactionFailureReason | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type OAuthTransactionCountAggregateOutputType = {
+    id: number;
+    provider: number;
+    purpose: number;
+    state: number;
+    stateDigest: number;
+    browserBindingDigest: number;
+    platformUserId: number;
+    initiatingSessionId: number;
+    redirectKey: number;
+    returnTargetKey: number;
+    pkceMode: number;
+    pkceCiphertext: number;
+    pkceNonce: number;
+    pkceAuthenticationTag: number;
+    pkceKeyVersion: number;
+    expiresAt: number;
+    claimedAt: number;
+    claimExpiresAt: number;
+    completedAt: number;
+    failedAt: number;
+    cancelledAt: number;
+    expiredAt: number;
+    failureReason: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type OAuthTransactionAvgAggregateInputType = {
+    pkceKeyVersion?: true;
+};
+export type OAuthTransactionSumAggregateInputType = {
+    pkceKeyVersion?: true;
+};
+export type OAuthTransactionMinAggregateInputType = {
+    id?: true;
+    provider?: true;
+    purpose?: true;
+    state?: true;
+    stateDigest?: true;
+    browserBindingDigest?: true;
+    platformUserId?: true;
+    initiatingSessionId?: true;
+    redirectKey?: true;
+    returnTargetKey?: true;
+    pkceMode?: true;
+    pkceCiphertext?: true;
+    pkceNonce?: true;
+    pkceAuthenticationTag?: true;
+    pkceKeyVersion?: true;
+    expiresAt?: true;
+    claimedAt?: true;
+    claimExpiresAt?: true;
+    completedAt?: true;
+    failedAt?: true;
+    cancelledAt?: true;
+    expiredAt?: true;
+    failureReason?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type OAuthTransactionMaxAggregateInputType = {
+    id?: true;
+    provider?: true;
+    purpose?: true;
+    state?: true;
+    stateDigest?: true;
+    browserBindingDigest?: true;
+    platformUserId?: true;
+    initiatingSessionId?: true;
+    redirectKey?: true;
+    returnTargetKey?: true;
+    pkceMode?: true;
+    pkceCiphertext?: true;
+    pkceNonce?: true;
+    pkceAuthenticationTag?: true;
+    pkceKeyVersion?: true;
+    expiresAt?: true;
+    claimedAt?: true;
+    claimExpiresAt?: true;
+    completedAt?: true;
+    failedAt?: true;
+    cancelledAt?: true;
+    expiredAt?: true;
+    failureReason?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type OAuthTransactionCountAggregateInputType = {
+    id?: true;
+    provider?: true;
+    purpose?: true;
+    state?: true;
+    stateDigest?: true;
+    browserBindingDigest?: true;
+    platformUserId?: true;
+    initiatingSessionId?: true;
+    redirectKey?: true;
+    returnTargetKey?: true;
+    pkceMode?: true;
+    pkceCiphertext?: true;
+    pkceNonce?: true;
+    pkceAuthenticationTag?: true;
+    pkceKeyVersion?: true;
+    expiresAt?: true;
+    claimedAt?: true;
+    claimExpiresAt?: true;
+    completedAt?: true;
+    failedAt?: true;
+    cancelledAt?: true;
+    expiredAt?: true;
+    failureReason?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type OAuthTransactionAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which OAuthTransaction to aggregate.
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of OAuthTransactions to fetch.
+     */
+    orderBy?: Prisma.OAuthTransactionOrderByWithRelationInput | Prisma.OAuthTransactionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.OAuthTransactionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` OAuthTransactions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` OAuthTransactions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned OAuthTransactions
+    **/
+    _count?: true | OAuthTransactionCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: OAuthTransactionAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: OAuthTransactionSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: OAuthTransactionMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: OAuthTransactionMaxAggregateInputType;
+};
+export type GetOAuthTransactionAggregateType<T extends OAuthTransactionAggregateArgs> = {
+    [P in keyof T & keyof AggregateOAuthTransaction]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateOAuthTransaction[P]> : Prisma.GetScalarType<T[P], AggregateOAuthTransaction[P]>;
+};
+export type OAuthTransactionGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.OAuthTransactionWhereInput;
+    orderBy?: Prisma.OAuthTransactionOrderByWithAggregationInput | Prisma.OAuthTransactionOrderByWithAggregationInput[];
+    by: Prisma.OAuthTransactionScalarFieldEnum[] | Prisma.OAuthTransactionScalarFieldEnum;
+    having?: Prisma.OAuthTransactionScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: OAuthTransactionCountAggregateInputType | true;
+    _avg?: OAuthTransactionAvgAggregateInputType;
+    _sum?: OAuthTransactionSumAggregateInputType;
+    _min?: OAuthTransactionMinAggregateInputType;
+    _max?: OAuthTransactionMaxAggregateInputType;
+};
+export type OAuthTransactionGroupByOutputType = {
+    id: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId: string | null;
+    initiatingSessionId: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode: $Enums.OAuthPkceMode;
+    pkceCiphertext: runtime.Bytes | null;
+    pkceNonce: runtime.Bytes | null;
+    pkceAuthenticationTag: runtime.Bytes | null;
+    pkceKeyVersion: number | null;
+    expiresAt: Date;
+    claimedAt: Date | null;
+    claimExpiresAt: Date | null;
+    completedAt: Date | null;
+    failedAt: Date | null;
+    cancelledAt: Date | null;
+    expiredAt: Date | null;
+    failureReason: $Enums.OAuthTransactionFailureReason | null;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: OAuthTransactionCountAggregateOutputType | null;
+    _avg: OAuthTransactionAvgAggregateOutputType | null;
+    _sum: OAuthTransactionSumAggregateOutputType | null;
+    _min: OAuthTransactionMinAggregateOutputType | null;
+    _max: OAuthTransactionMaxAggregateOutputType | null;
+};
+export type GetOAuthTransactionGroupByPayload<T extends OAuthTransactionGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<OAuthTransactionGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof OAuthTransactionGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], OAuthTransactionGroupByOutputType[P]> : Prisma.GetScalarType<T[P], OAuthTransactionGroupByOutputType[P]>;
+}>>;
+export type OAuthTransactionWhereInput = {
+    AND?: Prisma.OAuthTransactionWhereInput | Prisma.OAuthTransactionWhereInput[];
+    OR?: Prisma.OAuthTransactionWhereInput[];
+    NOT?: Prisma.OAuthTransactionWhereInput | Prisma.OAuthTransactionWhereInput[];
+    id?: Prisma.UuidFilter<"OAuthTransaction"> | string;
+    provider?: Prisma.EnumAuthenticationProviderFilter<"OAuthTransaction"> | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFilter<"OAuthTransaction"> | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFilter<"OAuthTransaction"> | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    browserBindingDigest?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    platformUserId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    initiatingSessionId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    redirectKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    returnTargetKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFilter<"OAuthTransaction"> | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceNonce?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.IntNullableFilter<"OAuthTransaction"> | number | null;
+    expiresAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    claimedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    claimExpiresAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    completedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    cancelledAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    expiredAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failureReason?: Prisma.EnumOAuthTransactionFailureReasonNullableFilter<"OAuthTransaction"> | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    platformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    initiatingSession?: Prisma.XOR<Prisma.BrowserSessionNullableScalarRelationFilter, Prisma.BrowserSessionWhereInput> | null;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventListRelationFilter;
+};
+export type OAuthTransactionOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    stateDigest?: Prisma.SortOrder;
+    browserBindingDigest?: Prisma.SortOrder;
+    platformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    initiatingSessionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    redirectKey?: Prisma.SortOrder;
+    returnTargetKey?: Prisma.SortOrder;
+    pkceMode?: Prisma.SortOrder;
+    pkceCiphertext?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceNonce?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceAuthenticationTag?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder;
+    expiresAt?: Prisma.SortOrder;
+    claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    claimExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    completedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    expiredAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failureReason?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    platformUser?: Prisma.PlatformUserOrderByWithRelationInput;
+    initiatingSession?: Prisma.BrowserSessionOrderByWithRelationInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventOrderByRelationAggregateInput;
+};
+export type OAuthTransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    stateDigest?: string;
+    browserBindingDigest?: string;
+    AND?: Prisma.OAuthTransactionWhereInput | Prisma.OAuthTransactionWhereInput[];
+    OR?: Prisma.OAuthTransactionWhereInput[];
+    NOT?: Prisma.OAuthTransactionWhereInput | Prisma.OAuthTransactionWhereInput[];
+    provider?: Prisma.EnumAuthenticationProviderFilter<"OAuthTransaction"> | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFilter<"OAuthTransaction"> | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFilter<"OAuthTransaction"> | $Enums.OAuthTransactionState;
+    platformUserId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    initiatingSessionId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    redirectKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    returnTargetKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFilter<"OAuthTransaction"> | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceNonce?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.IntNullableFilter<"OAuthTransaction"> | number | null;
+    expiresAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    claimedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    claimExpiresAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    completedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    cancelledAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    expiredAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failureReason?: Prisma.EnumOAuthTransactionFailureReasonNullableFilter<"OAuthTransaction"> | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    platformUser?: Prisma.XOR<Prisma.PlatformUserNullableScalarRelationFilter, Prisma.PlatformUserWhereInput> | null;
+    initiatingSession?: Prisma.XOR<Prisma.BrowserSessionNullableScalarRelationFilter, Prisma.BrowserSessionWhereInput> | null;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventListRelationFilter;
+}, "id" | "stateDigest" | "browserBindingDigest">;
+export type OAuthTransactionOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    stateDigest?: Prisma.SortOrder;
+    browserBindingDigest?: Prisma.SortOrder;
+    platformUserId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    initiatingSessionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    redirectKey?: Prisma.SortOrder;
+    returnTargetKey?: Prisma.SortOrder;
+    pkceMode?: Prisma.SortOrder;
+    pkceCiphertext?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceNonce?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceAuthenticationTag?: Prisma.SortOrderInput | Prisma.SortOrder;
+    pkceKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder;
+    expiresAt?: Prisma.SortOrder;
+    claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    claimExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    completedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    expiredAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failureReason?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.OAuthTransactionCountOrderByAggregateInput;
+    _avg?: Prisma.OAuthTransactionAvgOrderByAggregateInput;
+    _max?: Prisma.OAuthTransactionMaxOrderByAggregateInput;
+    _min?: Prisma.OAuthTransactionMinOrderByAggregateInput;
+    _sum?: Prisma.OAuthTransactionSumOrderByAggregateInput;
+};
+export type OAuthTransactionScalarWhereWithAggregatesInput = {
+    AND?: Prisma.OAuthTransactionScalarWhereWithAggregatesInput | Prisma.OAuthTransactionScalarWhereWithAggregatesInput[];
+    OR?: Prisma.OAuthTransactionScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.OAuthTransactionScalarWhereWithAggregatesInput | Prisma.OAuthTransactionScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"OAuthTransaction"> | string;
+    provider?: Prisma.EnumAuthenticationProviderWithAggregatesFilter<"OAuthTransaction"> | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeWithAggregatesFilter<"OAuthTransaction"> | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateWithAggregatesFilter<"OAuthTransaction"> | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringWithAggregatesFilter<"OAuthTransaction"> | string;
+    browserBindingDigest?: Prisma.StringWithAggregatesFilter<"OAuthTransaction"> | string;
+    platformUserId?: Prisma.UuidNullableWithAggregatesFilter<"OAuthTransaction"> | string | null;
+    initiatingSessionId?: Prisma.UuidNullableWithAggregatesFilter<"OAuthTransaction"> | string | null;
+    redirectKey?: Prisma.StringWithAggregatesFilter<"OAuthTransaction"> | string;
+    returnTargetKey?: Prisma.StringWithAggregatesFilter<"OAuthTransaction"> | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeWithAggregatesFilter<"OAuthTransaction"> | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.BytesNullableWithAggregatesFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceNonce?: Prisma.BytesNullableWithAggregatesFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.BytesNullableWithAggregatesFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.IntNullableWithAggregatesFilter<"OAuthTransaction"> | number | null;
+    expiresAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthTransaction"> | Date | string;
+    claimedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    claimExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    failedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    expiredAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OAuthTransaction"> | Date | string | null;
+    failureReason?: Prisma.EnumOAuthTransactionFailureReasonNullableWithAggregatesFilter<"OAuthTransaction"> | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthTransaction"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"OAuthTransaction"> | Date | string;
+};
+export type OAuthTransactionCreateInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    platformUser?: Prisma.PlatformUserCreateNestedOneWithoutOauthTransactionsInput;
+    initiatingSession?: Prisma.BrowserSessionCreateNestedOneWithoutInitiatedOAuthInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionUncheckedCreateInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId?: string | null;
+    initiatingSessionId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    platformUser?: Prisma.PlatformUserUpdateOneWithoutOauthTransactionsNestedInput;
+    initiatingSession?: Prisma.BrowserSessionUpdateOneWithoutInitiatedOAuthNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    platformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    initiatingSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionCreateManyInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId?: string | null;
+    initiatingSessionId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type OAuthTransactionUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type OAuthTransactionUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    platformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    initiatingSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type OAuthTransactionListRelationFilter = {
+    every?: Prisma.OAuthTransactionWhereInput;
+    some?: Prisma.OAuthTransactionWhereInput;
+    none?: Prisma.OAuthTransactionWhereInput;
+};
+export type OAuthTransactionOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type OAuthTransactionCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    stateDigest?: Prisma.SortOrder;
+    browserBindingDigest?: Prisma.SortOrder;
+    platformUserId?: Prisma.SortOrder;
+    initiatingSessionId?: Prisma.SortOrder;
+    redirectKey?: Prisma.SortOrder;
+    returnTargetKey?: Prisma.SortOrder;
+    pkceMode?: Prisma.SortOrder;
+    pkceCiphertext?: Prisma.SortOrder;
+    pkceNonce?: Prisma.SortOrder;
+    pkceAuthenticationTag?: Prisma.SortOrder;
+    pkceKeyVersion?: Prisma.SortOrder;
+    expiresAt?: Prisma.SortOrder;
+    claimedAt?: Prisma.SortOrder;
+    claimExpiresAt?: Prisma.SortOrder;
+    completedAt?: Prisma.SortOrder;
+    failedAt?: Prisma.SortOrder;
+    cancelledAt?: Prisma.SortOrder;
+    expiredAt?: Prisma.SortOrder;
+    failureReason?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type OAuthTransactionAvgOrderByAggregateInput = {
+    pkceKeyVersion?: Prisma.SortOrder;
+};
+export type OAuthTransactionMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    stateDigest?: Prisma.SortOrder;
+    browserBindingDigest?: Prisma.SortOrder;
+    platformUserId?: Prisma.SortOrder;
+    initiatingSessionId?: Prisma.SortOrder;
+    redirectKey?: Prisma.SortOrder;
+    returnTargetKey?: Prisma.SortOrder;
+    pkceMode?: Prisma.SortOrder;
+    pkceCiphertext?: Prisma.SortOrder;
+    pkceNonce?: Prisma.SortOrder;
+    pkceAuthenticationTag?: Prisma.SortOrder;
+    pkceKeyVersion?: Prisma.SortOrder;
+    expiresAt?: Prisma.SortOrder;
+    claimedAt?: Prisma.SortOrder;
+    claimExpiresAt?: Prisma.SortOrder;
+    completedAt?: Prisma.SortOrder;
+    failedAt?: Prisma.SortOrder;
+    cancelledAt?: Prisma.SortOrder;
+    expiredAt?: Prisma.SortOrder;
+    failureReason?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type OAuthTransactionMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    provider?: Prisma.SortOrder;
+    purpose?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    stateDigest?: Prisma.SortOrder;
+    browserBindingDigest?: Prisma.SortOrder;
+    platformUserId?: Prisma.SortOrder;
+    initiatingSessionId?: Prisma.SortOrder;
+    redirectKey?: Prisma.SortOrder;
+    returnTargetKey?: Prisma.SortOrder;
+    pkceMode?: Prisma.SortOrder;
+    pkceCiphertext?: Prisma.SortOrder;
+    pkceNonce?: Prisma.SortOrder;
+    pkceAuthenticationTag?: Prisma.SortOrder;
+    pkceKeyVersion?: Prisma.SortOrder;
+    expiresAt?: Prisma.SortOrder;
+    claimedAt?: Prisma.SortOrder;
+    claimExpiresAt?: Prisma.SortOrder;
+    completedAt?: Prisma.SortOrder;
+    failedAt?: Prisma.SortOrder;
+    cancelledAt?: Prisma.SortOrder;
+    expiredAt?: Prisma.SortOrder;
+    failureReason?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type OAuthTransactionSumOrderByAggregateInput = {
+    pkceKeyVersion?: Prisma.SortOrder;
+};
+export type OAuthTransactionNullableScalarRelationFilter = {
+    is?: Prisma.OAuthTransactionWhereInput | null;
+    isNot?: Prisma.OAuthTransactionWhereInput | null;
+};
+export type OAuthTransactionCreateNestedManyWithoutPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput> | Prisma.OAuthTransactionCreateWithoutPlatformUserInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput | Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyPlatformUserInputEnvelope;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+};
+export type OAuthTransactionUncheckedCreateNestedManyWithoutPlatformUserInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput> | Prisma.OAuthTransactionCreateWithoutPlatformUserInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput | Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyPlatformUserInputEnvelope;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+};
+export type OAuthTransactionUpdateManyWithoutPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput> | Prisma.OAuthTransactionCreateWithoutPlatformUserInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput | Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput[];
+    upsert?: Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutPlatformUserInput | Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutPlatformUserInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyPlatformUserInputEnvelope;
+    set?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    disconnect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    delete?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    update?: Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutPlatformUserInput | Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutPlatformUserInput[];
+    updateMany?: Prisma.OAuthTransactionUpdateManyWithWhereWithoutPlatformUserInput | Prisma.OAuthTransactionUpdateManyWithWhereWithoutPlatformUserInput[];
+    deleteMany?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+};
+export type OAuthTransactionUncheckedUpdateManyWithoutPlatformUserNestedInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput> | Prisma.OAuthTransactionCreateWithoutPlatformUserInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput | Prisma.OAuthTransactionCreateOrConnectWithoutPlatformUserInput[];
+    upsert?: Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutPlatformUserInput | Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutPlatformUserInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyPlatformUserInputEnvelope;
+    set?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    disconnect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    delete?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    update?: Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutPlatformUserInput | Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutPlatformUserInput[];
+    updateMany?: Prisma.OAuthTransactionUpdateManyWithWhereWithoutPlatformUserInput | Prisma.OAuthTransactionUpdateManyWithWhereWithoutPlatformUserInput[];
+    deleteMany?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+};
+export type OAuthTransactionCreateNestedManyWithoutInitiatingSessionInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput> | Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput | Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyInitiatingSessionInputEnvelope;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+};
+export type OAuthTransactionUncheckedCreateNestedManyWithoutInitiatingSessionInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput> | Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput | Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyInitiatingSessionInputEnvelope;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+};
+export type OAuthTransactionUpdateManyWithoutInitiatingSessionNestedInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput> | Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput | Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput[];
+    upsert?: Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutInitiatingSessionInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyInitiatingSessionInputEnvelope;
+    set?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    disconnect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    delete?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    update?: Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutInitiatingSessionInput[];
+    updateMany?: Prisma.OAuthTransactionUpdateManyWithWhereWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpdateManyWithWhereWithoutInitiatingSessionInput[];
+    deleteMany?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+};
+export type OAuthTransactionUncheckedUpdateManyWithoutInitiatingSessionNestedInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput> | Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput[] | Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput[];
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput | Prisma.OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput[];
+    upsert?: Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpsertWithWhereUniqueWithoutInitiatingSessionInput[];
+    createMany?: Prisma.OAuthTransactionCreateManyInitiatingSessionInputEnvelope;
+    set?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    disconnect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    delete?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    connect?: Prisma.OAuthTransactionWhereUniqueInput | Prisma.OAuthTransactionWhereUniqueInput[];
+    update?: Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpdateWithWhereUniqueWithoutInitiatingSessionInput[];
+    updateMany?: Prisma.OAuthTransactionUpdateManyWithWhereWithoutInitiatingSessionInput | Prisma.OAuthTransactionUpdateManyWithWhereWithoutInitiatingSessionInput[];
+    deleteMany?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+};
+export type EnumOAuthTransactionPurposeFieldUpdateOperationsInput = {
+    set?: $Enums.OAuthTransactionPurpose;
+};
+export type EnumOAuthTransactionStateFieldUpdateOperationsInput = {
+    set?: $Enums.OAuthTransactionState;
+};
+export type EnumOAuthPkceModeFieldUpdateOperationsInput = {
+    set?: $Enums.OAuthPkceMode;
+};
+export type NullableBytesFieldUpdateOperationsInput = {
+    set?: runtime.Bytes | null;
+};
+export type NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput = {
+    set?: $Enums.OAuthTransactionFailureReason | null;
+};
+export type OAuthTransactionCreateNestedOneWithoutAuditTargetEventsInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedCreateWithoutAuditTargetEventsInput>;
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutAuditTargetEventsInput;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput;
+};
+export type OAuthTransactionUpdateOneWithoutAuditTargetEventsNestedInput = {
+    create?: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedCreateWithoutAuditTargetEventsInput>;
+    connectOrCreate?: Prisma.OAuthTransactionCreateOrConnectWithoutAuditTargetEventsInput;
+    upsert?: Prisma.OAuthTransactionUpsertWithoutAuditTargetEventsInput;
+    disconnect?: Prisma.OAuthTransactionWhereInput | boolean;
+    delete?: Prisma.OAuthTransactionWhereInput | boolean;
+    connect?: Prisma.OAuthTransactionWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.OAuthTransactionUpdateToOneWithWhereWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUpdateWithoutAuditTargetEventsInput>, Prisma.OAuthTransactionUncheckedUpdateWithoutAuditTargetEventsInput>;
+};
+export type OAuthTransactionCreateWithoutPlatformUserInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    initiatingSession?: Prisma.BrowserSessionCreateNestedOneWithoutInitiatedOAuthInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionUncheckedCreateWithoutPlatformUserInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    initiatingSessionId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionCreateOrConnectWithoutPlatformUserInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput>;
+};
+export type OAuthTransactionCreateManyPlatformUserInputEnvelope = {
+    data: Prisma.OAuthTransactionCreateManyPlatformUserInput | Prisma.OAuthTransactionCreateManyPlatformUserInput[];
+    skipDuplicates?: boolean;
+};
+export type OAuthTransactionUpsertWithWhereUniqueWithoutPlatformUserInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    update: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedUpdateWithoutPlatformUserInput>;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedCreateWithoutPlatformUserInput>;
+};
+export type OAuthTransactionUpdateWithWhereUniqueWithoutPlatformUserInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutPlatformUserInput, Prisma.OAuthTransactionUncheckedUpdateWithoutPlatformUserInput>;
+};
+export type OAuthTransactionUpdateManyWithWhereWithoutPlatformUserInput = {
+    where: Prisma.OAuthTransactionScalarWhereInput;
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateManyMutationInput, Prisma.OAuthTransactionUncheckedUpdateManyWithoutPlatformUserInput>;
+};
+export type OAuthTransactionScalarWhereInput = {
+    AND?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+    OR?: Prisma.OAuthTransactionScalarWhereInput[];
+    NOT?: Prisma.OAuthTransactionScalarWhereInput | Prisma.OAuthTransactionScalarWhereInput[];
+    id?: Prisma.UuidFilter<"OAuthTransaction"> | string;
+    provider?: Prisma.EnumAuthenticationProviderFilter<"OAuthTransaction"> | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFilter<"OAuthTransaction"> | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFilter<"OAuthTransaction"> | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    browserBindingDigest?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    platformUserId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    initiatingSessionId?: Prisma.UuidNullableFilter<"OAuthTransaction"> | string | null;
+    redirectKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    returnTargetKey?: Prisma.StringFilter<"OAuthTransaction"> | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFilter<"OAuthTransaction"> | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceNonce?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.BytesNullableFilter<"OAuthTransaction"> | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.IntNullableFilter<"OAuthTransaction"> | number | null;
+    expiresAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    claimedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    claimExpiresAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    completedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failedAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    cancelledAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    expiredAt?: Prisma.DateTimeNullableFilter<"OAuthTransaction"> | Date | string | null;
+    failureReason?: Prisma.EnumOAuthTransactionFailureReasonNullableFilter<"OAuthTransaction"> | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"OAuthTransaction"> | Date | string;
+};
+export type OAuthTransactionCreateWithoutInitiatingSessionInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    platformUser?: Prisma.PlatformUserCreateNestedOneWithoutOauthTransactionsInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetOAuthTransactionInput;
+};
+export type OAuthTransactionCreateOrConnectWithoutInitiatingSessionInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput>;
+};
+export type OAuthTransactionCreateManyInitiatingSessionInputEnvelope = {
+    data: Prisma.OAuthTransactionCreateManyInitiatingSessionInput | Prisma.OAuthTransactionCreateManyInitiatingSessionInput[];
+    skipDuplicates?: boolean;
+};
+export type OAuthTransactionUpsertWithWhereUniqueWithoutInitiatingSessionInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    update: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedUpdateWithoutInitiatingSessionInput>;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedCreateWithoutInitiatingSessionInput>;
+};
+export type OAuthTransactionUpdateWithWhereUniqueWithoutInitiatingSessionInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutInitiatingSessionInput, Prisma.OAuthTransactionUncheckedUpdateWithoutInitiatingSessionInput>;
+};
+export type OAuthTransactionUpdateManyWithWhereWithoutInitiatingSessionInput = {
+    where: Prisma.OAuthTransactionScalarWhereInput;
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateManyMutationInput, Prisma.OAuthTransactionUncheckedUpdateManyWithoutInitiatingSessionInput>;
+};
+export type OAuthTransactionCreateWithoutAuditTargetEventsInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    platformUser?: Prisma.PlatformUserCreateNestedOneWithoutOauthTransactionsInput;
+    initiatingSession?: Prisma.BrowserSessionCreateNestedOneWithoutInitiatedOAuthInput;
+};
+export type OAuthTransactionUncheckedCreateWithoutAuditTargetEventsInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId?: string | null;
+    initiatingSessionId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type OAuthTransactionCreateOrConnectWithoutAuditTargetEventsInput = {
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedCreateWithoutAuditTargetEventsInput>;
+};
+export type OAuthTransactionUpsertWithoutAuditTargetEventsInput = {
+    update: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedUpdateWithoutAuditTargetEventsInput>;
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedCreateWithoutAuditTargetEventsInput>;
+    where?: Prisma.OAuthTransactionWhereInput;
+};
+export type OAuthTransactionUpdateToOneWithWhereWithoutAuditTargetEventsInput = {
+    where?: Prisma.OAuthTransactionWhereInput;
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateWithoutAuditTargetEventsInput, Prisma.OAuthTransactionUncheckedUpdateWithoutAuditTargetEventsInput>;
+};
+export type OAuthTransactionUpdateWithoutAuditTargetEventsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    platformUser?: Prisma.PlatformUserUpdateOneWithoutOauthTransactionsNestedInput;
+    initiatingSession?: Prisma.BrowserSessionUpdateOneWithoutInitiatedOAuthNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateWithoutAuditTargetEventsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    platformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    initiatingSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type OAuthTransactionCreateManyPlatformUserInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    initiatingSessionId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type OAuthTransactionUpdateWithoutPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    initiatingSession?: Prisma.BrowserSessionUpdateOneWithoutInitiatedOAuthNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateWithoutPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    initiatingSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateManyWithoutPlatformUserInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    initiatingSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type OAuthTransactionCreateManyInitiatingSessionInput = {
+    id?: string;
+    provider: $Enums.AuthenticationProvider;
+    purpose: $Enums.OAuthTransactionPurpose;
+    state?: $Enums.OAuthTransactionState;
+    stateDigest: string;
+    browserBindingDigest: string;
+    platformUserId?: string | null;
+    redirectKey: string;
+    returnTargetKey: string;
+    pkceMode?: $Enums.OAuthPkceMode;
+    pkceCiphertext?: runtime.Bytes | null;
+    pkceNonce?: runtime.Bytes | null;
+    pkceAuthenticationTag?: runtime.Bytes | null;
+    pkceKeyVersion?: number | null;
+    expiresAt: Date | string;
+    claimedAt?: Date | string | null;
+    claimExpiresAt?: Date | string | null;
+    completedAt?: Date | string | null;
+    failedAt?: Date | string | null;
+    cancelledAt?: Date | string | null;
+    expiredAt?: Date | string | null;
+    failureReason?: $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type OAuthTransactionUpdateWithoutInitiatingSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    platformUser?: Prisma.PlatformUserUpdateOneWithoutOauthTransactionsNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateWithoutInitiatingSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    platformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetOAuthTransactionNestedInput;
+};
+export type OAuthTransactionUncheckedUpdateManyWithoutInitiatingSessionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    provider?: Prisma.EnumAuthenticationProviderFieldUpdateOperationsInput | $Enums.AuthenticationProvider;
+    purpose?: Prisma.EnumOAuthTransactionPurposeFieldUpdateOperationsInput | $Enums.OAuthTransactionPurpose;
+    state?: Prisma.EnumOAuthTransactionStateFieldUpdateOperationsInput | $Enums.OAuthTransactionState;
+    stateDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    browserBindingDigest?: Prisma.StringFieldUpdateOperationsInput | string;
+    platformUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    redirectKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    returnTargetKey?: Prisma.StringFieldUpdateOperationsInput | string;
+    pkceMode?: Prisma.EnumOAuthPkceModeFieldUpdateOperationsInput | $Enums.OAuthPkceMode;
+    pkceCiphertext?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceNonce?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceAuthenticationTag?: Prisma.NullableBytesFieldUpdateOperationsInput | runtime.Bytes | null;
+    pkceKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    claimExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    expiredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureReason?: Prisma.NullableEnumOAuthTransactionFailureReasonFieldUpdateOperationsInput | $Enums.OAuthTransactionFailureReason | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type OAuthTransactionCountOutputType
+ */
+export type OAuthTransactionCountOutputType = {
+    auditTargetEvents: number;
+};
+export type OAuthTransactionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    auditTargetEvents?: boolean | OAuthTransactionCountOutputTypeCountAuditTargetEventsArgs;
+};
+/**
+ * OAuthTransactionCountOutputType without action
+ */
+export type OAuthTransactionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransactionCountOutputType
+     */
+    select?: Prisma.OAuthTransactionCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * OAuthTransactionCountOutputType without action
+ */
+export type OAuthTransactionCountOutputTypeCountAuditTargetEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+};
+export type OAuthTransactionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    state?: boolean;
+    stateDigest?: boolean;
+    browserBindingDigest?: boolean;
+    platformUserId?: boolean;
+    initiatingSessionId?: boolean;
+    redirectKey?: boolean;
+    returnTargetKey?: boolean;
+    pkceMode?: boolean;
+    pkceCiphertext?: boolean;
+    pkceNonce?: boolean;
+    pkceAuthenticationTag?: boolean;
+    pkceKeyVersion?: boolean;
+    expiresAt?: boolean;
+    claimedAt?: boolean;
+    claimExpiresAt?: boolean;
+    completedAt?: boolean;
+    failedAt?: boolean;
+    cancelledAt?: boolean;
+    expiredAt?: boolean;
+    failureReason?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+    auditTargetEvents?: boolean | Prisma.OAuthTransaction$auditTargetEventsArgs<ExtArgs>;
+    _count?: boolean | Prisma.OAuthTransactionCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["oAuthTransaction"]>;
+export type OAuthTransactionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    state?: boolean;
+    stateDigest?: boolean;
+    browserBindingDigest?: boolean;
+    platformUserId?: boolean;
+    initiatingSessionId?: boolean;
+    redirectKey?: boolean;
+    returnTargetKey?: boolean;
+    pkceMode?: boolean;
+    pkceCiphertext?: boolean;
+    pkceNonce?: boolean;
+    pkceAuthenticationTag?: boolean;
+    pkceKeyVersion?: boolean;
+    expiresAt?: boolean;
+    claimedAt?: boolean;
+    claimExpiresAt?: boolean;
+    completedAt?: boolean;
+    failedAt?: boolean;
+    cancelledAt?: boolean;
+    expiredAt?: boolean;
+    failureReason?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+}, ExtArgs["result"]["oAuthTransaction"]>;
+export type OAuthTransactionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    state?: boolean;
+    stateDigest?: boolean;
+    browserBindingDigest?: boolean;
+    platformUserId?: boolean;
+    initiatingSessionId?: boolean;
+    redirectKey?: boolean;
+    returnTargetKey?: boolean;
+    pkceMode?: boolean;
+    pkceCiphertext?: boolean;
+    pkceNonce?: boolean;
+    pkceAuthenticationTag?: boolean;
+    pkceKeyVersion?: boolean;
+    expiresAt?: boolean;
+    claimedAt?: boolean;
+    claimExpiresAt?: boolean;
+    completedAt?: boolean;
+    failedAt?: boolean;
+    cancelledAt?: boolean;
+    expiredAt?: boolean;
+    failureReason?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+}, ExtArgs["result"]["oAuthTransaction"]>;
+export type OAuthTransactionSelectScalar = {
+    id?: boolean;
+    provider?: boolean;
+    purpose?: boolean;
+    state?: boolean;
+    stateDigest?: boolean;
+    browserBindingDigest?: boolean;
+    platformUserId?: boolean;
+    initiatingSessionId?: boolean;
+    redirectKey?: boolean;
+    returnTargetKey?: boolean;
+    pkceMode?: boolean;
+    pkceCiphertext?: boolean;
+    pkceNonce?: boolean;
+    pkceAuthenticationTag?: boolean;
+    pkceKeyVersion?: boolean;
+    expiresAt?: boolean;
+    claimedAt?: boolean;
+    claimExpiresAt?: boolean;
+    completedAt?: boolean;
+    failedAt?: boolean;
+    cancelledAt?: boolean;
+    expiredAt?: boolean;
+    failureReason?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type OAuthTransactionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "provider" | "purpose" | "state" | "stateDigest" | "browserBindingDigest" | "platformUserId" | "initiatingSessionId" | "redirectKey" | "returnTargetKey" | "pkceMode" | "pkceCiphertext" | "pkceNonce" | "pkceAuthenticationTag" | "pkceKeyVersion" | "expiresAt" | "claimedAt" | "claimExpiresAt" | "completedAt" | "failedAt" | "cancelledAt" | "expiredAt" | "failureReason" | "createdAt" | "updatedAt", ExtArgs["result"]["oAuthTransaction"]>;
+export type OAuthTransactionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+    auditTargetEvents?: boolean | Prisma.OAuthTransaction$auditTargetEventsArgs<ExtArgs>;
+    _count?: boolean | Prisma.OAuthTransactionCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type OAuthTransactionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+};
+export type OAuthTransactionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    platformUser?: boolean | Prisma.OAuthTransaction$platformUserArgs<ExtArgs>;
+    initiatingSession?: boolean | Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>;
+};
+export type $OAuthTransactionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "OAuthTransaction";
+    objects: {
+        platformUser: Prisma.$PlatformUserPayload<ExtArgs> | null;
+        initiatingSession: Prisma.$BrowserSessionPayload<ExtArgs> | null;
+        auditTargetEvents: Prisma.$AuthenticationAuditEventPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        provider: $Enums.AuthenticationProvider;
+        purpose: $Enums.OAuthTransactionPurpose;
+        state: $Enums.OAuthTransactionState;
+        stateDigest: string;
+        browserBindingDigest: string;
+        platformUserId: string | null;
+        initiatingSessionId: string | null;
+        redirectKey: string;
+        returnTargetKey: string;
+        pkceMode: $Enums.OAuthPkceMode;
+        pkceCiphertext: runtime.Bytes | null;
+        pkceNonce: runtime.Bytes | null;
+        pkceAuthenticationTag: runtime.Bytes | null;
+        pkceKeyVersion: number | null;
+        expiresAt: Date;
+        claimedAt: Date | null;
+        claimExpiresAt: Date | null;
+        completedAt: Date | null;
+        failedAt: Date | null;
+        cancelledAt: Date | null;
+        expiredAt: Date | null;
+        failureReason: $Enums.OAuthTransactionFailureReason | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["oAuthTransaction"]>;
+    composites: {};
+};
+export type OAuthTransactionGetPayload<S extends boolean | null | undefined | OAuthTransactionDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload, S>;
+export type OAuthTransactionCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<OAuthTransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: OAuthTransactionCountAggregateInputType | true;
+};
+export interface OAuthTransactionDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['OAuthTransaction'];
+        meta: {
+            name: 'OAuthTransaction';
+        };
+    };
+    /**
+     * Find zero or one OAuthTransaction that matches the filter.
+     * @param {OAuthTransactionFindUniqueArgs} args - Arguments to find a OAuthTransaction
+     * @example
+     * // Get one OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OAuthTransactionFindUniqueArgs>(args: Prisma.SelectSubset<T, OAuthTransactionFindUniqueArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one OAuthTransaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OAuthTransactionFindUniqueOrThrowArgs} args - Arguments to find a OAuthTransaction
+     * @example
+     * // Get one OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OAuthTransactionFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, OAuthTransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first OAuthTransaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionFindFirstArgs} args - Arguments to find a OAuthTransaction
+     * @example
+     * // Get one OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OAuthTransactionFindFirstArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionFindFirstArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first OAuthTransaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionFindFirstOrThrowArgs} args - Arguments to find a OAuthTransaction
+     * @example
+     * // Get one OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OAuthTransactionFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more OAuthTransactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OAuthTransactions
+     * const oAuthTransactions = await prisma.oAuthTransaction.findMany()
+     *
+     * // Get first 10 OAuthTransactions
+     * const oAuthTransactions = await prisma.oAuthTransaction.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const oAuthTransactionWithIdOnly = await prisma.oAuthTransaction.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends OAuthTransactionFindManyArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a OAuthTransaction.
+     * @param {OAuthTransactionCreateArgs} args - Arguments to create a OAuthTransaction.
+     * @example
+     * // Create one OAuthTransaction
+     * const OAuthTransaction = await prisma.oAuthTransaction.create({
+     *   data: {
+     *     // ... data to create a OAuthTransaction
+     *   }
+     * })
+     *
+     */
+    create<T extends OAuthTransactionCreateArgs>(args: Prisma.SelectSubset<T, OAuthTransactionCreateArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many OAuthTransactions.
+     * @param {OAuthTransactionCreateManyArgs} args - Arguments to create many OAuthTransactions.
+     * @example
+     * // Create many OAuthTransactions
+     * const oAuthTransaction = await prisma.oAuthTransaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends OAuthTransactionCreateManyArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many OAuthTransactions and returns the data saved in the database.
+     * @param {OAuthTransactionCreateManyAndReturnArgs} args - Arguments to create many OAuthTransactions.
+     * @example
+     * // Create many OAuthTransactions
+     * const oAuthTransaction = await prisma.oAuthTransaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many OAuthTransactions and only return the `id`
+     * const oAuthTransactionWithIdOnly = await prisma.oAuthTransaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends OAuthTransactionCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a OAuthTransaction.
+     * @param {OAuthTransactionDeleteArgs} args - Arguments to delete one OAuthTransaction.
+     * @example
+     * // Delete one OAuthTransaction
+     * const OAuthTransaction = await prisma.oAuthTransaction.delete({
+     *   where: {
+     *     // ... filter to delete one OAuthTransaction
+     *   }
+     * })
+     *
+     */
+    delete<T extends OAuthTransactionDeleteArgs>(args: Prisma.SelectSubset<T, OAuthTransactionDeleteArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one OAuthTransaction.
+     * @param {OAuthTransactionUpdateArgs} args - Arguments to update one OAuthTransaction.
+     * @example
+     * // Update one OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends OAuthTransactionUpdateArgs>(args: Prisma.SelectSubset<T, OAuthTransactionUpdateArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more OAuthTransactions.
+     * @param {OAuthTransactionDeleteManyArgs} args - Arguments to filter OAuthTransactions to delete.
+     * @example
+     * // Delete a few OAuthTransactions
+     * const { count } = await prisma.oAuthTransaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends OAuthTransactionDeleteManyArgs>(args?: Prisma.SelectSubset<T, OAuthTransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more OAuthTransactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OAuthTransactions
+     * const oAuthTransaction = await prisma.oAuthTransaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends OAuthTransactionUpdateManyArgs>(args: Prisma.SelectSubset<T, OAuthTransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more OAuthTransactions and returns the data updated in the database.
+     * @param {OAuthTransactionUpdateManyAndReturnArgs} args - Arguments to update many OAuthTransactions.
+     * @example
+     * // Update many OAuthTransactions
+     * const oAuthTransaction = await prisma.oAuthTransaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more OAuthTransactions and only return the `id`
+     * const oAuthTransactionWithIdOnly = await prisma.oAuthTransaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends OAuthTransactionUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, OAuthTransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one OAuthTransaction.
+     * @param {OAuthTransactionUpsertArgs} args - Arguments to update or create a OAuthTransaction.
+     * @example
+     * // Update or create a OAuthTransaction
+     * const oAuthTransaction = await prisma.oAuthTransaction.upsert({
+     *   create: {
+     *     // ... data to create a OAuthTransaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OAuthTransaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OAuthTransactionUpsertArgs>(args: Prisma.SelectSubset<T, OAuthTransactionUpsertArgs<ExtArgs>>): Prisma.Prisma__OAuthTransactionClient<runtime.Types.Result.GetResult<Prisma.$OAuthTransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of OAuthTransactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionCountArgs} args - Arguments to filter OAuthTransactions to count.
+     * @example
+     * // Count the number of OAuthTransactions
+     * const count = await prisma.oAuthTransaction.count({
+     *   where: {
+     *     // ... the filter for the OAuthTransactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends OAuthTransactionCountArgs>(args?: Prisma.Subset<T, OAuthTransactionCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], OAuthTransactionCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a OAuthTransaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OAuthTransactionAggregateArgs>(args: Prisma.Subset<T, OAuthTransactionAggregateArgs>): Prisma.PrismaPromise<GetOAuthTransactionAggregateType<T>>;
+    /**
+     * Group by OAuthTransaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OAuthTransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends OAuthTransactionGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: OAuthTransactionGroupByArgs['orderBy'];
+    } : {
+        orderBy?: OAuthTransactionGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, OAuthTransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOAuthTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the OAuthTransaction model
+     */
+    readonly fields: OAuthTransactionFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for OAuthTransaction.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__OAuthTransactionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    platformUser<T extends Prisma.OAuthTransaction$platformUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OAuthTransaction$platformUserArgs<ExtArgs>>): Prisma.Prisma__PlatformUserClient<runtime.Types.Result.GetResult<Prisma.$PlatformUserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    initiatingSession<T extends Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OAuthTransaction$initiatingSessionArgs<ExtArgs>>): Prisma.Prisma__BrowserSessionClient<runtime.Types.Result.GetResult<Prisma.$BrowserSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    auditTargetEvents<T extends Prisma.OAuthTransaction$auditTargetEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OAuthTransaction$auditTargetEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the OAuthTransaction model
+ */
+export interface OAuthTransactionFieldRefs {
+    readonly id: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly provider: Prisma.FieldRef<"OAuthTransaction", 'AuthenticationProvider'>;
+    readonly purpose: Prisma.FieldRef<"OAuthTransaction", 'OAuthTransactionPurpose'>;
+    readonly state: Prisma.FieldRef<"OAuthTransaction", 'OAuthTransactionState'>;
+    readonly stateDigest: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly browserBindingDigest: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly platformUserId: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly initiatingSessionId: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly redirectKey: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly returnTargetKey: Prisma.FieldRef<"OAuthTransaction", 'String'>;
+    readonly pkceMode: Prisma.FieldRef<"OAuthTransaction", 'OAuthPkceMode'>;
+    readonly pkceCiphertext: Prisma.FieldRef<"OAuthTransaction", 'Bytes'>;
+    readonly pkceNonce: Prisma.FieldRef<"OAuthTransaction", 'Bytes'>;
+    readonly pkceAuthenticationTag: Prisma.FieldRef<"OAuthTransaction", 'Bytes'>;
+    readonly pkceKeyVersion: Prisma.FieldRef<"OAuthTransaction", 'Int'>;
+    readonly expiresAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly claimedAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly claimExpiresAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly completedAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly failedAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly cancelledAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly expiredAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly failureReason: Prisma.FieldRef<"OAuthTransaction", 'OAuthTransactionFailureReason'>;
+    readonly createdAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"OAuthTransaction", 'DateTime'>;
+}
+/**
+ * OAuthTransaction findUnique
+ */
+export type OAuthTransactionFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter, which OAuthTransaction to fetch.
+     */
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+};
+/**
+ * OAuthTransaction findUniqueOrThrow
+ */
+export type OAuthTransactionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter, which OAuthTransaction to fetch.
+     */
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+};
+/**
+ * OAuthTransaction findFirst
+ */
+export type OAuthTransactionFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter, which OAuthTransaction to fetch.
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of OAuthTransactions to fetch.
+     */
+    orderBy?: Prisma.OAuthTransactionOrderByWithRelationInput | Prisma.OAuthTransactionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for OAuthTransactions.
+     */
+    cursor?: Prisma.OAuthTransactionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` OAuthTransactions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` OAuthTransactions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of OAuthTransactions.
+     */
+    distinct?: Prisma.OAuthTransactionScalarFieldEnum | Prisma.OAuthTransactionScalarFieldEnum[];
+};
+/**
+ * OAuthTransaction findFirstOrThrow
+ */
+export type OAuthTransactionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter, which OAuthTransaction to fetch.
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of OAuthTransactions to fetch.
+     */
+    orderBy?: Prisma.OAuthTransactionOrderByWithRelationInput | Prisma.OAuthTransactionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for OAuthTransactions.
+     */
+    cursor?: Prisma.OAuthTransactionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` OAuthTransactions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` OAuthTransactions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of OAuthTransactions.
+     */
+    distinct?: Prisma.OAuthTransactionScalarFieldEnum | Prisma.OAuthTransactionScalarFieldEnum[];
+};
+/**
+ * OAuthTransaction findMany
+ */
+export type OAuthTransactionFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter, which OAuthTransactions to fetch.
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of OAuthTransactions to fetch.
+     */
+    orderBy?: Prisma.OAuthTransactionOrderByWithRelationInput | Prisma.OAuthTransactionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing OAuthTransactions.
+     */
+    cursor?: Prisma.OAuthTransactionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` OAuthTransactions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` OAuthTransactions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of OAuthTransactions.
+     */
+    distinct?: Prisma.OAuthTransactionScalarFieldEnum | Prisma.OAuthTransactionScalarFieldEnum[];
+};
+/**
+ * OAuthTransaction create
+ */
+export type OAuthTransactionCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a OAuthTransaction.
+     */
+    data: Prisma.XOR<Prisma.OAuthTransactionCreateInput, Prisma.OAuthTransactionUncheckedCreateInput>;
+};
+/**
+ * OAuthTransaction createMany
+ */
+export type OAuthTransactionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OAuthTransactions.
+     */
+    data: Prisma.OAuthTransactionCreateManyInput | Prisma.OAuthTransactionCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * OAuthTransaction createManyAndReturn
+ */
+export type OAuthTransactionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * The data used to create many OAuthTransactions.
+     */
+    data: Prisma.OAuthTransactionCreateManyInput | Prisma.OAuthTransactionCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * OAuthTransaction update
+ */
+export type OAuthTransactionUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a OAuthTransaction.
+     */
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateInput, Prisma.OAuthTransactionUncheckedUpdateInput>;
+    /**
+     * Choose, which OAuthTransaction to update.
+     */
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+};
+/**
+ * OAuthTransaction updateMany
+ */
+export type OAuthTransactionUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OAuthTransactions.
+     */
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateManyMutationInput, Prisma.OAuthTransactionUncheckedUpdateManyInput>;
+    /**
+     * Filter which OAuthTransactions to update
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * Limit how many OAuthTransactions to update.
+     */
+    limit?: number;
+};
+/**
+ * OAuthTransaction updateManyAndReturn
+ */
+export type OAuthTransactionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * The data used to update OAuthTransactions.
+     */
+    data: Prisma.XOR<Prisma.OAuthTransactionUpdateManyMutationInput, Prisma.OAuthTransactionUncheckedUpdateManyInput>;
+    /**
+     * Filter which OAuthTransactions to update
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * Limit how many OAuthTransactions to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * OAuthTransaction upsert
+ */
+export type OAuthTransactionUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the OAuthTransaction to update in case it exists.
+     */
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+    /**
+     * In case the OAuthTransaction found by the `where` argument doesn't exist, create a new OAuthTransaction with this data.
+     */
+    create: Prisma.XOR<Prisma.OAuthTransactionCreateInput, Prisma.OAuthTransactionUncheckedCreateInput>;
+    /**
+     * In case the OAuthTransaction was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.OAuthTransactionUpdateInput, Prisma.OAuthTransactionUncheckedUpdateInput>;
+};
+/**
+ * OAuthTransaction delete
+ */
+export type OAuthTransactionDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+    /**
+     * Filter which OAuthTransaction to delete.
+     */
+    where: Prisma.OAuthTransactionWhereUniqueInput;
+};
+/**
+ * OAuthTransaction deleteMany
+ */
+export type OAuthTransactionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which OAuthTransactions to delete
+     */
+    where?: Prisma.OAuthTransactionWhereInput;
+    /**
+     * Limit how many OAuthTransactions to delete.
+     */
+    limit?: number;
+};
+/**
+ * OAuthTransaction.platformUser
+ */
+export type OAuthTransaction$platformUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PlatformUser
+     */
+    select?: Prisma.PlatformUserSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PlatformUser
+     */
+    omit?: Prisma.PlatformUserOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PlatformUserInclude<ExtArgs> | null;
+    where?: Prisma.PlatformUserWhereInput;
+};
+/**
+ * OAuthTransaction.initiatingSession
+ */
+export type OAuthTransaction$initiatingSessionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BrowserSession
+     */
+    select?: Prisma.BrowserSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BrowserSession
+     */
+    omit?: Prisma.BrowserSessionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BrowserSessionInclude<ExtArgs> | null;
+    where?: Prisma.BrowserSessionWhereInput;
+};
+/**
+ * OAuthTransaction.auditTargetEvents
+ */
+export type OAuthTransaction$auditTargetEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.AuthenticationAuditEventScalarFieldEnum | Prisma.AuthenticationAuditEventScalarFieldEnum[];
+};
+/**
+ * OAuthTransaction without action
+ */
+export type OAuthTransactionDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OAuthTransaction
+     */
+    select?: Prisma.OAuthTransactionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the OAuthTransaction
+     */
+    omit?: Prisma.OAuthTransactionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.OAuthTransactionInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=OAuthTransaction.d.ts.map

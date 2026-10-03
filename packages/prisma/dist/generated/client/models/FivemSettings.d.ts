@@ -1,0 +1,1456 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model FivemSettings
+ *
+ */
+export type FivemSettingsModel = runtime.Types.Result.DefaultSelection<Prisma.$FivemSettingsPayload>;
+export type AggregateFivemSettings = {
+    _count: FivemSettingsCountAggregateOutputType | null;
+    _avg: FivemSettingsAvgAggregateOutputType | null;
+    _sum: FivemSettingsSumAggregateOutputType | null;
+    _min: FivemSettingsMinAggregateOutputType | null;
+    _max: FivemSettingsMaxAggregateOutputType | null;
+};
+export type FivemSettingsAvgAggregateOutputType = {
+    updateIntervalSeconds: number | null;
+    restartWarningMinutes: number | null;
+    failureStreak: number | null;
+    revision: number | null;
+};
+export type FivemSettingsSumAggregateOutputType = {
+    updateIntervalSeconds: number | null;
+    restartWarningMinutes: number[];
+    failureStreak: number | null;
+    revision: number | null;
+};
+export type FivemSettingsMinAggregateOutputType = {
+    guildId: string | null;
+    serverAddress: string | null;
+    connectUrl: string | null;
+    statusChannelId: string | null;
+    statusMessageId: string | null;
+    updateIntervalSeconds: number | null;
+    alertChannelId: string | null;
+    alertRoleId: string | null;
+    timeZone: string | null;
+    lastOnline: boolean | null;
+    onlineSince: Date | null;
+    failureStreak: number | null;
+    lastPolledAt: Date | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type FivemSettingsMaxAggregateOutputType = {
+    guildId: string | null;
+    serverAddress: string | null;
+    connectUrl: string | null;
+    statusChannelId: string | null;
+    statusMessageId: string | null;
+    updateIntervalSeconds: number | null;
+    alertChannelId: string | null;
+    alertRoleId: string | null;
+    timeZone: string | null;
+    lastOnline: boolean | null;
+    onlineSince: Date | null;
+    failureStreak: number | null;
+    lastPolledAt: Date | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type FivemSettingsCountAggregateOutputType = {
+    guildId: number;
+    serverAddress: number;
+    connectUrl: number;
+    statusChannelId: number;
+    statusMessageId: number;
+    updateIntervalSeconds: number;
+    alertChannelId: number;
+    alertRoleId: number;
+    restartTimes: number;
+    timeZone: number;
+    restartWarningMinutes: number;
+    lastOnline: number;
+    onlineSince: number;
+    failureStreak: number;
+    lastPolledAt: number;
+    sentRestartWarnings: number;
+    revision: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type FivemSettingsAvgAggregateInputType = {
+    updateIntervalSeconds?: true;
+    restartWarningMinutes?: true;
+    failureStreak?: true;
+    revision?: true;
+};
+export type FivemSettingsSumAggregateInputType = {
+    updateIntervalSeconds?: true;
+    restartWarningMinutes?: true;
+    failureStreak?: true;
+    revision?: true;
+};
+export type FivemSettingsMinAggregateInputType = {
+    guildId?: true;
+    serverAddress?: true;
+    connectUrl?: true;
+    statusChannelId?: true;
+    statusMessageId?: true;
+    updateIntervalSeconds?: true;
+    alertChannelId?: true;
+    alertRoleId?: true;
+    timeZone?: true;
+    lastOnline?: true;
+    onlineSince?: true;
+    failureStreak?: true;
+    lastPolledAt?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type FivemSettingsMaxAggregateInputType = {
+    guildId?: true;
+    serverAddress?: true;
+    connectUrl?: true;
+    statusChannelId?: true;
+    statusMessageId?: true;
+    updateIntervalSeconds?: true;
+    alertChannelId?: true;
+    alertRoleId?: true;
+    timeZone?: true;
+    lastOnline?: true;
+    onlineSince?: true;
+    failureStreak?: true;
+    lastPolledAt?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type FivemSettingsCountAggregateInputType = {
+    guildId?: true;
+    serverAddress?: true;
+    connectUrl?: true;
+    statusChannelId?: true;
+    statusMessageId?: true;
+    updateIntervalSeconds?: true;
+    alertChannelId?: true;
+    alertRoleId?: true;
+    restartTimes?: true;
+    timeZone?: true;
+    restartWarningMinutes?: true;
+    lastOnline?: true;
+    onlineSince?: true;
+    failureStreak?: true;
+    lastPolledAt?: true;
+    sentRestartWarnings?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type FivemSettingsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which FivemSettings to aggregate.
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FivemSettings to fetch.
+     */
+    orderBy?: Prisma.FivemSettingsOrderByWithRelationInput | Prisma.FivemSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.FivemSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FivemSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FivemSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned FivemSettings
+    **/
+    _count?: true | FivemSettingsCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: FivemSettingsAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: FivemSettingsSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: FivemSettingsMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: FivemSettingsMaxAggregateInputType;
+};
+export type GetFivemSettingsAggregateType<T extends FivemSettingsAggregateArgs> = {
+    [P in keyof T & keyof AggregateFivemSettings]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateFivemSettings[P]> : Prisma.GetScalarType<T[P], AggregateFivemSettings[P]>;
+};
+export type FivemSettingsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.FivemSettingsWhereInput;
+    orderBy?: Prisma.FivemSettingsOrderByWithAggregationInput | Prisma.FivemSettingsOrderByWithAggregationInput[];
+    by: Prisma.FivemSettingsScalarFieldEnum[] | Prisma.FivemSettingsScalarFieldEnum;
+    having?: Prisma.FivemSettingsScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: FivemSettingsCountAggregateInputType | true;
+    _avg?: FivemSettingsAvgAggregateInputType;
+    _sum?: FivemSettingsSumAggregateInputType;
+    _min?: FivemSettingsMinAggregateInputType;
+    _max?: FivemSettingsMaxAggregateInputType;
+};
+export type FivemSettingsGroupByOutputType = {
+    guildId: string;
+    serverAddress: string | null;
+    connectUrl: string | null;
+    statusChannelId: string | null;
+    statusMessageId: string | null;
+    updateIntervalSeconds: number;
+    alertChannelId: string | null;
+    alertRoleId: string | null;
+    restartTimes: string[];
+    timeZone: string;
+    restartWarningMinutes: number[];
+    lastOnline: boolean | null;
+    onlineSince: Date | null;
+    failureStreak: number;
+    lastPolledAt: Date | null;
+    sentRestartWarnings: string[];
+    revision: number;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: FivemSettingsCountAggregateOutputType | null;
+    _avg: FivemSettingsAvgAggregateOutputType | null;
+    _sum: FivemSettingsSumAggregateOutputType | null;
+    _min: FivemSettingsMinAggregateOutputType | null;
+    _max: FivemSettingsMaxAggregateOutputType | null;
+};
+export type GetFivemSettingsGroupByPayload<T extends FivemSettingsGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<FivemSettingsGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof FivemSettingsGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], FivemSettingsGroupByOutputType[P]> : Prisma.GetScalarType<T[P], FivemSettingsGroupByOutputType[P]>;
+}>>;
+export type FivemSettingsWhereInput = {
+    AND?: Prisma.FivemSettingsWhereInput | Prisma.FivemSettingsWhereInput[];
+    OR?: Prisma.FivemSettingsWhereInput[];
+    NOT?: Prisma.FivemSettingsWhereInput | Prisma.FivemSettingsWhereInput[];
+    guildId?: Prisma.StringFilter<"FivemSettings"> | string;
+    serverAddress?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    connectUrl?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    statusChannelId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    statusMessageId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    updateIntervalSeconds?: Prisma.IntFilter<"FivemSettings"> | number;
+    alertChannelId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    alertRoleId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">;
+    timeZone?: Prisma.StringFilter<"FivemSettings"> | string;
+    restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">;
+    lastOnline?: Prisma.BoolNullableFilter<"FivemSettings"> | boolean | null;
+    onlineSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null;
+    failureStreak?: Prisma.IntFilter<"FivemSettings"> | number;
+    lastPolledAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null;
+    sentRestartWarnings?: Prisma.StringNullableListFilter<"FivemSettings">;
+    revision?: Prisma.IntFilter<"FivemSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"FivemSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"FivemSettings"> | Date | string;
+};
+export type FivemSettingsOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    serverAddress?: Prisma.SortOrderInput | Prisma.SortOrder;
+    connectUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+    statusChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    statusMessageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    updateIntervalSeconds?: Prisma.SortOrder;
+    alertChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    alertRoleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    restartTimes?: Prisma.SortOrder;
+    timeZone?: Prisma.SortOrder;
+    restartWarningMinutes?: Prisma.SortOrder;
+    lastOnline?: Prisma.SortOrderInput | Prisma.SortOrder;
+    onlineSince?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    lastPolledAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    sentRestartWarnings?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type FivemSettingsWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.FivemSettingsWhereInput | Prisma.FivemSettingsWhereInput[];
+    OR?: Prisma.FivemSettingsWhereInput[];
+    NOT?: Prisma.FivemSettingsWhereInput | Prisma.FivemSettingsWhereInput[];
+    serverAddress?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    connectUrl?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    statusChannelId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    statusMessageId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    updateIntervalSeconds?: Prisma.IntFilter<"FivemSettings"> | number;
+    alertChannelId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    alertRoleId?: Prisma.StringNullableFilter<"FivemSettings"> | string | null;
+    restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">;
+    timeZone?: Prisma.StringFilter<"FivemSettings"> | string;
+    restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">;
+    lastOnline?: Prisma.BoolNullableFilter<"FivemSettings"> | boolean | null;
+    onlineSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null;
+    failureStreak?: Prisma.IntFilter<"FivemSettings"> | number;
+    lastPolledAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null;
+    sentRestartWarnings?: Prisma.StringNullableListFilter<"FivemSettings">;
+    revision?: Prisma.IntFilter<"FivemSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"FivemSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"FivemSettings"> | Date | string;
+}, "guildId">;
+export type FivemSettingsOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    serverAddress?: Prisma.SortOrderInput | Prisma.SortOrder;
+    connectUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+    statusChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    statusMessageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    updateIntervalSeconds?: Prisma.SortOrder;
+    alertChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    alertRoleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    restartTimes?: Prisma.SortOrder;
+    timeZone?: Prisma.SortOrder;
+    restartWarningMinutes?: Prisma.SortOrder;
+    lastOnline?: Prisma.SortOrderInput | Prisma.SortOrder;
+    onlineSince?: Prisma.SortOrderInput | Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    lastPolledAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    sentRestartWarnings?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.FivemSettingsCountOrderByAggregateInput;
+    _avg?: Prisma.FivemSettingsAvgOrderByAggregateInput;
+    _max?: Prisma.FivemSettingsMaxOrderByAggregateInput;
+    _min?: Prisma.FivemSettingsMinOrderByAggregateInput;
+    _sum?: Prisma.FivemSettingsSumOrderByAggregateInput;
+};
+export type FivemSettingsScalarWhereWithAggregatesInput = {
+    AND?: Prisma.FivemSettingsScalarWhereWithAggregatesInput | Prisma.FivemSettingsScalarWhereWithAggregatesInput[];
+    OR?: Prisma.FivemSettingsScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.FivemSettingsScalarWhereWithAggregatesInput | Prisma.FivemSettingsScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.StringWithAggregatesFilter<"FivemSettings"> | string;
+    serverAddress?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    connectUrl?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    statusChannelId?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    statusMessageId?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    updateIntervalSeconds?: Prisma.IntWithAggregatesFilter<"FivemSettings"> | number;
+    alertChannelId?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    alertRoleId?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null;
+    restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">;
+    timeZone?: Prisma.StringWithAggregatesFilter<"FivemSettings"> | string;
+    restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">;
+    lastOnline?: Prisma.BoolNullableWithAggregatesFilter<"FivemSettings"> | boolean | null;
+    onlineSince?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null;
+    failureStreak?: Prisma.IntWithAggregatesFilter<"FivemSettings"> | number;
+    lastPolledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null;
+    sentRestartWarnings?: Prisma.StringNullableListFilter<"FivemSettings">;
+    revision?: Prisma.IntWithAggregatesFilter<"FivemSettings"> | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"FivemSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FivemSettings"> | Date | string;
+};
+export type FivemSettingsCreateInput = {
+    guildId: string;
+    serverAddress?: string | null;
+    connectUrl?: string | null;
+    statusChannelId?: string | null;
+    statusMessageId?: string | null;
+    updateIntervalSeconds?: number;
+    alertChannelId?: string | null;
+    alertRoleId?: string | null;
+    restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[];
+    timeZone?: string;
+    restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[];
+    lastOnline?: boolean | null;
+    onlineSince?: Date | string | null;
+    failureStreak?: number;
+    lastPolledAt?: Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsCreatesentRestartWarningsInput | string[];
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type FivemSettingsUncheckedCreateInput = {
+    guildId: string;
+    serverAddress?: string | null;
+    connectUrl?: string | null;
+    statusChannelId?: string | null;
+    statusMessageId?: string | null;
+    updateIntervalSeconds?: number;
+    alertChannelId?: string | null;
+    alertRoleId?: string | null;
+    restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[];
+    timeZone?: string;
+    restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[];
+    lastOnline?: boolean | null;
+    onlineSince?: Date | string | null;
+    failureStreak?: number;
+    lastPolledAt?: Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsCreatesentRestartWarningsInput | string[];
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type FivemSettingsUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    serverAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    connectUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    updateIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    alertChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    alertRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[];
+    timeZone?: Prisma.StringFieldUpdateOperationsInput | string;
+    restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[];
+    lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+    onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureStreak?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsUpdatesentRestartWarningsInput | string[];
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type FivemSettingsUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    serverAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    connectUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    updateIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    alertChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    alertRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[];
+    timeZone?: Prisma.StringFieldUpdateOperationsInput | string;
+    restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[];
+    lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+    onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureStreak?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsUpdatesentRestartWarningsInput | string[];
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type FivemSettingsCreateManyInput = {
+    guildId: string;
+    serverAddress?: string | null;
+    connectUrl?: string | null;
+    statusChannelId?: string | null;
+    statusMessageId?: string | null;
+    updateIntervalSeconds?: number;
+    alertChannelId?: string | null;
+    alertRoleId?: string | null;
+    restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[];
+    timeZone?: string;
+    restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[];
+    lastOnline?: boolean | null;
+    onlineSince?: Date | string | null;
+    failureStreak?: number;
+    lastPolledAt?: Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsCreatesentRestartWarningsInput | string[];
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type FivemSettingsUpdateManyMutationInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    serverAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    connectUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    updateIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    alertChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    alertRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[];
+    timeZone?: Prisma.StringFieldUpdateOperationsInput | string;
+    restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[];
+    lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+    onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureStreak?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsUpdatesentRestartWarningsInput | string[];
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type FivemSettingsUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    serverAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    connectUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    statusMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    updateIntervalSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    alertChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    alertRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[];
+    timeZone?: Prisma.StringFieldUpdateOperationsInput | string;
+    restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[];
+    lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null;
+    onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    failureStreak?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    sentRestartWarnings?: Prisma.FivemSettingsUpdatesentRestartWarningsInput | string[];
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type IntNullableListFilter<$PrismaModel = never> = {
+    equals?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel> | null;
+    has?: number | Prisma.IntFieldRefInput<$PrismaModel> | null;
+    hasEvery?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+    hasSome?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+    isEmpty?: boolean;
+};
+export type FivemSettingsCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    serverAddress?: Prisma.SortOrder;
+    connectUrl?: Prisma.SortOrder;
+    statusChannelId?: Prisma.SortOrder;
+    statusMessageId?: Prisma.SortOrder;
+    updateIntervalSeconds?: Prisma.SortOrder;
+    alertChannelId?: Prisma.SortOrder;
+    alertRoleId?: Prisma.SortOrder;
+    restartTimes?: Prisma.SortOrder;
+    timeZone?: Prisma.SortOrder;
+    restartWarningMinutes?: Prisma.SortOrder;
+    lastOnline?: Prisma.SortOrder;
+    onlineSince?: Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    lastPolledAt?: Prisma.SortOrder;
+    sentRestartWarnings?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type FivemSettingsAvgOrderByAggregateInput = {
+    updateIntervalSeconds?: Prisma.SortOrder;
+    restartWarningMinutes?: Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type FivemSettingsMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    serverAddress?: Prisma.SortOrder;
+    connectUrl?: Prisma.SortOrder;
+    statusChannelId?: Prisma.SortOrder;
+    statusMessageId?: Prisma.SortOrder;
+    updateIntervalSeconds?: Prisma.SortOrder;
+    alertChannelId?: Prisma.SortOrder;
+    alertRoleId?: Prisma.SortOrder;
+    timeZone?: Prisma.SortOrder;
+    lastOnline?: Prisma.SortOrder;
+    onlineSince?: Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    lastPolledAt?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type FivemSettingsMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    serverAddress?: Prisma.SortOrder;
+    connectUrl?: Prisma.SortOrder;
+    statusChannelId?: Prisma.SortOrder;
+    statusMessageId?: Prisma.SortOrder;
+    updateIntervalSeconds?: Prisma.SortOrder;
+    alertChannelId?: Prisma.SortOrder;
+    alertRoleId?: Prisma.SortOrder;
+    timeZone?: Prisma.SortOrder;
+    lastOnline?: Prisma.SortOrder;
+    onlineSince?: Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    lastPolledAt?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type FivemSettingsSumOrderByAggregateInput = {
+    updateIntervalSeconds?: Prisma.SortOrder;
+    restartWarningMinutes?: Prisma.SortOrder;
+    failureStreak?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type FivemSettingsCreaterestartTimesInput = {
+    set: string[];
+};
+export type FivemSettingsCreaterestartWarningMinutesInput = {
+    set: number[];
+};
+export type FivemSettingsCreatesentRestartWarningsInput = {
+    set: string[];
+};
+export type FivemSettingsUpdaterestartTimesInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type FivemSettingsUpdaterestartWarningMinutesInput = {
+    set?: number[];
+    push?: number | number[];
+};
+export type FivemSettingsUpdatesentRestartWarningsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type FivemSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    serverAddress?: boolean;
+    connectUrl?: boolean;
+    statusChannelId?: boolean;
+    statusMessageId?: boolean;
+    updateIntervalSeconds?: boolean;
+    alertChannelId?: boolean;
+    alertRoleId?: boolean;
+    restartTimes?: boolean;
+    timeZone?: boolean;
+    restartWarningMinutes?: boolean;
+    lastOnline?: boolean;
+    onlineSince?: boolean;
+    failureStreak?: boolean;
+    lastPolledAt?: boolean;
+    sentRestartWarnings?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["fivemSettings"]>;
+export type FivemSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    serverAddress?: boolean;
+    connectUrl?: boolean;
+    statusChannelId?: boolean;
+    statusMessageId?: boolean;
+    updateIntervalSeconds?: boolean;
+    alertChannelId?: boolean;
+    alertRoleId?: boolean;
+    restartTimes?: boolean;
+    timeZone?: boolean;
+    restartWarningMinutes?: boolean;
+    lastOnline?: boolean;
+    onlineSince?: boolean;
+    failureStreak?: boolean;
+    lastPolledAt?: boolean;
+    sentRestartWarnings?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["fivemSettings"]>;
+export type FivemSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    serverAddress?: boolean;
+    connectUrl?: boolean;
+    statusChannelId?: boolean;
+    statusMessageId?: boolean;
+    updateIntervalSeconds?: boolean;
+    alertChannelId?: boolean;
+    alertRoleId?: boolean;
+    restartTimes?: boolean;
+    timeZone?: boolean;
+    restartWarningMinutes?: boolean;
+    lastOnline?: boolean;
+    onlineSince?: boolean;
+    failureStreak?: boolean;
+    lastPolledAt?: boolean;
+    sentRestartWarnings?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["fivemSettings"]>;
+export type FivemSettingsSelectScalar = {
+    guildId?: boolean;
+    serverAddress?: boolean;
+    connectUrl?: boolean;
+    statusChannelId?: boolean;
+    statusMessageId?: boolean;
+    updateIntervalSeconds?: boolean;
+    alertChannelId?: boolean;
+    alertRoleId?: boolean;
+    restartTimes?: boolean;
+    timeZone?: boolean;
+    restartWarningMinutes?: boolean;
+    lastOnline?: boolean;
+    onlineSince?: boolean;
+    failureStreak?: boolean;
+    lastPolledAt?: boolean;
+    sentRestartWarnings?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type FivemSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "serverAddress" | "connectUrl" | "statusChannelId" | "statusMessageId" | "updateIntervalSeconds" | "alertChannelId" | "alertRoleId" | "restartTimes" | "timeZone" | "restartWarningMinutes" | "lastOnline" | "onlineSince" | "failureStreak" | "lastPolledAt" | "sentRestartWarnings" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["fivemSettings"]>;
+export type $FivemSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "FivemSettings";
+    objects: {};
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        serverAddress: string | null;
+        connectUrl: string | null;
+        statusChannelId: string | null;
+        statusMessageId: string | null;
+        updateIntervalSeconds: number;
+        alertChannelId: string | null;
+        alertRoleId: string | null;
+        restartTimes: string[];
+        timeZone: string;
+        restartWarningMinutes: number[];
+        lastOnline: boolean | null;
+        onlineSince: Date | null;
+        failureStreak: number;
+        lastPolledAt: Date | null;
+        sentRestartWarnings: string[];
+        revision: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["fivemSettings"]>;
+    composites: {};
+};
+export type FivemSettingsGetPayload<S extends boolean | null | undefined | FivemSettingsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload, S>;
+export type FivemSettingsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<FivemSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: FivemSettingsCountAggregateInputType | true;
+};
+export interface FivemSettingsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['FivemSettings'];
+        meta: {
+            name: 'FivemSettings';
+        };
+    };
+    /**
+     * Find zero or one FivemSettings that matches the filter.
+     * @param {FivemSettingsFindUniqueArgs} args - Arguments to find a FivemSettings
+     * @example
+     * // Get one FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends FivemSettingsFindUniqueArgs>(args: Prisma.SelectSubset<T, FivemSettingsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one FivemSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {FivemSettingsFindUniqueOrThrowArgs} args - Arguments to find a FivemSettings
+     * @example
+     * // Get one FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends FivemSettingsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, FivemSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first FivemSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsFindFirstArgs} args - Arguments to find a FivemSettings
+     * @example
+     * // Get one FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends FivemSettingsFindFirstArgs>(args?: Prisma.SelectSubset<T, FivemSettingsFindFirstArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first FivemSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsFindFirstOrThrowArgs} args - Arguments to find a FivemSettings
+     * @example
+     * // Get one FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends FivemSettingsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, FivemSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more FivemSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findMany()
+     *
+     * // Get first 10 FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const fivemSettingsWithGuildIdOnly = await prisma.fivemSettings.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends FivemSettingsFindManyArgs>(args?: Prisma.SelectSubset<T, FivemSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a FivemSettings.
+     * @param {FivemSettingsCreateArgs} args - Arguments to create a FivemSettings.
+     * @example
+     * // Create one FivemSettings
+     * const FivemSettings = await prisma.fivemSettings.create({
+     *   data: {
+     *     // ... data to create a FivemSettings
+     *   }
+     * })
+     *
+     */
+    create<T extends FivemSettingsCreateArgs>(args: Prisma.SelectSubset<T, FivemSettingsCreateArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many FivemSettings.
+     * @param {FivemSettingsCreateManyArgs} args - Arguments to create many FivemSettings.
+     * @example
+     * // Create many FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends FivemSettingsCreateManyArgs>(args?: Prisma.SelectSubset<T, FivemSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many FivemSettings and returns the data saved in the database.
+     * @param {FivemSettingsCreateManyAndReturnArgs} args - Arguments to create many FivemSettings.
+     * @example
+     * // Create many FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many FivemSettings and only return the `guildId`
+     * const fivemSettingsWithGuildIdOnly = await prisma.fivemSettings.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends FivemSettingsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, FivemSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a FivemSettings.
+     * @param {FivemSettingsDeleteArgs} args - Arguments to delete one FivemSettings.
+     * @example
+     * // Delete one FivemSettings
+     * const FivemSettings = await prisma.fivemSettings.delete({
+     *   where: {
+     *     // ... filter to delete one FivemSettings
+     *   }
+     * })
+     *
+     */
+    delete<T extends FivemSettingsDeleteArgs>(args: Prisma.SelectSubset<T, FivemSettingsDeleteArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one FivemSettings.
+     * @param {FivemSettingsUpdateArgs} args - Arguments to update one FivemSettings.
+     * @example
+     * // Update one FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends FivemSettingsUpdateArgs>(args: Prisma.SelectSubset<T, FivemSettingsUpdateArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more FivemSettings.
+     * @param {FivemSettingsDeleteManyArgs} args - Arguments to filter FivemSettings to delete.
+     * @example
+     * // Delete a few FivemSettings
+     * const { count } = await prisma.fivemSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends FivemSettingsDeleteManyArgs>(args?: Prisma.SelectSubset<T, FivemSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more FivemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends FivemSettingsUpdateManyArgs>(args: Prisma.SelectSubset<T, FivemSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more FivemSettings and returns the data updated in the database.
+     * @param {FivemSettingsUpdateManyAndReturnArgs} args - Arguments to update many FivemSettings.
+     * @example
+     * // Update many FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more FivemSettings and only return the `guildId`
+     * const fivemSettingsWithGuildIdOnly = await prisma.fivemSettings.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends FivemSettingsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, FivemSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one FivemSettings.
+     * @param {FivemSettingsUpsertArgs} args - Arguments to update or create a FivemSettings.
+     * @example
+     * // Update or create a FivemSettings
+     * const fivemSettings = await prisma.fivemSettings.upsert({
+     *   create: {
+     *     // ... data to create a FivemSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the FivemSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends FivemSettingsUpsertArgs>(args: Prisma.SelectSubset<T, FivemSettingsUpsertArgs<ExtArgs>>): Prisma.Prisma__FivemSettingsClient<runtime.Types.Result.GetResult<Prisma.$FivemSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of FivemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsCountArgs} args - Arguments to filter FivemSettings to count.
+     * @example
+     * // Count the number of FivemSettings
+     * const count = await prisma.fivemSettings.count({
+     *   where: {
+     *     // ... the filter for the FivemSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends FivemSettingsCountArgs>(args?: Prisma.Subset<T, FivemSettingsCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], FivemSettingsCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a FivemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends FivemSettingsAggregateArgs>(args: Prisma.Subset<T, FivemSettingsAggregateArgs>): Prisma.PrismaPromise<GetFivemSettingsAggregateType<T>>;
+    /**
+     * Group by FivemSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {FivemSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends FivemSettingsGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: FivemSettingsGroupByArgs['orderBy'];
+    } : {
+        orderBy?: FivemSettingsGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, FivemSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetFivemSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the FivemSettings model
+     */
+    readonly fields: FivemSettingsFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for FivemSettings.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__FivemSettingsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the FivemSettings model
+ */
+export interface FivemSettingsFieldRefs {
+    readonly guildId: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly serverAddress: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly connectUrl: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly statusChannelId: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly statusMessageId: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly updateIntervalSeconds: Prisma.FieldRef<"FivemSettings", 'Int'>;
+    readonly alertChannelId: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly alertRoleId: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly restartTimes: Prisma.FieldRef<"FivemSettings", 'String[]'>;
+    readonly timeZone: Prisma.FieldRef<"FivemSettings", 'String'>;
+    readonly restartWarningMinutes: Prisma.FieldRef<"FivemSettings", 'Int[]'>;
+    readonly lastOnline: Prisma.FieldRef<"FivemSettings", 'Boolean'>;
+    readonly onlineSince: Prisma.FieldRef<"FivemSettings", 'DateTime'>;
+    readonly failureStreak: Prisma.FieldRef<"FivemSettings", 'Int'>;
+    readonly lastPolledAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>;
+    readonly sentRestartWarnings: Prisma.FieldRef<"FivemSettings", 'String[]'>;
+    readonly revision: Prisma.FieldRef<"FivemSettings", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>;
+}
+/**
+ * FivemSettings findUnique
+ */
+export type FivemSettingsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which FivemSettings to fetch.
+     */
+    where: Prisma.FivemSettingsWhereUniqueInput;
+};
+/**
+ * FivemSettings findUniqueOrThrow
+ */
+export type FivemSettingsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which FivemSettings to fetch.
+     */
+    where: Prisma.FivemSettingsWhereUniqueInput;
+};
+/**
+ * FivemSettings findFirst
+ */
+export type FivemSettingsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which FivemSettings to fetch.
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FivemSettings to fetch.
+     */
+    orderBy?: Prisma.FivemSettingsOrderByWithRelationInput | Prisma.FivemSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for FivemSettings.
+     */
+    cursor?: Prisma.FivemSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FivemSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FivemSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FivemSettings.
+     */
+    distinct?: Prisma.FivemSettingsScalarFieldEnum | Prisma.FivemSettingsScalarFieldEnum[];
+};
+/**
+ * FivemSettings findFirstOrThrow
+ */
+export type FivemSettingsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which FivemSettings to fetch.
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FivemSettings to fetch.
+     */
+    orderBy?: Prisma.FivemSettingsOrderByWithRelationInput | Prisma.FivemSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for FivemSettings.
+     */
+    cursor?: Prisma.FivemSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FivemSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FivemSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FivemSettings.
+     */
+    distinct?: Prisma.FivemSettingsScalarFieldEnum | Prisma.FivemSettingsScalarFieldEnum[];
+};
+/**
+ * FivemSettings findMany
+ */
+export type FivemSettingsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which FivemSettings to fetch.
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of FivemSettings to fetch.
+     */
+    orderBy?: Prisma.FivemSettingsOrderByWithRelationInput | Prisma.FivemSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing FivemSettings.
+     */
+    cursor?: Prisma.FivemSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` FivemSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` FivemSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of FivemSettings.
+     */
+    distinct?: Prisma.FivemSettingsScalarFieldEnum | Prisma.FivemSettingsScalarFieldEnum[];
+};
+/**
+ * FivemSettings create
+ */
+export type FivemSettingsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to create a FivemSettings.
+     */
+    data: Prisma.XOR<Prisma.FivemSettingsCreateInput, Prisma.FivemSettingsUncheckedCreateInput>;
+};
+/**
+ * FivemSettings createMany
+ */
+export type FivemSettingsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many FivemSettings.
+     */
+    data: Prisma.FivemSettingsCreateManyInput | Prisma.FivemSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * FivemSettings createManyAndReturn
+ */
+export type FivemSettingsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to create many FivemSettings.
+     */
+    data: Prisma.FivemSettingsCreateManyInput | Prisma.FivemSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * FivemSettings update
+ */
+export type FivemSettingsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to update a FivemSettings.
+     */
+    data: Prisma.XOR<Prisma.FivemSettingsUpdateInput, Prisma.FivemSettingsUncheckedUpdateInput>;
+    /**
+     * Choose, which FivemSettings to update.
+     */
+    where: Prisma.FivemSettingsWhereUniqueInput;
+};
+/**
+ * FivemSettings updateMany
+ */
+export type FivemSettingsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update FivemSettings.
+     */
+    data: Prisma.XOR<Prisma.FivemSettingsUpdateManyMutationInput, Prisma.FivemSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which FivemSettings to update
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * Limit how many FivemSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * FivemSettings updateManyAndReturn
+ */
+export type FivemSettingsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to update FivemSettings.
+     */
+    data: Prisma.XOR<Prisma.FivemSettingsUpdateManyMutationInput, Prisma.FivemSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which FivemSettings to update
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * Limit how many FivemSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * FivemSettings upsert
+ */
+export type FivemSettingsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * The filter to search for the FivemSettings to update in case it exists.
+     */
+    where: Prisma.FivemSettingsWhereUniqueInput;
+    /**
+     * In case the FivemSettings found by the `where` argument doesn't exist, create a new FivemSettings with this data.
+     */
+    create: Prisma.XOR<Prisma.FivemSettingsCreateInput, Prisma.FivemSettingsUncheckedCreateInput>;
+    /**
+     * In case the FivemSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.FivemSettingsUpdateInput, Prisma.FivemSettingsUncheckedUpdateInput>;
+};
+/**
+ * FivemSettings delete
+ */
+export type FivemSettingsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter which FivemSettings to delete.
+     */
+    where: Prisma.FivemSettingsWhereUniqueInput;
+};
+/**
+ * FivemSettings deleteMany
+ */
+export type FivemSettingsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which FivemSettings to delete
+     */
+    where?: Prisma.FivemSettingsWhereInput;
+    /**
+     * Limit how many FivemSettings to delete.
+     */
+    limit?: number;
+};
+/**
+ * FivemSettings without action
+ */
+export type FivemSettingsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the FivemSettings
+     */
+    select?: Prisma.FivemSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the FivemSettings
+     */
+    omit?: Prisma.FivemSettingsOmit<ExtArgs> | null;
+};
+//# sourceMappingURL=FivemSettings.d.ts.map

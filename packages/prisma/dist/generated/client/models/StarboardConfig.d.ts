@@ -1,0 +1,1503 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model StarboardConfig
+ *
+ */
+export type StarboardConfigModel = runtime.Types.Result.DefaultSelection<Prisma.$StarboardConfigPayload>;
+export type AggregateStarboardConfig = {
+    _count: StarboardConfigCountAggregateOutputType | null;
+    _avg: StarboardConfigAvgAggregateOutputType | null;
+    _sum: StarboardConfigSumAggregateOutputType | null;
+    _min: StarboardConfigMinAggregateOutputType | null;
+    _max: StarboardConfigMaxAggregateOutputType | null;
+};
+export type StarboardConfigAvgAggregateOutputType = {
+    threshold: number | null;
+};
+export type StarboardConfigSumAggregateOutputType = {
+    threshold: number | null;
+};
+export type StarboardConfigMinAggregateOutputType = {
+    guildId: string | null;
+    enabled: boolean | null;
+    destinationChannelId: string | null;
+    emoji: string | null;
+    threshold: number | null;
+    allowSelfStar: boolean | null;
+    includeBotMessages: boolean | null;
+    nsfw: $Enums.StarboardNsfwMode | null;
+    mode: $Enums.StarboardChannelMode | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type StarboardConfigMaxAggregateOutputType = {
+    guildId: string | null;
+    enabled: boolean | null;
+    destinationChannelId: string | null;
+    emoji: string | null;
+    threshold: number | null;
+    allowSelfStar: boolean | null;
+    includeBotMessages: boolean | null;
+    nsfw: $Enums.StarboardNsfwMode | null;
+    mode: $Enums.StarboardChannelMode | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type StarboardConfigCountAggregateOutputType = {
+    guildId: number;
+    enabled: number;
+    destinationChannelId: number;
+    emoji: number;
+    threshold: number;
+    allowSelfStar: number;
+    includeBotMessages: number;
+    nsfw: number;
+    mode: number;
+    channels: number;
+    ignoredRoles: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type StarboardConfigAvgAggregateInputType = {
+    threshold?: true;
+};
+export type StarboardConfigSumAggregateInputType = {
+    threshold?: true;
+};
+export type StarboardConfigMinAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    destinationChannelId?: true;
+    emoji?: true;
+    threshold?: true;
+    allowSelfStar?: true;
+    includeBotMessages?: true;
+    nsfw?: true;
+    mode?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type StarboardConfigMaxAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    destinationChannelId?: true;
+    emoji?: true;
+    threshold?: true;
+    allowSelfStar?: true;
+    includeBotMessages?: true;
+    nsfw?: true;
+    mode?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type StarboardConfigCountAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    destinationChannelId?: true;
+    emoji?: true;
+    threshold?: true;
+    allowSelfStar?: true;
+    includeBotMessages?: true;
+    nsfw?: true;
+    mode?: true;
+    channels?: true;
+    ignoredRoles?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type StarboardConfigAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which StarboardConfig to aggregate.
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StarboardConfigs to fetch.
+     */
+    orderBy?: Prisma.StarboardConfigOrderByWithRelationInput | Prisma.StarboardConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.StarboardConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StarboardConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StarboardConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned StarboardConfigs
+    **/
+    _count?: true | StarboardConfigCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: StarboardConfigAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: StarboardConfigSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: StarboardConfigMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: StarboardConfigMaxAggregateInputType;
+};
+export type GetStarboardConfigAggregateType<T extends StarboardConfigAggregateArgs> = {
+    [P in keyof T & keyof AggregateStarboardConfig]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateStarboardConfig[P]> : Prisma.GetScalarType<T[P], AggregateStarboardConfig[P]>;
+};
+export type StarboardConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.StarboardConfigWhereInput;
+    orderBy?: Prisma.StarboardConfigOrderByWithAggregationInput | Prisma.StarboardConfigOrderByWithAggregationInput[];
+    by: Prisma.StarboardConfigScalarFieldEnum[] | Prisma.StarboardConfigScalarFieldEnum;
+    having?: Prisma.StarboardConfigScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: StarboardConfigCountAggregateInputType | true;
+    _avg?: StarboardConfigAvgAggregateInputType;
+    _sum?: StarboardConfigSumAggregateInputType;
+    _min?: StarboardConfigMinAggregateInputType;
+    _max?: StarboardConfigMaxAggregateInputType;
+};
+export type StarboardConfigGroupByOutputType = {
+    guildId: string;
+    enabled: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar: boolean;
+    includeBotMessages: boolean;
+    nsfw: $Enums.StarboardNsfwMode;
+    mode: $Enums.StarboardChannelMode;
+    channels: string[];
+    ignoredRoles: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    _count: StarboardConfigCountAggregateOutputType | null;
+    _avg: StarboardConfigAvgAggregateOutputType | null;
+    _sum: StarboardConfigSumAggregateOutputType | null;
+    _min: StarboardConfigMinAggregateOutputType | null;
+    _max: StarboardConfigMaxAggregateOutputType | null;
+};
+export type GetStarboardConfigGroupByPayload<T extends StarboardConfigGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<StarboardConfigGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof StarboardConfigGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], StarboardConfigGroupByOutputType[P]> : Prisma.GetScalarType<T[P], StarboardConfigGroupByOutputType[P]>;
+}>>;
+export type StarboardConfigWhereInput = {
+    AND?: Prisma.StarboardConfigWhereInput | Prisma.StarboardConfigWhereInput[];
+    OR?: Prisma.StarboardConfigWhereInput[];
+    NOT?: Prisma.StarboardConfigWhereInput | Prisma.StarboardConfigWhereInput[];
+    guildId?: Prisma.UuidFilter<"StarboardConfig"> | string;
+    enabled?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    destinationChannelId?: Prisma.StringFilter<"StarboardConfig"> | string;
+    emoji?: Prisma.StringFilter<"StarboardConfig"> | string;
+    threshold?: Prisma.IntFilter<"StarboardConfig"> | number;
+    allowSelfStar?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    includeBotMessages?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFilter<"StarboardConfig"> | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFilter<"StarboardConfig"> | $Enums.StarboardChannelMode;
+    channels?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    ignoredRoles?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    createdAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+};
+export type StarboardConfigOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    destinationChannelId?: Prisma.SortOrder;
+    emoji?: Prisma.SortOrder;
+    threshold?: Prisma.SortOrder;
+    allowSelfStar?: Prisma.SortOrder;
+    includeBotMessages?: Prisma.SortOrder;
+    nsfw?: Prisma.SortOrder;
+    mode?: Prisma.SortOrder;
+    channels?: Prisma.SortOrder;
+    ignoredRoles?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    guild?: Prisma.GuildOrderByWithRelationInput;
+};
+export type StarboardConfigWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.StarboardConfigWhereInput | Prisma.StarboardConfigWhereInput[];
+    OR?: Prisma.StarboardConfigWhereInput[];
+    NOT?: Prisma.StarboardConfigWhereInput | Prisma.StarboardConfigWhereInput[];
+    enabled?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    destinationChannelId?: Prisma.StringFilter<"StarboardConfig"> | string;
+    emoji?: Prisma.StringFilter<"StarboardConfig"> | string;
+    threshold?: Prisma.IntFilter<"StarboardConfig"> | number;
+    allowSelfStar?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    includeBotMessages?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFilter<"StarboardConfig"> | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFilter<"StarboardConfig"> | $Enums.StarboardChannelMode;
+    channels?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    ignoredRoles?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    createdAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+}, "guildId">;
+export type StarboardConfigOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    destinationChannelId?: Prisma.SortOrder;
+    emoji?: Prisma.SortOrder;
+    threshold?: Prisma.SortOrder;
+    allowSelfStar?: Prisma.SortOrder;
+    includeBotMessages?: Prisma.SortOrder;
+    nsfw?: Prisma.SortOrder;
+    mode?: Prisma.SortOrder;
+    channels?: Prisma.SortOrder;
+    ignoredRoles?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.StarboardConfigCountOrderByAggregateInput;
+    _avg?: Prisma.StarboardConfigAvgOrderByAggregateInput;
+    _max?: Prisma.StarboardConfigMaxOrderByAggregateInput;
+    _min?: Prisma.StarboardConfigMinOrderByAggregateInput;
+    _sum?: Prisma.StarboardConfigSumOrderByAggregateInput;
+};
+export type StarboardConfigScalarWhereWithAggregatesInput = {
+    AND?: Prisma.StarboardConfigScalarWhereWithAggregatesInput | Prisma.StarboardConfigScalarWhereWithAggregatesInput[];
+    OR?: Prisma.StarboardConfigScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.StarboardConfigScalarWhereWithAggregatesInput | Prisma.StarboardConfigScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.UuidWithAggregatesFilter<"StarboardConfig"> | string;
+    enabled?: Prisma.BoolWithAggregatesFilter<"StarboardConfig"> | boolean;
+    destinationChannelId?: Prisma.StringWithAggregatesFilter<"StarboardConfig"> | string;
+    emoji?: Prisma.StringWithAggregatesFilter<"StarboardConfig"> | string;
+    threshold?: Prisma.IntWithAggregatesFilter<"StarboardConfig"> | number;
+    allowSelfStar?: Prisma.BoolWithAggregatesFilter<"StarboardConfig"> | boolean;
+    includeBotMessages?: Prisma.BoolWithAggregatesFilter<"StarboardConfig"> | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeWithAggregatesFilter<"StarboardConfig"> | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeWithAggregatesFilter<"StarboardConfig"> | $Enums.StarboardChannelMode;
+    channels?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    ignoredRoles?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"StarboardConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StarboardConfig"> | Date | string;
+};
+export type StarboardConfigCreateInput = {
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    guild: Prisma.GuildCreateNestedOneWithoutStarboardsInput;
+};
+export type StarboardConfigUncheckedCreateInput = {
+    guildId: string;
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StarboardConfigUpdateInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutStarboardsNestedInput;
+};
+export type StarboardConfigUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigCreateManyInput = {
+    guildId: string;
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StarboardConfigUpdateManyMutationInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigListRelationFilter = {
+    every?: Prisma.StarboardConfigWhereInput;
+    some?: Prisma.StarboardConfigWhereInput;
+    none?: Prisma.StarboardConfigWhereInput;
+};
+export type StarboardConfigOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type StarboardConfigCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    destinationChannelId?: Prisma.SortOrder;
+    emoji?: Prisma.SortOrder;
+    threshold?: Prisma.SortOrder;
+    allowSelfStar?: Prisma.SortOrder;
+    includeBotMessages?: Prisma.SortOrder;
+    nsfw?: Prisma.SortOrder;
+    mode?: Prisma.SortOrder;
+    channels?: Prisma.SortOrder;
+    ignoredRoles?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StarboardConfigAvgOrderByAggregateInput = {
+    threshold?: Prisma.SortOrder;
+};
+export type StarboardConfigMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    destinationChannelId?: Prisma.SortOrder;
+    emoji?: Prisma.SortOrder;
+    threshold?: Prisma.SortOrder;
+    allowSelfStar?: Prisma.SortOrder;
+    includeBotMessages?: Prisma.SortOrder;
+    nsfw?: Prisma.SortOrder;
+    mode?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StarboardConfigMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    destinationChannelId?: Prisma.SortOrder;
+    emoji?: Prisma.SortOrder;
+    threshold?: Prisma.SortOrder;
+    allowSelfStar?: Prisma.SortOrder;
+    includeBotMessages?: Prisma.SortOrder;
+    nsfw?: Prisma.SortOrder;
+    mode?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StarboardConfigSumOrderByAggregateInput = {
+    threshold?: Prisma.SortOrder;
+};
+export type StarboardConfigCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput> | Prisma.StarboardConfigCreateWithoutGuildInput[] | Prisma.StarboardConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.StarboardConfigCreateOrConnectWithoutGuildInput | Prisma.StarboardConfigCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.StarboardConfigCreateManyGuildInputEnvelope;
+    connect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+};
+export type StarboardConfigUncheckedCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput> | Prisma.StarboardConfigCreateWithoutGuildInput[] | Prisma.StarboardConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.StarboardConfigCreateOrConnectWithoutGuildInput | Prisma.StarboardConfigCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.StarboardConfigCreateManyGuildInputEnvelope;
+    connect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+};
+export type StarboardConfigUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput> | Prisma.StarboardConfigCreateWithoutGuildInput[] | Prisma.StarboardConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.StarboardConfigCreateOrConnectWithoutGuildInput | Prisma.StarboardConfigCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.StarboardConfigUpsertWithWhereUniqueWithoutGuildInput | Prisma.StarboardConfigUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.StarboardConfigCreateManyGuildInputEnvelope;
+    set?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    disconnect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    delete?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    connect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    update?: Prisma.StarboardConfigUpdateWithWhereUniqueWithoutGuildInput | Prisma.StarboardConfigUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.StarboardConfigUpdateManyWithWhereWithoutGuildInput | Prisma.StarboardConfigUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.StarboardConfigScalarWhereInput | Prisma.StarboardConfigScalarWhereInput[];
+};
+export type StarboardConfigUncheckedUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput> | Prisma.StarboardConfigCreateWithoutGuildInput[] | Prisma.StarboardConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.StarboardConfigCreateOrConnectWithoutGuildInput | Prisma.StarboardConfigCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.StarboardConfigUpsertWithWhereUniqueWithoutGuildInput | Prisma.StarboardConfigUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.StarboardConfigCreateManyGuildInputEnvelope;
+    set?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    disconnect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    delete?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    connect?: Prisma.StarboardConfigWhereUniqueInput | Prisma.StarboardConfigWhereUniqueInput[];
+    update?: Prisma.StarboardConfigUpdateWithWhereUniqueWithoutGuildInput | Prisma.StarboardConfigUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.StarboardConfigUpdateManyWithWhereWithoutGuildInput | Prisma.StarboardConfigUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.StarboardConfigScalarWhereInput | Prisma.StarboardConfigScalarWhereInput[];
+};
+export type StarboardConfigCreatechannelsInput = {
+    set: string[];
+};
+export type StarboardConfigCreateignoredRolesInput = {
+    set: string[];
+};
+export type EnumStarboardNsfwModeFieldUpdateOperationsInput = {
+    set?: $Enums.StarboardNsfwMode;
+};
+export type EnumStarboardChannelModeFieldUpdateOperationsInput = {
+    set?: $Enums.StarboardChannelMode;
+};
+export type StarboardConfigUpdatechannelsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type StarboardConfigUpdateignoredRolesInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type StarboardConfigCreateWithoutGuildInput = {
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StarboardConfigUncheckedCreateWithoutGuildInput = {
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StarboardConfigCreateOrConnectWithoutGuildInput = {
+    where: Prisma.StarboardConfigWhereUniqueInput;
+    create: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput>;
+};
+export type StarboardConfigCreateManyGuildInputEnvelope = {
+    data: Prisma.StarboardConfigCreateManyGuildInput | Prisma.StarboardConfigCreateManyGuildInput[];
+    skipDuplicates?: boolean;
+};
+export type StarboardConfigUpsertWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.StarboardConfigWhereUniqueInput;
+    update: Prisma.XOR<Prisma.StarboardConfigUpdateWithoutGuildInput, Prisma.StarboardConfigUncheckedUpdateWithoutGuildInput>;
+    create: Prisma.XOR<Prisma.StarboardConfigCreateWithoutGuildInput, Prisma.StarboardConfigUncheckedCreateWithoutGuildInput>;
+};
+export type StarboardConfigUpdateWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.StarboardConfigWhereUniqueInput;
+    data: Prisma.XOR<Prisma.StarboardConfigUpdateWithoutGuildInput, Prisma.StarboardConfigUncheckedUpdateWithoutGuildInput>;
+};
+export type StarboardConfigUpdateManyWithWhereWithoutGuildInput = {
+    where: Prisma.StarboardConfigScalarWhereInput;
+    data: Prisma.XOR<Prisma.StarboardConfigUpdateManyMutationInput, Prisma.StarboardConfigUncheckedUpdateManyWithoutGuildInput>;
+};
+export type StarboardConfigScalarWhereInput = {
+    AND?: Prisma.StarboardConfigScalarWhereInput | Prisma.StarboardConfigScalarWhereInput[];
+    OR?: Prisma.StarboardConfigScalarWhereInput[];
+    NOT?: Prisma.StarboardConfigScalarWhereInput | Prisma.StarboardConfigScalarWhereInput[];
+    guildId?: Prisma.UuidFilter<"StarboardConfig"> | string;
+    enabled?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    destinationChannelId?: Prisma.StringFilter<"StarboardConfig"> | string;
+    emoji?: Prisma.StringFilter<"StarboardConfig"> | string;
+    threshold?: Prisma.IntFilter<"StarboardConfig"> | number;
+    allowSelfStar?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    includeBotMessages?: Prisma.BoolFilter<"StarboardConfig"> | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFilter<"StarboardConfig"> | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFilter<"StarboardConfig"> | $Enums.StarboardChannelMode;
+    channels?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    ignoredRoles?: Prisma.StringNullableListFilter<"StarboardConfig">;
+    createdAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"StarboardConfig"> | Date | string;
+};
+export type StarboardConfigCreateManyGuildInput = {
+    enabled?: boolean;
+    destinationChannelId: string;
+    emoji: string;
+    threshold: number;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: $Enums.StarboardNsfwMode;
+    mode?: $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigCreatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigCreateignoredRolesInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StarboardConfigUpdateWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigUncheckedUpdateWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigUncheckedUpdateManyWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    destinationChannelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    emoji?: Prisma.StringFieldUpdateOperationsInput | string;
+    threshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowSelfStar?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    includeBotMessages?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nsfw?: Prisma.EnumStarboardNsfwModeFieldUpdateOperationsInput | $Enums.StarboardNsfwMode;
+    mode?: Prisma.EnumStarboardChannelModeFieldUpdateOperationsInput | $Enums.StarboardChannelMode;
+    channels?: Prisma.StarboardConfigUpdatechannelsInput | string[];
+    ignoredRoles?: Prisma.StarboardConfigUpdateignoredRolesInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StarboardConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    destinationChannelId?: boolean;
+    emoji?: boolean;
+    threshold?: boolean;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: boolean;
+    mode?: boolean;
+    channels?: boolean;
+    ignoredRoles?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["starboardConfig"]>;
+export type StarboardConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    destinationChannelId?: boolean;
+    emoji?: boolean;
+    threshold?: boolean;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: boolean;
+    mode?: boolean;
+    channels?: boolean;
+    ignoredRoles?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["starboardConfig"]>;
+export type StarboardConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    destinationChannelId?: boolean;
+    emoji?: boolean;
+    threshold?: boolean;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: boolean;
+    mode?: boolean;
+    channels?: boolean;
+    ignoredRoles?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["starboardConfig"]>;
+export type StarboardConfigSelectScalar = {
+    guildId?: boolean;
+    enabled?: boolean;
+    destinationChannelId?: boolean;
+    emoji?: boolean;
+    threshold?: boolean;
+    allowSelfStar?: boolean;
+    includeBotMessages?: boolean;
+    nsfw?: boolean;
+    mode?: boolean;
+    channels?: boolean;
+    ignoredRoles?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type StarboardConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "destinationChannelId" | "emoji" | "threshold" | "allowSelfStar" | "includeBotMessages" | "nsfw" | "mode" | "channels" | "ignoredRoles" | "createdAt" | "updatedAt", ExtArgs["result"]["starboardConfig"]>;
+export type StarboardConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type StarboardConfigIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type StarboardConfigIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type $StarboardConfigPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "StarboardConfig";
+    objects: {
+        guild: Prisma.$GuildPayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        enabled: boolean;
+        destinationChannelId: string;
+        emoji: string;
+        threshold: number;
+        allowSelfStar: boolean;
+        includeBotMessages: boolean;
+        nsfw: $Enums.StarboardNsfwMode;
+        mode: $Enums.StarboardChannelMode;
+        channels: string[];
+        ignoredRoles: string[];
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["starboardConfig"]>;
+    composites: {};
+};
+export type StarboardConfigGetPayload<S extends boolean | null | undefined | StarboardConfigDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload, S>;
+export type StarboardConfigCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<StarboardConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: StarboardConfigCountAggregateInputType | true;
+};
+export interface StarboardConfigDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['StarboardConfig'];
+        meta: {
+            name: 'StarboardConfig';
+        };
+    };
+    /**
+     * Find zero or one StarboardConfig that matches the filter.
+     * @param {StarboardConfigFindUniqueArgs} args - Arguments to find a StarboardConfig
+     * @example
+     * // Get one StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StarboardConfigFindUniqueArgs>(args: Prisma.SelectSubset<T, StarboardConfigFindUniqueArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one StarboardConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StarboardConfigFindUniqueOrThrowArgs} args - Arguments to find a StarboardConfig
+     * @example
+     * // Get one StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StarboardConfigFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, StarboardConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first StarboardConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigFindFirstArgs} args - Arguments to find a StarboardConfig
+     * @example
+     * // Get one StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StarboardConfigFindFirstArgs>(args?: Prisma.SelectSubset<T, StarboardConfigFindFirstArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first StarboardConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigFindFirstOrThrowArgs} args - Arguments to find a StarboardConfig
+     * @example
+     * // Get one StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StarboardConfigFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, StarboardConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more StarboardConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StarboardConfigs
+     * const starboardConfigs = await prisma.starboardConfig.findMany()
+     *
+     * // Get first 10 StarboardConfigs
+     * const starboardConfigs = await prisma.starboardConfig.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const starboardConfigWithGuildIdOnly = await prisma.starboardConfig.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends StarboardConfigFindManyArgs>(args?: Prisma.SelectSubset<T, StarboardConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a StarboardConfig.
+     * @param {StarboardConfigCreateArgs} args - Arguments to create a StarboardConfig.
+     * @example
+     * // Create one StarboardConfig
+     * const StarboardConfig = await prisma.starboardConfig.create({
+     *   data: {
+     *     // ... data to create a StarboardConfig
+     *   }
+     * })
+     *
+     */
+    create<T extends StarboardConfigCreateArgs>(args: Prisma.SelectSubset<T, StarboardConfigCreateArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many StarboardConfigs.
+     * @param {StarboardConfigCreateManyArgs} args - Arguments to create many StarboardConfigs.
+     * @example
+     * // Create many StarboardConfigs
+     * const starboardConfig = await prisma.starboardConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends StarboardConfigCreateManyArgs>(args?: Prisma.SelectSubset<T, StarboardConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many StarboardConfigs and returns the data saved in the database.
+     * @param {StarboardConfigCreateManyAndReturnArgs} args - Arguments to create many StarboardConfigs.
+     * @example
+     * // Create many StarboardConfigs
+     * const starboardConfig = await prisma.starboardConfig.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many StarboardConfigs and only return the `guildId`
+     * const starboardConfigWithGuildIdOnly = await prisma.starboardConfig.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends StarboardConfigCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StarboardConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a StarboardConfig.
+     * @param {StarboardConfigDeleteArgs} args - Arguments to delete one StarboardConfig.
+     * @example
+     * // Delete one StarboardConfig
+     * const StarboardConfig = await prisma.starboardConfig.delete({
+     *   where: {
+     *     // ... filter to delete one StarboardConfig
+     *   }
+     * })
+     *
+     */
+    delete<T extends StarboardConfigDeleteArgs>(args: Prisma.SelectSubset<T, StarboardConfigDeleteArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one StarboardConfig.
+     * @param {StarboardConfigUpdateArgs} args - Arguments to update one StarboardConfig.
+     * @example
+     * // Update one StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends StarboardConfigUpdateArgs>(args: Prisma.SelectSubset<T, StarboardConfigUpdateArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more StarboardConfigs.
+     * @param {StarboardConfigDeleteManyArgs} args - Arguments to filter StarboardConfigs to delete.
+     * @example
+     * // Delete a few StarboardConfigs
+     * const { count } = await prisma.starboardConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends StarboardConfigDeleteManyArgs>(args?: Prisma.SelectSubset<T, StarboardConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more StarboardConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StarboardConfigs
+     * const starboardConfig = await prisma.starboardConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends StarboardConfigUpdateManyArgs>(args: Prisma.SelectSubset<T, StarboardConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more StarboardConfigs and returns the data updated in the database.
+     * @param {StarboardConfigUpdateManyAndReturnArgs} args - Arguments to update many StarboardConfigs.
+     * @example
+     * // Update many StarboardConfigs
+     * const starboardConfig = await prisma.starboardConfig.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more StarboardConfigs and only return the `guildId`
+     * const starboardConfigWithGuildIdOnly = await prisma.starboardConfig.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends StarboardConfigUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StarboardConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one StarboardConfig.
+     * @param {StarboardConfigUpsertArgs} args - Arguments to update or create a StarboardConfig.
+     * @example
+     * // Update or create a StarboardConfig
+     * const starboardConfig = await prisma.starboardConfig.upsert({
+     *   create: {
+     *     // ... data to create a StarboardConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StarboardConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StarboardConfigUpsertArgs>(args: Prisma.SelectSubset<T, StarboardConfigUpsertArgs<ExtArgs>>): Prisma.Prisma__StarboardConfigClient<runtime.Types.Result.GetResult<Prisma.$StarboardConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of StarboardConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigCountArgs} args - Arguments to filter StarboardConfigs to count.
+     * @example
+     * // Count the number of StarboardConfigs
+     * const count = await prisma.starboardConfig.count({
+     *   where: {
+     *     // ... the filter for the StarboardConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends StarboardConfigCountArgs>(args?: Prisma.Subset<T, StarboardConfigCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], StarboardConfigCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a StarboardConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StarboardConfigAggregateArgs>(args: Prisma.Subset<T, StarboardConfigAggregateArgs>): Prisma.PrismaPromise<GetStarboardConfigAggregateType<T>>;
+    /**
+     * Group by StarboardConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StarboardConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends StarboardConfigGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: StarboardConfigGroupByArgs['orderBy'];
+    } : {
+        orderBy?: StarboardConfigGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, StarboardConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStarboardConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the StarboardConfig model
+     */
+    readonly fields: StarboardConfigFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for StarboardConfig.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__StarboardConfigClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    guild<T extends Prisma.GuildDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuildDefaultArgs<ExtArgs>>): Prisma.Prisma__GuildClient<runtime.Types.Result.GetResult<Prisma.$GuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the StarboardConfig model
+ */
+export interface StarboardConfigFieldRefs {
+    readonly guildId: Prisma.FieldRef<"StarboardConfig", 'String'>;
+    readonly enabled: Prisma.FieldRef<"StarboardConfig", 'Boolean'>;
+    readonly destinationChannelId: Prisma.FieldRef<"StarboardConfig", 'String'>;
+    readonly emoji: Prisma.FieldRef<"StarboardConfig", 'String'>;
+    readonly threshold: Prisma.FieldRef<"StarboardConfig", 'Int'>;
+    readonly allowSelfStar: Prisma.FieldRef<"StarboardConfig", 'Boolean'>;
+    readonly includeBotMessages: Prisma.FieldRef<"StarboardConfig", 'Boolean'>;
+    readonly nsfw: Prisma.FieldRef<"StarboardConfig", 'StarboardNsfwMode'>;
+    readonly mode: Prisma.FieldRef<"StarboardConfig", 'StarboardChannelMode'>;
+    readonly channels: Prisma.FieldRef<"StarboardConfig", 'String[]'>;
+    readonly ignoredRoles: Prisma.FieldRef<"StarboardConfig", 'String[]'>;
+    readonly createdAt: Prisma.FieldRef<"StarboardConfig", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"StarboardConfig", 'DateTime'>;
+}
+/**
+ * StarboardConfig findUnique
+ */
+export type StarboardConfigFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which StarboardConfig to fetch.
+     */
+    where: Prisma.StarboardConfigWhereUniqueInput;
+};
+/**
+ * StarboardConfig findUniqueOrThrow
+ */
+export type StarboardConfigFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which StarboardConfig to fetch.
+     */
+    where: Prisma.StarboardConfigWhereUniqueInput;
+};
+/**
+ * StarboardConfig findFirst
+ */
+export type StarboardConfigFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which StarboardConfig to fetch.
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StarboardConfigs to fetch.
+     */
+    orderBy?: Prisma.StarboardConfigOrderByWithRelationInput | Prisma.StarboardConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for StarboardConfigs.
+     */
+    cursor?: Prisma.StarboardConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StarboardConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StarboardConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StarboardConfigs.
+     */
+    distinct?: Prisma.StarboardConfigScalarFieldEnum | Prisma.StarboardConfigScalarFieldEnum[];
+};
+/**
+ * StarboardConfig findFirstOrThrow
+ */
+export type StarboardConfigFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which StarboardConfig to fetch.
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StarboardConfigs to fetch.
+     */
+    orderBy?: Prisma.StarboardConfigOrderByWithRelationInput | Prisma.StarboardConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for StarboardConfigs.
+     */
+    cursor?: Prisma.StarboardConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StarboardConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StarboardConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StarboardConfigs.
+     */
+    distinct?: Prisma.StarboardConfigScalarFieldEnum | Prisma.StarboardConfigScalarFieldEnum[];
+};
+/**
+ * StarboardConfig findMany
+ */
+export type StarboardConfigFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which StarboardConfigs to fetch.
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StarboardConfigs to fetch.
+     */
+    orderBy?: Prisma.StarboardConfigOrderByWithRelationInput | Prisma.StarboardConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing StarboardConfigs.
+     */
+    cursor?: Prisma.StarboardConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StarboardConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StarboardConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StarboardConfigs.
+     */
+    distinct?: Prisma.StarboardConfigScalarFieldEnum | Prisma.StarboardConfigScalarFieldEnum[];
+};
+/**
+ * StarboardConfig create
+ */
+export type StarboardConfigCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a StarboardConfig.
+     */
+    data: Prisma.XOR<Prisma.StarboardConfigCreateInput, Prisma.StarboardConfigUncheckedCreateInput>;
+};
+/**
+ * StarboardConfig createMany
+ */
+export type StarboardConfigCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StarboardConfigs.
+     */
+    data: Prisma.StarboardConfigCreateManyInput | Prisma.StarboardConfigCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * StarboardConfig createManyAndReturn
+ */
+export type StarboardConfigCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * The data used to create many StarboardConfigs.
+     */
+    data: Prisma.StarboardConfigCreateManyInput | Prisma.StarboardConfigCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * StarboardConfig update
+ */
+export type StarboardConfigUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a StarboardConfig.
+     */
+    data: Prisma.XOR<Prisma.StarboardConfigUpdateInput, Prisma.StarboardConfigUncheckedUpdateInput>;
+    /**
+     * Choose, which StarboardConfig to update.
+     */
+    where: Prisma.StarboardConfigWhereUniqueInput;
+};
+/**
+ * StarboardConfig updateMany
+ */
+export type StarboardConfigUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StarboardConfigs.
+     */
+    data: Prisma.XOR<Prisma.StarboardConfigUpdateManyMutationInput, Prisma.StarboardConfigUncheckedUpdateManyInput>;
+    /**
+     * Filter which StarboardConfigs to update
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * Limit how many StarboardConfigs to update.
+     */
+    limit?: number;
+};
+/**
+ * StarboardConfig updateManyAndReturn
+ */
+export type StarboardConfigUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * The data used to update StarboardConfigs.
+     */
+    data: Prisma.XOR<Prisma.StarboardConfigUpdateManyMutationInput, Prisma.StarboardConfigUncheckedUpdateManyInput>;
+    /**
+     * Filter which StarboardConfigs to update
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * Limit how many StarboardConfigs to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * StarboardConfig upsert
+ */
+export type StarboardConfigUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the StarboardConfig to update in case it exists.
+     */
+    where: Prisma.StarboardConfigWhereUniqueInput;
+    /**
+     * In case the StarboardConfig found by the `where` argument doesn't exist, create a new StarboardConfig with this data.
+     */
+    create: Prisma.XOR<Prisma.StarboardConfigCreateInput, Prisma.StarboardConfigUncheckedCreateInput>;
+    /**
+     * In case the StarboardConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.StarboardConfigUpdateInput, Prisma.StarboardConfigUncheckedUpdateInput>;
+};
+/**
+ * StarboardConfig delete
+ */
+export type StarboardConfigDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+    /**
+     * Filter which StarboardConfig to delete.
+     */
+    where: Prisma.StarboardConfigWhereUniqueInput;
+};
+/**
+ * StarboardConfig deleteMany
+ */
+export type StarboardConfigDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which StarboardConfigs to delete
+     */
+    where?: Prisma.StarboardConfigWhereInput;
+    /**
+     * Limit how many StarboardConfigs to delete.
+     */
+    limit?: number;
+};
+/**
+ * StarboardConfig without action
+ */
+export type StarboardConfigDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StarboardConfig
+     */
+    select?: Prisma.StarboardConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StarboardConfig
+     */
+    omit?: Prisma.StarboardConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StarboardConfigInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=StarboardConfig.d.ts.map

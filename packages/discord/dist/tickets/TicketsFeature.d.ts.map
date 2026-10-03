@@ -1,0 +1,1 @@
+{"version":3,"file":"TicketsFeature.d.ts","sourceRoot":"","sources":["../../src/tickets/TicketsFeature.ts"],"names":[],"mappings":"AAAA,OAAO,EAA2C,KAAK,gBAAgB,EAAE,MAAM,eAAe,CAAC;AAC/F,OAAO,EAAwB,KAAK,gBAAgB,EAAE,MAAM,uBAAuB,CAAC;AAIpF,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,+BAA+B,CAAC;AAK3E,iFAAiF;AACjF,wBAAgB,cAAc,CAAC,UAAU,EAAE,gBAAgB,EAAE,SAAS,GAAE,gBAAuC,GAAG,qBAAqB,CAetI"}

@@ -1,0 +1,1914 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model ApplicationForm
+ *
+ */
+export type ApplicationFormModel = runtime.Types.Result.DefaultSelection<Prisma.$ApplicationFormPayload>;
+export type AggregateApplicationForm = {
+    _count: ApplicationFormCountAggregateOutputType | null;
+    _avg: ApplicationFormAvgAggregateOutputType | null;
+    _sum: ApplicationFormSumAggregateOutputType | null;
+    _min: ApplicationFormMinAggregateOutputType | null;
+    _max: ApplicationFormMaxAggregateOutputType | null;
+};
+export type ApplicationFormAvgAggregateOutputType = {
+    cooldownDays: number | null;
+    minAccountAgeDays: number | null;
+    position: number | null;
+    revision: number | null;
+};
+export type ApplicationFormSumAggregateOutputType = {
+    cooldownDays: number | null;
+    minAccountAgeDays: number | null;
+    position: number | null;
+    revision: number | null;
+};
+export type ApplicationFormMinAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    description: string | null;
+    enabled: boolean | null;
+    cooldownDays: number | null;
+    onePending: boolean | null;
+    minAccountAgeDays: number | null;
+    reviewChannelId: string | null;
+    acceptMessage: string | null;
+    denyMessage: string | null;
+    discussionChannelId: string | null;
+    buttonLabel: string | null;
+    buttonEmoji: string | null;
+    buttonStyle: $Enums.ApplicationButtonStyle | null;
+    position: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ApplicationFormMaxAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    description: string | null;
+    enabled: boolean | null;
+    cooldownDays: number | null;
+    onePending: boolean | null;
+    minAccountAgeDays: number | null;
+    reviewChannelId: string | null;
+    acceptMessage: string | null;
+    denyMessage: string | null;
+    discussionChannelId: string | null;
+    buttonLabel: string | null;
+    buttonEmoji: string | null;
+    buttonStyle: $Enums.ApplicationButtonStyle | null;
+    position: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ApplicationFormCountAggregateOutputType = {
+    id: number;
+    guildId: number;
+    name: number;
+    description: number;
+    enabled: number;
+    questions: number;
+    cooldownDays: number;
+    onePending: number;
+    requiredRoleIds: number;
+    blockedRoleIds: number;
+    minAccountAgeDays: number;
+    reviewChannelId: number;
+    reviewerRoleIds: number;
+    pingMemberIds: number;
+    acceptRoleIds: number;
+    removeRoleIds: number;
+    acceptMessage: number;
+    denyMessage: number;
+    discussionChannelId: number;
+    buttonLabel: number;
+    buttonEmoji: number;
+    buttonStyle: number;
+    position: number;
+    revision: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type ApplicationFormAvgAggregateInputType = {
+    cooldownDays?: true;
+    minAccountAgeDays?: true;
+    position?: true;
+    revision?: true;
+};
+export type ApplicationFormSumAggregateInputType = {
+    cooldownDays?: true;
+    minAccountAgeDays?: true;
+    position?: true;
+    revision?: true;
+};
+export type ApplicationFormMinAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    description?: true;
+    enabled?: true;
+    cooldownDays?: true;
+    onePending?: true;
+    minAccountAgeDays?: true;
+    reviewChannelId?: true;
+    acceptMessage?: true;
+    denyMessage?: true;
+    discussionChannelId?: true;
+    buttonLabel?: true;
+    buttonEmoji?: true;
+    buttonStyle?: true;
+    position?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ApplicationFormMaxAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    description?: true;
+    enabled?: true;
+    cooldownDays?: true;
+    onePending?: true;
+    minAccountAgeDays?: true;
+    reviewChannelId?: true;
+    acceptMessage?: true;
+    denyMessage?: true;
+    discussionChannelId?: true;
+    buttonLabel?: true;
+    buttonEmoji?: true;
+    buttonStyle?: true;
+    position?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ApplicationFormCountAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    description?: true;
+    enabled?: true;
+    questions?: true;
+    cooldownDays?: true;
+    onePending?: true;
+    requiredRoleIds?: true;
+    blockedRoleIds?: true;
+    minAccountAgeDays?: true;
+    reviewChannelId?: true;
+    reviewerRoleIds?: true;
+    pingMemberIds?: true;
+    acceptRoleIds?: true;
+    removeRoleIds?: true;
+    acceptMessage?: true;
+    denyMessage?: true;
+    discussionChannelId?: true;
+    buttonLabel?: true;
+    buttonEmoji?: true;
+    buttonStyle?: true;
+    position?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type ApplicationFormAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApplicationForm to aggregate.
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationForms to fetch.
+     */
+    orderBy?: Prisma.ApplicationFormOrderByWithRelationInput | Prisma.ApplicationFormOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.ApplicationFormWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationForms from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationForms.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ApplicationForms
+    **/
+    _count?: true | ApplicationFormCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ApplicationFormAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ApplicationFormSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApplicationFormMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApplicationFormMaxAggregateInputType;
+};
+export type GetApplicationFormAggregateType<T extends ApplicationFormAggregateArgs> = {
+    [P in keyof T & keyof AggregateApplicationForm]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateApplicationForm[P]> : Prisma.GetScalarType<T[P], AggregateApplicationForm[P]>;
+};
+export type ApplicationFormGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ApplicationFormWhereInput;
+    orderBy?: Prisma.ApplicationFormOrderByWithAggregationInput | Prisma.ApplicationFormOrderByWithAggregationInput[];
+    by: Prisma.ApplicationFormScalarFieldEnum[] | Prisma.ApplicationFormScalarFieldEnum;
+    having?: Prisma.ApplicationFormScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: ApplicationFormCountAggregateInputType | true;
+    _avg?: ApplicationFormAvgAggregateInputType;
+    _sum?: ApplicationFormSumAggregateInputType;
+    _min?: ApplicationFormMinAggregateInputType;
+    _max?: ApplicationFormMaxAggregateInputType;
+};
+export type ApplicationFormGroupByOutputType = {
+    id: string;
+    guildId: string;
+    name: string;
+    description: string | null;
+    enabled: boolean;
+    questions: runtime.JsonValue;
+    cooldownDays: number;
+    onePending: boolean;
+    requiredRoleIds: string[];
+    blockedRoleIds: string[];
+    minAccountAgeDays: number | null;
+    reviewChannelId: string | null;
+    reviewerRoleIds: string[];
+    pingMemberIds: string[];
+    acceptRoleIds: string[];
+    removeRoleIds: string[];
+    acceptMessage: string | null;
+    denyMessage: string | null;
+    discussionChannelId: string | null;
+    buttonLabel: string | null;
+    buttonEmoji: string | null;
+    buttonStyle: $Enums.ApplicationButtonStyle;
+    position: number;
+    revision: number;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: ApplicationFormCountAggregateOutputType | null;
+    _avg: ApplicationFormAvgAggregateOutputType | null;
+    _sum: ApplicationFormSumAggregateOutputType | null;
+    _min: ApplicationFormMinAggregateOutputType | null;
+    _max: ApplicationFormMaxAggregateOutputType | null;
+};
+export type GetApplicationFormGroupByPayload<T extends ApplicationFormGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<ApplicationFormGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof ApplicationFormGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], ApplicationFormGroupByOutputType[P]> : Prisma.GetScalarType<T[P], ApplicationFormGroupByOutputType[P]>;
+}>>;
+export type ApplicationFormWhereInput = {
+    AND?: Prisma.ApplicationFormWhereInput | Prisma.ApplicationFormWhereInput[];
+    OR?: Prisma.ApplicationFormWhereInput[];
+    NOT?: Prisma.ApplicationFormWhereInput | Prisma.ApplicationFormWhereInput[];
+    id?: Prisma.UuidFilter<"ApplicationForm"> | string;
+    guildId?: Prisma.StringFilter<"ApplicationForm"> | string;
+    name?: Prisma.StringFilter<"ApplicationForm"> | string;
+    description?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    enabled?: Prisma.BoolFilter<"ApplicationForm"> | boolean;
+    questions?: Prisma.JsonFilter<"ApplicationForm">;
+    cooldownDays?: Prisma.IntFilter<"ApplicationForm"> | number;
+    onePending?: Prisma.BoolFilter<"ApplicationForm"> | boolean;
+    requiredRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    blockedRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    minAccountAgeDays?: Prisma.IntNullableFilter<"ApplicationForm"> | number | null;
+    reviewChannelId?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    reviewerRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    pingMemberIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    removeRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptMessage?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    denyMessage?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    discussionChannelId?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonLabel?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonEmoji?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFilter<"ApplicationForm"> | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFilter<"ApplicationForm"> | number;
+    revision?: Prisma.IntFilter<"ApplicationForm"> | number;
+    createdAt?: Prisma.DateTimeFilter<"ApplicationForm"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"ApplicationForm"> | Date | string;
+    applications?: Prisma.ApplicationListRelationFilter;
+};
+export type ApplicationFormOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    description?: Prisma.SortOrderInput | Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    questions?: Prisma.SortOrder;
+    cooldownDays?: Prisma.SortOrder;
+    onePending?: Prisma.SortOrder;
+    requiredRoleIds?: Prisma.SortOrder;
+    blockedRoleIds?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reviewChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reviewerRoleIds?: Prisma.SortOrder;
+    pingMemberIds?: Prisma.SortOrder;
+    acceptRoleIds?: Prisma.SortOrder;
+    removeRoleIds?: Prisma.SortOrder;
+    acceptMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    denyMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    discussionChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonEmoji?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonStyle?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    applications?: Prisma.ApplicationOrderByRelationAggregateInput;
+};
+export type ApplicationFormWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    AND?: Prisma.ApplicationFormWhereInput | Prisma.ApplicationFormWhereInput[];
+    OR?: Prisma.ApplicationFormWhereInput[];
+    NOT?: Prisma.ApplicationFormWhereInput | Prisma.ApplicationFormWhereInput[];
+    guildId?: Prisma.StringFilter<"ApplicationForm"> | string;
+    name?: Prisma.StringFilter<"ApplicationForm"> | string;
+    description?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    enabled?: Prisma.BoolFilter<"ApplicationForm"> | boolean;
+    questions?: Prisma.JsonFilter<"ApplicationForm">;
+    cooldownDays?: Prisma.IntFilter<"ApplicationForm"> | number;
+    onePending?: Prisma.BoolFilter<"ApplicationForm"> | boolean;
+    requiredRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    blockedRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    minAccountAgeDays?: Prisma.IntNullableFilter<"ApplicationForm"> | number | null;
+    reviewChannelId?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    reviewerRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    pingMemberIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    removeRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptMessage?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    denyMessage?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    discussionChannelId?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonLabel?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonEmoji?: Prisma.StringNullableFilter<"ApplicationForm"> | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFilter<"ApplicationForm"> | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFilter<"ApplicationForm"> | number;
+    revision?: Prisma.IntFilter<"ApplicationForm"> | number;
+    createdAt?: Prisma.DateTimeFilter<"ApplicationForm"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"ApplicationForm"> | Date | string;
+    applications?: Prisma.ApplicationListRelationFilter;
+}, "id">;
+export type ApplicationFormOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    description?: Prisma.SortOrderInput | Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    questions?: Prisma.SortOrder;
+    cooldownDays?: Prisma.SortOrder;
+    onePending?: Prisma.SortOrder;
+    requiredRoleIds?: Prisma.SortOrder;
+    blockedRoleIds?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reviewChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reviewerRoleIds?: Prisma.SortOrder;
+    pingMemberIds?: Prisma.SortOrder;
+    acceptRoleIds?: Prisma.SortOrder;
+    removeRoleIds?: Prisma.SortOrder;
+    acceptMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    denyMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    discussionChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonEmoji?: Prisma.SortOrderInput | Prisma.SortOrder;
+    buttonStyle?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.ApplicationFormCountOrderByAggregateInput;
+    _avg?: Prisma.ApplicationFormAvgOrderByAggregateInput;
+    _max?: Prisma.ApplicationFormMaxOrderByAggregateInput;
+    _min?: Prisma.ApplicationFormMinOrderByAggregateInput;
+    _sum?: Prisma.ApplicationFormSumOrderByAggregateInput;
+};
+export type ApplicationFormScalarWhereWithAggregatesInput = {
+    AND?: Prisma.ApplicationFormScalarWhereWithAggregatesInput | Prisma.ApplicationFormScalarWhereWithAggregatesInput[];
+    OR?: Prisma.ApplicationFormScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.ApplicationFormScalarWhereWithAggregatesInput | Prisma.ApplicationFormScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"ApplicationForm"> | string;
+    guildId?: Prisma.StringWithAggregatesFilter<"ApplicationForm"> | string;
+    name?: Prisma.StringWithAggregatesFilter<"ApplicationForm"> | string;
+    description?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    enabled?: Prisma.BoolWithAggregatesFilter<"ApplicationForm"> | boolean;
+    questions?: Prisma.JsonWithAggregatesFilter<"ApplicationForm">;
+    cooldownDays?: Prisma.IntWithAggregatesFilter<"ApplicationForm"> | number;
+    onePending?: Prisma.BoolWithAggregatesFilter<"ApplicationForm"> | boolean;
+    requiredRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    blockedRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    minAccountAgeDays?: Prisma.IntNullableWithAggregatesFilter<"ApplicationForm"> | number | null;
+    reviewChannelId?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    reviewerRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    pingMemberIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    removeRoleIds?: Prisma.StringNullableListFilter<"ApplicationForm">;
+    acceptMessage?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    denyMessage?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    discussionChannelId?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    buttonLabel?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    buttonEmoji?: Prisma.StringNullableWithAggregatesFilter<"ApplicationForm"> | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleWithAggregatesFilter<"ApplicationForm"> | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntWithAggregatesFilter<"ApplicationForm"> | number;
+    revision?: Prisma.IntWithAggregatesFilter<"ApplicationForm"> | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"ApplicationForm"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ApplicationForm"> | Date | string;
+};
+export type ApplicationFormCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    description?: string | null;
+    enabled?: boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: number;
+    onePending?: boolean;
+    requiredRoleIds?: Prisma.ApplicationFormCreaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormCreateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: number | null;
+    reviewChannelId?: string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormCreatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormCreatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormCreateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormCreateremoveRoleIdsInput | string[];
+    acceptMessage?: string | null;
+    denyMessage?: string | null;
+    discussionChannelId?: string | null;
+    buttonLabel?: string | null;
+    buttonEmoji?: string | null;
+    buttonStyle?: $Enums.ApplicationButtonStyle;
+    position?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    applications?: Prisma.ApplicationCreateNestedManyWithoutFormInput;
+};
+export type ApplicationFormUncheckedCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    description?: string | null;
+    enabled?: boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: number;
+    onePending?: boolean;
+    requiredRoleIds?: Prisma.ApplicationFormCreaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormCreateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: number | null;
+    reviewChannelId?: string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormCreatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormCreatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormCreateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormCreateremoveRoleIdsInput | string[];
+    acceptMessage?: string | null;
+    denyMessage?: string | null;
+    discussionChannelId?: string | null;
+    buttonLabel?: string | null;
+    buttonEmoji?: string | null;
+    buttonStyle?: $Enums.ApplicationButtonStyle;
+    position?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    applications?: Prisma.ApplicationUncheckedCreateNestedManyWithoutFormInput;
+};
+export type ApplicationFormUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    applications?: Prisma.ApplicationUpdateManyWithoutFormNestedInput;
+};
+export type ApplicationFormUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    applications?: Prisma.ApplicationUncheckedUpdateManyWithoutFormNestedInput;
+};
+export type ApplicationFormCreateManyInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    description?: string | null;
+    enabled?: boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: number;
+    onePending?: boolean;
+    requiredRoleIds?: Prisma.ApplicationFormCreaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormCreateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: number | null;
+    reviewChannelId?: string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormCreatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormCreatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormCreateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormCreateremoveRoleIdsInput | string[];
+    acceptMessage?: string | null;
+    denyMessage?: string | null;
+    discussionChannelId?: string | null;
+    buttonLabel?: string | null;
+    buttonEmoji?: string | null;
+    buttonStyle?: $Enums.ApplicationButtonStyle;
+    position?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ApplicationFormUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationFormUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null;
+    has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null;
+    hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>;
+    hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>;
+    isEmpty?: boolean;
+};
+export type ApplicationFormCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    questions?: Prisma.SortOrder;
+    cooldownDays?: Prisma.SortOrder;
+    onePending?: Prisma.SortOrder;
+    requiredRoleIds?: Prisma.SortOrder;
+    blockedRoleIds?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrder;
+    reviewChannelId?: Prisma.SortOrder;
+    reviewerRoleIds?: Prisma.SortOrder;
+    pingMemberIds?: Prisma.SortOrder;
+    acceptRoleIds?: Prisma.SortOrder;
+    removeRoleIds?: Prisma.SortOrder;
+    acceptMessage?: Prisma.SortOrder;
+    denyMessage?: Prisma.SortOrder;
+    discussionChannelId?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    buttonEmoji?: Prisma.SortOrder;
+    buttonStyle?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ApplicationFormAvgOrderByAggregateInput = {
+    cooldownDays?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type ApplicationFormMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    cooldownDays?: Prisma.SortOrder;
+    onePending?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrder;
+    reviewChannelId?: Prisma.SortOrder;
+    acceptMessage?: Prisma.SortOrder;
+    denyMessage?: Prisma.SortOrder;
+    discussionChannelId?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    buttonEmoji?: Prisma.SortOrder;
+    buttonStyle?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ApplicationFormMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    cooldownDays?: Prisma.SortOrder;
+    onePending?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrder;
+    reviewChannelId?: Prisma.SortOrder;
+    acceptMessage?: Prisma.SortOrder;
+    denyMessage?: Prisma.SortOrder;
+    discussionChannelId?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    buttonEmoji?: Prisma.SortOrder;
+    buttonStyle?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ApplicationFormSumOrderByAggregateInput = {
+    cooldownDays?: Prisma.SortOrder;
+    minAccountAgeDays?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type ApplicationFormNullableScalarRelationFilter = {
+    is?: Prisma.ApplicationFormWhereInput | null;
+    isNot?: Prisma.ApplicationFormWhereInput | null;
+};
+export type ApplicationFormCreaterequiredRoleIdsInput = {
+    set: string[];
+};
+export type ApplicationFormCreateblockedRoleIdsInput = {
+    set: string[];
+};
+export type ApplicationFormCreatereviewerRoleIdsInput = {
+    set: string[];
+};
+export type ApplicationFormCreatepingMemberIdsInput = {
+    set: string[];
+};
+export type ApplicationFormCreateacceptRoleIdsInput = {
+    set: string[];
+};
+export type ApplicationFormCreateremoveRoleIdsInput = {
+    set: string[];
+};
+export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null;
+};
+export type BoolFieldUpdateOperationsInput = {
+    set?: boolean;
+};
+export type ApplicationFormUpdaterequiredRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type ApplicationFormUpdateblockedRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null;
+    increment?: number;
+    decrement?: number;
+    multiply?: number;
+    divide?: number;
+};
+export type ApplicationFormUpdatereviewerRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type ApplicationFormUpdatepingMemberIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type ApplicationFormUpdateacceptRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type ApplicationFormUpdateremoveRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type EnumApplicationButtonStyleFieldUpdateOperationsInput = {
+    set?: $Enums.ApplicationButtonStyle;
+};
+export type ApplicationFormCreateNestedOneWithoutApplicationsInput = {
+    create?: Prisma.XOR<Prisma.ApplicationFormCreateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedCreateWithoutApplicationsInput>;
+    connectOrCreate?: Prisma.ApplicationFormCreateOrConnectWithoutApplicationsInput;
+    connect?: Prisma.ApplicationFormWhereUniqueInput;
+};
+export type ApplicationFormUpdateOneWithoutApplicationsNestedInput = {
+    create?: Prisma.XOR<Prisma.ApplicationFormCreateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedCreateWithoutApplicationsInput>;
+    connectOrCreate?: Prisma.ApplicationFormCreateOrConnectWithoutApplicationsInput;
+    upsert?: Prisma.ApplicationFormUpsertWithoutApplicationsInput;
+    disconnect?: Prisma.ApplicationFormWhereInput | boolean;
+    delete?: Prisma.ApplicationFormWhereInput | boolean;
+    connect?: Prisma.ApplicationFormWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.ApplicationFormUpdateToOneWithWhereWithoutApplicationsInput, Prisma.ApplicationFormUpdateWithoutApplicationsInput>, Prisma.ApplicationFormUncheckedUpdateWithoutApplicationsInput>;
+};
+export type ApplicationFormCreateWithoutApplicationsInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    description?: string | null;
+    enabled?: boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: number;
+    onePending?: boolean;
+    requiredRoleIds?: Prisma.ApplicationFormCreaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormCreateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: number | null;
+    reviewChannelId?: string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormCreatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormCreatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormCreateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormCreateremoveRoleIdsInput | string[];
+    acceptMessage?: string | null;
+    denyMessage?: string | null;
+    discussionChannelId?: string | null;
+    buttonLabel?: string | null;
+    buttonEmoji?: string | null;
+    buttonStyle?: $Enums.ApplicationButtonStyle;
+    position?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ApplicationFormUncheckedCreateWithoutApplicationsInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    description?: string | null;
+    enabled?: boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: number;
+    onePending?: boolean;
+    requiredRoleIds?: Prisma.ApplicationFormCreaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormCreateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: number | null;
+    reviewChannelId?: string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormCreatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormCreatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormCreateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormCreateremoveRoleIdsInput | string[];
+    acceptMessage?: string | null;
+    denyMessage?: string | null;
+    discussionChannelId?: string | null;
+    buttonLabel?: string | null;
+    buttonEmoji?: string | null;
+    buttonStyle?: $Enums.ApplicationButtonStyle;
+    position?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ApplicationFormCreateOrConnectWithoutApplicationsInput = {
+    where: Prisma.ApplicationFormWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ApplicationFormCreateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedCreateWithoutApplicationsInput>;
+};
+export type ApplicationFormUpsertWithoutApplicationsInput = {
+    update: Prisma.XOR<Prisma.ApplicationFormUpdateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedUpdateWithoutApplicationsInput>;
+    create: Prisma.XOR<Prisma.ApplicationFormCreateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedCreateWithoutApplicationsInput>;
+    where?: Prisma.ApplicationFormWhereInput;
+};
+export type ApplicationFormUpdateToOneWithWhereWithoutApplicationsInput = {
+    where?: Prisma.ApplicationFormWhereInput;
+    data: Prisma.XOR<Prisma.ApplicationFormUpdateWithoutApplicationsInput, Prisma.ApplicationFormUncheckedUpdateWithoutApplicationsInput>;
+};
+export type ApplicationFormUpdateWithoutApplicationsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationFormUncheckedUpdateWithoutApplicationsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    questions?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    cooldownDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    onePending?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    requiredRoleIds?: Prisma.ApplicationFormUpdaterequiredRoleIdsInput | string[];
+    blockedRoleIds?: Prisma.ApplicationFormUpdateblockedRoleIdsInput | string[];
+    minAccountAgeDays?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    reviewChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reviewerRoleIds?: Prisma.ApplicationFormUpdatereviewerRoleIdsInput | string[];
+    pingMemberIds?: Prisma.ApplicationFormUpdatepingMemberIdsInput | string[];
+    acceptRoleIds?: Prisma.ApplicationFormUpdateacceptRoleIdsInput | string[];
+    removeRoleIds?: Prisma.ApplicationFormUpdateremoveRoleIdsInput | string[];
+    acceptMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    denyMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    discussionChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonEmoji?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    buttonStyle?: Prisma.EnumApplicationButtonStyleFieldUpdateOperationsInput | $Enums.ApplicationButtonStyle;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type ApplicationFormCountOutputType
+ */
+export type ApplicationFormCountOutputType = {
+    applications: number;
+};
+export type ApplicationFormCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    applications?: boolean | ApplicationFormCountOutputTypeCountApplicationsArgs;
+};
+/**
+ * ApplicationFormCountOutputType without action
+ */
+export type ApplicationFormCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationFormCountOutputType
+     */
+    select?: Prisma.ApplicationFormCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * ApplicationFormCountOutputType without action
+ */
+export type ApplicationFormCountOutputTypeCountApplicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ApplicationWhereInput;
+};
+export type ApplicationFormSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    description?: boolean;
+    enabled?: boolean;
+    questions?: boolean;
+    cooldownDays?: boolean;
+    onePending?: boolean;
+    requiredRoleIds?: boolean;
+    blockedRoleIds?: boolean;
+    minAccountAgeDays?: boolean;
+    reviewChannelId?: boolean;
+    reviewerRoleIds?: boolean;
+    pingMemberIds?: boolean;
+    acceptRoleIds?: boolean;
+    removeRoleIds?: boolean;
+    acceptMessage?: boolean;
+    denyMessage?: boolean;
+    discussionChannelId?: boolean;
+    buttonLabel?: boolean;
+    buttonEmoji?: boolean;
+    buttonStyle?: boolean;
+    position?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    applications?: boolean | Prisma.ApplicationForm$applicationsArgs<ExtArgs>;
+    _count?: boolean | Prisma.ApplicationFormCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["applicationForm"]>;
+export type ApplicationFormSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    description?: boolean;
+    enabled?: boolean;
+    questions?: boolean;
+    cooldownDays?: boolean;
+    onePending?: boolean;
+    requiredRoleIds?: boolean;
+    blockedRoleIds?: boolean;
+    minAccountAgeDays?: boolean;
+    reviewChannelId?: boolean;
+    reviewerRoleIds?: boolean;
+    pingMemberIds?: boolean;
+    acceptRoleIds?: boolean;
+    removeRoleIds?: boolean;
+    acceptMessage?: boolean;
+    denyMessage?: boolean;
+    discussionChannelId?: boolean;
+    buttonLabel?: boolean;
+    buttonEmoji?: boolean;
+    buttonStyle?: boolean;
+    position?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["applicationForm"]>;
+export type ApplicationFormSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    description?: boolean;
+    enabled?: boolean;
+    questions?: boolean;
+    cooldownDays?: boolean;
+    onePending?: boolean;
+    requiredRoleIds?: boolean;
+    blockedRoleIds?: boolean;
+    minAccountAgeDays?: boolean;
+    reviewChannelId?: boolean;
+    reviewerRoleIds?: boolean;
+    pingMemberIds?: boolean;
+    acceptRoleIds?: boolean;
+    removeRoleIds?: boolean;
+    acceptMessage?: boolean;
+    denyMessage?: boolean;
+    discussionChannelId?: boolean;
+    buttonLabel?: boolean;
+    buttonEmoji?: boolean;
+    buttonStyle?: boolean;
+    position?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["applicationForm"]>;
+export type ApplicationFormSelectScalar = {
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    description?: boolean;
+    enabled?: boolean;
+    questions?: boolean;
+    cooldownDays?: boolean;
+    onePending?: boolean;
+    requiredRoleIds?: boolean;
+    blockedRoleIds?: boolean;
+    minAccountAgeDays?: boolean;
+    reviewChannelId?: boolean;
+    reviewerRoleIds?: boolean;
+    pingMemberIds?: boolean;
+    acceptRoleIds?: boolean;
+    removeRoleIds?: boolean;
+    acceptMessage?: boolean;
+    denyMessage?: boolean;
+    discussionChannelId?: boolean;
+    buttonLabel?: boolean;
+    buttonEmoji?: boolean;
+    buttonStyle?: boolean;
+    position?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type ApplicationFormOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "description" | "enabled" | "questions" | "cooldownDays" | "onePending" | "requiredRoleIds" | "blockedRoleIds" | "minAccountAgeDays" | "reviewChannelId" | "reviewerRoleIds" | "pingMemberIds" | "acceptRoleIds" | "removeRoleIds" | "acceptMessage" | "denyMessage" | "discussionChannelId" | "buttonLabel" | "buttonEmoji" | "buttonStyle" | "position" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["applicationForm"]>;
+export type ApplicationFormInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    applications?: boolean | Prisma.ApplicationForm$applicationsArgs<ExtArgs>;
+    _count?: boolean | Prisma.ApplicationFormCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type ApplicationFormIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type ApplicationFormIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type $ApplicationFormPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "ApplicationForm";
+    objects: {
+        applications: Prisma.$ApplicationPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        guildId: string;
+        name: string;
+        description: string | null;
+        enabled: boolean;
+        questions: runtime.JsonValue;
+        cooldownDays: number;
+        onePending: boolean;
+        requiredRoleIds: string[];
+        blockedRoleIds: string[];
+        minAccountAgeDays: number | null;
+        reviewChannelId: string | null;
+        reviewerRoleIds: string[];
+        pingMemberIds: string[];
+        acceptRoleIds: string[];
+        removeRoleIds: string[];
+        acceptMessage: string | null;
+        denyMessage: string | null;
+        discussionChannelId: string | null;
+        buttonLabel: string | null;
+        buttonEmoji: string | null;
+        buttonStyle: $Enums.ApplicationButtonStyle;
+        position: number;
+        revision: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["applicationForm"]>;
+    composites: {};
+};
+export type ApplicationFormGetPayload<S extends boolean | null | undefined | ApplicationFormDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload, S>;
+export type ApplicationFormCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<ApplicationFormFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: ApplicationFormCountAggregateInputType | true;
+};
+export interface ApplicationFormDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['ApplicationForm'];
+        meta: {
+            name: 'ApplicationForm';
+        };
+    };
+    /**
+     * Find zero or one ApplicationForm that matches the filter.
+     * @param {ApplicationFormFindUniqueArgs} args - Arguments to find a ApplicationForm
+     * @example
+     * // Get one ApplicationForm
+     * const applicationForm = await prisma.applicationForm.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApplicationFormFindUniqueArgs>(args: Prisma.SelectSubset<T, ApplicationFormFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one ApplicationForm that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApplicationFormFindUniqueOrThrowArgs} args - Arguments to find a ApplicationForm
+     * @example
+     * // Get one ApplicationForm
+     * const applicationForm = await prisma.applicationForm.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApplicationFormFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ApplicationFormFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ApplicationForm that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormFindFirstArgs} args - Arguments to find a ApplicationForm
+     * @example
+     * // Get one ApplicationForm
+     * const applicationForm = await prisma.applicationForm.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApplicationFormFindFirstArgs>(args?: Prisma.SelectSubset<T, ApplicationFormFindFirstArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ApplicationForm that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormFindFirstOrThrowArgs} args - Arguments to find a ApplicationForm
+     * @example
+     * // Get one ApplicationForm
+     * const applicationForm = await prisma.applicationForm.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApplicationFormFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ApplicationFormFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more ApplicationForms that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApplicationForms
+     * const applicationForms = await prisma.applicationForm.findMany()
+     *
+     * // Get first 10 ApplicationForms
+     * const applicationForms = await prisma.applicationForm.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const applicationFormWithIdOnly = await prisma.applicationForm.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends ApplicationFormFindManyArgs>(args?: Prisma.SelectSubset<T, ApplicationFormFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a ApplicationForm.
+     * @param {ApplicationFormCreateArgs} args - Arguments to create a ApplicationForm.
+     * @example
+     * // Create one ApplicationForm
+     * const ApplicationForm = await prisma.applicationForm.create({
+     *   data: {
+     *     // ... data to create a ApplicationForm
+     *   }
+     * })
+     *
+     */
+    create<T extends ApplicationFormCreateArgs>(args: Prisma.SelectSubset<T, ApplicationFormCreateArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many ApplicationForms.
+     * @param {ApplicationFormCreateManyArgs} args - Arguments to create many ApplicationForms.
+     * @example
+     * // Create many ApplicationForms
+     * const applicationForm = await prisma.applicationForm.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ApplicationFormCreateManyArgs>(args?: Prisma.SelectSubset<T, ApplicationFormCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many ApplicationForms and returns the data saved in the database.
+     * @param {ApplicationFormCreateManyAndReturnArgs} args - Arguments to create many ApplicationForms.
+     * @example
+     * // Create many ApplicationForms
+     * const applicationForm = await prisma.applicationForm.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ApplicationForms and only return the `id`
+     * const applicationFormWithIdOnly = await prisma.applicationForm.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ApplicationFormCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ApplicationFormCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a ApplicationForm.
+     * @param {ApplicationFormDeleteArgs} args - Arguments to delete one ApplicationForm.
+     * @example
+     * // Delete one ApplicationForm
+     * const ApplicationForm = await prisma.applicationForm.delete({
+     *   where: {
+     *     // ... filter to delete one ApplicationForm
+     *   }
+     * })
+     *
+     */
+    delete<T extends ApplicationFormDeleteArgs>(args: Prisma.SelectSubset<T, ApplicationFormDeleteArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one ApplicationForm.
+     * @param {ApplicationFormUpdateArgs} args - Arguments to update one ApplicationForm.
+     * @example
+     * // Update one ApplicationForm
+     * const applicationForm = await prisma.applicationForm.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ApplicationFormUpdateArgs>(args: Prisma.SelectSubset<T, ApplicationFormUpdateArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more ApplicationForms.
+     * @param {ApplicationFormDeleteManyArgs} args - Arguments to filter ApplicationForms to delete.
+     * @example
+     * // Delete a few ApplicationForms
+     * const { count } = await prisma.applicationForm.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ApplicationFormDeleteManyArgs>(args?: Prisma.SelectSubset<T, ApplicationFormDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ApplicationForms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApplicationForms
+     * const applicationForm = await prisma.applicationForm.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ApplicationFormUpdateManyArgs>(args: Prisma.SelectSubset<T, ApplicationFormUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ApplicationForms and returns the data updated in the database.
+     * @param {ApplicationFormUpdateManyAndReturnArgs} args - Arguments to update many ApplicationForms.
+     * @example
+     * // Update many ApplicationForms
+     * const applicationForm = await prisma.applicationForm.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ApplicationForms and only return the `id`
+     * const applicationFormWithIdOnly = await prisma.applicationForm.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ApplicationFormUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ApplicationFormUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one ApplicationForm.
+     * @param {ApplicationFormUpsertArgs} args - Arguments to update or create a ApplicationForm.
+     * @example
+     * // Update or create a ApplicationForm
+     * const applicationForm = await prisma.applicationForm.upsert({
+     *   create: {
+     *     // ... data to create a ApplicationForm
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApplicationForm we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApplicationFormUpsertArgs>(args: Prisma.SelectSubset<T, ApplicationFormUpsertArgs<ExtArgs>>): Prisma.Prisma__ApplicationFormClient<runtime.Types.Result.GetResult<Prisma.$ApplicationFormPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of ApplicationForms.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormCountArgs} args - Arguments to filter ApplicationForms to count.
+     * @example
+     * // Count the number of ApplicationForms
+     * const count = await prisma.applicationForm.count({
+     *   where: {
+     *     // ... the filter for the ApplicationForms we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApplicationFormCountArgs>(args?: Prisma.Subset<T, ApplicationFormCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], ApplicationFormCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a ApplicationForm.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApplicationFormAggregateArgs>(args: Prisma.Subset<T, ApplicationFormAggregateArgs>): Prisma.PrismaPromise<GetApplicationFormAggregateType<T>>;
+    /**
+     * Group by ApplicationForm.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationFormGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends ApplicationFormGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: ApplicationFormGroupByArgs['orderBy'];
+    } : {
+        orderBy?: ApplicationFormGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, ApplicationFormGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApplicationFormGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the ApplicationForm model
+     */
+    readonly fields: ApplicationFormFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for ApplicationForm.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__ApplicationFormClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    applications<T extends Prisma.ApplicationForm$applicationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicationForm$applicationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the ApplicationForm model
+ */
+export interface ApplicationFormFieldRefs {
+    readonly id: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly guildId: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly name: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly description: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly enabled: Prisma.FieldRef<"ApplicationForm", 'Boolean'>;
+    readonly questions: Prisma.FieldRef<"ApplicationForm", 'Json'>;
+    readonly cooldownDays: Prisma.FieldRef<"ApplicationForm", 'Int'>;
+    readonly onePending: Prisma.FieldRef<"ApplicationForm", 'Boolean'>;
+    readonly requiredRoleIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly blockedRoleIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly minAccountAgeDays: Prisma.FieldRef<"ApplicationForm", 'Int'>;
+    readonly reviewChannelId: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly reviewerRoleIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly pingMemberIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly acceptRoleIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly removeRoleIds: Prisma.FieldRef<"ApplicationForm", 'String[]'>;
+    readonly acceptMessage: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly denyMessage: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly discussionChannelId: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly buttonLabel: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly buttonEmoji: Prisma.FieldRef<"ApplicationForm", 'String'>;
+    readonly buttonStyle: Prisma.FieldRef<"ApplicationForm", 'ApplicationButtonStyle'>;
+    readonly position: Prisma.FieldRef<"ApplicationForm", 'Int'>;
+    readonly revision: Prisma.FieldRef<"ApplicationForm", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"ApplicationForm", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"ApplicationForm", 'DateTime'>;
+}
+/**
+ * ApplicationForm findUnique
+ */
+export type ApplicationFormFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationForm to fetch.
+     */
+    where: Prisma.ApplicationFormWhereUniqueInput;
+};
+/**
+ * ApplicationForm findUniqueOrThrow
+ */
+export type ApplicationFormFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationForm to fetch.
+     */
+    where: Prisma.ApplicationFormWhereUniqueInput;
+};
+/**
+ * ApplicationForm findFirst
+ */
+export type ApplicationFormFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationForm to fetch.
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationForms to fetch.
+     */
+    orderBy?: Prisma.ApplicationFormOrderByWithRelationInput | Prisma.ApplicationFormOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ApplicationForms.
+     */
+    cursor?: Prisma.ApplicationFormWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationForms from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationForms.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationForms.
+     */
+    distinct?: Prisma.ApplicationFormScalarFieldEnum | Prisma.ApplicationFormScalarFieldEnum[];
+};
+/**
+ * ApplicationForm findFirstOrThrow
+ */
+export type ApplicationFormFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationForm to fetch.
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationForms to fetch.
+     */
+    orderBy?: Prisma.ApplicationFormOrderByWithRelationInput | Prisma.ApplicationFormOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ApplicationForms.
+     */
+    cursor?: Prisma.ApplicationFormWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationForms from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationForms.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationForms.
+     */
+    distinct?: Prisma.ApplicationFormScalarFieldEnum | Prisma.ApplicationFormScalarFieldEnum[];
+};
+/**
+ * ApplicationForm findMany
+ */
+export type ApplicationFormFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationForms to fetch.
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationForms to fetch.
+     */
+    orderBy?: Prisma.ApplicationFormOrderByWithRelationInput | Prisma.ApplicationFormOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ApplicationForms.
+     */
+    cursor?: Prisma.ApplicationFormWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationForms from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationForms.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationForms.
+     */
+    distinct?: Prisma.ApplicationFormScalarFieldEnum | Prisma.ApplicationFormScalarFieldEnum[];
+};
+/**
+ * ApplicationForm create
+ */
+export type ApplicationFormCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a ApplicationForm.
+     */
+    data: Prisma.XOR<Prisma.ApplicationFormCreateInput, Prisma.ApplicationFormUncheckedCreateInput>;
+};
+/**
+ * ApplicationForm createMany
+ */
+export type ApplicationFormCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApplicationForms.
+     */
+    data: Prisma.ApplicationFormCreateManyInput | Prisma.ApplicationFormCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ApplicationForm createManyAndReturn
+ */
+export type ApplicationFormCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * The data used to create many ApplicationForms.
+     */
+    data: Prisma.ApplicationFormCreateManyInput | Prisma.ApplicationFormCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ApplicationForm update
+ */
+export type ApplicationFormUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a ApplicationForm.
+     */
+    data: Prisma.XOR<Prisma.ApplicationFormUpdateInput, Prisma.ApplicationFormUncheckedUpdateInput>;
+    /**
+     * Choose, which ApplicationForm to update.
+     */
+    where: Prisma.ApplicationFormWhereUniqueInput;
+};
+/**
+ * ApplicationForm updateMany
+ */
+export type ApplicationFormUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApplicationForms.
+     */
+    data: Prisma.XOR<Prisma.ApplicationFormUpdateManyMutationInput, Prisma.ApplicationFormUncheckedUpdateManyInput>;
+    /**
+     * Filter which ApplicationForms to update
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * Limit how many ApplicationForms to update.
+     */
+    limit?: number;
+};
+/**
+ * ApplicationForm updateManyAndReturn
+ */
+export type ApplicationFormUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * The data used to update ApplicationForms.
+     */
+    data: Prisma.XOR<Prisma.ApplicationFormUpdateManyMutationInput, Prisma.ApplicationFormUncheckedUpdateManyInput>;
+    /**
+     * Filter which ApplicationForms to update
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * Limit how many ApplicationForms to update.
+     */
+    limit?: number;
+};
+/**
+ * ApplicationForm upsert
+ */
+export type ApplicationFormUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the ApplicationForm to update in case it exists.
+     */
+    where: Prisma.ApplicationFormWhereUniqueInput;
+    /**
+     * In case the ApplicationForm found by the `where` argument doesn't exist, create a new ApplicationForm with this data.
+     */
+    create: Prisma.XOR<Prisma.ApplicationFormCreateInput, Prisma.ApplicationFormUncheckedCreateInput>;
+    /**
+     * In case the ApplicationForm was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.ApplicationFormUpdateInput, Prisma.ApplicationFormUncheckedUpdateInput>;
+};
+/**
+ * ApplicationForm delete
+ */
+export type ApplicationFormDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+    /**
+     * Filter which ApplicationForm to delete.
+     */
+    where: Prisma.ApplicationFormWhereUniqueInput;
+};
+/**
+ * ApplicationForm deleteMany
+ */
+export type ApplicationFormDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApplicationForms to delete
+     */
+    where?: Prisma.ApplicationFormWhereInput;
+    /**
+     * Limit how many ApplicationForms to delete.
+     */
+    limit?: number;
+};
+/**
+ * ApplicationForm.applications
+ */
+export type ApplicationForm$applicationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Application
+     */
+    select?: Prisma.ApplicationSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Application
+     */
+    omit?: Prisma.ApplicationOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationInclude<ExtArgs> | null;
+    where?: Prisma.ApplicationWhereInput;
+    orderBy?: Prisma.ApplicationOrderByWithRelationInput | Prisma.ApplicationOrderByWithRelationInput[];
+    cursor?: Prisma.ApplicationWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.ApplicationScalarFieldEnum | Prisma.ApplicationScalarFieldEnum[];
+};
+/**
+ * ApplicationForm without action
+ */
+export type ApplicationFormDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationForm
+     */
+    select?: Prisma.ApplicationFormSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationForm
+     */
+    omit?: Prisma.ApplicationFormOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationFormInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=ApplicationForm.d.ts.map

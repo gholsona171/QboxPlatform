@@ -1,0 +1,1 @@
+{"version":3,"file":"ApiTransportPolicies.js","sourceRoot":"","sources":["../../src/security/ApiTransportPolicies.ts"],"names":[],"mappings":"AA+BA,0EAA0E;AAC1E,MAAM,CAAC,MAAM,sBAAsB,GAA0B,MAAM,CAAC,MAAM,CAAC;IACzE,QAAQ,EAAE,KAAK,IAAI,EAAE,CAAC,CAAC,EAAE,OAAO,EAAE,IAAa,EAAE,CAAC;CACnD,CAAC,CAAC"}

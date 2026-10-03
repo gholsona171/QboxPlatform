@@ -1,0 +1,1780 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model DiscordGuildMembership
+ *
+ */
+export type DiscordGuildMembershipModel = runtime.Types.Result.DefaultSelection<Prisma.$DiscordGuildMembershipPayload>;
+export type AggregateDiscordGuildMembership = {
+    _count: DiscordGuildMembershipCountAggregateOutputType | null;
+    _min: DiscordGuildMembershipMinAggregateOutputType | null;
+    _max: DiscordGuildMembershipMaxAggregateOutputType | null;
+};
+export type DiscordGuildMembershipMinAggregateOutputType = {
+    id: string | null;
+    externalIdentityId: string | null;
+    guildId: string | null;
+    status: $Enums.DiscordGuildMembershipStatus | null;
+    source: $Enums.DiscordGuildMembershipSource | null;
+    verifiedAt: Date | null;
+    validUntil: Date | null;
+    departedAt: Date | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type DiscordGuildMembershipMaxAggregateOutputType = {
+    id: string | null;
+    externalIdentityId: string | null;
+    guildId: string | null;
+    status: $Enums.DiscordGuildMembershipStatus | null;
+    source: $Enums.DiscordGuildMembershipSource | null;
+    verifiedAt: Date | null;
+    validUntil: Date | null;
+    departedAt: Date | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type DiscordGuildMembershipCountAggregateOutputType = {
+    id: number;
+    externalIdentityId: number;
+    guildId: number;
+    status: number;
+    source: number;
+    verifiedAt: number;
+    validUntil: number;
+    departedAt: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type DiscordGuildMembershipMinAggregateInputType = {
+    id?: true;
+    externalIdentityId?: true;
+    guildId?: true;
+    status?: true;
+    source?: true;
+    verifiedAt?: true;
+    validUntil?: true;
+    departedAt?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type DiscordGuildMembershipMaxAggregateInputType = {
+    id?: true;
+    externalIdentityId?: true;
+    guildId?: true;
+    status?: true;
+    source?: true;
+    verifiedAt?: true;
+    validUntil?: true;
+    departedAt?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type DiscordGuildMembershipCountAggregateInputType = {
+    id?: true;
+    externalIdentityId?: true;
+    guildId?: true;
+    status?: true;
+    source?: true;
+    verifiedAt?: true;
+    validUntil?: true;
+    departedAt?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type DiscordGuildMembershipAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which DiscordGuildMembership to aggregate.
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of DiscordGuildMemberships to fetch.
+     */
+    orderBy?: Prisma.DiscordGuildMembershipOrderByWithRelationInput | Prisma.DiscordGuildMembershipOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` DiscordGuildMemberships from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` DiscordGuildMemberships.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned DiscordGuildMemberships
+    **/
+    _count?: true | DiscordGuildMembershipCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: DiscordGuildMembershipMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: DiscordGuildMembershipMaxAggregateInputType;
+};
+export type GetDiscordGuildMembershipAggregateType<T extends DiscordGuildMembershipAggregateArgs> = {
+    [P in keyof T & keyof AggregateDiscordGuildMembership]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateDiscordGuildMembership[P]> : Prisma.GetScalarType<T[P], AggregateDiscordGuildMembership[P]>;
+};
+export type DiscordGuildMembershipGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    orderBy?: Prisma.DiscordGuildMembershipOrderByWithAggregationInput | Prisma.DiscordGuildMembershipOrderByWithAggregationInput[];
+    by: Prisma.DiscordGuildMembershipScalarFieldEnum[] | Prisma.DiscordGuildMembershipScalarFieldEnum;
+    having?: Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: DiscordGuildMembershipCountAggregateInputType | true;
+    _min?: DiscordGuildMembershipMinAggregateInputType;
+    _max?: DiscordGuildMembershipMaxAggregateInputType;
+};
+export type DiscordGuildMembershipGroupByOutputType = {
+    id: string;
+    externalIdentityId: string;
+    guildId: string;
+    status: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt: Date | null;
+    validUntil: Date | null;
+    departedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: DiscordGuildMembershipCountAggregateOutputType | null;
+    _min: DiscordGuildMembershipMinAggregateOutputType | null;
+    _max: DiscordGuildMembershipMaxAggregateOutputType | null;
+};
+export type GetDiscordGuildMembershipGroupByPayload<T extends DiscordGuildMembershipGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<DiscordGuildMembershipGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof DiscordGuildMembershipGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], DiscordGuildMembershipGroupByOutputType[P]> : Prisma.GetScalarType<T[P], DiscordGuildMembershipGroupByOutputType[P]>;
+}>>;
+export type DiscordGuildMembershipWhereInput = {
+    AND?: Prisma.DiscordGuildMembershipWhereInput | Prisma.DiscordGuildMembershipWhereInput[];
+    OR?: Prisma.DiscordGuildMembershipWhereInput[];
+    NOT?: Prisma.DiscordGuildMembershipWhereInput | Prisma.DiscordGuildMembershipWhereInput[];
+    id?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    externalIdentityId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    guildId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    validUntil?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    departedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    createdAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+    externalIdentity?: Prisma.XOR<Prisma.ExternalIdentityScalarRelationFilter, Prisma.ExternalIdentityWhereInput>;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+    roles?: Prisma.DiscordGuildMembershipRoleListRelationFilter;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventListRelationFilter;
+};
+export type DiscordGuildMembershipOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    externalIdentityId?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    validUntil?: Prisma.SortOrderInput | Prisma.SortOrder;
+    departedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    externalIdentity?: Prisma.ExternalIdentityOrderByWithRelationInput;
+    guild?: Prisma.GuildOrderByWithRelationInput;
+    roles?: Prisma.DiscordGuildMembershipRoleOrderByRelationAggregateInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventOrderByRelationAggregateInput;
+};
+export type DiscordGuildMembershipWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    externalIdentityId_guildId?: Prisma.DiscordGuildMembershipExternalIdentityIdGuildIdCompoundUniqueInput;
+    AND?: Prisma.DiscordGuildMembershipWhereInput | Prisma.DiscordGuildMembershipWhereInput[];
+    OR?: Prisma.DiscordGuildMembershipWhereInput[];
+    NOT?: Prisma.DiscordGuildMembershipWhereInput | Prisma.DiscordGuildMembershipWhereInput[];
+    externalIdentityId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    guildId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    validUntil?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    departedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    createdAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+    externalIdentity?: Prisma.XOR<Prisma.ExternalIdentityScalarRelationFilter, Prisma.ExternalIdentityWhereInput>;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+    roles?: Prisma.DiscordGuildMembershipRoleListRelationFilter;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventListRelationFilter;
+}, "id" | "externalIdentityId_guildId">;
+export type DiscordGuildMembershipOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    externalIdentityId?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    validUntil?: Prisma.SortOrderInput | Prisma.SortOrder;
+    departedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.DiscordGuildMembershipCountOrderByAggregateInput;
+    _max?: Prisma.DiscordGuildMembershipMaxOrderByAggregateInput;
+    _min?: Prisma.DiscordGuildMembershipMinOrderByAggregateInput;
+};
+export type DiscordGuildMembershipScalarWhereWithAggregatesInput = {
+    AND?: Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput | Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput[];
+    OR?: Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput | Prisma.DiscordGuildMembershipScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"DiscordGuildMembership"> | string;
+    externalIdentityId?: Prisma.UuidWithAggregatesFilter<"DiscordGuildMembership"> | string;
+    guildId?: Prisma.UuidWithAggregatesFilter<"DiscordGuildMembership"> | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusWithAggregatesFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceWithAggregatesFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscordGuildMembership"> | Date | string | null;
+    validUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscordGuildMembership"> | Date | string | null;
+    departedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DiscordGuildMembership"> | Date | string | null;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"DiscordGuildMembership"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DiscordGuildMembership"> | Date | string;
+};
+export type DiscordGuildMembershipCreateInput = {
+    id?: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    externalIdentity: Prisma.ExternalIdentityCreateNestedOneWithoutGuildMembershipsInput;
+    guild: Prisma.GuildCreateNestedOneWithoutAuthMembershipsInput;
+    roles?: Prisma.DiscordGuildMembershipRoleCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipUncheckedCreateInput = {
+    id?: string;
+    externalIdentityId: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    externalIdentity?: Prisma.ExternalIdentityUpdateOneRequiredWithoutGuildMembershipsNestedInput;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput;
+    roles?: Prisma.DiscordGuildMembershipRoleUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipCreateManyInput = {
+    id?: string;
+    externalIdentityId: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type DiscordGuildMembershipUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type DiscordGuildMembershipUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type DiscordGuildMembershipListRelationFilter = {
+    every?: Prisma.DiscordGuildMembershipWhereInput;
+    some?: Prisma.DiscordGuildMembershipWhereInput;
+    none?: Prisma.DiscordGuildMembershipWhereInput;
+};
+export type DiscordGuildMembershipOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type DiscordGuildMembershipExternalIdentityIdGuildIdCompoundUniqueInput = {
+    externalIdentityId: string;
+    guildId: string;
+};
+export type DiscordGuildMembershipCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    externalIdentityId?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verifiedAt?: Prisma.SortOrder;
+    validUntil?: Prisma.SortOrder;
+    departedAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type DiscordGuildMembershipMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    externalIdentityId?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verifiedAt?: Prisma.SortOrder;
+    validUntil?: Prisma.SortOrder;
+    departedAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type DiscordGuildMembershipMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    externalIdentityId?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    source?: Prisma.SortOrder;
+    verifiedAt?: Prisma.SortOrder;
+    validUntil?: Prisma.SortOrder;
+    departedAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type DiscordGuildMembershipScalarRelationFilter = {
+    is?: Prisma.DiscordGuildMembershipWhereInput;
+    isNot?: Prisma.DiscordGuildMembershipWhereInput;
+};
+export type DiscordGuildMembershipNullableScalarRelationFilter = {
+    is?: Prisma.DiscordGuildMembershipWhereInput | null;
+    isNot?: Prisma.DiscordGuildMembershipWhereInput | null;
+};
+export type DiscordGuildMembershipCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput> | Prisma.DiscordGuildMembershipCreateWithoutGuildInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyGuildInputEnvelope;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+};
+export type DiscordGuildMembershipUncheckedCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput> | Prisma.DiscordGuildMembershipCreateWithoutGuildInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyGuildInputEnvelope;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+};
+export type DiscordGuildMembershipUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput> | Prisma.DiscordGuildMembershipCreateWithoutGuildInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutGuildInput | Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyGuildInputEnvelope;
+    set?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    disconnect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    delete?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    update?: Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutGuildInput | Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutGuildInput | Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+};
+export type DiscordGuildMembershipUncheckedUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput> | Prisma.DiscordGuildMembershipCreateWithoutGuildInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutGuildInput | Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyGuildInputEnvelope;
+    set?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    disconnect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    delete?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    update?: Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutGuildInput | Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutGuildInput | Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+};
+export type DiscordGuildMembershipCreateNestedManyWithoutExternalIdentityInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput> | Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyExternalIdentityInputEnvelope;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+};
+export type DiscordGuildMembershipUncheckedCreateNestedManyWithoutExternalIdentityInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput> | Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyExternalIdentityInputEnvelope;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+};
+export type DiscordGuildMembershipUpdateManyWithoutExternalIdentityNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput> | Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput[];
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutExternalIdentityInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyExternalIdentityInputEnvelope;
+    set?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    disconnect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    delete?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    update?: Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutExternalIdentityInput[];
+    updateMany?: Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutExternalIdentityInput[];
+    deleteMany?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+};
+export type DiscordGuildMembershipUncheckedUpdateManyWithoutExternalIdentityNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput> | Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput[] | Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput[];
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput[];
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpsertWithWhereUniqueWithoutExternalIdentityInput[];
+    createMany?: Prisma.DiscordGuildMembershipCreateManyExternalIdentityInputEnvelope;
+    set?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    disconnect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    delete?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput | Prisma.DiscordGuildMembershipWhereUniqueInput[];
+    update?: Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpdateWithWhereUniqueWithoutExternalIdentityInput[];
+    updateMany?: Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutExternalIdentityInput | Prisma.DiscordGuildMembershipUpdateManyWithWhereWithoutExternalIdentityInput[];
+    deleteMany?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+};
+export type EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput = {
+    set?: $Enums.DiscordGuildMembershipStatus;
+};
+export type EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput = {
+    set?: $Enums.DiscordGuildMembershipSource;
+};
+export type DiscordGuildMembershipCreateNestedOneWithoutRolesInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutRolesInput>;
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutRolesInput;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+export type DiscordGuildMembershipUpdateOneRequiredWithoutRolesNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutRolesInput>;
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutRolesInput;
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithoutRolesInput;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.DiscordGuildMembershipUpdateToOneWithWhereWithoutRolesInput, Prisma.DiscordGuildMembershipUpdateWithoutRolesInput>, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutRolesInput>;
+};
+export type DiscordGuildMembershipCreateNestedOneWithoutAuditTargetEventsInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutAuditTargetEventsInput>;
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutAuditTargetEventsInput;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+export type DiscordGuildMembershipUpdateOneWithoutAuditTargetEventsNestedInput = {
+    create?: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutAuditTargetEventsInput>;
+    connectOrCreate?: Prisma.DiscordGuildMembershipCreateOrConnectWithoutAuditTargetEventsInput;
+    upsert?: Prisma.DiscordGuildMembershipUpsertWithoutAuditTargetEventsInput;
+    disconnect?: Prisma.DiscordGuildMembershipWhereInput | boolean;
+    delete?: Prisma.DiscordGuildMembershipWhereInput | boolean;
+    connect?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.DiscordGuildMembershipUpdateToOneWithWhereWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUpdateWithoutAuditTargetEventsInput>, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutAuditTargetEventsInput>;
+};
+export type DiscordGuildMembershipCreateWithoutGuildInput = {
+    id?: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    externalIdentity: Prisma.ExternalIdentityCreateNestedOneWithoutGuildMembershipsInput;
+    roles?: Prisma.DiscordGuildMembershipRoleCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipUncheckedCreateWithoutGuildInput = {
+    id?: string;
+    externalIdentityId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipCreateOrConnectWithoutGuildInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput>;
+};
+export type DiscordGuildMembershipCreateManyGuildInputEnvelope = {
+    data: Prisma.DiscordGuildMembershipCreateManyGuildInput | Prisma.DiscordGuildMembershipCreateManyGuildInput[];
+    skipDuplicates?: boolean;
+};
+export type DiscordGuildMembershipUpsertWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    update: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutGuildInput>;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutGuildInput>;
+};
+export type DiscordGuildMembershipUpdateWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutGuildInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutGuildInput>;
+};
+export type DiscordGuildMembershipUpdateManyWithWhereWithoutGuildInput = {
+    where: Prisma.DiscordGuildMembershipScalarWhereInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateManyMutationInput, Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutGuildInput>;
+};
+export type DiscordGuildMembershipScalarWhereInput = {
+    AND?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+    OR?: Prisma.DiscordGuildMembershipScalarWhereInput[];
+    NOT?: Prisma.DiscordGuildMembershipScalarWhereInput | Prisma.DiscordGuildMembershipScalarWhereInput[];
+    id?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    externalIdentityId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    guildId?: Prisma.UuidFilter<"DiscordGuildMembership"> | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFilter<"DiscordGuildMembership"> | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    validUntil?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    departedAt?: Prisma.DateTimeNullableFilter<"DiscordGuildMembership"> | Date | string | null;
+    createdAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"DiscordGuildMembership"> | Date | string;
+};
+export type DiscordGuildMembershipCreateWithoutExternalIdentityInput = {
+    id?: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    guild: Prisma.GuildCreateNestedOneWithoutAuthMembershipsInput;
+    roles?: Prisma.DiscordGuildMembershipRoleCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput = {
+    id?: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedCreateNestedManyWithoutMembershipInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipCreateOrConnectWithoutExternalIdentityInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput>;
+};
+export type DiscordGuildMembershipCreateManyExternalIdentityInputEnvelope = {
+    data: Prisma.DiscordGuildMembershipCreateManyExternalIdentityInput | Prisma.DiscordGuildMembershipCreateManyExternalIdentityInput[];
+    skipDuplicates?: boolean;
+};
+export type DiscordGuildMembershipUpsertWithWhereUniqueWithoutExternalIdentityInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    update: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutExternalIdentityInput>;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutExternalIdentityInput>;
+};
+export type DiscordGuildMembershipUpdateWithWhereUniqueWithoutExternalIdentityInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutExternalIdentityInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutExternalIdentityInput>;
+};
+export type DiscordGuildMembershipUpdateManyWithWhereWithoutExternalIdentityInput = {
+    where: Prisma.DiscordGuildMembershipScalarWhereInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateManyMutationInput, Prisma.DiscordGuildMembershipUncheckedUpdateManyWithoutExternalIdentityInput>;
+};
+export type DiscordGuildMembershipCreateWithoutRolesInput = {
+    id?: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    externalIdentity: Prisma.ExternalIdentityCreateNestedOneWithoutGuildMembershipsInput;
+    guild: Prisma.GuildCreateNestedOneWithoutAuthMembershipsInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipUncheckedCreateWithoutRolesInput = {
+    id?: string;
+    externalIdentityId: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedCreateNestedManyWithoutTargetGuildMembershipInput;
+};
+export type DiscordGuildMembershipCreateOrConnectWithoutRolesInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutRolesInput>;
+};
+export type DiscordGuildMembershipUpsertWithoutRolesInput = {
+    update: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutRolesInput>;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutRolesInput>;
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+};
+export type DiscordGuildMembershipUpdateToOneWithWhereWithoutRolesInput = {
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutRolesInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutRolesInput>;
+};
+export type DiscordGuildMembershipUpdateWithoutRolesInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    externalIdentity?: Prisma.ExternalIdentityUpdateOneRequiredWithoutGuildMembershipsNestedInput;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateWithoutRolesInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipCreateWithoutAuditTargetEventsInput = {
+    id?: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    externalIdentity: Prisma.ExternalIdentityCreateNestedOneWithoutGuildMembershipsInput;
+    guild: Prisma.GuildCreateNestedOneWithoutAuthMembershipsInput;
+    roles?: Prisma.DiscordGuildMembershipRoleCreateNestedManyWithoutMembershipInput;
+};
+export type DiscordGuildMembershipUncheckedCreateWithoutAuditTargetEventsInput = {
+    id?: string;
+    externalIdentityId: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedCreateNestedManyWithoutMembershipInput;
+};
+export type DiscordGuildMembershipCreateOrConnectWithoutAuditTargetEventsInput = {
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutAuditTargetEventsInput>;
+};
+export type DiscordGuildMembershipUpsertWithoutAuditTargetEventsInput = {
+    update: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutAuditTargetEventsInput>;
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedCreateWithoutAuditTargetEventsInput>;
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+};
+export type DiscordGuildMembershipUpdateToOneWithWhereWithoutAuditTargetEventsInput = {
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateWithoutAuditTargetEventsInput, Prisma.DiscordGuildMembershipUncheckedUpdateWithoutAuditTargetEventsInput>;
+};
+export type DiscordGuildMembershipUpdateWithoutAuditTargetEventsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    externalIdentity?: Prisma.ExternalIdentityUpdateOneRequiredWithoutGuildMembershipsNestedInput;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput;
+    roles?: Prisma.DiscordGuildMembershipRoleUpdateManyWithoutMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateWithoutAuditTargetEventsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput;
+};
+export type DiscordGuildMembershipCreateManyGuildInput = {
+    id?: string;
+    externalIdentityId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type DiscordGuildMembershipUpdateWithoutGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    externalIdentity?: Prisma.ExternalIdentityUpdateOneRequiredWithoutGuildMembershipsNestedInput;
+    roles?: Prisma.DiscordGuildMembershipRoleUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateWithoutGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateManyWithoutGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    externalIdentityId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type DiscordGuildMembershipCreateManyExternalIdentityInput = {
+    id?: string;
+    guildId: string;
+    status?: $Enums.DiscordGuildMembershipStatus;
+    source: $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Date | string | null;
+    validUntil?: Date | string | null;
+    departedAt?: Date | string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type DiscordGuildMembershipUpdateWithoutExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutAuthMembershipsNestedInput;
+    roles?: Prisma.DiscordGuildMembershipRoleUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateWithoutExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    roles?: Prisma.DiscordGuildMembershipRoleUncheckedUpdateManyWithoutMembershipNestedInput;
+    auditTargetEvents?: Prisma.AuthenticationAuditEventUncheckedUpdateManyWithoutTargetGuildMembershipNestedInput;
+};
+export type DiscordGuildMembershipUncheckedUpdateManyWithoutExternalIdentityInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    status?: Prisma.EnumDiscordGuildMembershipStatusFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipStatus;
+    source?: Prisma.EnumDiscordGuildMembershipSourceFieldUpdateOperationsInput | $Enums.DiscordGuildMembershipSource;
+    verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    validUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    departedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type DiscordGuildMembershipCountOutputType
+ */
+export type DiscordGuildMembershipCountOutputType = {
+    roles: number;
+    auditTargetEvents: number;
+};
+export type DiscordGuildMembershipCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    roles?: boolean | DiscordGuildMembershipCountOutputTypeCountRolesArgs;
+    auditTargetEvents?: boolean | DiscordGuildMembershipCountOutputTypeCountAuditTargetEventsArgs;
+};
+/**
+ * DiscordGuildMembershipCountOutputType without action
+ */
+export type DiscordGuildMembershipCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembershipCountOutputType
+     */
+    select?: Prisma.DiscordGuildMembershipCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * DiscordGuildMembershipCountOutputType without action
+ */
+export type DiscordGuildMembershipCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.DiscordGuildMembershipRoleWhereInput;
+};
+/**
+ * DiscordGuildMembershipCountOutputType without action
+ */
+export type DiscordGuildMembershipCountOutputTypeCountAuditTargetEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+};
+export type DiscordGuildMembershipSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    externalIdentityId?: boolean;
+    guildId?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verifiedAt?: boolean;
+    validUntil?: boolean;
+    departedAt?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+    roles?: boolean | Prisma.DiscordGuildMembership$rolesArgs<ExtArgs>;
+    auditTargetEvents?: boolean | Prisma.DiscordGuildMembership$auditTargetEventsArgs<ExtArgs>;
+    _count?: boolean | Prisma.DiscordGuildMembershipCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["discordGuildMembership"]>;
+export type DiscordGuildMembershipSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    externalIdentityId?: boolean;
+    guildId?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verifiedAt?: boolean;
+    validUntil?: boolean;
+    departedAt?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["discordGuildMembership"]>;
+export type DiscordGuildMembershipSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    externalIdentityId?: boolean;
+    guildId?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verifiedAt?: boolean;
+    validUntil?: boolean;
+    departedAt?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["discordGuildMembership"]>;
+export type DiscordGuildMembershipSelectScalar = {
+    id?: boolean;
+    externalIdentityId?: boolean;
+    guildId?: boolean;
+    status?: boolean;
+    source?: boolean;
+    verifiedAt?: boolean;
+    validUntil?: boolean;
+    departedAt?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type DiscordGuildMembershipOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "externalIdentityId" | "guildId" | "status" | "source" | "verifiedAt" | "validUntil" | "departedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["discordGuildMembership"]>;
+export type DiscordGuildMembershipInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+    roles?: boolean | Prisma.DiscordGuildMembership$rolesArgs<ExtArgs>;
+    auditTargetEvents?: boolean | Prisma.DiscordGuildMembership$auditTargetEventsArgs<ExtArgs>;
+    _count?: boolean | Prisma.DiscordGuildMembershipCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type DiscordGuildMembershipIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type DiscordGuildMembershipIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    externalIdentity?: boolean | Prisma.ExternalIdentityDefaultArgs<ExtArgs>;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type $DiscordGuildMembershipPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "DiscordGuildMembership";
+    objects: {
+        externalIdentity: Prisma.$ExternalIdentityPayload<ExtArgs>;
+        guild: Prisma.$GuildPayload<ExtArgs>;
+        roles: Prisma.$DiscordGuildMembershipRolePayload<ExtArgs>[];
+        auditTargetEvents: Prisma.$AuthenticationAuditEventPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        externalIdentityId: string;
+        guildId: string;
+        status: $Enums.DiscordGuildMembershipStatus;
+        source: $Enums.DiscordGuildMembershipSource;
+        verifiedAt: Date | null;
+        validUntil: Date | null;
+        departedAt: Date | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["discordGuildMembership"]>;
+    composites: {};
+};
+export type DiscordGuildMembershipGetPayload<S extends boolean | null | undefined | DiscordGuildMembershipDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload, S>;
+export type DiscordGuildMembershipCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<DiscordGuildMembershipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: DiscordGuildMembershipCountAggregateInputType | true;
+};
+export interface DiscordGuildMembershipDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['DiscordGuildMembership'];
+        meta: {
+            name: 'DiscordGuildMembership';
+        };
+    };
+    /**
+     * Find zero or one DiscordGuildMembership that matches the filter.
+     * @param {DiscordGuildMembershipFindUniqueArgs} args - Arguments to find a DiscordGuildMembership
+     * @example
+     * // Get one DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DiscordGuildMembershipFindUniqueArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipFindUniqueArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one DiscordGuildMembership that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DiscordGuildMembershipFindUniqueOrThrowArgs} args - Arguments to find a DiscordGuildMembership
+     * @example
+     * // Get one DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DiscordGuildMembershipFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first DiscordGuildMembership that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipFindFirstArgs} args - Arguments to find a DiscordGuildMembership
+     * @example
+     * // Get one DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DiscordGuildMembershipFindFirstArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipFindFirstArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first DiscordGuildMembership that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipFindFirstOrThrowArgs} args - Arguments to find a DiscordGuildMembership
+     * @example
+     * // Get one DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DiscordGuildMembershipFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more DiscordGuildMemberships that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DiscordGuildMemberships
+     * const discordGuildMemberships = await prisma.discordGuildMembership.findMany()
+     *
+     * // Get first 10 DiscordGuildMemberships
+     * const discordGuildMemberships = await prisma.discordGuildMembership.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const discordGuildMembershipWithIdOnly = await prisma.discordGuildMembership.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends DiscordGuildMembershipFindManyArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a DiscordGuildMembership.
+     * @param {DiscordGuildMembershipCreateArgs} args - Arguments to create a DiscordGuildMembership.
+     * @example
+     * // Create one DiscordGuildMembership
+     * const DiscordGuildMembership = await prisma.discordGuildMembership.create({
+     *   data: {
+     *     // ... data to create a DiscordGuildMembership
+     *   }
+     * })
+     *
+     */
+    create<T extends DiscordGuildMembershipCreateArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipCreateArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many DiscordGuildMemberships.
+     * @param {DiscordGuildMembershipCreateManyArgs} args - Arguments to create many DiscordGuildMemberships.
+     * @example
+     * // Create many DiscordGuildMemberships
+     * const discordGuildMembership = await prisma.discordGuildMembership.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends DiscordGuildMembershipCreateManyArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many DiscordGuildMemberships and returns the data saved in the database.
+     * @param {DiscordGuildMembershipCreateManyAndReturnArgs} args - Arguments to create many DiscordGuildMemberships.
+     * @example
+     * // Create many DiscordGuildMemberships
+     * const discordGuildMembership = await prisma.discordGuildMembership.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many DiscordGuildMemberships and only return the `id`
+     * const discordGuildMembershipWithIdOnly = await prisma.discordGuildMembership.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends DiscordGuildMembershipCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a DiscordGuildMembership.
+     * @param {DiscordGuildMembershipDeleteArgs} args - Arguments to delete one DiscordGuildMembership.
+     * @example
+     * // Delete one DiscordGuildMembership
+     * const DiscordGuildMembership = await prisma.discordGuildMembership.delete({
+     *   where: {
+     *     // ... filter to delete one DiscordGuildMembership
+     *   }
+     * })
+     *
+     */
+    delete<T extends DiscordGuildMembershipDeleteArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipDeleteArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one DiscordGuildMembership.
+     * @param {DiscordGuildMembershipUpdateArgs} args - Arguments to update one DiscordGuildMembership.
+     * @example
+     * // Update one DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends DiscordGuildMembershipUpdateArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipUpdateArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more DiscordGuildMemberships.
+     * @param {DiscordGuildMembershipDeleteManyArgs} args - Arguments to filter DiscordGuildMemberships to delete.
+     * @example
+     * // Delete a few DiscordGuildMemberships
+     * const { count } = await prisma.discordGuildMembership.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends DiscordGuildMembershipDeleteManyArgs>(args?: Prisma.SelectSubset<T, DiscordGuildMembershipDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more DiscordGuildMemberships.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DiscordGuildMemberships
+     * const discordGuildMembership = await prisma.discordGuildMembership.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends DiscordGuildMembershipUpdateManyArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more DiscordGuildMemberships and returns the data updated in the database.
+     * @param {DiscordGuildMembershipUpdateManyAndReturnArgs} args - Arguments to update many DiscordGuildMemberships.
+     * @example
+     * // Update many DiscordGuildMemberships
+     * const discordGuildMembership = await prisma.discordGuildMembership.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more DiscordGuildMemberships and only return the `id`
+     * const discordGuildMembershipWithIdOnly = await prisma.discordGuildMembership.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends DiscordGuildMembershipUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one DiscordGuildMembership.
+     * @param {DiscordGuildMembershipUpsertArgs} args - Arguments to update or create a DiscordGuildMembership.
+     * @example
+     * // Update or create a DiscordGuildMembership
+     * const discordGuildMembership = await prisma.discordGuildMembership.upsert({
+     *   create: {
+     *     // ... data to create a DiscordGuildMembership
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DiscordGuildMembership we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DiscordGuildMembershipUpsertArgs>(args: Prisma.SelectSubset<T, DiscordGuildMembershipUpsertArgs<ExtArgs>>): Prisma.Prisma__DiscordGuildMembershipClient<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of DiscordGuildMemberships.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipCountArgs} args - Arguments to filter DiscordGuildMemberships to count.
+     * @example
+     * // Count the number of DiscordGuildMemberships
+     * const count = await prisma.discordGuildMembership.count({
+     *   where: {
+     *     // ... the filter for the DiscordGuildMemberships we want to count
+     *   }
+     * })
+    **/
+    count<T extends DiscordGuildMembershipCountArgs>(args?: Prisma.Subset<T, DiscordGuildMembershipCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], DiscordGuildMembershipCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a DiscordGuildMembership.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DiscordGuildMembershipAggregateArgs>(args: Prisma.Subset<T, DiscordGuildMembershipAggregateArgs>): Prisma.PrismaPromise<GetDiscordGuildMembershipAggregateType<T>>;
+    /**
+     * Group by DiscordGuildMembership.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DiscordGuildMembershipGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends DiscordGuildMembershipGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: DiscordGuildMembershipGroupByArgs['orderBy'];
+    } : {
+        orderBy?: DiscordGuildMembershipGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, DiscordGuildMembershipGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDiscordGuildMembershipGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the DiscordGuildMembership model
+     */
+    readonly fields: DiscordGuildMembershipFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for DiscordGuildMembership.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__DiscordGuildMembershipClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    externalIdentity<T extends Prisma.ExternalIdentityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ExternalIdentityDefaultArgs<ExtArgs>>): Prisma.Prisma__ExternalIdentityClient<runtime.Types.Result.GetResult<Prisma.$ExternalIdentityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    guild<T extends Prisma.GuildDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuildDefaultArgs<ExtArgs>>): Prisma.Prisma__GuildClient<runtime.Types.Result.GetResult<Prisma.$GuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    roles<T extends Prisma.DiscordGuildMembership$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscordGuildMembership$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DiscordGuildMembershipRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    auditTargetEvents<T extends Prisma.DiscordGuildMembership$auditTargetEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DiscordGuildMembership$auditTargetEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthenticationAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the DiscordGuildMembership model
+ */
+export interface DiscordGuildMembershipFieldRefs {
+    readonly id: Prisma.FieldRef<"DiscordGuildMembership", 'String'>;
+    readonly externalIdentityId: Prisma.FieldRef<"DiscordGuildMembership", 'String'>;
+    readonly guildId: Prisma.FieldRef<"DiscordGuildMembership", 'String'>;
+    readonly status: Prisma.FieldRef<"DiscordGuildMembership", 'DiscordGuildMembershipStatus'>;
+    readonly source: Prisma.FieldRef<"DiscordGuildMembership", 'DiscordGuildMembershipSource'>;
+    readonly verifiedAt: Prisma.FieldRef<"DiscordGuildMembership", 'DateTime'>;
+    readonly validUntil: Prisma.FieldRef<"DiscordGuildMembership", 'DateTime'>;
+    readonly departedAt: Prisma.FieldRef<"DiscordGuildMembership", 'DateTime'>;
+    readonly createdAt: Prisma.FieldRef<"DiscordGuildMembership", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"DiscordGuildMembership", 'DateTime'>;
+}
+/**
+ * DiscordGuildMembership findUnique
+ */
+export type DiscordGuildMembershipFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter, which DiscordGuildMembership to fetch.
+     */
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+/**
+ * DiscordGuildMembership findUniqueOrThrow
+ */
+export type DiscordGuildMembershipFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter, which DiscordGuildMembership to fetch.
+     */
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+/**
+ * DiscordGuildMembership findFirst
+ */
+export type DiscordGuildMembershipFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter, which DiscordGuildMembership to fetch.
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of DiscordGuildMemberships to fetch.
+     */
+    orderBy?: Prisma.DiscordGuildMembershipOrderByWithRelationInput | Prisma.DiscordGuildMembershipOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for DiscordGuildMemberships.
+     */
+    cursor?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` DiscordGuildMemberships from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` DiscordGuildMemberships.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of DiscordGuildMemberships.
+     */
+    distinct?: Prisma.DiscordGuildMembershipScalarFieldEnum | Prisma.DiscordGuildMembershipScalarFieldEnum[];
+};
+/**
+ * DiscordGuildMembership findFirstOrThrow
+ */
+export type DiscordGuildMembershipFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter, which DiscordGuildMembership to fetch.
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of DiscordGuildMemberships to fetch.
+     */
+    orderBy?: Prisma.DiscordGuildMembershipOrderByWithRelationInput | Prisma.DiscordGuildMembershipOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for DiscordGuildMemberships.
+     */
+    cursor?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` DiscordGuildMemberships from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` DiscordGuildMemberships.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of DiscordGuildMemberships.
+     */
+    distinct?: Prisma.DiscordGuildMembershipScalarFieldEnum | Prisma.DiscordGuildMembershipScalarFieldEnum[];
+};
+/**
+ * DiscordGuildMembership findMany
+ */
+export type DiscordGuildMembershipFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter, which DiscordGuildMemberships to fetch.
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of DiscordGuildMemberships to fetch.
+     */
+    orderBy?: Prisma.DiscordGuildMembershipOrderByWithRelationInput | Prisma.DiscordGuildMembershipOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing DiscordGuildMemberships.
+     */
+    cursor?: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` DiscordGuildMemberships from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` DiscordGuildMemberships.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of DiscordGuildMemberships.
+     */
+    distinct?: Prisma.DiscordGuildMembershipScalarFieldEnum | Prisma.DiscordGuildMembershipScalarFieldEnum[];
+};
+/**
+ * DiscordGuildMembership create
+ */
+export type DiscordGuildMembershipCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a DiscordGuildMembership.
+     */
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipCreateInput, Prisma.DiscordGuildMembershipUncheckedCreateInput>;
+};
+/**
+ * DiscordGuildMembership createMany
+ */
+export type DiscordGuildMembershipCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DiscordGuildMemberships.
+     */
+    data: Prisma.DiscordGuildMembershipCreateManyInput | Prisma.DiscordGuildMembershipCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * DiscordGuildMembership createManyAndReturn
+ */
+export type DiscordGuildMembershipCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * The data used to create many DiscordGuildMemberships.
+     */
+    data: Prisma.DiscordGuildMembershipCreateManyInput | Prisma.DiscordGuildMembershipCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * DiscordGuildMembership update
+ */
+export type DiscordGuildMembershipUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a DiscordGuildMembership.
+     */
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateInput, Prisma.DiscordGuildMembershipUncheckedUpdateInput>;
+    /**
+     * Choose, which DiscordGuildMembership to update.
+     */
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+/**
+ * DiscordGuildMembership updateMany
+ */
+export type DiscordGuildMembershipUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DiscordGuildMemberships.
+     */
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateManyMutationInput, Prisma.DiscordGuildMembershipUncheckedUpdateManyInput>;
+    /**
+     * Filter which DiscordGuildMemberships to update
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * Limit how many DiscordGuildMemberships to update.
+     */
+    limit?: number;
+};
+/**
+ * DiscordGuildMembership updateManyAndReturn
+ */
+export type DiscordGuildMembershipUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * The data used to update DiscordGuildMemberships.
+     */
+    data: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateManyMutationInput, Prisma.DiscordGuildMembershipUncheckedUpdateManyInput>;
+    /**
+     * Filter which DiscordGuildMemberships to update
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * Limit how many DiscordGuildMemberships to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * DiscordGuildMembership upsert
+ */
+export type DiscordGuildMembershipUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the DiscordGuildMembership to update in case it exists.
+     */
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+    /**
+     * In case the DiscordGuildMembership found by the `where` argument doesn't exist, create a new DiscordGuildMembership with this data.
+     */
+    create: Prisma.XOR<Prisma.DiscordGuildMembershipCreateInput, Prisma.DiscordGuildMembershipUncheckedCreateInput>;
+    /**
+     * In case the DiscordGuildMembership was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.DiscordGuildMembershipUpdateInput, Prisma.DiscordGuildMembershipUncheckedUpdateInput>;
+};
+/**
+ * DiscordGuildMembership delete
+ */
+export type DiscordGuildMembershipDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+    /**
+     * Filter which DiscordGuildMembership to delete.
+     */
+    where: Prisma.DiscordGuildMembershipWhereUniqueInput;
+};
+/**
+ * DiscordGuildMembership deleteMany
+ */
+export type DiscordGuildMembershipDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which DiscordGuildMemberships to delete
+     */
+    where?: Prisma.DiscordGuildMembershipWhereInput;
+    /**
+     * Limit how many DiscordGuildMemberships to delete.
+     */
+    limit?: number;
+};
+/**
+ * DiscordGuildMembership.roles
+ */
+export type DiscordGuildMembership$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembershipRole
+     */
+    select?: Prisma.DiscordGuildMembershipRoleSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembershipRole
+     */
+    omit?: Prisma.DiscordGuildMembershipRoleOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipRoleInclude<ExtArgs> | null;
+    where?: Prisma.DiscordGuildMembershipRoleWhereInput;
+    orderBy?: Prisma.DiscordGuildMembershipRoleOrderByWithRelationInput | Prisma.DiscordGuildMembershipRoleOrderByWithRelationInput[];
+    cursor?: Prisma.DiscordGuildMembershipRoleWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.DiscordGuildMembershipRoleScalarFieldEnum | Prisma.DiscordGuildMembershipRoleScalarFieldEnum[];
+};
+/**
+ * DiscordGuildMembership.auditTargetEvents
+ */
+export type DiscordGuildMembership$auditTargetEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuthenticationAuditEvent
+     */
+    select?: Prisma.AuthenticationAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the AuthenticationAuditEvent
+     */
+    omit?: Prisma.AuthenticationAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.AuthenticationAuditEventInclude<ExtArgs> | null;
+    where?: Prisma.AuthenticationAuditEventWhereInput;
+    orderBy?: Prisma.AuthenticationAuditEventOrderByWithRelationInput | Prisma.AuthenticationAuditEventOrderByWithRelationInput[];
+    cursor?: Prisma.AuthenticationAuditEventWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.AuthenticationAuditEventScalarFieldEnum | Prisma.AuthenticationAuditEventScalarFieldEnum[];
+};
+/**
+ * DiscordGuildMembership without action
+ */
+export type DiscordGuildMembershipDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DiscordGuildMembership
+     */
+    select?: Prisma.DiscordGuildMembershipSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the DiscordGuildMembership
+     */
+    omit?: Prisma.DiscordGuildMembershipOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.DiscordGuildMembershipInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=DiscordGuildMembership.d.ts.map
