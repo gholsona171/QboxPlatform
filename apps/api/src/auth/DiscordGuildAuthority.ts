@@ -9,10 +9,25 @@ import { DISCORD_PERMISSION, type DiscordRestClient } from "@qbox/shared/discord
  */
 export interface DiscordGuildAuthority {
   isManager(guildId: string, userId: string, roleIds: readonly string[]): Promise<boolean>;
+  /**
+   * The member's current roles, read through the bot (cached briefly), so
+   * role changes in Discord apply without signing in again. `present: false`
+   * when Discord says they are not in the server; undefined when Discord
+   * could not be asked (callers fall back to the stored snapshot).
+   */
+  liveMember?(guildId: string, userId: string): Promise<LiveMember | undefined>;
+}
+
+export interface LiveMember {
+  readonly present: boolean;
+  readonly roleIds: readonly string[];
 }
 
 const MANAGER_BITS = DISCORD_PERMISSION.administrator | DISCORD_PERMISSION.manageGuild;
 const DEFAULT_TTL_MS = 60_000;
+/** Role changes in Discord reach the portal within this time. */
+export const LIVE_MEMBER_TTL_MS = 30_000;
+const LIVE_MEMBER_MAX_ENTRIES = 5_000;
 
 /** Whether a Discord permission bit string includes Administrator or Manage Server. */
 export function hasDiscordManagerPermissions(permissions: string): boolean {
@@ -30,6 +45,10 @@ interface ApiGuild {
   readonly owner_id: string;
 }
 
+interface ApiMember {
+  readonly roles: readonly string[];
+}
+
 interface ApiRole {
   readonly id: string;
   readonly permissions: string;
@@ -38,6 +57,7 @@ interface ApiRole {
 /** Reads owner and role permissions through the bot's REST client, cached per server. */
 export class DiscordRestGuildAuthority implements DiscordGuildAuthority {
   private readonly cache = new Map<string, GuildFacts>();
+  private readonly members = new Map<string, { readonly member: LiveMember; readonly loadedAt: number }>();
   private readonly ttlMs: number;
   private readonly now: () => number;
   private readonly onError: ((error: unknown, guildId: string) => void) | undefined;
@@ -63,6 +83,26 @@ export class DiscordRestGuildAuthority implements DiscordGuildAuthority {
     return roleIds.some((roleId) => facts.managerRoleIds.has(roleId));
   }
 
+  public async liveMember(guildId: string, userId: string): Promise<LiveMember | undefined> {
+    const key = `${guildId}:${userId}`;
+    const cached = this.members.get(key);
+    if (cached && this.now() - cached.loadedAt < LIVE_MEMBER_TTL_MS) return cached.member;
+    let member: LiveMember;
+    try {
+      const found = (await this.rest.get(`/guilds/${guildId}/members/${userId}`)) as ApiMember;
+      member = { present: true, roleIds: [...found.roles] };
+    } catch (error) {
+      if (!isUnknownMember(error)) {
+        this.onError?.(error, guildId);
+        return undefined;
+      }
+      member = { present: false, roleIds: [] };
+    }
+    if (this.members.size >= LIVE_MEMBER_MAX_ENTRIES) this.members.delete(this.members.keys().next().value as string);
+    this.members.set(key, { member, loadedAt: this.now() });
+    return member;
+  }
+
   private async facts(guildId: string): Promise<GuildFacts | undefined> {
     const cached = this.cache.get(guildId);
     if (cached && this.now() - cached.loadedAt < this.ttlMs) return cached;
@@ -82,4 +122,12 @@ export class DiscordRestGuildAuthority implements DiscordGuildAuthority {
       return cached;
     }
   }
+}
+
+/** Discord answers 404 with code 10007 (Unknown Member) when the user is not in the server. */
+function isUnknownMember(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) return false;
+  const code = Reflect.get(error, "code");
+  const status = Reflect.get(error, "status");
+  return code === 10007 || (status === 404 && code !== 10004);
 }

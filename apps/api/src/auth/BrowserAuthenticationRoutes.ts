@@ -230,14 +230,15 @@ export async function registerBrowserAuthenticationRoutes(
         : refresh && listing.guilds.some((entry) => entry.id === guildDiscordId)
           ? await verifyMembership(account.identity.id, guildDiscordId, "api-authentication-me", operationContext(request), request, dependencies)
           : await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
+    const access = guildDiscordId === undefined ? undefined : await memberAccess(request, account.identity, guildDiscordId, membership, dependencies);
     // Qbox permissions and Discord's owner/administrator facts are independent; read them together.
     const [permissions, discordManager] = await Promise.all([
-      permissionSummary(account.identity, membership, dependencies),
-      guildDiscordId !== undefined && membership?.status === "PRESENT"
+      permissionSummary(account.identity, access, dependencies),
+      guildDiscordId !== undefined && access?.present
         ? dependencies.guildAuthority?.isManager(
             guildDiscordId,
             account.identity.providerSubjectId,
-            membership.roles.map((role) => role.roleId),
+            access.roleIds,
           ).then((manager) => manager, () => false) ?? false
         : false,
     ]);
@@ -260,7 +261,7 @@ export async function registerBrowserAuthenticationRoutes(
         globalName: account.identity.profile.globalName ?? null,
         avatar: account.identity.profile.avatar ?? null,
       },
-      membership: membershipSummary(membership, guildDiscordId),
+      membership: membershipSummary(membership, guildDiscordId, access),
       guild: guild === null ? null : { id: guild.id, name: guild.name, icon: guild.icon, canManage: guild.canManage },
       guilds: listing.guilds,
       inviteUrl: inviteUrl(diagnostics.discord.clientId),
@@ -326,7 +327,8 @@ export async function registerBrowserAuthenticationRoutes(
       guildDiscordId === undefined
         ? undefined
         : await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
-    const permissions = await permissionSummary(account.identity, membership, dependencies);
+    const access = guildDiscordId === undefined ? undefined : await memberAccess(request, account.identity, guildDiscordId, membership, dependencies);
+    const permissions = await permissionSummary(account.identity, access, dependencies);
     if (!permissions.platformAdmin.allowed) throw new AuthorizationDeniedApiError();
     return { allowed: true, decision: permissions.platformAdmin };
   });
@@ -985,9 +987,30 @@ async function loadGuildMember(
   const account = await loadAccountSummary(request, verified.actor.authentication.loginIdentityId, dependencies);
   const guildDiscordId = requireCurrentGuildId();
   const membership = await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
-  if (!membership || membership.status !== "PRESENT")
-    throw new AuthorizationDeniedApiError();
-  return { verified, account, roleIds: membership.roles.map((role) => role.roleId) };
+  const access = await memberAccess(request, account.identity, guildDiscordId, membership, dependencies);
+  if (!access.present) throw new AuthorizationDeniedApiError();
+  return { verified, account, roleIds: [...access.roleIds] };
+}
+
+/**
+ * Whether the member is in the server and which roles they hold right now.
+ * Read live from Discord through the bot when possible (cached 30 s), so a
+ * role given, removed, or recreated in Discord applies without signing in
+ * again; otherwise the stored snapshot from sign-in decides.
+ */
+function memberAccess(
+  request: FastifyRequest,
+  identity: ExternalIdentity,
+  guildDiscordId: string,
+  stored: DiscordGuildMembership | undefined,
+  dependencies: RouteDependencies,
+): Promise<{ readonly present: boolean; readonly roleIds: readonly string[] }> {
+  return requestMemo(request, `access:${identity.id}:${guildDiscordId}`, async () => {
+    const live = await dependencies.guildAuthority?.liveMember?.(guildDiscordId, identity.providerSubjectId).catch(() => undefined);
+    if (live) return live;
+    const present = stored?.status === "PRESENT";
+    return { present, roleIds: present ? stored.roles.map((role) => role.roleId) : [] };
+  });
 }
 
 /** Permission decisions are made once per request and permission (list). */
@@ -1269,14 +1292,14 @@ function listGuilds(
 
 async function permissionSummary(
   identity: ExternalIdentity,
-  membership: DiscordGuildMembership | undefined,
+  access: { readonly present: boolean; readonly roleIds: readonly string[] } | undefined,
   dependencies: RouteDependencies,
 ): Promise<{
   readonly platformOwner: PermissionAuthorizationDecision;
   readonly platformAdmin: PermissionAuthorizationDecision;
 }> {
   const guildDiscordId = currentGuildId();
-  if (guildDiscordId === undefined || !membership || membership.status !== "PRESENT")
+  if (guildDiscordId === undefined || !access?.present)
     return {
       platformOwner: denied("missing-guild-context"),
       platformAdmin: denied("missing-guild-context"),
@@ -1287,9 +1310,9 @@ async function permissionSummary(
       externalId: identity.providerSubjectId,
       guildId: guildDiscordId,
     },
-    ...membership.roles.map((role) => ({
+    ...access.roleIds.map((roleId) => ({
       type: "discord-role" as const,
-      externalId: role.roleId,
+      externalId: roleId,
       guildId: guildDiscordId,
     })),
   ];
@@ -1329,13 +1352,14 @@ function denied(reason: PermissionAuthorizationDecision["reason"]): PermissionAu
 function membershipSummary(
   membership: DiscordGuildMembership | undefined,
   discordGuildIdValue: string | undefined,
+  access?: { readonly present: boolean; readonly roleIds: readonly string[] },
 ) {
   return {
     guildId: discordGuildIdValue ?? null,
     status: membership?.status ?? "UNKNOWN",
     verifiedAt: membership?.verifiedAt?.toISOString() ?? null,
     validUntil: membership?.validUntil?.toISOString() ?? null,
-    roleIds: membership?.roles.map((role) => role.roleId) ?? [],
+    roleIds: access ? [...access.roleIds] : membership?.roles.map((role) => role.roleId) ?? [],
   };
 }
 

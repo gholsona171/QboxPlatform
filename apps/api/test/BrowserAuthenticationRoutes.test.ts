@@ -12,6 +12,7 @@ import {
 } from "@qbox/authentication";
 import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationConfiguration.js";
 import { chooseStartingGuild, registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
+import type { DiscordGuildAuthority } from "../src/auth/DiscordGuildAuthority.js";
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
 import { AuthenticationCaches } from "../src/auth/AuthenticationCaches.js";
 import { createApiServer } from "../src/createApiServer.js";
@@ -152,6 +153,42 @@ describe("browser authentication routes", () => {
     const server = serverWithRoutes({ defaultGuild: false, listing });
     const echoed = await server.inject({ method: "GET", url: "/api/v1/echo-guild", headers: session });
     expect(echoed.json()).toEqual({ guildId: OTHER_GUILD });
+    await server.close();
+  });
+
+  it("uses the member's current Discord roles, not the roles saved at sign-in", async () => {
+    const ADMIN_ROLE = "1500000000000000001";
+    const seen: string[][] = [];
+    const guildAuthority: DiscordGuildAuthority = {
+      isManager: async (_guild, _user, roleIds) => {
+        seen.push([...roleIds]);
+        return roleIds.includes(ADMIN_ROLE);
+      },
+      liveMember: async () => ({ present: true, roleIds: [ADMIN_ROLE] }),
+    };
+    const server = serverWithRoutes({ guildAuthority, roleMenuAllowed: false });
+    const allowed = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(allowed.statusCode).toBe(200);
+    expect(seen.at(-1)).toEqual([ADMIN_ROLE]);
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers: session });
+    expect(me.json().permissions.discordManager).toBe(true);
+    expect(me.json().membership.roleIds).toEqual([ADMIN_ROLE]);
+    await server.close();
+  });
+
+  it("denies a member Discord says has left, even with a saved membership", async () => {
+    const guildAuthority: DiscordGuildAuthority = { isManager: async () => true, liveMember: async () => ({ present: false, roleIds: [] }) };
+    const server = serverWithRoutes({ guildAuthority });
+    const denied = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(denied.statusCode).toBe(403);
+    await server.close();
+  });
+
+  it("falls back to the saved roles when Discord cannot be asked", async () => {
+    const guildAuthority: DiscordGuildAuthority = { isManager: async () => false, liveMember: async () => undefined };
+    const server = serverWithRoutes({ guildAuthority, roleMenuAllowed: true });
+    const allowed = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(allowed.statusCode).toBe(200);
     await server.close();
   });
 
@@ -347,6 +384,7 @@ interface ServerOptions {
   readonly roleMenuAllowed?: boolean;
   readonly portalDirectory?: string;
   readonly discordManager?: boolean;
+  readonly guildAuthority?: DiscordGuildAuthority;
   /** Configure DISCORD_GUILD_ID (default true). */
   readonly defaultGuild?: boolean;
   readonly listing?: GuildListing | (() => GuildListing);
@@ -412,7 +450,9 @@ function serverWithRoutes(options: ServerOptions = {}) {
         registerPortalStaticRoutes(instance, { directory: options.portalDirectory });
       return registerBrowserAuthenticationRoutes(instance, {
         serveDashboard: options.portalDirectory === undefined,
-        ...(options.discordManager === undefined ? {} : { guildAuthority: { isManager: async () => options.discordManager === true } }),
+        ...(options.guildAuthority
+          ? { guildAuthority: options.guildAuthority }
+          : options.discordManager === undefined ? {} : { guildAuthority: { isManager: async () => options.discordManager === true } }),
         configuration: auth,
         provider: fakeProvider(),
         directory: {

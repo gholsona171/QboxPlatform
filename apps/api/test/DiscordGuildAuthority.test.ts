@@ -53,3 +53,43 @@ describe("DiscordRestGuildAuthority", () => {
     expect(errors).toHaveLength(1);
   });
 });
+
+describe("DiscordRestGuildAuthority.liveMember", () => {
+  const MEMBER = "200000000000000005";
+  function memberRest(answer: () => unknown, calls: string[] = []) {
+    const respond = async (route: string) => {
+      calls.push(route);
+      const value = answer();
+      if (value instanceof Error) throw value;
+      return value;
+    };
+    return { get: respond, post: respond, patch: respond, put: respond, delete: respond };
+  }
+
+  it("reads the member's current roles through the bot and caches them for 30 seconds", async () => {
+    const calls: string[] = [];
+    let roles = [MEMBER_ROLE];
+    let now = 0;
+    const authority = new DiscordRestGuildAuthority(memberRest(() => ({ roles }), calls), { now: () => now });
+    expect(await authority.liveMember(GUILD, MEMBER)).toEqual({ present: true, roleIds: [MEMBER_ROLE] });
+    roles = [MEMBER_ROLE, ADMIN_ROLE];
+    now = 29_000;
+    expect(await authority.liveMember(GUILD, MEMBER)).toEqual({ present: true, roleIds: [MEMBER_ROLE] });
+    now = 31_000;
+    expect(await authority.liveMember(GUILD, MEMBER)).toEqual({ present: true, roleIds: [MEMBER_ROLE, ADMIN_ROLE] });
+    expect(calls).toEqual([`/guilds/${GUILD}/members/${MEMBER}`, `/guilds/${GUILD}/members/${MEMBER}`]);
+  });
+
+  it("reports a member who left as not present", async () => {
+    const unknown = Object.assign(new Error("Unknown Member"), { code: 10007, status: 404 });
+    const authority = new DiscordRestGuildAuthority(memberRest(() => unknown));
+    expect(await authority.liveMember(GUILD, MEMBER)).toEqual({ present: false, roleIds: [] });
+  });
+
+  it("answers undefined when Discord cannot be asked, so the stored roles decide", async () => {
+    const errors: unknown[] = [];
+    const authority = new DiscordRestGuildAuthority(memberRest(() => new Error("Discord unavailable")), { onError: (error) => errors.push(error) });
+    expect(await authority.liveMember(GUILD, MEMBER)).toBeUndefined();
+    expect(errors).toHaveLength(1);
+  });
+});
