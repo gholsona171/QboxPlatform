@@ -68,12 +68,22 @@ export class DiscordRoleMenuInteractionHandler {
         direction,
         emoji,
       });
-    } catch {
-      if (direction === "add") {
+    } catch (error) {
+      if (direction === "add" && shouldUndoReaction(error)) {
         await resolved.users.remove(user.id).catch(() => undefined);
       }
     }
   }
+}
+
+/**
+ * Takes a reaction back only on a role-menu message, when the emoji is not one
+ * of the menu's options or the role could not be given. Reactions on every
+ * other message (no role menu there) and failures we cannot explain are left
+ * alone, so members can react normally across the server.
+ */
+export function shouldUndoReaction(error: unknown): boolean {
+  return error instanceof RoleMenuError && (error.code === "OPTION_NOT_FOUND" || error.code === "ROLE_NOT_ASSIGNABLE");
 }
 
 function safeMessage(error: unknown): string {
