@@ -108,7 +108,7 @@ function tabContent() {
 function welcomeTab() {
   const welcome = view.settings.welcome ?? { enabled: false, messageText: "Welcome to {server}, {user}! You are member #{memberCount}.", embedEnabled: true, thumbnailAvatar: true };
   const goodbye = view.settings.goodbye ?? { enabled: false, messageText: "{username} left the server.", embedEnabled: false, thumbnailAvatar: true };
-  return `<p class="microcopy">Placeholders: {user} {username} {displayName} {server} {memberCount}</p>
+  return `<p class="microcopy">Placeholders: {user} {username} {displayName} {server} {memberCount}. {user} mentions the member in the message text. Inside an embed, or in a goodbye message after they have left, Discord may show "@unknown-user", so use {username} or {displayName} there.</p>
   <section class="grid cols-2">
     <form class="card form-grid" data-d-form="welcome">
       <h3>Welcome message ${badge(welcome.enabled ? "on" : "off")}</h3>

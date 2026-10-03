@@ -30,7 +30,7 @@ export class DiscordCommunityGatewayAdapter implements DiscordCommunityGateway {
     const message = await channel.send({
       ...(input.content ? { content: input.content } : {}),
       ...(input.embed ? { embeds: [embed(input.embed)] } : {}),
-      allowedMentions: { parse: [], roles: roleMentions(input.content) },
+      allowedMentions: { parse: [], roles: roleMentions(input.content), users: userMentions(input.content) },
     });
     return this.sent(message, input.deleteAfterSeconds);
   }
@@ -40,7 +40,7 @@ export class DiscordCommunityGatewayAdapter implements DiscordCommunityGateway {
     const message = await channel.send({
       ...(input.message.content ? { content: input.message.content } : {}),
       ...(input.message.embeds?.length ? { embeds: input.message.embeds.map(apiEmbed) } : {}),
-      allowedMentions: { parse: [], roles: roleMentions(input.message.content) },
+      allowedMentions: { parse: [], roles: roleMentions(input.message.content), users: userMentions(input.message.content) },
     });
     return this.sent(message, input.deleteAfterSeconds);
   }
@@ -136,6 +136,17 @@ function embed(input: NonNullable<CommunitySendMessage["embed"]>): EmbedBuilder 
 /** Embed JSON as discord.js types it: the same shape without undefined keys or readonly arrays. */
 function apiEmbed(embed: OutgoingEmbed): APIEmbed {
   return JSON.parse(JSON.stringify(embed)) as APIEmbed;
+}
+
+/**
+ * Members mentioned in the text (`{user}` renders as `<@id>`). Listing them
+ * makes Discord send their names with the message, so everyone sees the
+ * name instead of "@unknown-user"; it also pings them, as welcome bots do.
+ */
+export function userMentions(content: string | undefined): string[] {
+  if (!content) return [];
+  const ids = [...content.matchAll(/<@!?(\d{17,20})>/g)].map((match) => match[1]).filter((id): id is string => id !== undefined);
+  return [...new Set(ids)].slice(0, 100);
 }
 
 function roleMentions(content: string | undefined): string[] {
