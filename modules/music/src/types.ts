@@ -7,7 +7,7 @@ export const PLAYER_STATES = ["idle", "playing", "paused", "buffering"] as const
 export type MusicPlayerState = (typeof PLAYER_STATES)[number];
 
 /** Where a queued song comes from. */
-export const SOURCE_KINDS = ["library", "link", "radio", "jamendo"] as const;
+export const SOURCE_KINDS = ["library", "link", "radio", "jamendo", "youtube"] as const;
 export type MusicSourceKind = (typeof SOURCE_KINDS)[number];
 
 export interface MusicSettings {
@@ -103,26 +103,29 @@ export type MusicStationInput = Omit<MusicStation, "id" | "createdAt">;
 
 /** What an audio engine needs to play something. */
 export interface PlayableSource {
-  /** Remote file or stream. */
+  /** Remote file or stream. YouTube entries have none: their stream address is looked up when the song starts. */
   readonly url?: string | undefined;
   /** Local file. */
   readonly filePath?: string | undefined;
   readonly seekable: boolean;
 }
 
-/** One song or station in the queue, already resolved to something playable. */
+/**
+ * One song or station in the queue. Library, link, radio and Jamendo entries
+ * carry what to play; YouTube entries carry only the video ID in `ref`.
+ */
 export interface MusicQueueEntry extends PlayableSource {
   /** Unique per queue entry. */
   readonly id: string;
   readonly source: MusicSourceKind;
-  /** Library track, saved station, or Jamendo track ID. */
+  /** Library track, saved station, Jamendo track, or YouTube video ID. */
   readonly ref?: string | undefined;
   readonly title: string;
   readonly artist?: string | undefined;
   readonly album?: string | undefined;
   /** Null for live streams and unknown lengths. */
   readonly durationSeconds: number | null;
-  /** Remote picture (station favicon, Jamendo cover). */
+  /** Remote picture (station favicon, Jamendo cover, YouTube thumbnail). */
   readonly artworkUrl?: string | undefined;
   /** Local cover file of a library track. */
   readonly coverPath?: string | undefined;
@@ -248,6 +251,76 @@ export interface JamendoCatalog {
   readonly available: boolean;
   search(query: string): Promise<readonly JamendoTrack[]>;
   track(id: string): Promise<JamendoTrack | undefined>;
+}
+
+export interface YoutubeVideo {
+  /** The 11-character video ID. */
+  readonly id: string;
+  readonly title: string;
+  readonly channel?: string | undefined;
+  /** Null for live streams and unknown lengths. */
+  readonly durationSeconds: number | null;
+  readonly thumbnailUrl: string;
+}
+
+/** A YouTube audio stream address. They expire after a few hours. */
+export interface YoutubeStream {
+  readonly url: string;
+  /** True when the address was looked up earlier and kept in memory. */
+  readonly cached: boolean;
+}
+
+/** YouTube search and playback through yt-dlp; only available when yt-dlp is installed on the host. */
+export interface YoutubeSource {
+  readonly available: boolean;
+  search(query: string, limit?: number): Promise<readonly YoutubeVideo[]>;
+  /** The top search result, with its stream address looked up in the same step. */
+  first(query: string): Promise<YoutubeVideo>;
+  video(id: string): Promise<YoutubeVideo>;
+  /** A stream address for a video, kept in memory until shortly before it expires. */
+  stream(id: string): Promise<YoutubeStream>;
+  /** Drops the remembered stream address so the next `stream` looks it up again. */
+  forget(id: string): void;
+}
+
+export interface MusicUpload {
+  readonly guildId: string;
+  /** File name as the browser sent it; used for the extension and fallback title only. */
+  readonly fileName: string;
+  readonly contentType: string;
+  readonly data: Buffer;
+  readonly uploadedBy?: string | undefined;
+}
+
+export interface MusicUploadResult {
+  readonly track: MusicTrack;
+  /** The same file was already in the library; nothing new was stored. */
+  readonly duplicate: boolean;
+}
+
+export interface MusicServiceOptions {
+  readonly storage: MusicStorage;
+  readonly probe?: MusicProbe | undefined;
+  readonly links?: LinkResolver | undefined;
+  readonly radio?: RadioDirectory | undefined;
+  readonly jamendo?: JamendoCatalog | undefined;
+  readonly youtube?: YoutubeSource | undefined;
+  /** Library size limit per server. */
+  readonly quotaBytes?: number | undefined;
+  readonly newId?: (() => string) | undefined;
+}
+
+/** One autocomplete choice: the value is a `library:`, `playlist:` or `station:` reference. */
+export interface MusicSuggestion {
+  readonly name: string;
+  readonly value: string;
+}
+
+export interface MusicPlaylistDetail extends MusicPlaylist {
+  readonly tracks: readonly MusicTrack[];
+  /** Library track whose cover stands for the playlist. */
+  readonly coverTrackId?: string | undefined;
+  readonly durationSeconds: number;
 }
 
 /** A direct link resolved to something playable. */

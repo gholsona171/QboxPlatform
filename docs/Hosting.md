@@ -1,13 +1,15 @@
-# Hosting (free)
+# Hosting
 
-Guildhall runs for free on:
+Guildhall runs on:
 
 | Part | Service |
 | --- | --- |
-| Bot, API, and portal | Oracle Cloud "Always Free" Ubuntu server |
+| Bot, API, and portal | Google Cloud Compute Engine VM running Ubuntu |
 | Public HTTPS address | Tailscale Funnel (`https://qbox.<your-tailnet>.ts.net`) |
 | Database | Supabase free plan |
 | Code, secrets, database updates | GitHub (`Database migrations` workflow) |
+
+The setup and update scripts live in `ops/oracle`. The folder name is a leftover from an earlier plan and is kept because the server's services point at it.
 
 ## First-time setup
 
@@ -25,7 +27,7 @@ git clone git@github.com:gholsona171/QboxPlatform.git ~/qbox
 bash ~/qbox/ops/oracle/setup.sh
 ```
 
-The script asks for your Discord values and the Supabase connection string (the Discord server ID is optional; press Enter to skip it), writes them to `~/qbox/.env` (readable only by you, never committed), builds Guildhall, registers the slash commands globally, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
+The script asks for your Discord values and the Supabase connection string (the Discord server ID is optional; press Enter to skip it), writes them to `~/qbox/.env` (readable only by you, never committed), installs ffmpeg and yt-dlp for [Music](Music.md), builds Guildhall, registers the slash commands globally, starts the `qbox-api` and `qbox-bot` services, and publishes the portal with Tailscale Funnel.
 
 Finally, add `https://<portal address>/auth/discord/callback` under **Discord Developer Portal > OAuth2 > Redirects**.
 
@@ -34,6 +36,8 @@ Invite the bot with the link the setup prints (or **OAuth2 > URL Generator** wit
 ## Updates
 
 When `main` changes, the **Deploy build** GitHub workflow compiles Guildhall and publishes the result to the `deploy` branch (about 3 minutes, within GitHub's free minutes). `qbox-update.timer` checks every 5 minutes; when `deploy` changes, the server downloads it, installs dependencies, re-registers the global slash commands (Discord can take a few minutes to show changes), and restarts in a minute or two. It never compiles on the small server unless the `deploy` branch is missing. Database changes are applied by the **Database migrations** workflow.
+
+The same 5-minute check keeps yt-dlp current (Music uses it for YouTube): `ops/oracle/ytdlp.sh` downloads the newest official release into `~/.local/bin` at most once a day, checks it against the published SHA-256, and keeps the installed version when a download fails. To refresh it by hand, run `bash ~/qbox/ops/oracle/ytdlp.sh --force`.
 
 ## Adding the bot to more servers
 

@@ -11,8 +11,10 @@ export const USER_AGENT = `${BRAND.name}/1.0`;
 export const RADIO_BROWSER_URL = "https://de1.api.radio-browser.info";
 export const JAMENDO_URL = "https://api.jamendo.com/v3.0";
 
-/** Shown for Spotify, Apple Music and YouTube links. */
-export const STREAMING_SERVICE_MESSAGE = "Spotify, Apple Music and YouTube do not allow bots to play their music. Use Discord's Listen Along for Spotify, or upload the file.";
+/** Shown for Spotify and Apple Music links. */
+export const STREAMING_SERVICE_MESSAGE = "Spotify and Apple Music do not allow bots to play their music. Use Discord's Listen Along for Spotify, or upload the file.";
+/** Shown where only a direct audio link fits, such as a saved radio station. YouTube videos are played by `MusicService.resolve`. */
+export const YOUTUBE_NOT_DIRECT_MESSAGE = "A YouTube link is not a direct audio link. Play it with /music play or the Player tab instead.";
 /** Shown for web pages and anything else that is not audio. */
 export const NOT_AUDIO_MESSAGE = "That link is a web page, not audio. Only direct audio links work: a link to an .mp3, .ogg, .m4a, .flac or .wav file, or to a radio stream.";
 
@@ -20,9 +22,9 @@ const AUDIO_EXTENSIONS = new Set(["mp3", "ogg", "oga", "opus", "m4a", "aac", "fl
 const PLAYLIST_TYPES = new Set(["audio/x-mpegurl", "audio/mpegurl", "audio/x-scpls", "application/pls+xml"]);
 const HLS_TYPES = new Set(["application/vnd.apple.mpegurl", "application/x-mpegurl"]);
 
-const SERVICES: readonly { readonly hosts: RegExp; readonly name?: string }[] = [
+const SERVICES: readonly { readonly hosts: RegExp; readonly name?: string; readonly message?: string }[] = [
   { hosts: /(^|\.)(spotify\.com|spotify\.link|spoti\.fi)$/ },
-  { hosts: /(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/ },
+  { hosts: /(^|\.)(youtube\.com|youtu\.be|youtube-nocookie\.com)$/, message: YOUTUBE_NOT_DIRECT_MESSAGE },
   { hosts: /(^|\.)(music\.apple\.com|itunes\.apple\.com)$/ },
   { hosts: /(^|\.)(soundcloud\.com|snd\.sc)$/, name: "SoundCloud" },
   { hosts: /(^|\.)deezer\.(com|page\.link)$/, name: "Deezer" },
@@ -35,6 +37,7 @@ export function streamingServiceMessage(url: URL): string | undefined {
   const host = url.hostname.toLowerCase();
   const service = SERVICES.find((item) => item.hosts.test(host));
   if (!service) return undefined;
+  if (service.message) return service.message;
   return service.name ? `${service.name} does not allow bots to play its music. Upload the file instead.` : STREAMING_SERVICE_MESSAGE;
 }
 

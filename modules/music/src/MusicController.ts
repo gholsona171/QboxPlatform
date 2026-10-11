@@ -19,6 +19,7 @@ import type {
   MusicSessionSave,
   MusicSettings,
   MusicStateSnapshot,
+  PlayableSource,
 } from "./types.js";
 import { MusicError, formatTime } from "./validation.js";
 
@@ -70,6 +71,8 @@ interface GuildMusic {
   aloneSince?: number | undefined;
   lastError?: string | undefined;
   errorStreak: number;
+  /** The YouTube stream address in use was a remembered one, so a failure at once is worth one fresh lookup. */
+  refreshable: boolean;
   saveTimer?: ReturnType<typeof setTimeout> | undefined;
   lock: Promise<unknown>;
 }
@@ -399,7 +402,7 @@ export class MusicController {
     guild.player.state = "buffering";
     guild.player.positionSeconds = seekSeconds;
     try {
-      await guild.engine.play(entry, { seekSeconds, volume: guild.player.volume });
+      await guild.engine.play(await this.playable(guild, entry), { seekSeconds, volume: guild.player.volume });
     } catch (error) {
       guild.player.state = "idle";
       guild.idleSince = this.now();
@@ -417,6 +420,19 @@ export class MusicController {
       guild.announcedEntryId = entry.id;
       await this.announce(guild, settings, entry).catch((error: unknown) => this.log.warn("Could not post the now-playing message.", { err: error, guildId: guild.guildId }));
     }
+  }
+
+  /**
+   * What the engine plays for an entry. YouTube entries are stored by video
+   * ID because stream addresses expire, so theirs is looked up here: on every
+   * start, seek, loop, and after a restart.
+   */
+  private async playable(guild: GuildMusic, entry: MusicQueueEntry): Promise<PlayableSource> {
+    guild.refreshable = false;
+    if (entry.source !== "youtube") return entry;
+    const stream = await this.service.youtubeStream(entry.ref);
+    guild.refreshable = stream.cached;
+    return { url: stream.url, seekable: entry.seekable };
   }
 
   private async advance(guild: GuildMusic, settings: MusicSettings, auto: boolean): Promise<void> {
@@ -454,6 +470,7 @@ export class MusicController {
   }
 
   private async onError(guild: GuildMusic, message: string): Promise<void> {
+    if (await this.retryYoutube(guild, message)) return;
     guild.lastError = message;
     guild.errorStreak += 1;
     this.log.warn("A song failed to play.", { guildId: guild.guildId, error: message, title: guild.player.current?.title });
@@ -464,6 +481,16 @@ export class MusicController {
       guild.engine?.stop();
     } else await this.advance(guild, settings, false).catch(async (error: unknown) => this.onError(guild, error instanceof Error ? error.message : "Playback failed."));
     this.scheduleSave(guild);
+  }
+
+  /** A remembered YouTube stream address that failed at once is looked up again and played, one time. */
+  private async retryYoutube(guild: GuildMusic, message: string): Promise<boolean> {
+    const entry = guild.player.current;
+    if (!guild.refreshable || entry?.source !== "youtube" || !guild.connected) return false;
+    this.service.forgetYoutubeStream(entry.ref);
+    this.log.warn("A remembered YouTube stream address did not play; looking it up again.", { guildId: guild.guildId, error: message, videoId: entry.ref });
+    const settings = await this.service.settings(guild.guildId);
+    return this.start(guild, settings, entry.seekable ? Math.floor(guild.anchorSeconds) : 0).then(() => true, () => false);
   }
 
   private disconnect(guild: GuildMusic): void {
@@ -586,6 +613,7 @@ export class MusicController {
       anchorAt: this.now(),
       startedAt: 0,
       errorStreak: 0,
+      refreshable: false,
       lock: Promise.resolve(),
     };
     this.guilds.set(guildId, guild);

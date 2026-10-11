@@ -15,7 +15,7 @@ export const PANEL_BUTTONS = [
 ] as const;
 export type PanelButton = (typeof PANEL_BUTTONS)[number][number][0];
 
-const SOURCE_LABELS: Readonly<Record<MusicSourceKind, string>> = { library: "Library", link: "Link", radio: "Radio", jamendo: "Jamendo" };
+const SOURCE_LABELS: Readonly<Record<MusicSourceKind, string>> = { library: "Library", link: "Link", radio: "Radio", jamendo: "Jamendo", youtube: "YouTube" };
 
 export function sourceLabel(source: MusicSourceKind): string {
   return SOURCE_LABELS[source];

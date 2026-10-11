@@ -9,8 +9,8 @@ const QUEUE_PAGE_SIZE = 10;
 const LOOP_CHOICES = [{ name: "Off", value: "off" }, { name: "This song", value: "track" }, { name: "Whole queue", value: "queue" }];
 
 /**
- * `/music` - play uploaded songs, playlists, direct links and internet radio
- * in voice. Managers (music.manage), DJs (music.dj or a DJ role), or anyone
+ * `/music` - play YouTube songs by name or link, uploaded songs, playlists,
+ * direct links and internet radio in voice. Managers (music.manage), DJs (music.dj or a DJ role), or anyone
  * when no DJ roles are set can control it; non-managers must be in the bot's
  * voice channel.
  */
@@ -24,8 +24,8 @@ export class MusicCommand implements DiscordCommand {
   public readonly data = new SlashCommandBuilder()
     .setName("music")
     .setDescription("Play music and radio in voice channels.")
-    .addSubcommand((sub) => sub.setName("play").setDescription("Play a song, playlist or station, or a direct audio link.")
-      .addStringOption((option) => option.setName("query").setDescription("Song, playlist, saved station, or a direct link to an audio file or stream.").setRequired(true).setMaxLength(500).setAutocomplete(true)))
+    .addSubcommand((sub) => sub.setName("play").setDescription("Play a song by name, or a library song, playlist, station or link.")
+      .addStringOption((option) => option.setName("query").setDescription("A song name (searched on YouTube), a YouTube or audio link, or a suggestion.").setRequired(true).setMaxLength(500).setAutocomplete(true)))
     .addSubcommand((sub) => sub.setName("playlist").setDescription("Queue one of the server's playlists.")
       .addStringOption((option) => option.setName("name").setDescription("The playlist.").setRequired(true).setMaxLength(200).setAutocomplete(true))
       .addBooleanOption((option) => option.setName("shuffle").setDescription("Play it in random order.")))

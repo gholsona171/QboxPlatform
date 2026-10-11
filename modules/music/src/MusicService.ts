@@ -7,17 +7,25 @@ import type {
   LinkResolver,
   MusicLibraryUsage,
   MusicPlaylist,
+  MusicPlaylistDetail,
   MusicProbe,
   MusicQueueEntry,
   MusicRepository,
+  MusicServiceOptions,
   MusicSettings,
   MusicSettingsInput,
   MusicStation,
   MusicStorage,
+  MusicSuggestion,
   MusicTrack,
   MusicTrackPatch,
+  MusicUpload,
+  MusicUploadResult,
   RadioDirectory,
   RadioStation,
+  YoutubeSource,
+  YoutubeStream,
+  YoutubeVideo,
 } from "./types.js";
 import {
   DESCRIPTION_LIMIT,
@@ -34,8 +42,10 @@ import {
   uploadExtension,
   validateSettings,
 } from "./validation.js";
+import { YOUTUBE_NOT_A_VIDEO_MESSAGE, YOUTUBE_PLAYLIST_MESSAGE, YOUTUBE_UNAVAILABLE_MESSAGE, parseYoutubeLink } from "./youtube.js";
 
 export const DEFAULT_QUOTA_BYTES = 2048 * 1024 * 1024;
+const YOUTUBE_RESULTS = 8;
 
 export function defaultMusicSettings(guildId: string): MusicSettings {
   return {
@@ -51,45 +61,6 @@ export function defaultMusicSettings(guildId: string): MusicSettings {
   };
 }
 
-export interface MusicUpload {
-  readonly guildId: string;
-  /** File name as the browser sent it; used for the extension and fallback title only. */
-  readonly fileName: string;
-  readonly contentType: string;
-  readonly data: Buffer;
-  readonly uploadedBy?: string | undefined;
-}
-
-export interface MusicUploadResult {
-  readonly track: MusicTrack;
-  /** The same file was already in the library; nothing new was stored. */
-  readonly duplicate: boolean;
-}
-
-export interface MusicServiceOptions {
-  readonly storage: MusicStorage;
-  readonly probe?: MusicProbe | undefined;
-  readonly links?: LinkResolver | undefined;
-  readonly radio?: RadioDirectory | undefined;
-  readonly jamendo?: JamendoCatalog | undefined;
-  /** Library size limit per server. */
-  readonly quotaBytes?: number | undefined;
-  readonly newId?: (() => string) | undefined;
-}
-
-/** One autocomplete choice: the value is a `library:`, `playlist:` or `station:` reference. */
-export interface MusicSuggestion {
-  readonly name: string;
-  readonly value: string;
-}
-
-export interface MusicPlaylistDetail extends MusicPlaylist {
-  readonly tracks: readonly MusicTrack[];
-  /** Library track whose cover stands for the playlist. */
-  readonly coverTrackId?: string | undefined;
-  readonly durationSeconds: number;
-}
-
 /**
  * Music rules: settings, the uploaded library, playlists, saved stations, and
  * turning what a member asks for into playable queue entries. Playback lives
@@ -102,6 +73,7 @@ export class MusicService {
   private readonly links: LinkResolver | undefined;
   private readonly radio: RadioDirectory | undefined;
   private readonly jamendo: JamendoCatalog | undefined;
+  private readonly youtube: YoutubeSource | undefined;
   private readonly newId: () => string;
 
   public constructor(
@@ -113,12 +85,18 @@ export class MusicService {
     this.links = options.links;
     this.radio = options.radio;
     this.jamendo = options.jamendo;
+    this.youtube = options.youtube;
     this.quotaBytes = options.quotaBytes ?? DEFAULT_QUOTA_BYTES;
     this.newId = options.newId ?? randomUUID;
   }
 
   public get jamendoAvailable(): boolean {
     return this.jamendo?.available ?? false;
+  }
+
+  /** True when yt-dlp is installed on the host. */
+  public get youtubeAvailable(): boolean {
+    return this.youtube?.available ?? false;
   }
 
   /* ---------- Settings ---------- */
@@ -330,6 +308,20 @@ export class MusicService {
     return this.jamendo.search(query);
   }
 
+  public async searchYoutube(query: string): Promise<readonly YoutubeVideo[]> {
+    return this.requireYoutube().search(query, YOUTUBE_RESULTS);
+  }
+
+  /** The audio stream address of a YouTube queue entry, looked up when the song is about to play. */
+  public async youtubeStream(videoId: string | undefined): Promise<YoutubeStream> {
+    return this.requireYoutube().stream(videoId ?? "");
+  }
+
+  /** Drops a remembered stream address that did not play, so the next try looks it up again. */
+  public forgetYoutubeStream(videoId: string | undefined): void {
+    if (videoId) this.youtube?.forget(videoId);
+  }
+
   /** Autocomplete choices for `/music play` and `/music playlist`. */
   public async suggest(guildId: string, text: string, kinds: readonly ("library" | "playlist" | "station")[] = ["library", "playlist", "station"]): Promise<readonly MusicSuggestion[]> {
     const needle = text.trim().toLowerCase();
@@ -347,23 +339,33 @@ export class MusicService {
 
   /**
    * Turns a play request into queue entries: `library:`, `playlist:`,
-   * `station:`, `radio:` and `jamendo:` references, direct links, or words
-   * matched against the library, playlists and saved stations.
+   * `station:`, `radio:`, `jamendo:` and `youtube:` references, YouTube and
+   * direct links, or words. With YouTube set up, words that are not exactly
+   * the name of a library song, playlist or saved station play the top
+   * YouTube result; without it, words are matched loosely against the
+   * library, playlists and saved stations.
    */
   public async resolve(guildId: string, query: string, options: { readonly requestedBy?: string | undefined; readonly title?: string | undefined } = {}): Promise<readonly MusicQueueEntry[]> {
     requireSnowflake("guildId", guildId);
     const text = query.trim();
-    if (!text) throw new MusicError("INVALID_INPUT", "Tell me what to play: a song from the library, a playlist, a station, or a direct audio link.");
+    if (!text) throw new MusicError("INVALID_INPUT", "Tell me what to play: a song name, a song from the library, a playlist, a station, or a link.");
     const requestedBy = options.requestedBy;
-    const reference = /^(library|playlist|station|radio|jamendo):(.+)$/.exec(text);
+    const reference = /^(library|playlist|station|radio|jamendo|youtube):(.+)$/.exec(text);
     if (reference) {
       const [, kind, value] = reference as unknown as [string, string, string];
       if (kind === "library") return [this.trackEntry(await this.track(guildId, value), requestedBy)];
       if (kind === "playlist") return this.playlistEntries(guildId, value, requestedBy);
       if (kind === "station") return [this.stationEntry(await this.station(guildId, value), requestedBy)];
       if (kind === "jamendo") return [this.jamendoEntry(await this.jamendoTrack(value), requestedBy)];
+      if (kind === "youtube") return [this.youtubeEntry(await this.requireYoutube().video(value), requestedBy)];
       const url = parseAudioUrl(value).toString();
       return [this.stationEntry({ name: optionalText("Station name", options.title) ?? new URL(url).hostname, url }, requestedBy)];
+    }
+    const youtubeLink = parseYoutubeLink(text);
+    if (youtubeLink) {
+      if (youtubeLink.kind === "playlist") throw new MusicError("INVALID_INPUT", YOUTUBE_PLAYLIST_MESSAGE);
+      if (youtubeLink.kind !== "video") throw new MusicError("INVALID_INPUT", YOUTUBE_NOT_A_VIDEO_MESSAGE);
+      return [this.youtubeEntry(await this.requireYoutube().video(youtubeLink.id), requestedBy)];
     }
     if (/^[a-z][a-z0-9+.-]*:\/\//i.test(text) || /^www\./i.test(text)) {
       if (!this.links) throw new MusicError("DEPENDENCY_UNAVAILABLE", "Links cannot be played right now.");
@@ -379,6 +381,7 @@ export class MusicService {
       }];
     }
     const needle = text.toLowerCase();
+    const youtube = this.youtube?.available ? this.youtube : undefined;
     const tracks = await this.repository.listTracks(guildId);
     const score = (track: MusicTrack) => {
       const title = track.title.toLowerCase();
@@ -386,11 +389,12 @@ export class MusicService {
       return title === needle ? 3 : title.startsWith(needle) ? 2 : full.includes(needle) ? 1 : 0;
     };
     const best = tracks.map((track) => ({ track, score: score(track) })).filter((item) => item.score > 0).sort((left, right) => right.score - left.score)[0];
-    if (best) return [this.trackEntry(best.track, requestedBy)];
+    if (best && (!youtube || best.score === 3)) return [this.trackEntry(best.track, requestedBy)];
     const playlist = (await this.repository.listPlaylists(guildId)).find((item) => item.name.toLowerCase() === needle);
     if (playlist) return this.playlistEntries(guildId, playlist.id, requestedBy);
-    const station = (await this.repository.listStations(guildId)).find((item) => item.name.toLowerCase().includes(needle));
+    const station = (await this.repository.listStations(guildId)).find((item) => (youtube ? item.name.toLowerCase() === needle : item.name.toLowerCase().includes(needle)));
     if (station) return [this.stationEntry(station, requestedBy)];
+    if (youtube) return [this.youtubeEntry(await youtube.first(text), requestedBy)];
     throw new MusicError("NOT_FOUND", `Nothing in the library, playlists or saved stations matches "${text.slice(0, 80)}". Paste a direct audio link, or use /music radio to search internet radio.`);
   }
 
@@ -444,6 +448,26 @@ export class MusicService {
       artworkUrl: track.imageUrl,
       requestedBy,
     };
+  }
+
+  /** A YouTube queue entry: stored by video ID, with no stream address. */
+  private youtubeEntry(video: YoutubeVideo, requestedBy?: string | undefined): MusicQueueEntry {
+    return {
+      id: this.newId(),
+      source: "youtube",
+      ref: video.id,
+      title: video.title,
+      artist: video.channel,
+      durationSeconds: video.durationSeconds,
+      seekable: video.durationSeconds !== null,
+      artworkUrl: video.thumbnailUrl,
+      requestedBy,
+    };
+  }
+
+  private requireYoutube(): YoutubeSource {
+    if (!this.youtube?.available) throw new MusicError("DEPENDENCY_UNAVAILABLE", YOUTUBE_UNAVAILABLE_MESSAGE);
+    return this.youtube;
   }
 
   private async jamendoTrack(id: string): Promise<JamendoTrack> {

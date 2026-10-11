@@ -6,6 +6,7 @@ import {
   NOT_AUDIO_MESSAGE,
   RadioBrowserDirectory,
   STREAMING_SERVICE_MESSAGE,
+  YOUTUBE_NOT_DIRECT_MESSAGE,
   firstPlaylistEntry,
   isPrivateHost,
   parseProbeOutput,
@@ -38,11 +39,15 @@ const probe: MusicProbe = {
 };
 
 describe("link resolver", () => {
-  it("rejects Spotify, Apple Music and YouTube with the plain explanation, and never fetches them", async () => {
+  it("rejects Spotify and Apple Music with the plain explanation, and never fetches them or YouTube", async () => {
     const calls: string[] = [];
     const resolver = new HttpLinkResolver(fakeFetch({}, calls));
-    for (const url of ["https://open.spotify.com/track/abc", "https://music.apple.com/us/album/x", "https://www.youtube.com/watch?v=abc", "https://youtu.be/abc", "https://music.youtube.com/watch?v=1"])
+    expect(STREAMING_SERVICE_MESSAGE).not.toContain("YouTube");
+    for (const url of ["https://open.spotify.com/track/abc", "https://spotify.link/abc", "https://music.apple.com/us/album/x"])
       await expect(resolver.resolve(url)).rejects.toMatchObject({ code: "INVALID_INPUT", message: STREAMING_SERVICE_MESSAGE });
+    // YouTube videos are played by MusicService through yt-dlp; as a direct audio link they are still refused.
+    for (const url of ["https://www.youtube.com/watch?v=abc", "https://youtu.be/abc", "https://music.youtube.com/watch?v=1"])
+      await expect(resolver.resolve(url)).rejects.toMatchObject({ code: "INVALID_INPUT", message: YOUTUBE_NOT_DIRECT_MESSAGE });
     await expect(resolver.resolve("https://soundcloud.com/a/b")).rejects.toThrow(/SoundCloud does not allow bots/);
     expect(calls).toEqual([]);
   });

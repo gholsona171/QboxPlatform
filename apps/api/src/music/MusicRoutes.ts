@@ -14,6 +14,8 @@ const AUDIO_CONTENT_TYPE = /^(?:audio\/[a-z0-9.+-]+|application\/ogg|application
 const UPLOAD_TIMEOUT_MS = 300_000;
 /** Joining voice and checking a link can take a while. */
 const COMMAND_TIMEOUT_MS = 30_000;
+/** A YouTube search starts yt-dlp, which takes a few seconds. */
+const YOUTUBE_SEARCH_TIMEOUT_MS = 20_000;
 
 const uuid = z.string().uuid();
 const settingsSchema = z.strictObject({
@@ -32,6 +34,7 @@ const settingsSchema = z.strictObject({
 const trackSchema = z.strictObject({ title: z.string().max(200), artist: z.string().max(200).optional(), album: z.string().max(200).optional() });
 const playlistSchema = z.strictObject({ name: z.string().max(100), description: z.string().max(500).optional() });
 const playlistTracksSchema = z.strictObject({ trackIds: z.array(uuid).max(MAX_PLAYLIST_TRACKS) });
+const searchSchema = z.object({ q: z.string().trim().min(1).max(100) });
 const stationSchema = z.strictObject({ name: z.string().max(200), url: z.string().max(2000), faviconUrl: z.string().max(500).optional(), tags: z.array(z.string().max(40)).max(10).optional() });
 
 /** Host facts the overview reports. */
@@ -83,6 +86,7 @@ function registerMusicRoutes(server: FastifyInstance, context: ApiFeatureContext
         canManage: manager,
         ffmpeg: host.ffmpeg,
         jamendo: music.jamendoAvailable,
+        youtube: music.youtubeAvailable,
         secondBot: host.secondBot !== undefined,
         secondBotInGuild: inGuild,
         secondBotInviteUrl: host.secondBot?.inviteUrl,
@@ -225,6 +229,13 @@ function registerMusicRoutes(server: FastifyInstance, context: ApiFeatureContext
   server.get("/api/v1/music/jamendo/search", async (request) => {
     await player(request, false);
     return { data: await safe(() => music.searchJamendo(query(request))) };
+  });
+
+  server.get("/api/v1/music/youtube/search", { handlerTimeout: YOUTUBE_SEARCH_TIMEOUT_MS }, async (request, reply) => {
+    reply.header("cache-control", "no-store");
+    await player(request, false);
+    const { q } = parse(searchSchema, routeQuery(request));
+    return { data: await safe(() => music.searchYoutube(q)) };
   });
 }
 

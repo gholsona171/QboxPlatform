@@ -12,6 +12,7 @@ import {
   MusicService,
   PANEL_BUTTONS,
   RadioBrowserDirectory,
+  createYoutubeSource,
   findMediaTools,
   type MusicCommand as MusicAction,
   type MusicPresence,
@@ -41,6 +42,10 @@ export interface MusicFeatureOptions {
   /** FFMPEG_PATH override; otherwise ffmpeg is looked up on PATH. */
   readonly ffmpegPath?: string | undefined;
   readonly jamendoClientId?: string | undefined;
+  /** YTDLP_PATH override; otherwise yt-dlp is looked up on PATH and in ~/.local/bin. */
+  readonly ytDlpPath?: string | undefined;
+  /** YOUTUBE_COOKIES_FILE: cookies yt-dlp sends when YouTube asks the host to sign in. */
+  readonly youtubeCookiesFile?: string | undefined;
   readonly templates?: MessageTemplates | undefined;
 }
 
@@ -55,12 +60,14 @@ export function musicFeature(repository: MusicRepository, options: MusicFeatureO
     const log = { warn: (message: string, details: Readonly<Record<string, unknown>>) => logger.warn({ ...details, operation: "music" }, message) };
     const tools = findMediaTools(options.ffmpegPath);
     const probe = new FfmpegMusicProbe(tools);
+    const youtube = createYoutubeSource({ ytDlpPath: options.ytDlpPath, cookiesFile: options.youtubeCookiesFile, log });
     const music = new MusicService(repository, {
       storage: new LocalMusicStorage(options.storageDir),
       probe,
       links: new HttpLinkResolver(fetch, probe),
       radio: new RadioBrowserDirectory(),
       jamendo: new JamendoApiCatalog(options.jamendoClientId ?? ""),
+      youtube,
       quotaBytes: options.quotaBytes,
     });
     const voiceClient = options.musicBotToken ? new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] }) : client;
@@ -104,6 +111,7 @@ export function musicFeature(repository: MusicRepository, options: MusicFeatureO
         attached = target;
         target.on(Events.InteractionCreate, onInteraction);
         if (!tools.ffmpeg) logger.warn({ operation: "music" }, "Music needs ffmpeg on the host. Install it with: sudo apt-get install -y ffmpeg");
+        if (!youtube.available) logger.info({ operation: "music" }, "yt-dlp was not found, so YouTube search and playback are off. See docs/Music.md.");
         void server.listen(options.controlPort).then(
           (port) => logger.info({ port, operation: "music" }, "Music control server listening on 127.0.0.1."),
           (error: unknown) => logger.error({ err: error, operation: "music" }, "Music control server could not start; the portal cannot control music."),
@@ -132,7 +140,10 @@ function ready(client: Client): Promise<void> {
   return new Promise((resolve) => client.once(Events.ClientReady, () => resolve()));
 }
 
-/** Library songs, playlists and saved stations for `/music play`; playlists for `/music playlist`. */
+/**
+ * Library songs, playlists and saved stations for `/music play`; playlists for
+ * `/music playlist`. YouTube is never searched here: Discord allows 3 seconds.
+ */
 async function autocomplete(music: MusicService, interaction: AutocompleteInteraction): Promise<void> {
   if (!interaction.guildId) return interaction.respond([]);
   const kinds = interaction.options.getSubcommand(false) === "playlist" ? (["playlist"] as const) : (["library", "playlist", "station"] as const);

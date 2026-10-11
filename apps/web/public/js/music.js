@@ -3,6 +3,7 @@ import { appPath } from "./config.js";
 import { bindPickers, boolValue, channelLabel, channelSelect, checkbox, intValue, loadDirectory, numberField, rolePicker, selectField, textField } from "./forms.js";
 import { badge, confirmAction, escapeHtml, notify } from "./ui.js";
 import { BRAND } from "./brand.js";
+import { youtubeCard } from "./musicYoutube.js";
 
 const TABS = [
   ["player", "Player"],
@@ -15,7 +16,9 @@ const AUDIO_TYPES = { mp3: "audio/mpeg", ogg: "audio/ogg", oga: "audio/ogg", opu
 const SORTS = [["recent", "Recently added"], ["title", "Title"], ["artist", "Artist"]];
 const GROUPS = [["none", "No grouping"], ["artist", "Group by artist"], ["album", "Group by album"]];
 const LOOP_LABELS = { off: "Loop off", track: "Loop song", queue: "Loop queue" };
-const SOURCE_LABELS = { library: "Library", link: "Link", radio: "Radio", jamendo: "Jamendo" };
+const SOURCE_LABELS = { library: "Library", link: "Link", radio: "Radio", jamendo: "Jamendo", youtube: "YouTube" };
+/** Search forms: the API path and where the results are kept. */
+const SEARCHES = { "radio-search": ["radio", "radioResults"], "jamendo-search": ["jamendo", "jamendoResults"], "youtube-search": ["youtube", "youtubeResults"] };
 
 const view = {
   tab: "player",
@@ -36,6 +39,8 @@ const view = {
   addQuery: "",
   radioResults: undefined,
   jamendoResults: undefined,
+  youtubeResults: undefined,
+  youtubeQuery: "",
 };
 let container;
 let tickTimer;
@@ -93,6 +98,8 @@ function startTimers() {
 /* ---------- Helpers ---------- */
 
 const manager = () => view.overview?.canManage === true;
+/** True when the host has yt-dlp, so song names and YouTube links can be played. */
+const youtube = () => view.overview?.youtube === true;
 
 function fmt(seconds) {
   const whole = Math.max(0, Math.floor(seconds ?? 0));
@@ -185,7 +192,8 @@ function render() {
 }
 
 function sourcesNote() {
-  return `Music plays songs you upload, your playlists, direct links to audio files, and internet radio. Spotify, Apple Music and YouTube do not allow bots to play their music, so they are not supported (Discord's Listen Along works for Spotify).`;
+  const sources = youtube() ? "YouTube songs by name or link, songs you upload, your playlists, direct links to audio files, and internet radio" : "songs you upload, your playlists, direct links to audio files, and internet radio";
+  return `Music plays ${sources}. Spotify and Apple Music do not allow bots to play their music, so they are not supported (Discord's Listen Along works for Spotify).`;
 }
 
 function secondBotNote() {
@@ -218,12 +226,13 @@ function playerTab() {
     <div class="card">
       <h3>Add to the queue</h3>
       <div class="toolbar">
-        <input data-mu-add placeholder="Search your library, playlists and stations, or paste a direct audio link" value="${escapeHtml(view.addQuery)}" aria-label="Song, playlist, station or link">
+        <input data-mu-add placeholder="${youtube() ? "Type a song name, or paste a YouTube or audio link" : "Search your library, playlists and stations, or paste a direct audio link"}" value="${escapeHtml(view.addQuery)}" aria-label="Song, playlist, station or link">
         <button class="button primary compact" data-mu-action="add-typed" data-now="false">Add</button>
         <button class="button compact" data-mu-action="add-typed" data-now="true">Play now</button>
       </div>
       <div class="music-results" data-mu-add-results>${addResults()}</div>
     </div>
+    ${youtubeCard(youtube(), view.youtubeResults, view.youtubeQuery)}
     <div class="card">
       <h3>Voice channel</h3>
       <div class="toolbar">
@@ -292,7 +301,7 @@ function queueList(player) {
 
 function addResults() {
   const query = view.addQuery.trim().toLowerCase();
-  if (!query) return `<p class="microcopy">Type to search. Links must point straight at an audio file or stream.</p>`;
+  if (!query) return `<p class="microcopy">${youtube() ? "Type a song name and press Add to play the top YouTube result, or pick from your library below. Links can be YouTube videos or direct audio." : "Type to search. Links must point straight at an audio file or stream."}</p>`;
   if (/^https?:\/\//.test(query)) return `<p class="microcopy">Press Add to play this link.</p>`;
   const matches = (text) => text.toLowerCase().includes(query);
   const results = [
@@ -300,7 +309,7 @@ function addResults() {
     ...view.overview.stations.filter((station) => matches(station.name)).map((station) => ({ query: `station:${station.id}`, title: station.name, detail: "Radio", image: undefined })),
     ...view.tracks.filter((track) => matches(`${track.title} ${track.artist ?? ""} ${track.album ?? ""}`)).map((track) => ({ query: `library:${track.id}`, title: track.title, detail: trackLine(track) || "Library", image: track.coverFileName ? trackCover(track.id) : undefined })),
   ].slice(0, 20);
-  if (!results.length) return `<p class="microcopy">Nothing matches. Upload songs in Library, or paste a direct audio link.</p>`;
+  if (!results.length) return `<p class="microcopy">${youtube() ? "Nothing in your library matches. Press Add to play the top YouTube result." : "Nothing matches. Upload songs in Library, or paste a direct audio link."}</p>`;
   return `<ul class="music-list">${results.map((item) => `<li class="music-item">
     <span></span>${cover(item.image, "small")}
     <span class="meta"><strong>${escapeHtml(item.title)}</strong><small class="microcopy">${escapeHtml(item.detail)}</small></span>
@@ -832,18 +841,22 @@ async function submit(form) {
     return result;
   });
   if (kind === "playlist") return run("Playlist saved.", () => sendJson(`music/playlists/${encodeURIComponent(form.dataset.id)}`, "PATCH", { name: text("name"), ...(text("description") ? { description: text("description") } : {}) }));
-  if (kind === "radio-search" || kind === "jamendo-search") {
+  if (SEARCHES[kind]) {
+    const [path, results] = SEARCHES[kind];
     const query = text("q");
     if (!query) return notify("Type something to search for.", "error");
+    const button = form.querySelector("button");
+    // A YouTube search takes a few seconds.
+    if (button) Object.assign(button, { disabled: true, textContent: "Searching..." });
     try {
-      const results = (await getJson(`music/${kind === "radio-search" ? "radio" : "jamendo"}/search?q=${encodeURIComponent(query)}`)).data;
-      if (kind === "radio-search") view.radioResults = results;
-      else view.jamendoResults = results;
+      view[results] = (await getJson(`music/${path}/search?q=${encodeURIComponent(query)}`)).data;
+      if (kind === "youtube-search") view.youtubeQuery = query;
       render();
       const input = container.querySelector(`form[data-mu-form="${kind}"] input[name="q"]`);
       if (input) input.value = query;
     } catch (error) {
       notify(error.message || "Search failed.", "error");
+      if (button) Object.assign(button, { disabled: false, textContent: "Search" });
     }
   }
   return undefined;

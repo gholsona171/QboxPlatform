@@ -7,6 +7,12 @@
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
+# Music plays YouTube through yt-dlp, which stops working within weeks when it
+# is not kept current. This runs before the "nothing new" exit below, downloads
+# at most once a day, and never fails the update. The bot notices a newly
+# installed yt-dlp by itself, so no restart is needed.
+bash ops/oracle/ytdlp.sh || true
+
 # GitHub builds main and publishes the result to the "deploy" branch
 # (.github/workflows/deploy-build.yml), so the server only downloads and
 # restarts. Without that branch it falls back to building main here.

@@ -47,6 +47,8 @@ export function botFeatures(persistence: PrismaPermissionPersistenceClient, auth
       quotaBytes: Number(env.MUSIC_GUILD_QUOTA_MB) * 1024 * 1024,
       ffmpegPath: env.FFMPEG_PATH || undefined,
       jamendoClientId: env.JAMENDO_CLIENT_ID,
+      ytDlpPath: env.YTDLP_PATH || undefined,
+      youtubeCookiesFile: env.YOUTUBE_COOKIES_FILE || undefined,
       templates,
     }),
     gamesFeature(new PrismaGamesRepository(persistence.prisma), templates),

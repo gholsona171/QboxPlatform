@@ -9,6 +9,7 @@ import {
   type MusicControl,
   type MusicStateSnapshot,
   type MusicStorage,
+  type YoutubeSource,
 } from "@qbox/music";
 
 import { ApiConfiguration } from "../src/config/ApiConfiguration.js";
@@ -26,7 +27,7 @@ const upload = (data: Buffer, name: string, type = "audio/mpeg") => ({ method: "
 
 const state: MusicStateSnapshot = { guildId: GUILD, connected: false, state: "idle", index: 0, queue: [], positionSeconds: 0, durationSeconds: null, live: false, loop: "off", shuffle: false, volume: 60, stayConnected: false, ffmpeg: true };
 
-function setup(allowed: readonly string[], options: { offline?: boolean; host?: MusicHostInfo } = {}) {
+function setup(allowed: readonly string[], options: { offline?: boolean; host?: MusicHostInfo; youtube?: YoutubeSource } = {}) {
   const calls: { permission: string; mutation: boolean }[] = [];
   const commands: { command: MusicCommand; actor: MusicActor }[] = [];
   const files = new Map<string, Buffer>();
@@ -57,6 +58,7 @@ function setup(allowed: readonly string[], options: { offline?: boolean; host?: 
       extractCover: async (_input, _stream, output) => { files.set(output.replace("/music/", ""), Buffer.from("jpeg-bytes")); return true; },
     },
     radio: { search: async (name) => [{ id: "u1", name: `${name} FM`, url: "https://radio.example/stream", tags: [] }] },
+    youtube: options.youtube,
     quotaBytes: 1024 * 1024 * 1024,
   });
   const control: MusicControl = {
@@ -158,7 +160,8 @@ describe("music routes", () => {
 
     const station = (await server.inject(json("POST", "/api/v1/music/stations", { name: "Lofi", url: "https://lofi.example/stream", tags: ["chill"] }))).json().data;
     expect(station).toMatchObject({ name: "Lofi", tags: ["chill"] });
-    expect((await server.inject(json("POST", "/api/v1/music/stations", { name: "Bad", url: "https://www.youtube.com/watch?v=1" }))).json().errors[0].message).toContain("Spotify, Apple Music and YouTube");
+    expect((await server.inject(json("POST", "/api/v1/music/stations", { name: "Bad", url: "https://www.youtube.com/watch?v=1" }))).json().errors[0].message).toContain("A YouTube link is not a direct audio link");
+    expect((await server.inject(json("POST", "/api/v1/music/stations", { name: "Bad", url: "https://open.spotify.com/track/1" }))).json().errors[0].message).toContain("Spotify and Apple Music do not allow bots");
     const saved = await server.inject(json("PUT", "/api/v1/music/settings", { enabled: true, djRoleIds: [ROLE], defaultVolume: 80, maxQueue: 50, nowPlayingPanel: true, stayConnected247: true, homeChannelId: "200000000000000001", autoLeaveMinutes: 0, idleRadioStationId: station.id, expectedRevision: 0 }));
     expect(saved.json().data).toMatchObject({ revision: 1, stayConnected247: true, idleRadioStationId: station.id });
     expect((await server.inject(json("PUT", "/api/v1/music/settings", { enabled: true, djRoleIds: [], defaultVolume: 300, maxQueue: 50, nowPlayingPanel: true, stayConnected247: false, autoLeaveMinutes: 5, expectedRevision: 1 }))).statusCode).toBe(400);
@@ -166,5 +169,60 @@ describe("music routes", () => {
 
     expect((await server.inject({ method: "GET", url: "/api/v1/music/radio/search?q=jazz", headers: host })).json().data).toEqual([{ id: "u1", name: "jazz FM", url: "https://radio.example/stream", tags: [] }]);
     expect((await server.inject({ method: "GET", url: "/api/v1/music/jamendo/search?q=rock", headers: host })).statusCode).toBe(503);
+  });
+
+  it("searches YouTube for DJs and managers, and plays a result through the player command", async () => {
+    const searches: { query: string; limit: number | undefined }[] = [];
+    const video = { id: "dQw4w9WgXcQ", title: "Never Gonna Give You Up", channel: "Rick Astley", durationSeconds: 213, thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" };
+    const youtube: YoutubeSource = {
+      available: true,
+      search: async (query, limit) => {
+        searches.push({ query, limit });
+        if (query === "blocked") throw new MusicError("DEPENDENCY_UNAVAILABLE", "YouTube is asking this host to sign in.");
+        if (query === "busy") throw new MusicError("LIMIT_REACHED", "YouTube is busy with other requests. Try again in a moment.");
+        return [video];
+      },
+      first: async () => video,
+      video: async () => video,
+      stream: async () => ({ url: "https://rr1.googlevideo.com/videoplayback", cached: false }),
+      forget: () => undefined,
+    };
+    const search = (query: string) => ({ method: "GET" as const, url: `/api/v1/music/youtube/search${query}`, headers: host });
+
+    const dj = setup(["music.dj"], { youtube });
+    const found = await dj.server.inject(search("?q=never%20gonna%20give%20you%20up"));
+    expect(found.statusCode).toBe(200);
+    expect(found.headers["cache-control"]).toBe("no-store");
+    expect(found.json().data).toEqual([video]);
+    expect(searches).toEqual([{ query: "never gonna give you up", limit: 8 }]);
+    expect(dj.calls.at(-1)).toEqual({ permission: "music.dj|music.manage", mutation: false });
+    expect((await dj.server.inject({ method: "GET", url: "/api/v1/music/overview", headers: host })).json().data).toMatchObject({ youtube: true, canManage: false });
+
+    for (const bad of ["", "?q=", "?q=%20%20", `?q=${"x".repeat(101)}`]) expect((await dj.server.inject(search(bad))).statusCode, bad).toBe(400);
+    expect(searches).toHaveLength(1);
+    const blocked = await dj.server.inject(search("?q=blocked"));
+    expect(blocked.statusCode).toBe(503);
+    expect(JSON.stringify(blocked.json())).toContain("YouTube is asking this host to sign in.");
+    const busy = await dj.server.inject(search("?q=busy"));
+    expect(busy.statusCode).toBe(400);
+    expect(busy.json().errors[0].message).toBe("YouTube is busy with other requests. Try again in a moment.");
+
+    const played = await dj.server.inject(json("POST", "/api/v1/music/command", { action: "play", query: "youtube:dQw4w9WgXcQ", now: true }));
+    expect(played.statusCode).toBe(200);
+    expect(dj.commands.at(-1)).toEqual({ command: { action: "play", query: "youtube:dQw4w9WgXcQ", now: true }, actor: { userId: USER, manager: false, dj: true, roleIds: [ROLE] } });
+    expect(dj.calls.at(-1)).toEqual({ permission: "music.dj", mutation: true });
+
+    const stranger = setup([], { youtube });
+    expect((await stranger.server.inject(search("?q=song"))).statusCode).toBe(403);
+    expect((await stranger.server.inject(json("POST", "/api/v1/music/command", { action: "play", query: "youtube:dQw4w9WgXcQ" }))).statusCode).toBe(403);
+    expect(searches).toHaveLength(3);
+  });
+
+  it("hides YouTube and refuses its search when yt-dlp is not installed", async () => {
+    const { server } = setup(["music.manage"]);
+    expect((await server.inject({ method: "GET", url: "/api/v1/music/overview", headers: host })).json().data.youtube).toBe(false);
+    const response = await server.inject({ method: "GET", url: "/api/v1/music/youtube/search?q=song", headers: host });
+    expect(response.statusCode).toBe(503);
+    expect(JSON.stringify(response.json())).toContain("YouTube is not set up on this host");
   });
 });

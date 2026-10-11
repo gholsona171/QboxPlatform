@@ -6,7 +6,7 @@ import { DiscordRestGamesGateway, GamesService, ProtocolQueryClient } from "@qbo
 import { DiscordRestKnowledgeGateway, KnowledgeService } from "@qbox/knowledge-base";
 import { DiscordRestMessagesGateway, MessageTemplateService } from "@qbox/messages";
 import { DiscordRestModerationGateway, ModerationService } from "@qbox/moderation";
-import { FfmpegMusicProbe, HttpLinkResolver, HttpMusicControlClient, JamendoApiCatalog, LocalMusicStorage, MusicService, RadioBrowserDirectory, botIdFromToken, findMediaTools, voiceBotInviteUrl } from "@qbox/music";
+import { FfmpegMusicProbe, HttpLinkResolver, HttpMusicControlClient, JamendoApiCatalog, LocalMusicStorage, MusicService, RadioBrowserDirectory, botIdFromToken, createYoutubeSource, findMediaTools, voiceBotInviteUrl } from "@qbox/music";
 import { DiscordRestStaffGateway, StaffService } from "@qbox/staff";
 import { DiscordRestStreamsGateway, StreamsService, createStreamPlatformClients } from "@qbox/streams";
 import { env } from "@qbox/shared";
@@ -123,6 +123,8 @@ function musicService(persistence: PrismaPermissionPersistenceClient): MusicServ
     links: new HttpLinkResolver(fetch, probe),
     radio: new RadioBrowserDirectory(),
     jamendo: new JamendoApiCatalog(env.JAMENDO_CLIENT_ID),
+    // The API only searches YouTube for the portal; the bot looks up and plays the audio.
+    youtube: createYoutubeSource({ ytDlpPath: env.YTDLP_PATH, cookiesFile: env.YOUTUBE_COOKIES_FILE, concurrency: 1 }),
     quotaBytes: Number(env.MUSIC_GUILD_QUOTA_MB) * 1024 * 1024,
   });
 }

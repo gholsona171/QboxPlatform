@@ -37,6 +37,8 @@ export const env = {
   MUSIC_GUILD_QUOTA_MB: process.env.MUSIC_GUILD_QUOTA_MB || "2048",
   FFMPEG_PATH: process.env.FFMPEG_PATH ?? "",
   JAMENDO_CLIENT_ID: process.env.JAMENDO_CLIENT_ID ?? "",
+  YTDLP_PATH: process.env.YTDLP_PATH ?? "",
+  YOUTUBE_COOKIES_FILE: process.env.YOUTUBE_COOKIES_FILE ?? "",
   DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID ?? "",
   DISCORD_MESSAGE_CONTENT_INTENT:
     (process.env.DISCORD_MESSAGE_CONTENT_INTENT ?? "false") === "true",

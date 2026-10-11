@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# One-time setup for an Oracle Cloud "Always Free" Ubuntu server.
-# Installs Node.js, pnpm, and Tailscale, writes the private .env, builds
+# One-time setup for an Ubuntu cloud server (see docs/Hosting.md; the folder
+# name "oracle" is a leftover and is kept because the services point at it).
+# Installs Node.js, pnpm, Tailscale, ffmpeg, and yt-dlp, writes the private .env, builds
 # Guildhall, registers slash commands, and starts the API and bot as services
 # that restart on failure and update themselves from GitHub.
 #
@@ -19,6 +20,9 @@ ask_secret() { local prompt="$1" var; read -r -s -p "$prompt (hidden): " var; ec
 say "Installing system packages"
 sudo apt-get update -y
 sudo apt-get install -y ca-certificates curl git jq ffmpeg
+
+say "Installing yt-dlp (YouTube for Music) in ~/.local/bin"
+bash "$REPO_DIR/ops/oracle/ytdlp.sh" --force || true
 
 if [ "$(free -m | awk '/^Mem:/ {print $2}')" -lt 2000 ] && [ ! -f /swapfile ]; then
   say "Adding 2 GB swap (small server)"
