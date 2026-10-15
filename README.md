@@ -27,7 +27,7 @@ One Guildhall installation serves any number of Discord servers. Invite the bot 
 2. `cp .env.example .env` and fill in the Discord values.
 3. `pnpm db:start` for the temporary development database (see `docs/DevelopmentDatabase.md`), and set `DATABASE_URL` in `.env`.
 4. `pnpm build`, then start the bot (`pnpm --filter @qbox/bot start`) and the API (`pnpm --filter @qbox/api start`).
-5. Open `API_PUBLIC_BASE_URL` for the portal. The GitHub Pages preview is described in `apps/web/README.md`.
+5. Open `API_PUBLIC_BASE_URL` for the portal.
 
 ## Design
 

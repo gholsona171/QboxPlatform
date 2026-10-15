@@ -45,19 +45,3 @@ Portal:
 ```text
 <API_PUBLIC_BASE_URL>/auth/discord/callback
 ```
-
-## GitHub Pages preview
-
-`.github/workflows/pages.yml` publishes the portal to GitHub Pages on every
-push to `main` that touches `apps/web`. The Pages copy cannot reach the API, so
-it only shows the sign-in screen and a link to the live platform.
-
-- In the repository settings, set **Pages > Source** to **GitHub Actions**.
-- Set the repository variable `QBOX_LIVE_URL` to the live platform URL
-  (`https://...`). The sign-in button on the Pages site links there.
-
-Build the preview locally with:
-
-```text
-BASE_PATH=/QboxPlatform QBOX_LIVE_URL=https://example.ts.net node scripts/build-pages.mjs _site
-```

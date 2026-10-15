@@ -24,12 +24,8 @@ export function badge(value) {
 }
 
 /** Shown in place of any page until the visitor signs in with Discord. */
-export function signInCard(loginHref, previewSite, liveHref) {
-  const button = previewSite
-    ? liveHref
-      ? `<a class="button primary" href="${escapeHtml(liveHref)}/">Open the live platform</a>`
-      : `<p class="microcopy">The live platform link has not been configured for this preview site yet.</p>`
-    : `<a class="button primary" href="${escapeHtml(loginHref)}">Sign in with Discord</a>`;
+export function signInCard(loginHref) {
+  const button = `<a class="button primary" href="${escapeHtml(loginHref)}">Sign in with Discord</a>`;
   return `<section class="card sign-in-card">
     <div class="brand-mark large">GH</div>
     <h2>Sign in to manage your server</h2>

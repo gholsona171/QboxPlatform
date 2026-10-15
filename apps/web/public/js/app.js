@@ -1,5 +1,5 @@
 import { loginUrl, logout } from "./api.js";
-import { appPath, currentRoutePage, liveUrl, staticHosting } from "./config.js";
+import { appPath, currentRoutePage } from "./config.js";
 import { chooseServerView, initializeGuildPicker, renderServerHeader } from "./guilds.js";
 import { currentGuild, refreshSession, session, signedIn } from "./session.js";
 import { escapeHtml, initializeModal, notify, signInCard } from "./ui.js";
@@ -78,7 +78,7 @@ function renderCurrentRoute() {
   document.querySelectorAll(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.route === current.id));
   const content = document.getElementById("content");
   if (!signedIn() && current.id !== "overview") {
-    content.innerHTML = signInCard(loginUrl(), staticHosting(), liveUrl());
+    content.innerHTML = signInCard(loginUrl());
     return;
   }
   if (signedIn() && !currentGuild()) {
@@ -102,12 +102,10 @@ function renderChrome() {
   const title = document.getElementById("connectionTitle");
   const text = document.getElementById("connectionText");
   dot.className = `status-dot ${session.health.available ? "live" : "danger"}`;
-  title.textContent = staticHosting() ? "Preview site" : session.health.available ? "Connected" : "API offline";
-  text.textContent = staticHosting()
-    ? "Sign in on the live platform to manage your server."
-    : session.health.available
-      ? profile ? (currentGuild() ? `Changes here apply to ${currentGuild().name}.` : "Choose a server to get started.") : "Sign in with Discord to continue."
-      : `The ${BRAND.name} API is not reachable right now.`;
+  title.textContent = session.health.available ? "Connected" : "API offline";
+  text.textContent = session.health.available
+    ? profile ? (currentGuild() ? `Changes here apply to ${currentGuild().name}.` : "Choose a server to get started.") : "Sign in with Discord to continue."
+    : `The ${BRAND.name} API is not reachable right now.`;
 
   const name = document.getElementById("profileName");
   const avatar = document.getElementById("profileAvatar");

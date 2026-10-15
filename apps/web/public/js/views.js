@@ -1,5 +1,5 @@
 import { loginUrl, ticketsOverview } from "./api.js";
-import { appPath, liveUrl, staticHosting } from "./config.js";
+import { appPath } from "./config.js";
 import { featureRegistry } from "./featureRegistry.js";
 import { session, signedIn } from "./session.js";
 import { badge, escapeHtml, signInCard } from "./ui.js";
@@ -18,7 +18,7 @@ export async function renderOverviewPage(container) {
     .join("");
 
   if (!signedIn()) {
-    container.innerHTML = `${signInCard(loginUrl(), staticHosting(), liveUrl())}
+    container.innerHTML = `${signInCard(loginUrl())}
       <section class="card"><h2>What you can manage</h2><p class="microcopy">${BRAND.tagline}</p><div class="feature-grid">${featureCards}</div></section>`;
     return;
   }
