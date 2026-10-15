@@ -1,0 +1,1385 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model ModerationSettings
+ *
+ */
+export type ModerationSettingsModel = runtime.Types.Result.DefaultSelection<Prisma.$ModerationSettingsPayload>;
+export type AggregateModerationSettings = {
+    _count: ModerationSettingsCountAggregateOutputType | null;
+    _avg: ModerationSettingsAvgAggregateOutputType | null;
+    _sum: ModerationSettingsSumAggregateOutputType | null;
+    _min: ModerationSettingsMinAggregateOutputType | null;
+    _max: ModerationSettingsMaxAggregateOutputType | null;
+};
+export type ModerationSettingsAvgAggregateOutputType = {
+    defaultTimeoutMinutes: number | null;
+    banDeleteMessageHours: number | null;
+    warningExpiryDays: number | null;
+    nextCaseNumber: number | null;
+    revision: number | null;
+};
+export type ModerationSettingsSumAggregateOutputType = {
+    defaultTimeoutMinutes: number | null;
+    banDeleteMessageHours: number | null;
+    warningExpiryDays: number | null;
+    nextCaseNumber: number | null;
+    revision: number | null;
+};
+export type ModerationSettingsMinAggregateOutputType = {
+    guildId: string | null;
+    logChannelId: string | null;
+    dmOnAction: boolean | null;
+    dmIncludeModerator: boolean | null;
+    appealMessage: string | null;
+    requireReason: boolean | null;
+    defaultTimeoutMinutes: number | null;
+    banDeleteMessageHours: number | null;
+    warningExpiryDays: number | null;
+    recordExternalActions: boolean | null;
+    nextCaseNumber: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ModerationSettingsMaxAggregateOutputType = {
+    guildId: string | null;
+    logChannelId: string | null;
+    dmOnAction: boolean | null;
+    dmIncludeModerator: boolean | null;
+    appealMessage: string | null;
+    requireReason: boolean | null;
+    defaultTimeoutMinutes: number | null;
+    banDeleteMessageHours: number | null;
+    warningExpiryDays: number | null;
+    recordExternalActions: boolean | null;
+    nextCaseNumber: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type ModerationSettingsCountAggregateOutputType = {
+    guildId: number;
+    logChannelId: number;
+    dmOnAction: number;
+    dmIncludeModerator: number;
+    appealMessage: number;
+    requireReason: number;
+    defaultTimeoutMinutes: number;
+    banDeleteMessageHours: number;
+    warningExpiryDays: number;
+    protectedRoleIds: number;
+    escalation: number;
+    automod: number;
+    recordExternalActions: number;
+    nextCaseNumber: number;
+    revision: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type ModerationSettingsAvgAggregateInputType = {
+    defaultTimeoutMinutes?: true;
+    banDeleteMessageHours?: true;
+    warningExpiryDays?: true;
+    nextCaseNumber?: true;
+    revision?: true;
+};
+export type ModerationSettingsSumAggregateInputType = {
+    defaultTimeoutMinutes?: true;
+    banDeleteMessageHours?: true;
+    warningExpiryDays?: true;
+    nextCaseNumber?: true;
+    revision?: true;
+};
+export type ModerationSettingsMinAggregateInputType = {
+    guildId?: true;
+    logChannelId?: true;
+    dmOnAction?: true;
+    dmIncludeModerator?: true;
+    appealMessage?: true;
+    requireReason?: true;
+    defaultTimeoutMinutes?: true;
+    banDeleteMessageHours?: true;
+    warningExpiryDays?: true;
+    recordExternalActions?: true;
+    nextCaseNumber?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ModerationSettingsMaxAggregateInputType = {
+    guildId?: true;
+    logChannelId?: true;
+    dmOnAction?: true;
+    dmIncludeModerator?: true;
+    appealMessage?: true;
+    requireReason?: true;
+    defaultTimeoutMinutes?: true;
+    banDeleteMessageHours?: true;
+    warningExpiryDays?: true;
+    recordExternalActions?: true;
+    nextCaseNumber?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type ModerationSettingsCountAggregateInputType = {
+    guildId?: true;
+    logChannelId?: true;
+    dmOnAction?: true;
+    dmIncludeModerator?: true;
+    appealMessage?: true;
+    requireReason?: true;
+    defaultTimeoutMinutes?: true;
+    banDeleteMessageHours?: true;
+    warningExpiryDays?: true;
+    protectedRoleIds?: true;
+    escalation?: true;
+    automod?: true;
+    recordExternalActions?: true;
+    nextCaseNumber?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type ModerationSettingsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModerationSettings to aggregate.
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ModerationSettings to fetch.
+     */
+    orderBy?: Prisma.ModerationSettingsOrderByWithRelationInput | Prisma.ModerationSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.ModerationSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ModerationSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ModerationSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ModerationSettings
+    **/
+    _count?: true | ModerationSettingsCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: ModerationSettingsAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: ModerationSettingsSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ModerationSettingsMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ModerationSettingsMaxAggregateInputType;
+};
+export type GetModerationSettingsAggregateType<T extends ModerationSettingsAggregateArgs> = {
+    [P in keyof T & keyof AggregateModerationSettings]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateModerationSettings[P]> : Prisma.GetScalarType<T[P], AggregateModerationSettings[P]>;
+};
+export type ModerationSettingsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ModerationSettingsWhereInput;
+    orderBy?: Prisma.ModerationSettingsOrderByWithAggregationInput | Prisma.ModerationSettingsOrderByWithAggregationInput[];
+    by: Prisma.ModerationSettingsScalarFieldEnum[] | Prisma.ModerationSettingsScalarFieldEnum;
+    having?: Prisma.ModerationSettingsScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: ModerationSettingsCountAggregateInputType | true;
+    _avg?: ModerationSettingsAvgAggregateInputType;
+    _sum?: ModerationSettingsSumAggregateInputType;
+    _min?: ModerationSettingsMinAggregateInputType;
+    _max?: ModerationSettingsMaxAggregateInputType;
+};
+export type ModerationSettingsGroupByOutputType = {
+    guildId: string;
+    logChannelId: string | null;
+    dmOnAction: boolean;
+    dmIncludeModerator: boolean;
+    appealMessage: string | null;
+    requireReason: boolean;
+    defaultTimeoutMinutes: number;
+    banDeleteMessageHours: number;
+    warningExpiryDays: number;
+    protectedRoleIds: string[];
+    escalation: runtime.JsonValue;
+    automod: runtime.JsonValue;
+    recordExternalActions: boolean;
+    nextCaseNumber: number;
+    revision: number;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: ModerationSettingsCountAggregateOutputType | null;
+    _avg: ModerationSettingsAvgAggregateOutputType | null;
+    _sum: ModerationSettingsSumAggregateOutputType | null;
+    _min: ModerationSettingsMinAggregateOutputType | null;
+    _max: ModerationSettingsMaxAggregateOutputType | null;
+};
+export type GetModerationSettingsGroupByPayload<T extends ModerationSettingsGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<ModerationSettingsGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof ModerationSettingsGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], ModerationSettingsGroupByOutputType[P]> : Prisma.GetScalarType<T[P], ModerationSettingsGroupByOutputType[P]>;
+}>>;
+export type ModerationSettingsWhereInput = {
+    AND?: Prisma.ModerationSettingsWhereInput | Prisma.ModerationSettingsWhereInput[];
+    OR?: Prisma.ModerationSettingsWhereInput[];
+    NOT?: Prisma.ModerationSettingsWhereInput | Prisma.ModerationSettingsWhereInput[];
+    guildId?: Prisma.StringFilter<"ModerationSettings"> | string;
+    logChannelId?: Prisma.StringNullableFilter<"ModerationSettings"> | string | null;
+    dmOnAction?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    dmIncludeModerator?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    appealMessage?: Prisma.StringNullableFilter<"ModerationSettings"> | string | null;
+    requireReason?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFilter<"ModerationSettings"> | number;
+    banDeleteMessageHours?: Prisma.IntFilter<"ModerationSettings"> | number;
+    warningExpiryDays?: Prisma.IntFilter<"ModerationSettings"> | number;
+    protectedRoleIds?: Prisma.StringNullableListFilter<"ModerationSettings">;
+    escalation?: Prisma.JsonFilter<"ModerationSettings">;
+    automod?: Prisma.JsonFilter<"ModerationSettings">;
+    recordExternalActions?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    nextCaseNumber?: Prisma.IntFilter<"ModerationSettings"> | number;
+    revision?: Prisma.IntFilter<"ModerationSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"ModerationSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"ModerationSettings"> | Date | string;
+};
+export type ModerationSettingsOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    dmOnAction?: Prisma.SortOrder;
+    dmIncludeModerator?: Prisma.SortOrder;
+    appealMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    requireReason?: Prisma.SortOrder;
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    protectedRoleIds?: Prisma.SortOrder;
+    escalation?: Prisma.SortOrder;
+    automod?: Prisma.SortOrder;
+    recordExternalActions?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ModerationSettingsWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.ModerationSettingsWhereInput | Prisma.ModerationSettingsWhereInput[];
+    OR?: Prisma.ModerationSettingsWhereInput[];
+    NOT?: Prisma.ModerationSettingsWhereInput | Prisma.ModerationSettingsWhereInput[];
+    logChannelId?: Prisma.StringNullableFilter<"ModerationSettings"> | string | null;
+    dmOnAction?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    dmIncludeModerator?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    appealMessage?: Prisma.StringNullableFilter<"ModerationSettings"> | string | null;
+    requireReason?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFilter<"ModerationSettings"> | number;
+    banDeleteMessageHours?: Prisma.IntFilter<"ModerationSettings"> | number;
+    warningExpiryDays?: Prisma.IntFilter<"ModerationSettings"> | number;
+    protectedRoleIds?: Prisma.StringNullableListFilter<"ModerationSettings">;
+    escalation?: Prisma.JsonFilter<"ModerationSettings">;
+    automod?: Prisma.JsonFilter<"ModerationSettings">;
+    recordExternalActions?: Prisma.BoolFilter<"ModerationSettings"> | boolean;
+    nextCaseNumber?: Prisma.IntFilter<"ModerationSettings"> | number;
+    revision?: Prisma.IntFilter<"ModerationSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"ModerationSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"ModerationSettings"> | Date | string;
+}, "guildId">;
+export type ModerationSettingsOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    dmOnAction?: Prisma.SortOrder;
+    dmIncludeModerator?: Prisma.SortOrder;
+    appealMessage?: Prisma.SortOrderInput | Prisma.SortOrder;
+    requireReason?: Prisma.SortOrder;
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    protectedRoleIds?: Prisma.SortOrder;
+    escalation?: Prisma.SortOrder;
+    automod?: Prisma.SortOrder;
+    recordExternalActions?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.ModerationSettingsCountOrderByAggregateInput;
+    _avg?: Prisma.ModerationSettingsAvgOrderByAggregateInput;
+    _max?: Prisma.ModerationSettingsMaxOrderByAggregateInput;
+    _min?: Prisma.ModerationSettingsMinOrderByAggregateInput;
+    _sum?: Prisma.ModerationSettingsSumOrderByAggregateInput;
+};
+export type ModerationSettingsScalarWhereWithAggregatesInput = {
+    AND?: Prisma.ModerationSettingsScalarWhereWithAggregatesInput | Prisma.ModerationSettingsScalarWhereWithAggregatesInput[];
+    OR?: Prisma.ModerationSettingsScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.ModerationSettingsScalarWhereWithAggregatesInput | Prisma.ModerationSettingsScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.StringWithAggregatesFilter<"ModerationSettings"> | string;
+    logChannelId?: Prisma.StringNullableWithAggregatesFilter<"ModerationSettings"> | string | null;
+    dmOnAction?: Prisma.BoolWithAggregatesFilter<"ModerationSettings"> | boolean;
+    dmIncludeModerator?: Prisma.BoolWithAggregatesFilter<"ModerationSettings"> | boolean;
+    appealMessage?: Prisma.StringNullableWithAggregatesFilter<"ModerationSettings"> | string | null;
+    requireReason?: Prisma.BoolWithAggregatesFilter<"ModerationSettings"> | boolean;
+    defaultTimeoutMinutes?: Prisma.IntWithAggregatesFilter<"ModerationSettings"> | number;
+    banDeleteMessageHours?: Prisma.IntWithAggregatesFilter<"ModerationSettings"> | number;
+    warningExpiryDays?: Prisma.IntWithAggregatesFilter<"ModerationSettings"> | number;
+    protectedRoleIds?: Prisma.StringNullableListFilter<"ModerationSettings">;
+    escalation?: Prisma.JsonWithAggregatesFilter<"ModerationSettings">;
+    automod?: Prisma.JsonWithAggregatesFilter<"ModerationSettings">;
+    recordExternalActions?: Prisma.BoolWithAggregatesFilter<"ModerationSettings"> | boolean;
+    nextCaseNumber?: Prisma.IntWithAggregatesFilter<"ModerationSettings"> | number;
+    revision?: Prisma.IntWithAggregatesFilter<"ModerationSettings"> | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"ModerationSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ModerationSettings"> | Date | string;
+};
+export type ModerationSettingsCreateInput = {
+    guildId: string;
+    logChannelId?: string | null;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: string | null;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: number;
+    banDeleteMessageHours?: number;
+    warningExpiryDays?: number;
+    protectedRoleIds?: Prisma.ModerationSettingsCreateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ModerationSettingsUncheckedCreateInput = {
+    guildId: string;
+    logChannelId?: string | null;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: string | null;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: number;
+    banDeleteMessageHours?: number;
+    warningExpiryDays?: number;
+    protectedRoleIds?: Prisma.ModerationSettingsCreateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ModerationSettingsUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    dmOnAction?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    dmIncludeModerator?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    appealMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    requireReason?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFieldUpdateOperationsInput | number;
+    banDeleteMessageHours?: Prisma.IntFieldUpdateOperationsInput | number;
+    warningExpiryDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    protectedRoleIds?: Prisma.ModerationSettingsUpdateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nextCaseNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ModerationSettingsUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    dmOnAction?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    dmIncludeModerator?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    appealMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    requireReason?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFieldUpdateOperationsInput | number;
+    banDeleteMessageHours?: Prisma.IntFieldUpdateOperationsInput | number;
+    warningExpiryDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    protectedRoleIds?: Prisma.ModerationSettingsUpdateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nextCaseNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ModerationSettingsCreateManyInput = {
+    guildId: string;
+    logChannelId?: string | null;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: string | null;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: number;
+    banDeleteMessageHours?: number;
+    warningExpiryDays?: number;
+    protectedRoleIds?: Prisma.ModerationSettingsCreateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type ModerationSettingsUpdateManyMutationInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    dmOnAction?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    dmIncludeModerator?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    appealMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    requireReason?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFieldUpdateOperationsInput | number;
+    banDeleteMessageHours?: Prisma.IntFieldUpdateOperationsInput | number;
+    warningExpiryDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    protectedRoleIds?: Prisma.ModerationSettingsUpdateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nextCaseNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ModerationSettingsUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    dmOnAction?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    dmIncludeModerator?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    appealMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    requireReason?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    defaultTimeoutMinutes?: Prisma.IntFieldUpdateOperationsInput | number;
+    banDeleteMessageHours?: Prisma.IntFieldUpdateOperationsInput | number;
+    warningExpiryDays?: Prisma.IntFieldUpdateOperationsInput | number;
+    protectedRoleIds?: Prisma.ModerationSettingsUpdateprotectedRoleIdsInput | string[];
+    escalation?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    automod?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    recordExternalActions?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    nextCaseNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ModerationSettingsCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    logChannelId?: Prisma.SortOrder;
+    dmOnAction?: Prisma.SortOrder;
+    dmIncludeModerator?: Prisma.SortOrder;
+    appealMessage?: Prisma.SortOrder;
+    requireReason?: Prisma.SortOrder;
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    protectedRoleIds?: Prisma.SortOrder;
+    escalation?: Prisma.SortOrder;
+    automod?: Prisma.SortOrder;
+    recordExternalActions?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ModerationSettingsAvgOrderByAggregateInput = {
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type ModerationSettingsMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    logChannelId?: Prisma.SortOrder;
+    dmOnAction?: Prisma.SortOrder;
+    dmIncludeModerator?: Prisma.SortOrder;
+    appealMessage?: Prisma.SortOrder;
+    requireReason?: Prisma.SortOrder;
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    recordExternalActions?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ModerationSettingsMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    logChannelId?: Prisma.SortOrder;
+    dmOnAction?: Prisma.SortOrder;
+    dmIncludeModerator?: Prisma.SortOrder;
+    appealMessage?: Prisma.SortOrder;
+    requireReason?: Prisma.SortOrder;
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    recordExternalActions?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type ModerationSettingsSumOrderByAggregateInput = {
+    defaultTimeoutMinutes?: Prisma.SortOrder;
+    banDeleteMessageHours?: Prisma.SortOrder;
+    warningExpiryDays?: Prisma.SortOrder;
+    nextCaseNumber?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type ModerationSettingsCreateprotectedRoleIdsInput = {
+    set: string[];
+};
+export type ModerationSettingsUpdateprotectedRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type ModerationSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    logChannelId?: boolean;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: boolean;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: boolean;
+    banDeleteMessageHours?: boolean;
+    warningExpiryDays?: boolean;
+    protectedRoleIds?: boolean;
+    escalation?: boolean;
+    automod?: boolean;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["moderationSettings"]>;
+export type ModerationSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    logChannelId?: boolean;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: boolean;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: boolean;
+    banDeleteMessageHours?: boolean;
+    warningExpiryDays?: boolean;
+    protectedRoleIds?: boolean;
+    escalation?: boolean;
+    automod?: boolean;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["moderationSettings"]>;
+export type ModerationSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    logChannelId?: boolean;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: boolean;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: boolean;
+    banDeleteMessageHours?: boolean;
+    warningExpiryDays?: boolean;
+    protectedRoleIds?: boolean;
+    escalation?: boolean;
+    automod?: boolean;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["moderationSettings"]>;
+export type ModerationSettingsSelectScalar = {
+    guildId?: boolean;
+    logChannelId?: boolean;
+    dmOnAction?: boolean;
+    dmIncludeModerator?: boolean;
+    appealMessage?: boolean;
+    requireReason?: boolean;
+    defaultTimeoutMinutes?: boolean;
+    banDeleteMessageHours?: boolean;
+    warningExpiryDays?: boolean;
+    protectedRoleIds?: boolean;
+    escalation?: boolean;
+    automod?: boolean;
+    recordExternalActions?: boolean;
+    nextCaseNumber?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type ModerationSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "logChannelId" | "dmOnAction" | "dmIncludeModerator" | "appealMessage" | "requireReason" | "defaultTimeoutMinutes" | "banDeleteMessageHours" | "warningExpiryDays" | "protectedRoleIds" | "escalation" | "automod" | "recordExternalActions" | "nextCaseNumber" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["moderationSettings"]>;
+export type $ModerationSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "ModerationSettings";
+    objects: {};
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        logChannelId: string | null;
+        dmOnAction: boolean;
+        dmIncludeModerator: boolean;
+        appealMessage: string | null;
+        requireReason: boolean;
+        defaultTimeoutMinutes: number;
+        banDeleteMessageHours: number;
+        warningExpiryDays: number;
+        protectedRoleIds: string[];
+        escalation: runtime.JsonValue;
+        automod: runtime.JsonValue;
+        recordExternalActions: boolean;
+        nextCaseNumber: number;
+        revision: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["moderationSettings"]>;
+    composites: {};
+};
+export type ModerationSettingsGetPayload<S extends boolean | null | undefined | ModerationSettingsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload, S>;
+export type ModerationSettingsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<ModerationSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: ModerationSettingsCountAggregateInputType | true;
+};
+export interface ModerationSettingsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['ModerationSettings'];
+        meta: {
+            name: 'ModerationSettings';
+        };
+    };
+    /**
+     * Find zero or one ModerationSettings that matches the filter.
+     * @param {ModerationSettingsFindUniqueArgs} args - Arguments to find a ModerationSettings
+     * @example
+     * // Get one ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ModerationSettingsFindUniqueArgs>(args: Prisma.SelectSubset<T, ModerationSettingsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one ModerationSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ModerationSettingsFindUniqueOrThrowArgs} args - Arguments to find a ModerationSettings
+     * @example
+     * // Get one ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ModerationSettingsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ModerationSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ModerationSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsFindFirstArgs} args - Arguments to find a ModerationSettings
+     * @example
+     * // Get one ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ModerationSettingsFindFirstArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsFindFirstArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ModerationSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsFindFirstOrThrowArgs} args - Arguments to find a ModerationSettings
+     * @example
+     * // Get one ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ModerationSettingsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more ModerationSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findMany()
+     *
+     * // Get first 10 ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const moderationSettingsWithGuildIdOnly = await prisma.moderationSettings.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends ModerationSettingsFindManyArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a ModerationSettings.
+     * @param {ModerationSettingsCreateArgs} args - Arguments to create a ModerationSettings.
+     * @example
+     * // Create one ModerationSettings
+     * const ModerationSettings = await prisma.moderationSettings.create({
+     *   data: {
+     *     // ... data to create a ModerationSettings
+     *   }
+     * })
+     *
+     */
+    create<T extends ModerationSettingsCreateArgs>(args: Prisma.SelectSubset<T, ModerationSettingsCreateArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many ModerationSettings.
+     * @param {ModerationSettingsCreateManyArgs} args - Arguments to create many ModerationSettings.
+     * @example
+     * // Create many ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ModerationSettingsCreateManyArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many ModerationSettings and returns the data saved in the database.
+     * @param {ModerationSettingsCreateManyAndReturnArgs} args - Arguments to create many ModerationSettings.
+     * @example
+     * // Create many ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ModerationSettings and only return the `guildId`
+     * const moderationSettingsWithGuildIdOnly = await prisma.moderationSettings.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ModerationSettingsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a ModerationSettings.
+     * @param {ModerationSettingsDeleteArgs} args - Arguments to delete one ModerationSettings.
+     * @example
+     * // Delete one ModerationSettings
+     * const ModerationSettings = await prisma.moderationSettings.delete({
+     *   where: {
+     *     // ... filter to delete one ModerationSettings
+     *   }
+     * })
+     *
+     */
+    delete<T extends ModerationSettingsDeleteArgs>(args: Prisma.SelectSubset<T, ModerationSettingsDeleteArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one ModerationSettings.
+     * @param {ModerationSettingsUpdateArgs} args - Arguments to update one ModerationSettings.
+     * @example
+     * // Update one ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ModerationSettingsUpdateArgs>(args: Prisma.SelectSubset<T, ModerationSettingsUpdateArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more ModerationSettings.
+     * @param {ModerationSettingsDeleteManyArgs} args - Arguments to filter ModerationSettings to delete.
+     * @example
+     * // Delete a few ModerationSettings
+     * const { count } = await prisma.moderationSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ModerationSettingsDeleteManyArgs>(args?: Prisma.SelectSubset<T, ModerationSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ModerationSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ModerationSettingsUpdateManyArgs>(args: Prisma.SelectSubset<T, ModerationSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ModerationSettings and returns the data updated in the database.
+     * @param {ModerationSettingsUpdateManyAndReturnArgs} args - Arguments to update many ModerationSettings.
+     * @example
+     * // Update many ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ModerationSettings and only return the `guildId`
+     * const moderationSettingsWithGuildIdOnly = await prisma.moderationSettings.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ModerationSettingsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ModerationSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one ModerationSettings.
+     * @param {ModerationSettingsUpsertArgs} args - Arguments to update or create a ModerationSettings.
+     * @example
+     * // Update or create a ModerationSettings
+     * const moderationSettings = await prisma.moderationSettings.upsert({
+     *   create: {
+     *     // ... data to create a ModerationSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ModerationSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ModerationSettingsUpsertArgs>(args: Prisma.SelectSubset<T, ModerationSettingsUpsertArgs<ExtArgs>>): Prisma.Prisma__ModerationSettingsClient<runtime.Types.Result.GetResult<Prisma.$ModerationSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of ModerationSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsCountArgs} args - Arguments to filter ModerationSettings to count.
+     * @example
+     * // Count the number of ModerationSettings
+     * const count = await prisma.moderationSettings.count({
+     *   where: {
+     *     // ... the filter for the ModerationSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends ModerationSettingsCountArgs>(args?: Prisma.Subset<T, ModerationSettingsCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], ModerationSettingsCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a ModerationSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ModerationSettingsAggregateArgs>(args: Prisma.Subset<T, ModerationSettingsAggregateArgs>): Prisma.PrismaPromise<GetModerationSettingsAggregateType<T>>;
+    /**
+     * Group by ModerationSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ModerationSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends ModerationSettingsGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: ModerationSettingsGroupByArgs['orderBy'];
+    } : {
+        orderBy?: ModerationSettingsGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, ModerationSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetModerationSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the ModerationSettings model
+     */
+    readonly fields: ModerationSettingsFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for ModerationSettings.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__ModerationSettingsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the ModerationSettings model
+ */
+export interface ModerationSettingsFieldRefs {
+    readonly guildId: Prisma.FieldRef<"ModerationSettings", 'String'>;
+    readonly logChannelId: Prisma.FieldRef<"ModerationSettings", 'String'>;
+    readonly dmOnAction: Prisma.FieldRef<"ModerationSettings", 'Boolean'>;
+    readonly dmIncludeModerator: Prisma.FieldRef<"ModerationSettings", 'Boolean'>;
+    readonly appealMessage: Prisma.FieldRef<"ModerationSettings", 'String'>;
+    readonly requireReason: Prisma.FieldRef<"ModerationSettings", 'Boolean'>;
+    readonly defaultTimeoutMinutes: Prisma.FieldRef<"ModerationSettings", 'Int'>;
+    readonly banDeleteMessageHours: Prisma.FieldRef<"ModerationSettings", 'Int'>;
+    readonly warningExpiryDays: Prisma.FieldRef<"ModerationSettings", 'Int'>;
+    readonly protectedRoleIds: Prisma.FieldRef<"ModerationSettings", 'String[]'>;
+    readonly escalation: Prisma.FieldRef<"ModerationSettings", 'Json'>;
+    readonly automod: Prisma.FieldRef<"ModerationSettings", 'Json'>;
+    readonly recordExternalActions: Prisma.FieldRef<"ModerationSettings", 'Boolean'>;
+    readonly nextCaseNumber: Prisma.FieldRef<"ModerationSettings", 'Int'>;
+    readonly revision: Prisma.FieldRef<"ModerationSettings", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"ModerationSettings", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"ModerationSettings", 'DateTime'>;
+}
+/**
+ * ModerationSettings findUnique
+ */
+export type ModerationSettingsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which ModerationSettings to fetch.
+     */
+    where: Prisma.ModerationSettingsWhereUniqueInput;
+};
+/**
+ * ModerationSettings findUniqueOrThrow
+ */
+export type ModerationSettingsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which ModerationSettings to fetch.
+     */
+    where: Prisma.ModerationSettingsWhereUniqueInput;
+};
+/**
+ * ModerationSettings findFirst
+ */
+export type ModerationSettingsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which ModerationSettings to fetch.
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ModerationSettings to fetch.
+     */
+    orderBy?: Prisma.ModerationSettingsOrderByWithRelationInput | Prisma.ModerationSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ModerationSettings.
+     */
+    cursor?: Prisma.ModerationSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ModerationSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ModerationSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ModerationSettings.
+     */
+    distinct?: Prisma.ModerationSettingsScalarFieldEnum | Prisma.ModerationSettingsScalarFieldEnum[];
+};
+/**
+ * ModerationSettings findFirstOrThrow
+ */
+export type ModerationSettingsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which ModerationSettings to fetch.
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ModerationSettings to fetch.
+     */
+    orderBy?: Prisma.ModerationSettingsOrderByWithRelationInput | Prisma.ModerationSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ModerationSettings.
+     */
+    cursor?: Prisma.ModerationSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ModerationSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ModerationSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ModerationSettings.
+     */
+    distinct?: Prisma.ModerationSettingsScalarFieldEnum | Prisma.ModerationSettingsScalarFieldEnum[];
+};
+/**
+ * ModerationSettings findMany
+ */
+export type ModerationSettingsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which ModerationSettings to fetch.
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ModerationSettings to fetch.
+     */
+    orderBy?: Prisma.ModerationSettingsOrderByWithRelationInput | Prisma.ModerationSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ModerationSettings.
+     */
+    cursor?: Prisma.ModerationSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ModerationSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ModerationSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ModerationSettings.
+     */
+    distinct?: Prisma.ModerationSettingsScalarFieldEnum | Prisma.ModerationSettingsScalarFieldEnum[];
+};
+/**
+ * ModerationSettings create
+ */
+export type ModerationSettingsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to create a ModerationSettings.
+     */
+    data: Prisma.XOR<Prisma.ModerationSettingsCreateInput, Prisma.ModerationSettingsUncheckedCreateInput>;
+};
+/**
+ * ModerationSettings createMany
+ */
+export type ModerationSettingsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ModerationSettings.
+     */
+    data: Prisma.ModerationSettingsCreateManyInput | Prisma.ModerationSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ModerationSettings createManyAndReturn
+ */
+export type ModerationSettingsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to create many ModerationSettings.
+     */
+    data: Prisma.ModerationSettingsCreateManyInput | Prisma.ModerationSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ModerationSettings update
+ */
+export type ModerationSettingsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to update a ModerationSettings.
+     */
+    data: Prisma.XOR<Prisma.ModerationSettingsUpdateInput, Prisma.ModerationSettingsUncheckedUpdateInput>;
+    /**
+     * Choose, which ModerationSettings to update.
+     */
+    where: Prisma.ModerationSettingsWhereUniqueInput;
+};
+/**
+ * ModerationSettings updateMany
+ */
+export type ModerationSettingsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ModerationSettings.
+     */
+    data: Prisma.XOR<Prisma.ModerationSettingsUpdateManyMutationInput, Prisma.ModerationSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which ModerationSettings to update
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * Limit how many ModerationSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * ModerationSettings updateManyAndReturn
+ */
+export type ModerationSettingsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to update ModerationSettings.
+     */
+    data: Prisma.XOR<Prisma.ModerationSettingsUpdateManyMutationInput, Prisma.ModerationSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which ModerationSettings to update
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * Limit how many ModerationSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * ModerationSettings upsert
+ */
+export type ModerationSettingsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * The filter to search for the ModerationSettings to update in case it exists.
+     */
+    where: Prisma.ModerationSettingsWhereUniqueInput;
+    /**
+     * In case the ModerationSettings found by the `where` argument doesn't exist, create a new ModerationSettings with this data.
+     */
+    create: Prisma.XOR<Prisma.ModerationSettingsCreateInput, Prisma.ModerationSettingsUncheckedCreateInput>;
+    /**
+     * In case the ModerationSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.ModerationSettingsUpdateInput, Prisma.ModerationSettingsUncheckedUpdateInput>;
+};
+/**
+ * ModerationSettings delete
+ */
+export type ModerationSettingsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter which ModerationSettings to delete.
+     */
+    where: Prisma.ModerationSettingsWhereUniqueInput;
+};
+/**
+ * ModerationSettings deleteMany
+ */
+export type ModerationSettingsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ModerationSettings to delete
+     */
+    where?: Prisma.ModerationSettingsWhereInput;
+    /**
+     * Limit how many ModerationSettings to delete.
+     */
+    limit?: number;
+};
+/**
+ * ModerationSettings without action
+ */
+export type ModerationSettingsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ModerationSettings
+     */
+    select?: Prisma.ModerationSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ModerationSettings
+     */
+    omit?: Prisma.ModerationSettingsOmit<ExtArgs> | null;
+};
+//# sourceMappingURL=ModerationSettings.d.ts.map

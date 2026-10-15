@@ -1,0 +1,1133 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model KnowledgeSettings
+ *
+ */
+export type KnowledgeSettingsModel = runtime.Types.Result.DefaultSelection<Prisma.$KnowledgeSettingsPayload>;
+export type AggregateKnowledgeSettings = {
+    _count: KnowledgeSettingsCountAggregateOutputType | null;
+    _avg: KnowledgeSettingsAvgAggregateOutputType | null;
+    _sum: KnowledgeSettingsSumAggregateOutputType | null;
+    _min: KnowledgeSettingsMinAggregateOutputType | null;
+    _max: KnowledgeSettingsMaxAggregateOutputType | null;
+};
+export type KnowledgeSettingsAvgAggregateOutputType = {
+    autoAnswerThreshold: number | null;
+    autoAnswerCooldownSeconds: number | null;
+    revision: number | null;
+};
+export type KnowledgeSettingsSumAggregateOutputType = {
+    autoAnswerThreshold: number | null;
+    autoAnswerCooldownSeconds: number | null;
+    revision: number | null;
+};
+export type KnowledgeSettingsMinAggregateOutputType = {
+    guildId: string | null;
+    autoAnswerEnabled: boolean | null;
+    autoAnswerThreshold: number | null;
+    autoAnswerCooldownSeconds: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type KnowledgeSettingsMaxAggregateOutputType = {
+    guildId: string | null;
+    autoAnswerEnabled: boolean | null;
+    autoAnswerThreshold: number | null;
+    autoAnswerCooldownSeconds: number | null;
+    revision: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type KnowledgeSettingsCountAggregateOutputType = {
+    guildId: number;
+    autoAnswerEnabled: number;
+    autoAnswerChannelIds: number;
+    autoAnswerThreshold: number;
+    autoAnswerCooldownSeconds: number;
+    revision: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type KnowledgeSettingsAvgAggregateInputType = {
+    autoAnswerThreshold?: true;
+    autoAnswerCooldownSeconds?: true;
+    revision?: true;
+};
+export type KnowledgeSettingsSumAggregateInputType = {
+    autoAnswerThreshold?: true;
+    autoAnswerCooldownSeconds?: true;
+    revision?: true;
+};
+export type KnowledgeSettingsMinAggregateInputType = {
+    guildId?: true;
+    autoAnswerEnabled?: true;
+    autoAnswerThreshold?: true;
+    autoAnswerCooldownSeconds?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type KnowledgeSettingsMaxAggregateInputType = {
+    guildId?: true;
+    autoAnswerEnabled?: true;
+    autoAnswerThreshold?: true;
+    autoAnswerCooldownSeconds?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type KnowledgeSettingsCountAggregateInputType = {
+    guildId?: true;
+    autoAnswerEnabled?: true;
+    autoAnswerChannelIds?: true;
+    autoAnswerThreshold?: true;
+    autoAnswerCooldownSeconds?: true;
+    revision?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type KnowledgeSettingsAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which KnowledgeSettings to aggregate.
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of KnowledgeSettings to fetch.
+     */
+    orderBy?: Prisma.KnowledgeSettingsOrderByWithRelationInput | Prisma.KnowledgeSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.KnowledgeSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` KnowledgeSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` KnowledgeSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned KnowledgeSettings
+    **/
+    _count?: true | KnowledgeSettingsCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: KnowledgeSettingsAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: KnowledgeSettingsSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: KnowledgeSettingsMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: KnowledgeSettingsMaxAggregateInputType;
+};
+export type GetKnowledgeSettingsAggregateType<T extends KnowledgeSettingsAggregateArgs> = {
+    [P in keyof T & keyof AggregateKnowledgeSettings]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateKnowledgeSettings[P]> : Prisma.GetScalarType<T[P], AggregateKnowledgeSettings[P]>;
+};
+export type KnowledgeSettingsGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    orderBy?: Prisma.KnowledgeSettingsOrderByWithAggregationInput | Prisma.KnowledgeSettingsOrderByWithAggregationInput[];
+    by: Prisma.KnowledgeSettingsScalarFieldEnum[] | Prisma.KnowledgeSettingsScalarFieldEnum;
+    having?: Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: KnowledgeSettingsCountAggregateInputType | true;
+    _avg?: KnowledgeSettingsAvgAggregateInputType;
+    _sum?: KnowledgeSettingsSumAggregateInputType;
+    _min?: KnowledgeSettingsMinAggregateInputType;
+    _max?: KnowledgeSettingsMaxAggregateInputType;
+};
+export type KnowledgeSettingsGroupByOutputType = {
+    guildId: string;
+    autoAnswerEnabled: boolean;
+    autoAnswerChannelIds: string[];
+    autoAnswerThreshold: number;
+    autoAnswerCooldownSeconds: number;
+    revision: number;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: KnowledgeSettingsCountAggregateOutputType | null;
+    _avg: KnowledgeSettingsAvgAggregateOutputType | null;
+    _sum: KnowledgeSettingsSumAggregateOutputType | null;
+    _min: KnowledgeSettingsMinAggregateOutputType | null;
+    _max: KnowledgeSettingsMaxAggregateOutputType | null;
+};
+export type GetKnowledgeSettingsGroupByPayload<T extends KnowledgeSettingsGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<KnowledgeSettingsGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof KnowledgeSettingsGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], KnowledgeSettingsGroupByOutputType[P]> : Prisma.GetScalarType<T[P], KnowledgeSettingsGroupByOutputType[P]>;
+}>>;
+export type KnowledgeSettingsWhereInput = {
+    AND?: Prisma.KnowledgeSettingsWhereInput | Prisma.KnowledgeSettingsWhereInput[];
+    OR?: Prisma.KnowledgeSettingsWhereInput[];
+    NOT?: Prisma.KnowledgeSettingsWhereInput | Prisma.KnowledgeSettingsWhereInput[];
+    guildId?: Prisma.StringFilter<"KnowledgeSettings"> | string;
+    autoAnswerEnabled?: Prisma.BoolFilter<"KnowledgeSettings"> | boolean;
+    autoAnswerChannelIds?: Prisma.StringNullableListFilter<"KnowledgeSettings">;
+    autoAnswerThreshold?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    revision?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"KnowledgeSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"KnowledgeSettings"> | Date | string;
+};
+export type KnowledgeSettingsOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    autoAnswerEnabled?: Prisma.SortOrder;
+    autoAnswerChannelIds?: Prisma.SortOrder;
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.KnowledgeSettingsWhereInput | Prisma.KnowledgeSettingsWhereInput[];
+    OR?: Prisma.KnowledgeSettingsWhereInput[];
+    NOT?: Prisma.KnowledgeSettingsWhereInput | Prisma.KnowledgeSettingsWhereInput[];
+    autoAnswerEnabled?: Prisma.BoolFilter<"KnowledgeSettings"> | boolean;
+    autoAnswerChannelIds?: Prisma.StringNullableListFilter<"KnowledgeSettings">;
+    autoAnswerThreshold?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    revision?: Prisma.IntFilter<"KnowledgeSettings"> | number;
+    createdAt?: Prisma.DateTimeFilter<"KnowledgeSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"KnowledgeSettings"> | Date | string;
+}, "guildId">;
+export type KnowledgeSettingsOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    autoAnswerEnabled?: Prisma.SortOrder;
+    autoAnswerChannelIds?: Prisma.SortOrder;
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.KnowledgeSettingsCountOrderByAggregateInput;
+    _avg?: Prisma.KnowledgeSettingsAvgOrderByAggregateInput;
+    _max?: Prisma.KnowledgeSettingsMaxOrderByAggregateInput;
+    _min?: Prisma.KnowledgeSettingsMinOrderByAggregateInput;
+    _sum?: Prisma.KnowledgeSettingsSumOrderByAggregateInput;
+};
+export type KnowledgeSettingsScalarWhereWithAggregatesInput = {
+    AND?: Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput | Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput[];
+    OR?: Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput | Prisma.KnowledgeSettingsScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.StringWithAggregatesFilter<"KnowledgeSettings"> | string;
+    autoAnswerEnabled?: Prisma.BoolWithAggregatesFilter<"KnowledgeSettings"> | boolean;
+    autoAnswerChannelIds?: Prisma.StringNullableListFilter<"KnowledgeSettings">;
+    autoAnswerThreshold?: Prisma.IntWithAggregatesFilter<"KnowledgeSettings"> | number;
+    autoAnswerCooldownSeconds?: Prisma.IntWithAggregatesFilter<"KnowledgeSettings"> | number;
+    revision?: Prisma.IntWithAggregatesFilter<"KnowledgeSettings"> | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeSettings"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"KnowledgeSettings"> | Date | string;
+};
+export type KnowledgeSettingsCreateInput = {
+    guildId: string;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsCreateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: number;
+    autoAnswerCooldownSeconds?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type KnowledgeSettingsUncheckedCreateInput = {
+    guildId: string;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsCreateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: number;
+    autoAnswerCooldownSeconds?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type KnowledgeSettingsUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    autoAnswerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsUpdateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type KnowledgeSettingsUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    autoAnswerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsUpdateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type KnowledgeSettingsCreateManyInput = {
+    guildId: string;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsCreateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: number;
+    autoAnswerCooldownSeconds?: number;
+    revision?: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type KnowledgeSettingsUpdateManyMutationInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    autoAnswerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsUpdateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type KnowledgeSettingsUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    autoAnswerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    autoAnswerChannelIds?: Prisma.KnowledgeSettingsUpdateautoAnswerChannelIdsInput | string[];
+    autoAnswerThreshold?: Prisma.IntFieldUpdateOperationsInput | number;
+    autoAnswerCooldownSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type KnowledgeSettingsCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    autoAnswerEnabled?: Prisma.SortOrder;
+    autoAnswerChannelIds?: Prisma.SortOrder;
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsAvgOrderByAggregateInput = {
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    autoAnswerEnabled?: Prisma.SortOrder;
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    autoAnswerEnabled?: Prisma.SortOrder;
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsSumOrderByAggregateInput = {
+    autoAnswerThreshold?: Prisma.SortOrder;
+    autoAnswerCooldownSeconds?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+};
+export type KnowledgeSettingsCreateautoAnswerChannelIdsInput = {
+    set: string[];
+};
+export type KnowledgeSettingsUpdateautoAnswerChannelIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type KnowledgeSettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: boolean;
+    autoAnswerThreshold?: boolean;
+    autoAnswerCooldownSeconds?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["knowledgeSettings"]>;
+export type KnowledgeSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: boolean;
+    autoAnswerThreshold?: boolean;
+    autoAnswerCooldownSeconds?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["knowledgeSettings"]>;
+export type KnowledgeSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: boolean;
+    autoAnswerThreshold?: boolean;
+    autoAnswerCooldownSeconds?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["knowledgeSettings"]>;
+export type KnowledgeSettingsSelectScalar = {
+    guildId?: boolean;
+    autoAnswerEnabled?: boolean;
+    autoAnswerChannelIds?: boolean;
+    autoAnswerThreshold?: boolean;
+    autoAnswerCooldownSeconds?: boolean;
+    revision?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type KnowledgeSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "autoAnswerEnabled" | "autoAnswerChannelIds" | "autoAnswerThreshold" | "autoAnswerCooldownSeconds" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["knowledgeSettings"]>;
+export type $KnowledgeSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "KnowledgeSettings";
+    objects: {};
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        autoAnswerEnabled: boolean;
+        autoAnswerChannelIds: string[];
+        autoAnswerThreshold: number;
+        autoAnswerCooldownSeconds: number;
+        revision: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["knowledgeSettings"]>;
+    composites: {};
+};
+export type KnowledgeSettingsGetPayload<S extends boolean | null | undefined | KnowledgeSettingsDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload, S>;
+export type KnowledgeSettingsCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<KnowledgeSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: KnowledgeSettingsCountAggregateInputType | true;
+};
+export interface KnowledgeSettingsDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['KnowledgeSettings'];
+        meta: {
+            name: 'KnowledgeSettings';
+        };
+    };
+    /**
+     * Find zero or one KnowledgeSettings that matches the filter.
+     * @param {KnowledgeSettingsFindUniqueArgs} args - Arguments to find a KnowledgeSettings
+     * @example
+     * // Get one KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends KnowledgeSettingsFindUniqueArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsFindUniqueArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one KnowledgeSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {KnowledgeSettingsFindUniqueOrThrowArgs} args - Arguments to find a KnowledgeSettings
+     * @example
+     * // Get one KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends KnowledgeSettingsFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first KnowledgeSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsFindFirstArgs} args - Arguments to find a KnowledgeSettings
+     * @example
+     * // Get one KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends KnowledgeSettingsFindFirstArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsFindFirstArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first KnowledgeSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsFindFirstOrThrowArgs} args - Arguments to find a KnowledgeSettings
+     * @example
+     * // Get one KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends KnowledgeSettingsFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more KnowledgeSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findMany()
+     *
+     * // Get first 10 KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const knowledgeSettingsWithGuildIdOnly = await prisma.knowledgeSettings.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends KnowledgeSettingsFindManyArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a KnowledgeSettings.
+     * @param {KnowledgeSettingsCreateArgs} args - Arguments to create a KnowledgeSettings.
+     * @example
+     * // Create one KnowledgeSettings
+     * const KnowledgeSettings = await prisma.knowledgeSettings.create({
+     *   data: {
+     *     // ... data to create a KnowledgeSettings
+     *   }
+     * })
+     *
+     */
+    create<T extends KnowledgeSettingsCreateArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsCreateArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many KnowledgeSettings.
+     * @param {KnowledgeSettingsCreateManyArgs} args - Arguments to create many KnowledgeSettings.
+     * @example
+     * // Create many KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends KnowledgeSettingsCreateManyArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many KnowledgeSettings and returns the data saved in the database.
+     * @param {KnowledgeSettingsCreateManyAndReturnArgs} args - Arguments to create many KnowledgeSettings.
+     * @example
+     * // Create many KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many KnowledgeSettings and only return the `guildId`
+     * const knowledgeSettingsWithGuildIdOnly = await prisma.knowledgeSettings.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends KnowledgeSettingsCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a KnowledgeSettings.
+     * @param {KnowledgeSettingsDeleteArgs} args - Arguments to delete one KnowledgeSettings.
+     * @example
+     * // Delete one KnowledgeSettings
+     * const KnowledgeSettings = await prisma.knowledgeSettings.delete({
+     *   where: {
+     *     // ... filter to delete one KnowledgeSettings
+     *   }
+     * })
+     *
+     */
+    delete<T extends KnowledgeSettingsDeleteArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsDeleteArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one KnowledgeSettings.
+     * @param {KnowledgeSettingsUpdateArgs} args - Arguments to update one KnowledgeSettings.
+     * @example
+     * // Update one KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends KnowledgeSettingsUpdateArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsUpdateArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more KnowledgeSettings.
+     * @param {KnowledgeSettingsDeleteManyArgs} args - Arguments to filter KnowledgeSettings to delete.
+     * @example
+     * // Delete a few KnowledgeSettings
+     * const { count } = await prisma.knowledgeSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends KnowledgeSettingsDeleteManyArgs>(args?: Prisma.SelectSubset<T, KnowledgeSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more KnowledgeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends KnowledgeSettingsUpdateManyArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more KnowledgeSettings and returns the data updated in the database.
+     * @param {KnowledgeSettingsUpdateManyAndReturnArgs} args - Arguments to update many KnowledgeSettings.
+     * @example
+     * // Update many KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more KnowledgeSettings and only return the `guildId`
+     * const knowledgeSettingsWithGuildIdOnly = await prisma.knowledgeSettings.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends KnowledgeSettingsUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one KnowledgeSettings.
+     * @param {KnowledgeSettingsUpsertArgs} args - Arguments to update or create a KnowledgeSettings.
+     * @example
+     * // Update or create a KnowledgeSettings
+     * const knowledgeSettings = await prisma.knowledgeSettings.upsert({
+     *   create: {
+     *     // ... data to create a KnowledgeSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the KnowledgeSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends KnowledgeSettingsUpsertArgs>(args: Prisma.SelectSubset<T, KnowledgeSettingsUpsertArgs<ExtArgs>>): Prisma.Prisma__KnowledgeSettingsClient<runtime.Types.Result.GetResult<Prisma.$KnowledgeSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of KnowledgeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsCountArgs} args - Arguments to filter KnowledgeSettings to count.
+     * @example
+     * // Count the number of KnowledgeSettings
+     * const count = await prisma.knowledgeSettings.count({
+     *   where: {
+     *     // ... the filter for the KnowledgeSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends KnowledgeSettingsCountArgs>(args?: Prisma.Subset<T, KnowledgeSettingsCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], KnowledgeSettingsCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a KnowledgeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends KnowledgeSettingsAggregateArgs>(args: Prisma.Subset<T, KnowledgeSettingsAggregateArgs>): Prisma.PrismaPromise<GetKnowledgeSettingsAggregateType<T>>;
+    /**
+     * Group by KnowledgeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {KnowledgeSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends KnowledgeSettingsGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: KnowledgeSettingsGroupByArgs['orderBy'];
+    } : {
+        orderBy?: KnowledgeSettingsGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, KnowledgeSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetKnowledgeSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the KnowledgeSettings model
+     */
+    readonly fields: KnowledgeSettingsFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for KnowledgeSettings.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__KnowledgeSettingsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the KnowledgeSettings model
+ */
+export interface KnowledgeSettingsFieldRefs {
+    readonly guildId: Prisma.FieldRef<"KnowledgeSettings", 'String'>;
+    readonly autoAnswerEnabled: Prisma.FieldRef<"KnowledgeSettings", 'Boolean'>;
+    readonly autoAnswerChannelIds: Prisma.FieldRef<"KnowledgeSettings", 'String[]'>;
+    readonly autoAnswerThreshold: Prisma.FieldRef<"KnowledgeSettings", 'Int'>;
+    readonly autoAnswerCooldownSeconds: Prisma.FieldRef<"KnowledgeSettings", 'Int'>;
+    readonly revision: Prisma.FieldRef<"KnowledgeSettings", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"KnowledgeSettings", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"KnowledgeSettings", 'DateTime'>;
+}
+/**
+ * KnowledgeSettings findUnique
+ */
+export type KnowledgeSettingsFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which KnowledgeSettings to fetch.
+     */
+    where: Prisma.KnowledgeSettingsWhereUniqueInput;
+};
+/**
+ * KnowledgeSettings findUniqueOrThrow
+ */
+export type KnowledgeSettingsFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which KnowledgeSettings to fetch.
+     */
+    where: Prisma.KnowledgeSettingsWhereUniqueInput;
+};
+/**
+ * KnowledgeSettings findFirst
+ */
+export type KnowledgeSettingsFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which KnowledgeSettings to fetch.
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of KnowledgeSettings to fetch.
+     */
+    orderBy?: Prisma.KnowledgeSettingsOrderByWithRelationInput | Prisma.KnowledgeSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for KnowledgeSettings.
+     */
+    cursor?: Prisma.KnowledgeSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` KnowledgeSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` KnowledgeSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of KnowledgeSettings.
+     */
+    distinct?: Prisma.KnowledgeSettingsScalarFieldEnum | Prisma.KnowledgeSettingsScalarFieldEnum[];
+};
+/**
+ * KnowledgeSettings findFirstOrThrow
+ */
+export type KnowledgeSettingsFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which KnowledgeSettings to fetch.
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of KnowledgeSettings to fetch.
+     */
+    orderBy?: Prisma.KnowledgeSettingsOrderByWithRelationInput | Prisma.KnowledgeSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for KnowledgeSettings.
+     */
+    cursor?: Prisma.KnowledgeSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` KnowledgeSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` KnowledgeSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of KnowledgeSettings.
+     */
+    distinct?: Prisma.KnowledgeSettingsScalarFieldEnum | Prisma.KnowledgeSettingsScalarFieldEnum[];
+};
+/**
+ * KnowledgeSettings findMany
+ */
+export type KnowledgeSettingsFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter, which KnowledgeSettings to fetch.
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of KnowledgeSettings to fetch.
+     */
+    orderBy?: Prisma.KnowledgeSettingsOrderByWithRelationInput | Prisma.KnowledgeSettingsOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing KnowledgeSettings.
+     */
+    cursor?: Prisma.KnowledgeSettingsWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` KnowledgeSettings from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` KnowledgeSettings.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of KnowledgeSettings.
+     */
+    distinct?: Prisma.KnowledgeSettingsScalarFieldEnum | Prisma.KnowledgeSettingsScalarFieldEnum[];
+};
+/**
+ * KnowledgeSettings create
+ */
+export type KnowledgeSettingsCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to create a KnowledgeSettings.
+     */
+    data: Prisma.XOR<Prisma.KnowledgeSettingsCreateInput, Prisma.KnowledgeSettingsUncheckedCreateInput>;
+};
+/**
+ * KnowledgeSettings createMany
+ */
+export type KnowledgeSettingsCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many KnowledgeSettings.
+     */
+    data: Prisma.KnowledgeSettingsCreateManyInput | Prisma.KnowledgeSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * KnowledgeSettings createManyAndReturn
+ */
+export type KnowledgeSettingsCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to create many KnowledgeSettings.
+     */
+    data: Prisma.KnowledgeSettingsCreateManyInput | Prisma.KnowledgeSettingsCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * KnowledgeSettings update
+ */
+export type KnowledgeSettingsUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * The data needed to update a KnowledgeSettings.
+     */
+    data: Prisma.XOR<Prisma.KnowledgeSettingsUpdateInput, Prisma.KnowledgeSettingsUncheckedUpdateInput>;
+    /**
+     * Choose, which KnowledgeSettings to update.
+     */
+    where: Prisma.KnowledgeSettingsWhereUniqueInput;
+};
+/**
+ * KnowledgeSettings updateMany
+ */
+export type KnowledgeSettingsUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update KnowledgeSettings.
+     */
+    data: Prisma.XOR<Prisma.KnowledgeSettingsUpdateManyMutationInput, Prisma.KnowledgeSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which KnowledgeSettings to update
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * Limit how many KnowledgeSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * KnowledgeSettings updateManyAndReturn
+ */
+export type KnowledgeSettingsUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * The data used to update KnowledgeSettings.
+     */
+    data: Prisma.XOR<Prisma.KnowledgeSettingsUpdateManyMutationInput, Prisma.KnowledgeSettingsUncheckedUpdateManyInput>;
+    /**
+     * Filter which KnowledgeSettings to update
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * Limit how many KnowledgeSettings to update.
+     */
+    limit?: number;
+};
+/**
+ * KnowledgeSettings upsert
+ */
+export type KnowledgeSettingsUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * The filter to search for the KnowledgeSettings to update in case it exists.
+     */
+    where: Prisma.KnowledgeSettingsWhereUniqueInput;
+    /**
+     * In case the KnowledgeSettings found by the `where` argument doesn't exist, create a new KnowledgeSettings with this data.
+     */
+    create: Prisma.XOR<Prisma.KnowledgeSettingsCreateInput, Prisma.KnowledgeSettingsUncheckedCreateInput>;
+    /**
+     * In case the KnowledgeSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.KnowledgeSettingsUpdateInput, Prisma.KnowledgeSettingsUncheckedUpdateInput>;
+};
+/**
+ * KnowledgeSettings delete
+ */
+export type KnowledgeSettingsDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+    /**
+     * Filter which KnowledgeSettings to delete.
+     */
+    where: Prisma.KnowledgeSettingsWhereUniqueInput;
+};
+/**
+ * KnowledgeSettings deleteMany
+ */
+export type KnowledgeSettingsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which KnowledgeSettings to delete
+     */
+    where?: Prisma.KnowledgeSettingsWhereInput;
+    /**
+     * Limit how many KnowledgeSettings to delete.
+     */
+    limit?: number;
+};
+/**
+ * KnowledgeSettings without action
+ */
+export type KnowledgeSettingsDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the KnowledgeSettings
+     */
+    select?: Prisma.KnowledgeSettingsSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the KnowledgeSettings
+     */
+    omit?: Prisma.KnowledgeSettingsOmit<ExtArgs> | null;
+};
+//# sourceMappingURL=KnowledgeSettings.d.ts.map

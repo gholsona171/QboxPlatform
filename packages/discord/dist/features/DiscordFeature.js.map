@@ -1,0 +1,1 @@
+{"version":3,"file":"DiscordFeature.js","sourceRoot":"","sources":["../../src/features/DiscordFeature.ts"],"names":[],"mappings":"AAkCA,yEAAyE;AACzE,MAAM,UAAU,mBAAmB,CAAC,WAAwB;IAC1D,IAAI,WAAW,CAAC,QAAQ,EAAE,IAAI,WAAW,CAAC,eAAe,EAAE,IAAI,WAAW,CAAC,aAAa,EAAE;QAAE,OAAO,WAAW,CAAC,QAAQ,CAAC;IACxH,OAAO,SAAS,CAAC;AACnB,CAAC"}

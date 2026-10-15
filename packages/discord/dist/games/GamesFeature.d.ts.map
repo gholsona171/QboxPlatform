@@ -1,0 +1,1 @@
+{"version":3,"file":"GamesFeature.d.ts","sourceRoot":"","sources":["../../src/games/GamesFeature.ts"],"names":[],"mappings":"AAAA,OAAO,EAA8D,KAAK,eAAe,EAAE,MAAM,oBAAoB,CAAC;AAEtH,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,uBAAuB,CAAC;AAG9D,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,+BAA+B,CAAC;AAI3E;;;;GAIG;AACH,wBAAgB,YAAY,CAAC,UAAU,EAAE,eAAe,EAAE,SAAS,CAAC,EAAE,gBAAgB,GAAG,qBAAqB,CA6B7G"}

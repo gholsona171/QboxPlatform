@@ -1,0 +1,1150 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model ApplicationVote
+ *
+ */
+export type ApplicationVoteModel = runtime.Types.Result.DefaultSelection<Prisma.$ApplicationVotePayload>;
+export type AggregateApplicationVote = {
+    _count: ApplicationVoteCountAggregateOutputType | null;
+    _min: ApplicationVoteMinAggregateOutputType | null;
+    _max: ApplicationVoteMaxAggregateOutputType | null;
+};
+export type ApplicationVoteMinAggregateOutputType = {
+    applicationId: string | null;
+    userId: string | null;
+    vote: $Enums.ApplicationVoteType | null;
+    createdAt: Date | null;
+};
+export type ApplicationVoteMaxAggregateOutputType = {
+    applicationId: string | null;
+    userId: string | null;
+    vote: $Enums.ApplicationVoteType | null;
+    createdAt: Date | null;
+};
+export type ApplicationVoteCountAggregateOutputType = {
+    applicationId: number;
+    userId: number;
+    vote: number;
+    createdAt: number;
+    _all: number;
+};
+export type ApplicationVoteMinAggregateInputType = {
+    applicationId?: true;
+    userId?: true;
+    vote?: true;
+    createdAt?: true;
+};
+export type ApplicationVoteMaxAggregateInputType = {
+    applicationId?: true;
+    userId?: true;
+    vote?: true;
+    createdAt?: true;
+};
+export type ApplicationVoteCountAggregateInputType = {
+    applicationId?: true;
+    userId?: true;
+    vote?: true;
+    createdAt?: true;
+    _all?: true;
+};
+export type ApplicationVoteAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApplicationVote to aggregate.
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationVotes to fetch.
+     */
+    orderBy?: Prisma.ApplicationVoteOrderByWithRelationInput | Prisma.ApplicationVoteOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.ApplicationVoteWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationVotes from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationVotes.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ApplicationVotes
+    **/
+    _count?: true | ApplicationVoteCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ApplicationVoteMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ApplicationVoteMaxAggregateInputType;
+};
+export type GetApplicationVoteAggregateType<T extends ApplicationVoteAggregateArgs> = {
+    [P in keyof T & keyof AggregateApplicationVote]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateApplicationVote[P]> : Prisma.GetScalarType<T[P], AggregateApplicationVote[P]>;
+};
+export type ApplicationVoteGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.ApplicationVoteWhereInput;
+    orderBy?: Prisma.ApplicationVoteOrderByWithAggregationInput | Prisma.ApplicationVoteOrderByWithAggregationInput[];
+    by: Prisma.ApplicationVoteScalarFieldEnum[] | Prisma.ApplicationVoteScalarFieldEnum;
+    having?: Prisma.ApplicationVoteScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: ApplicationVoteCountAggregateInputType | true;
+    _min?: ApplicationVoteMinAggregateInputType;
+    _max?: ApplicationVoteMaxAggregateInputType;
+};
+export type ApplicationVoteGroupByOutputType = {
+    applicationId: string;
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt: Date;
+    _count: ApplicationVoteCountAggregateOutputType | null;
+    _min: ApplicationVoteMinAggregateOutputType | null;
+    _max: ApplicationVoteMaxAggregateOutputType | null;
+};
+export type GetApplicationVoteGroupByPayload<T extends ApplicationVoteGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<ApplicationVoteGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof ApplicationVoteGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], ApplicationVoteGroupByOutputType[P]> : Prisma.GetScalarType<T[P], ApplicationVoteGroupByOutputType[P]>;
+}>>;
+export type ApplicationVoteWhereInput = {
+    AND?: Prisma.ApplicationVoteWhereInput | Prisma.ApplicationVoteWhereInput[];
+    OR?: Prisma.ApplicationVoteWhereInput[];
+    NOT?: Prisma.ApplicationVoteWhereInput | Prisma.ApplicationVoteWhereInput[];
+    applicationId?: Prisma.UuidFilter<"ApplicationVote"> | string;
+    userId?: Prisma.StringFilter<"ApplicationVote"> | string;
+    vote?: Prisma.EnumApplicationVoteTypeFilter<"ApplicationVote"> | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFilter<"ApplicationVote"> | Date | string;
+    application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>;
+};
+export type ApplicationVoteOrderByWithRelationInput = {
+    applicationId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    vote?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    application?: Prisma.ApplicationOrderByWithRelationInput;
+};
+export type ApplicationVoteWhereUniqueInput = Prisma.AtLeast<{
+    applicationId_userId?: Prisma.ApplicationVoteApplicationIdUserIdCompoundUniqueInput;
+    AND?: Prisma.ApplicationVoteWhereInput | Prisma.ApplicationVoteWhereInput[];
+    OR?: Prisma.ApplicationVoteWhereInput[];
+    NOT?: Prisma.ApplicationVoteWhereInput | Prisma.ApplicationVoteWhereInput[];
+    applicationId?: Prisma.UuidFilter<"ApplicationVote"> | string;
+    userId?: Prisma.StringFilter<"ApplicationVote"> | string;
+    vote?: Prisma.EnumApplicationVoteTypeFilter<"ApplicationVote"> | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFilter<"ApplicationVote"> | Date | string;
+    application?: Prisma.XOR<Prisma.ApplicationScalarRelationFilter, Prisma.ApplicationWhereInput>;
+}, "applicationId_userId">;
+export type ApplicationVoteOrderByWithAggregationInput = {
+    applicationId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    vote?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    _count?: Prisma.ApplicationVoteCountOrderByAggregateInput;
+    _max?: Prisma.ApplicationVoteMaxOrderByAggregateInput;
+    _min?: Prisma.ApplicationVoteMinOrderByAggregateInput;
+};
+export type ApplicationVoteScalarWhereWithAggregatesInput = {
+    AND?: Prisma.ApplicationVoteScalarWhereWithAggregatesInput | Prisma.ApplicationVoteScalarWhereWithAggregatesInput[];
+    OR?: Prisma.ApplicationVoteScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.ApplicationVoteScalarWhereWithAggregatesInput | Prisma.ApplicationVoteScalarWhereWithAggregatesInput[];
+    applicationId?: Prisma.UuidWithAggregatesFilter<"ApplicationVote"> | string;
+    userId?: Prisma.StringWithAggregatesFilter<"ApplicationVote"> | string;
+    vote?: Prisma.EnumApplicationVoteTypeWithAggregatesFilter<"ApplicationVote"> | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"ApplicationVote"> | Date | string;
+};
+export type ApplicationVoteCreateInput = {
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+    application: Prisma.ApplicationCreateNestedOneWithoutVotesInput;
+};
+export type ApplicationVoteUncheckedCreateInput = {
+    applicationId: string;
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+};
+export type ApplicationVoteUpdateInput = {
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    application?: Prisma.ApplicationUpdateOneRequiredWithoutVotesNestedInput;
+};
+export type ApplicationVoteUncheckedUpdateInput = {
+    applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteCreateManyInput = {
+    applicationId: string;
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+};
+export type ApplicationVoteUpdateManyMutationInput = {
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteUncheckedUpdateManyInput = {
+    applicationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteListRelationFilter = {
+    every?: Prisma.ApplicationVoteWhereInput;
+    some?: Prisma.ApplicationVoteWhereInput;
+    none?: Prisma.ApplicationVoteWhereInput;
+};
+export type ApplicationVoteOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type ApplicationVoteApplicationIdUserIdCompoundUniqueInput = {
+    applicationId: string;
+    userId: string;
+};
+export type ApplicationVoteCountOrderByAggregateInput = {
+    applicationId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    vote?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type ApplicationVoteMaxOrderByAggregateInput = {
+    applicationId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    vote?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type ApplicationVoteMinOrderByAggregateInput = {
+    applicationId?: Prisma.SortOrder;
+    userId?: Prisma.SortOrder;
+    vote?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type ApplicationVoteCreateNestedManyWithoutApplicationInput = {
+    create?: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput> | Prisma.ApplicationVoteCreateWithoutApplicationInput[] | Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput[];
+    connectOrCreate?: Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput | Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput[];
+    createMany?: Prisma.ApplicationVoteCreateManyApplicationInputEnvelope;
+    connect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+};
+export type ApplicationVoteUncheckedCreateNestedManyWithoutApplicationInput = {
+    create?: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput> | Prisma.ApplicationVoteCreateWithoutApplicationInput[] | Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput[];
+    connectOrCreate?: Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput | Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput[];
+    createMany?: Prisma.ApplicationVoteCreateManyApplicationInputEnvelope;
+    connect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+};
+export type ApplicationVoteUpdateManyWithoutApplicationNestedInput = {
+    create?: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput> | Prisma.ApplicationVoteCreateWithoutApplicationInput[] | Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput[];
+    connectOrCreate?: Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput | Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput[];
+    upsert?: Prisma.ApplicationVoteUpsertWithWhereUniqueWithoutApplicationInput | Prisma.ApplicationVoteUpsertWithWhereUniqueWithoutApplicationInput[];
+    createMany?: Prisma.ApplicationVoteCreateManyApplicationInputEnvelope;
+    set?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    disconnect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    delete?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    connect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    update?: Prisma.ApplicationVoteUpdateWithWhereUniqueWithoutApplicationInput | Prisma.ApplicationVoteUpdateWithWhereUniqueWithoutApplicationInput[];
+    updateMany?: Prisma.ApplicationVoteUpdateManyWithWhereWithoutApplicationInput | Prisma.ApplicationVoteUpdateManyWithWhereWithoutApplicationInput[];
+    deleteMany?: Prisma.ApplicationVoteScalarWhereInput | Prisma.ApplicationVoteScalarWhereInput[];
+};
+export type ApplicationVoteUncheckedUpdateManyWithoutApplicationNestedInput = {
+    create?: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput> | Prisma.ApplicationVoteCreateWithoutApplicationInput[] | Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput[];
+    connectOrCreate?: Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput | Prisma.ApplicationVoteCreateOrConnectWithoutApplicationInput[];
+    upsert?: Prisma.ApplicationVoteUpsertWithWhereUniqueWithoutApplicationInput | Prisma.ApplicationVoteUpsertWithWhereUniqueWithoutApplicationInput[];
+    createMany?: Prisma.ApplicationVoteCreateManyApplicationInputEnvelope;
+    set?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    disconnect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    delete?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    connect?: Prisma.ApplicationVoteWhereUniqueInput | Prisma.ApplicationVoteWhereUniqueInput[];
+    update?: Prisma.ApplicationVoteUpdateWithWhereUniqueWithoutApplicationInput | Prisma.ApplicationVoteUpdateWithWhereUniqueWithoutApplicationInput[];
+    updateMany?: Prisma.ApplicationVoteUpdateManyWithWhereWithoutApplicationInput | Prisma.ApplicationVoteUpdateManyWithWhereWithoutApplicationInput[];
+    deleteMany?: Prisma.ApplicationVoteScalarWhereInput | Prisma.ApplicationVoteScalarWhereInput[];
+};
+export type EnumApplicationVoteTypeFieldUpdateOperationsInput = {
+    set?: $Enums.ApplicationVoteType;
+};
+export type ApplicationVoteCreateWithoutApplicationInput = {
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+};
+export type ApplicationVoteUncheckedCreateWithoutApplicationInput = {
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+};
+export type ApplicationVoteCreateOrConnectWithoutApplicationInput = {
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+    create: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput>;
+};
+export type ApplicationVoteCreateManyApplicationInputEnvelope = {
+    data: Prisma.ApplicationVoteCreateManyApplicationInput | Prisma.ApplicationVoteCreateManyApplicationInput[];
+    skipDuplicates?: boolean;
+};
+export type ApplicationVoteUpsertWithWhereUniqueWithoutApplicationInput = {
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+    update: Prisma.XOR<Prisma.ApplicationVoteUpdateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedUpdateWithoutApplicationInput>;
+    create: Prisma.XOR<Prisma.ApplicationVoteCreateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedCreateWithoutApplicationInput>;
+};
+export type ApplicationVoteUpdateWithWhereUniqueWithoutApplicationInput = {
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+    data: Prisma.XOR<Prisma.ApplicationVoteUpdateWithoutApplicationInput, Prisma.ApplicationVoteUncheckedUpdateWithoutApplicationInput>;
+};
+export type ApplicationVoteUpdateManyWithWhereWithoutApplicationInput = {
+    where: Prisma.ApplicationVoteScalarWhereInput;
+    data: Prisma.XOR<Prisma.ApplicationVoteUpdateManyMutationInput, Prisma.ApplicationVoteUncheckedUpdateManyWithoutApplicationInput>;
+};
+export type ApplicationVoteScalarWhereInput = {
+    AND?: Prisma.ApplicationVoteScalarWhereInput | Prisma.ApplicationVoteScalarWhereInput[];
+    OR?: Prisma.ApplicationVoteScalarWhereInput[];
+    NOT?: Prisma.ApplicationVoteScalarWhereInput | Prisma.ApplicationVoteScalarWhereInput[];
+    applicationId?: Prisma.UuidFilter<"ApplicationVote"> | string;
+    userId?: Prisma.StringFilter<"ApplicationVote"> | string;
+    vote?: Prisma.EnumApplicationVoteTypeFilter<"ApplicationVote"> | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFilter<"ApplicationVote"> | Date | string;
+};
+export type ApplicationVoteCreateManyApplicationInput = {
+    userId: string;
+    vote: $Enums.ApplicationVoteType;
+    createdAt?: Date | string;
+};
+export type ApplicationVoteUpdateWithoutApplicationInput = {
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteUncheckedUpdateWithoutApplicationInput = {
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteUncheckedUpdateManyWithoutApplicationInput = {
+    userId?: Prisma.StringFieldUpdateOperationsInput | string;
+    vote?: Prisma.EnumApplicationVoteTypeFieldUpdateOperationsInput | $Enums.ApplicationVoteType;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type ApplicationVoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    applicationId?: boolean;
+    userId?: boolean;
+    vote?: boolean;
+    createdAt?: boolean;
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["applicationVote"]>;
+export type ApplicationVoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    applicationId?: boolean;
+    userId?: boolean;
+    vote?: boolean;
+    createdAt?: boolean;
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["applicationVote"]>;
+export type ApplicationVoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    applicationId?: boolean;
+    userId?: boolean;
+    vote?: boolean;
+    createdAt?: boolean;
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["applicationVote"]>;
+export type ApplicationVoteSelectScalar = {
+    applicationId?: boolean;
+    userId?: boolean;
+    vote?: boolean;
+    createdAt?: boolean;
+};
+export type ApplicationVoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"applicationId" | "userId" | "vote" | "createdAt", ExtArgs["result"]["applicationVote"]>;
+export type ApplicationVoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+};
+export type ApplicationVoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+};
+export type ApplicationVoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    application?: boolean | Prisma.ApplicationDefaultArgs<ExtArgs>;
+};
+export type $ApplicationVotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "ApplicationVote";
+    objects: {
+        application: Prisma.$ApplicationPayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        applicationId: string;
+        userId: string;
+        vote: $Enums.ApplicationVoteType;
+        createdAt: Date;
+    }, ExtArgs["result"]["applicationVote"]>;
+    composites: {};
+};
+export type ApplicationVoteGetPayload<S extends boolean | null | undefined | ApplicationVoteDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload, S>;
+export type ApplicationVoteCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<ApplicationVoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: ApplicationVoteCountAggregateInputType | true;
+};
+export interface ApplicationVoteDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['ApplicationVote'];
+        meta: {
+            name: 'ApplicationVote';
+        };
+    };
+    /**
+     * Find zero or one ApplicationVote that matches the filter.
+     * @param {ApplicationVoteFindUniqueArgs} args - Arguments to find a ApplicationVote
+     * @example
+     * // Get one ApplicationVote
+     * const applicationVote = await prisma.applicationVote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ApplicationVoteFindUniqueArgs>(args: Prisma.SelectSubset<T, ApplicationVoteFindUniqueArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one ApplicationVote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ApplicationVoteFindUniqueOrThrowArgs} args - Arguments to find a ApplicationVote
+     * @example
+     * // Get one ApplicationVote
+     * const applicationVote = await prisma.applicationVote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ApplicationVoteFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, ApplicationVoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ApplicationVote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteFindFirstArgs} args - Arguments to find a ApplicationVote
+     * @example
+     * // Get one ApplicationVote
+     * const applicationVote = await prisma.applicationVote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ApplicationVoteFindFirstArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteFindFirstArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first ApplicationVote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteFindFirstOrThrowArgs} args - Arguments to find a ApplicationVote
+     * @example
+     * // Get one ApplicationVote
+     * const applicationVote = await prisma.applicationVote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ApplicationVoteFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more ApplicationVotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ApplicationVotes
+     * const applicationVotes = await prisma.applicationVote.findMany()
+     *
+     * // Get first 10 ApplicationVotes
+     * const applicationVotes = await prisma.applicationVote.findMany({ take: 10 })
+     *
+     * // Only select the `applicationId`
+     * const applicationVoteWithApplicationIdOnly = await prisma.applicationVote.findMany({ select: { applicationId: true } })
+     *
+     */
+    findMany<T extends ApplicationVoteFindManyArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a ApplicationVote.
+     * @param {ApplicationVoteCreateArgs} args - Arguments to create a ApplicationVote.
+     * @example
+     * // Create one ApplicationVote
+     * const ApplicationVote = await prisma.applicationVote.create({
+     *   data: {
+     *     // ... data to create a ApplicationVote
+     *   }
+     * })
+     *
+     */
+    create<T extends ApplicationVoteCreateArgs>(args: Prisma.SelectSubset<T, ApplicationVoteCreateArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many ApplicationVotes.
+     * @param {ApplicationVoteCreateManyArgs} args - Arguments to create many ApplicationVotes.
+     * @example
+     * // Create many ApplicationVotes
+     * const applicationVote = await prisma.applicationVote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ApplicationVoteCreateManyArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many ApplicationVotes and returns the data saved in the database.
+     * @param {ApplicationVoteCreateManyAndReturnArgs} args - Arguments to create many ApplicationVotes.
+     * @example
+     * // Create many ApplicationVotes
+     * const applicationVote = await prisma.applicationVote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ApplicationVotes and only return the `applicationId`
+     * const applicationVoteWithApplicationIdOnly = await prisma.applicationVote.createManyAndReturn({
+     *   select: { applicationId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ApplicationVoteCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a ApplicationVote.
+     * @param {ApplicationVoteDeleteArgs} args - Arguments to delete one ApplicationVote.
+     * @example
+     * // Delete one ApplicationVote
+     * const ApplicationVote = await prisma.applicationVote.delete({
+     *   where: {
+     *     // ... filter to delete one ApplicationVote
+     *   }
+     * })
+     *
+     */
+    delete<T extends ApplicationVoteDeleteArgs>(args: Prisma.SelectSubset<T, ApplicationVoteDeleteArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one ApplicationVote.
+     * @param {ApplicationVoteUpdateArgs} args - Arguments to update one ApplicationVote.
+     * @example
+     * // Update one ApplicationVote
+     * const applicationVote = await prisma.applicationVote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ApplicationVoteUpdateArgs>(args: Prisma.SelectSubset<T, ApplicationVoteUpdateArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more ApplicationVotes.
+     * @param {ApplicationVoteDeleteManyArgs} args - Arguments to filter ApplicationVotes to delete.
+     * @example
+     * // Delete a few ApplicationVotes
+     * const { count } = await prisma.applicationVote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ApplicationVoteDeleteManyArgs>(args?: Prisma.SelectSubset<T, ApplicationVoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ApplicationVotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ApplicationVotes
+     * const applicationVote = await prisma.applicationVote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ApplicationVoteUpdateManyArgs>(args: Prisma.SelectSubset<T, ApplicationVoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more ApplicationVotes and returns the data updated in the database.
+     * @param {ApplicationVoteUpdateManyAndReturnArgs} args - Arguments to update many ApplicationVotes.
+     * @example
+     * // Update many ApplicationVotes
+     * const applicationVote = await prisma.applicationVote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ApplicationVotes and only return the `applicationId`
+     * const applicationVoteWithApplicationIdOnly = await prisma.applicationVote.updateManyAndReturn({
+     *   select: { applicationId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ApplicationVoteUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, ApplicationVoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one ApplicationVote.
+     * @param {ApplicationVoteUpsertArgs} args - Arguments to update or create a ApplicationVote.
+     * @example
+     * // Update or create a ApplicationVote
+     * const applicationVote = await prisma.applicationVote.upsert({
+     *   create: {
+     *     // ... data to create a ApplicationVote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ApplicationVote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ApplicationVoteUpsertArgs>(args: Prisma.SelectSubset<T, ApplicationVoteUpsertArgs<ExtArgs>>): Prisma.Prisma__ApplicationVoteClient<runtime.Types.Result.GetResult<Prisma.$ApplicationVotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of ApplicationVotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteCountArgs} args - Arguments to filter ApplicationVotes to count.
+     * @example
+     * // Count the number of ApplicationVotes
+     * const count = await prisma.applicationVote.count({
+     *   where: {
+     *     // ... the filter for the ApplicationVotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ApplicationVoteCountArgs>(args?: Prisma.Subset<T, ApplicationVoteCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], ApplicationVoteCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a ApplicationVote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ApplicationVoteAggregateArgs>(args: Prisma.Subset<T, ApplicationVoteAggregateArgs>): Prisma.PrismaPromise<GetApplicationVoteAggregateType<T>>;
+    /**
+     * Group by ApplicationVote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ApplicationVoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends ApplicationVoteGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: ApplicationVoteGroupByArgs['orderBy'];
+    } : {
+        orderBy?: ApplicationVoteGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, ApplicationVoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetApplicationVoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the ApplicationVote model
+     */
+    readonly fields: ApplicationVoteFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for ApplicationVote.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__ApplicationVoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    application<T extends Prisma.ApplicationDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ApplicationDefaultArgs<ExtArgs>>): Prisma.Prisma__ApplicationClient<runtime.Types.Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the ApplicationVote model
+ */
+export interface ApplicationVoteFieldRefs {
+    readonly applicationId: Prisma.FieldRef<"ApplicationVote", 'String'>;
+    readonly userId: Prisma.FieldRef<"ApplicationVote", 'String'>;
+    readonly vote: Prisma.FieldRef<"ApplicationVote", 'ApplicationVoteType'>;
+    readonly createdAt: Prisma.FieldRef<"ApplicationVote", 'DateTime'>;
+}
+/**
+ * ApplicationVote findUnique
+ */
+export type ApplicationVoteFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationVote to fetch.
+     */
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+};
+/**
+ * ApplicationVote findUniqueOrThrow
+ */
+export type ApplicationVoteFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationVote to fetch.
+     */
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+};
+/**
+ * ApplicationVote findFirst
+ */
+export type ApplicationVoteFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationVote to fetch.
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationVotes to fetch.
+     */
+    orderBy?: Prisma.ApplicationVoteOrderByWithRelationInput | Prisma.ApplicationVoteOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ApplicationVotes.
+     */
+    cursor?: Prisma.ApplicationVoteWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationVotes from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationVotes.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationVotes.
+     */
+    distinct?: Prisma.ApplicationVoteScalarFieldEnum | Prisma.ApplicationVoteScalarFieldEnum[];
+};
+/**
+ * ApplicationVote findFirstOrThrow
+ */
+export type ApplicationVoteFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationVote to fetch.
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationVotes to fetch.
+     */
+    orderBy?: Prisma.ApplicationVoteOrderByWithRelationInput | Prisma.ApplicationVoteOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ApplicationVotes.
+     */
+    cursor?: Prisma.ApplicationVoteWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationVotes from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationVotes.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationVotes.
+     */
+    distinct?: Prisma.ApplicationVoteScalarFieldEnum | Prisma.ApplicationVoteScalarFieldEnum[];
+};
+/**
+ * ApplicationVote findMany
+ */
+export type ApplicationVoteFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter, which ApplicationVotes to fetch.
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ApplicationVotes to fetch.
+     */
+    orderBy?: Prisma.ApplicationVoteOrderByWithRelationInput | Prisma.ApplicationVoteOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ApplicationVotes.
+     */
+    cursor?: Prisma.ApplicationVoteWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ApplicationVotes from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ApplicationVotes.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ApplicationVotes.
+     */
+    distinct?: Prisma.ApplicationVoteScalarFieldEnum | Prisma.ApplicationVoteScalarFieldEnum[];
+};
+/**
+ * ApplicationVote create
+ */
+export type ApplicationVoteCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a ApplicationVote.
+     */
+    data: Prisma.XOR<Prisma.ApplicationVoteCreateInput, Prisma.ApplicationVoteUncheckedCreateInput>;
+};
+/**
+ * ApplicationVote createMany
+ */
+export type ApplicationVoteCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ApplicationVotes.
+     */
+    data: Prisma.ApplicationVoteCreateManyInput | Prisma.ApplicationVoteCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * ApplicationVote createManyAndReturn
+ */
+export type ApplicationVoteCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * The data used to create many ApplicationVotes.
+     */
+    data: Prisma.ApplicationVoteCreateManyInput | Prisma.ApplicationVoteCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * ApplicationVote update
+ */
+export type ApplicationVoteUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a ApplicationVote.
+     */
+    data: Prisma.XOR<Prisma.ApplicationVoteUpdateInput, Prisma.ApplicationVoteUncheckedUpdateInput>;
+    /**
+     * Choose, which ApplicationVote to update.
+     */
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+};
+/**
+ * ApplicationVote updateMany
+ */
+export type ApplicationVoteUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ApplicationVotes.
+     */
+    data: Prisma.XOR<Prisma.ApplicationVoteUpdateManyMutationInput, Prisma.ApplicationVoteUncheckedUpdateManyInput>;
+    /**
+     * Filter which ApplicationVotes to update
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * Limit how many ApplicationVotes to update.
+     */
+    limit?: number;
+};
+/**
+ * ApplicationVote updateManyAndReturn
+ */
+export type ApplicationVoteUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * The data used to update ApplicationVotes.
+     */
+    data: Prisma.XOR<Prisma.ApplicationVoteUpdateManyMutationInput, Prisma.ApplicationVoteUncheckedUpdateManyInput>;
+    /**
+     * Filter which ApplicationVotes to update
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * Limit how many ApplicationVotes to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * ApplicationVote upsert
+ */
+export type ApplicationVoteUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the ApplicationVote to update in case it exists.
+     */
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+    /**
+     * In case the ApplicationVote found by the `where` argument doesn't exist, create a new ApplicationVote with this data.
+     */
+    create: Prisma.XOR<Prisma.ApplicationVoteCreateInput, Prisma.ApplicationVoteUncheckedCreateInput>;
+    /**
+     * In case the ApplicationVote was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.ApplicationVoteUpdateInput, Prisma.ApplicationVoteUncheckedUpdateInput>;
+};
+/**
+ * ApplicationVote delete
+ */
+export type ApplicationVoteDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+    /**
+     * Filter which ApplicationVote to delete.
+     */
+    where: Prisma.ApplicationVoteWhereUniqueInput;
+};
+/**
+ * ApplicationVote deleteMany
+ */
+export type ApplicationVoteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which ApplicationVotes to delete
+     */
+    where?: Prisma.ApplicationVoteWhereInput;
+    /**
+     * Limit how many ApplicationVotes to delete.
+     */
+    limit?: number;
+};
+/**
+ * ApplicationVote without action
+ */
+export type ApplicationVoteDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ApplicationVote
+     */
+    select?: Prisma.ApplicationVoteSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the ApplicationVote
+     */
+    omit?: Prisma.ApplicationVoteOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.ApplicationVoteInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=ApplicationVote.d.ts.map

@@ -1,0 +1,23 @@
+import { env } from "@qbox/shared";
+import { main } from "./main.js";
+void main({
+    ...process.env,
+    NODE_ENV: env.NODE_ENV,
+    DATABASE_URL: env.DATABASE_URL,
+    DISCORD_OAUTH_CLIENT_ID: process.env.DISCORD_OAUTH_CLIENT_ID,
+    DISCORD_OAUTH_CLIENT_SECRET: process.env.DISCORD_OAUTH_CLIENT_SECRET,
+    DISCORD_OAUTH_REDIRECT_URI: process.env.DISCORD_OAUTH_REDIRECT_URI,
+    DISCORD_GUILD_ID: process.env.DISCORD_GUILD_ID,
+    DISCORD_TOKEN: process.env.DISCORD_TOKEN,
+    DISCORD_APPLICATION_ID: process.env.DISCORD_APPLICATION_ID,
+    AUTH_SESSION_HMAC_KEY: process.env.AUTH_SESSION_HMAC_KEY,
+    AUTH_CSRF_HMAC_KEY: process.env.AUTH_CSRF_HMAC_KEY,
+    AUTH_METADATA_HMAC_KEY: process.env.AUTH_METADATA_HMAC_KEY,
+    AUTH_OAUTH_ENCRYPTION_KEY: process.env.AUTH_OAUTH_ENCRYPTION_KEY,
+    AUTH_KEY_VERSION: process.env.AUTH_KEY_VERSION,
+    API_PUBLIC_BASE_URL: process.env.API_PUBLIC_BASE_URL,
+    API_PORTAL_DIRECTORY: process.env.API_PORTAL_DIRECTORY,
+}).catch(() => {
+    process.exitCode = 1;
+});
+//# sourceMappingURL=run.js.map

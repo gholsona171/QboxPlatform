@@ -1,0 +1,1273 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model MusicSession
+ * Player state per server, saved on every change so playback survives bot restarts.
+ */
+export type MusicSessionModel = runtime.Types.Result.DefaultSelection<Prisma.$MusicSessionPayload>;
+export type AggregateMusicSession = {
+    _count: MusicSessionCountAggregateOutputType | null;
+    _avg: MusicSessionAvgAggregateOutputType | null;
+    _sum: MusicSessionSumAggregateOutputType | null;
+    _min: MusicSessionMinAggregateOutputType | null;
+    _max: MusicSessionMaxAggregateOutputType | null;
+};
+export type MusicSessionAvgAggregateOutputType = {
+    index: number | null;
+    positionSeconds: number | null;
+    volume: number | null;
+};
+export type MusicSessionSumAggregateOutputType = {
+    index: number | null;
+    positionSeconds: number | null;
+    volume: number | null;
+};
+export type MusicSessionMinAggregateOutputType = {
+    guildId: string | null;
+    channelId: string | null;
+    textChannelId: string | null;
+    panelChannelId: string | null;
+    panelMessageId: string | null;
+    index: number | null;
+    positionSeconds: number | null;
+    state: $Enums.MusicPlayerState | null;
+    loop: $Enums.MusicLoopMode | null;
+    shuffle: boolean | null;
+    volume: number | null;
+    updatedAt: Date | null;
+};
+export type MusicSessionMaxAggregateOutputType = {
+    guildId: string | null;
+    channelId: string | null;
+    textChannelId: string | null;
+    panelChannelId: string | null;
+    panelMessageId: string | null;
+    index: number | null;
+    positionSeconds: number | null;
+    state: $Enums.MusicPlayerState | null;
+    loop: $Enums.MusicLoopMode | null;
+    shuffle: boolean | null;
+    volume: number | null;
+    updatedAt: Date | null;
+};
+export type MusicSessionCountAggregateOutputType = {
+    guildId: number;
+    channelId: number;
+    textChannelId: number;
+    panelChannelId: number;
+    panelMessageId: number;
+    queue: number;
+    index: number;
+    positionSeconds: number;
+    state: number;
+    loop: number;
+    shuffle: number;
+    volume: number;
+    updatedAt: number;
+    _all: number;
+};
+export type MusicSessionAvgAggregateInputType = {
+    index?: true;
+    positionSeconds?: true;
+    volume?: true;
+};
+export type MusicSessionSumAggregateInputType = {
+    index?: true;
+    positionSeconds?: true;
+    volume?: true;
+};
+export type MusicSessionMinAggregateInputType = {
+    guildId?: true;
+    channelId?: true;
+    textChannelId?: true;
+    panelChannelId?: true;
+    panelMessageId?: true;
+    index?: true;
+    positionSeconds?: true;
+    state?: true;
+    loop?: true;
+    shuffle?: true;
+    volume?: true;
+    updatedAt?: true;
+};
+export type MusicSessionMaxAggregateInputType = {
+    guildId?: true;
+    channelId?: true;
+    textChannelId?: true;
+    panelChannelId?: true;
+    panelMessageId?: true;
+    index?: true;
+    positionSeconds?: true;
+    state?: true;
+    loop?: true;
+    shuffle?: true;
+    volume?: true;
+    updatedAt?: true;
+};
+export type MusicSessionCountAggregateInputType = {
+    guildId?: true;
+    channelId?: true;
+    textChannelId?: true;
+    panelChannelId?: true;
+    panelMessageId?: true;
+    queue?: true;
+    index?: true;
+    positionSeconds?: true;
+    state?: true;
+    loop?: true;
+    shuffle?: true;
+    volume?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type MusicSessionAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which MusicSession to aggregate.
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of MusicSessions to fetch.
+     */
+    orderBy?: Prisma.MusicSessionOrderByWithRelationInput | Prisma.MusicSessionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.MusicSessionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` MusicSessions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` MusicSessions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned MusicSessions
+    **/
+    _count?: true | MusicSessionCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: MusicSessionAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: MusicSessionSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: MusicSessionMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: MusicSessionMaxAggregateInputType;
+};
+export type GetMusicSessionAggregateType<T extends MusicSessionAggregateArgs> = {
+    [P in keyof T & keyof AggregateMusicSession]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateMusicSession[P]> : Prisma.GetScalarType<T[P], AggregateMusicSession[P]>;
+};
+export type MusicSessionGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.MusicSessionWhereInput;
+    orderBy?: Prisma.MusicSessionOrderByWithAggregationInput | Prisma.MusicSessionOrderByWithAggregationInput[];
+    by: Prisma.MusicSessionScalarFieldEnum[] | Prisma.MusicSessionScalarFieldEnum;
+    having?: Prisma.MusicSessionScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: MusicSessionCountAggregateInputType | true;
+    _avg?: MusicSessionAvgAggregateInputType;
+    _sum?: MusicSessionSumAggregateInputType;
+    _min?: MusicSessionMinAggregateInputType;
+    _max?: MusicSessionMaxAggregateInputType;
+};
+export type MusicSessionGroupByOutputType = {
+    guildId: string;
+    channelId: string | null;
+    textChannelId: string | null;
+    panelChannelId: string | null;
+    panelMessageId: string | null;
+    queue: runtime.JsonValue;
+    index: number;
+    positionSeconds: number;
+    state: $Enums.MusicPlayerState;
+    loop: $Enums.MusicLoopMode;
+    shuffle: boolean;
+    volume: number;
+    updatedAt: Date;
+    _count: MusicSessionCountAggregateOutputType | null;
+    _avg: MusicSessionAvgAggregateOutputType | null;
+    _sum: MusicSessionSumAggregateOutputType | null;
+    _min: MusicSessionMinAggregateOutputType | null;
+    _max: MusicSessionMaxAggregateOutputType | null;
+};
+export type GetMusicSessionGroupByPayload<T extends MusicSessionGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<MusicSessionGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof MusicSessionGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], MusicSessionGroupByOutputType[P]> : Prisma.GetScalarType<T[P], MusicSessionGroupByOutputType[P]>;
+}>>;
+export type MusicSessionWhereInput = {
+    AND?: Prisma.MusicSessionWhereInput | Prisma.MusicSessionWhereInput[];
+    OR?: Prisma.MusicSessionWhereInput[];
+    NOT?: Prisma.MusicSessionWhereInput | Prisma.MusicSessionWhereInput[];
+    guildId?: Prisma.StringFilter<"MusicSession"> | string;
+    channelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    textChannelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    panelChannelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    panelMessageId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    queue?: Prisma.JsonFilter<"MusicSession">;
+    index?: Prisma.IntFilter<"MusicSession"> | number;
+    positionSeconds?: Prisma.IntFilter<"MusicSession"> | number;
+    state?: Prisma.EnumMusicPlayerStateFilter<"MusicSession"> | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFilter<"MusicSession"> | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFilter<"MusicSession"> | boolean;
+    volume?: Prisma.IntFilter<"MusicSession"> | number;
+    updatedAt?: Prisma.DateTimeFilter<"MusicSession"> | Date | string;
+};
+export type MusicSessionOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    textChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    panelChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    panelMessageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    queue?: Prisma.SortOrder;
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    loop?: Prisma.SortOrder;
+    shuffle?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type MusicSessionWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.MusicSessionWhereInput | Prisma.MusicSessionWhereInput[];
+    OR?: Prisma.MusicSessionWhereInput[];
+    NOT?: Prisma.MusicSessionWhereInput | Prisma.MusicSessionWhereInput[];
+    channelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    textChannelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    panelChannelId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    panelMessageId?: Prisma.StringNullableFilter<"MusicSession"> | string | null;
+    queue?: Prisma.JsonFilter<"MusicSession">;
+    index?: Prisma.IntFilter<"MusicSession"> | number;
+    positionSeconds?: Prisma.IntFilter<"MusicSession"> | number;
+    state?: Prisma.EnumMusicPlayerStateFilter<"MusicSession"> | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFilter<"MusicSession"> | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFilter<"MusicSession"> | boolean;
+    volume?: Prisma.IntFilter<"MusicSession"> | number;
+    updatedAt?: Prisma.DateTimeFilter<"MusicSession"> | Date | string;
+}, "guildId">;
+export type MusicSessionOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    textChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    panelChannelId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    panelMessageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    queue?: Prisma.SortOrder;
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    loop?: Prisma.SortOrder;
+    shuffle?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.MusicSessionCountOrderByAggregateInput;
+    _avg?: Prisma.MusicSessionAvgOrderByAggregateInput;
+    _max?: Prisma.MusicSessionMaxOrderByAggregateInput;
+    _min?: Prisma.MusicSessionMinOrderByAggregateInput;
+    _sum?: Prisma.MusicSessionSumOrderByAggregateInput;
+};
+export type MusicSessionScalarWhereWithAggregatesInput = {
+    AND?: Prisma.MusicSessionScalarWhereWithAggregatesInput | Prisma.MusicSessionScalarWhereWithAggregatesInput[];
+    OR?: Prisma.MusicSessionScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.MusicSessionScalarWhereWithAggregatesInput | Prisma.MusicSessionScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.StringWithAggregatesFilter<"MusicSession"> | string;
+    channelId?: Prisma.StringNullableWithAggregatesFilter<"MusicSession"> | string | null;
+    textChannelId?: Prisma.StringNullableWithAggregatesFilter<"MusicSession"> | string | null;
+    panelChannelId?: Prisma.StringNullableWithAggregatesFilter<"MusicSession"> | string | null;
+    panelMessageId?: Prisma.StringNullableWithAggregatesFilter<"MusicSession"> | string | null;
+    queue?: Prisma.JsonWithAggregatesFilter<"MusicSession">;
+    index?: Prisma.IntWithAggregatesFilter<"MusicSession"> | number;
+    positionSeconds?: Prisma.IntWithAggregatesFilter<"MusicSession"> | number;
+    state?: Prisma.EnumMusicPlayerStateWithAggregatesFilter<"MusicSession"> | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeWithAggregatesFilter<"MusicSession"> | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolWithAggregatesFilter<"MusicSession"> | boolean;
+    volume?: Prisma.IntWithAggregatesFilter<"MusicSession"> | number;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"MusicSession"> | Date | string;
+};
+export type MusicSessionCreateInput = {
+    guildId: string;
+    channelId?: string | null;
+    textChannelId?: string | null;
+    panelChannelId?: string | null;
+    panelMessageId?: string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: number;
+    positionSeconds?: number;
+    state?: $Enums.MusicPlayerState;
+    loop?: $Enums.MusicLoopMode;
+    shuffle?: boolean;
+    volume?: number;
+    updatedAt?: Date | string;
+};
+export type MusicSessionUncheckedCreateInput = {
+    guildId: string;
+    channelId?: string | null;
+    textChannelId?: string | null;
+    panelChannelId?: string | null;
+    panelMessageId?: string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: number;
+    positionSeconds?: number;
+    state?: $Enums.MusicPlayerState;
+    loop?: $Enums.MusicLoopMode;
+    shuffle?: boolean;
+    volume?: number;
+    updatedAt?: Date | string;
+};
+export type MusicSessionUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    textChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: Prisma.IntFieldUpdateOperationsInput | number;
+    positionSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    state?: Prisma.EnumMusicPlayerStateFieldUpdateOperationsInput | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFieldUpdateOperationsInput | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    volume?: Prisma.IntFieldUpdateOperationsInput | number;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type MusicSessionUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    textChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: Prisma.IntFieldUpdateOperationsInput | number;
+    positionSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    state?: Prisma.EnumMusicPlayerStateFieldUpdateOperationsInput | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFieldUpdateOperationsInput | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    volume?: Prisma.IntFieldUpdateOperationsInput | number;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type MusicSessionCreateManyInput = {
+    guildId: string;
+    channelId?: string | null;
+    textChannelId?: string | null;
+    panelChannelId?: string | null;
+    panelMessageId?: string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: number;
+    positionSeconds?: number;
+    state?: $Enums.MusicPlayerState;
+    loop?: $Enums.MusicLoopMode;
+    shuffle?: boolean;
+    volume?: number;
+    updatedAt?: Date | string;
+};
+export type MusicSessionUpdateManyMutationInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    textChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: Prisma.IntFieldUpdateOperationsInput | number;
+    positionSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    state?: Prisma.EnumMusicPlayerStateFieldUpdateOperationsInput | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFieldUpdateOperationsInput | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    volume?: Prisma.IntFieldUpdateOperationsInput | number;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type MusicSessionUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    channelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    textChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    panelMessageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    queue?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
+    index?: Prisma.IntFieldUpdateOperationsInput | number;
+    positionSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    state?: Prisma.EnumMusicPlayerStateFieldUpdateOperationsInput | $Enums.MusicPlayerState;
+    loop?: Prisma.EnumMusicLoopModeFieldUpdateOperationsInput | $Enums.MusicLoopMode;
+    shuffle?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    volume?: Prisma.IntFieldUpdateOperationsInput | number;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type MusicSessionCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    textChannelId?: Prisma.SortOrder;
+    panelChannelId?: Prisma.SortOrder;
+    panelMessageId?: Prisma.SortOrder;
+    queue?: Prisma.SortOrder;
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    loop?: Prisma.SortOrder;
+    shuffle?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type MusicSessionAvgOrderByAggregateInput = {
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+};
+export type MusicSessionMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    textChannelId?: Prisma.SortOrder;
+    panelChannelId?: Prisma.SortOrder;
+    panelMessageId?: Prisma.SortOrder;
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    loop?: Prisma.SortOrder;
+    shuffle?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type MusicSessionMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    textChannelId?: Prisma.SortOrder;
+    panelChannelId?: Prisma.SortOrder;
+    panelMessageId?: Prisma.SortOrder;
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    state?: Prisma.SortOrder;
+    loop?: Prisma.SortOrder;
+    shuffle?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type MusicSessionSumOrderByAggregateInput = {
+    index?: Prisma.SortOrder;
+    positionSeconds?: Prisma.SortOrder;
+    volume?: Prisma.SortOrder;
+};
+export type EnumMusicPlayerStateFieldUpdateOperationsInput = {
+    set?: $Enums.MusicPlayerState;
+};
+export type EnumMusicLoopModeFieldUpdateOperationsInput = {
+    set?: $Enums.MusicLoopMode;
+};
+export type MusicSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    channelId?: boolean;
+    textChannelId?: boolean;
+    panelChannelId?: boolean;
+    panelMessageId?: boolean;
+    queue?: boolean;
+    index?: boolean;
+    positionSeconds?: boolean;
+    state?: boolean;
+    loop?: boolean;
+    shuffle?: boolean;
+    volume?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["musicSession"]>;
+export type MusicSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    channelId?: boolean;
+    textChannelId?: boolean;
+    panelChannelId?: boolean;
+    panelMessageId?: boolean;
+    queue?: boolean;
+    index?: boolean;
+    positionSeconds?: boolean;
+    state?: boolean;
+    loop?: boolean;
+    shuffle?: boolean;
+    volume?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["musicSession"]>;
+export type MusicSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    channelId?: boolean;
+    textChannelId?: boolean;
+    panelChannelId?: boolean;
+    panelMessageId?: boolean;
+    queue?: boolean;
+    index?: boolean;
+    positionSeconds?: boolean;
+    state?: boolean;
+    loop?: boolean;
+    shuffle?: boolean;
+    volume?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["musicSession"]>;
+export type MusicSessionSelectScalar = {
+    guildId?: boolean;
+    channelId?: boolean;
+    textChannelId?: boolean;
+    panelChannelId?: boolean;
+    panelMessageId?: boolean;
+    queue?: boolean;
+    index?: boolean;
+    positionSeconds?: boolean;
+    state?: boolean;
+    loop?: boolean;
+    shuffle?: boolean;
+    volume?: boolean;
+    updatedAt?: boolean;
+};
+export type MusicSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "channelId" | "textChannelId" | "panelChannelId" | "panelMessageId" | "queue" | "index" | "positionSeconds" | "state" | "loop" | "shuffle" | "volume" | "updatedAt", ExtArgs["result"]["musicSession"]>;
+export type $MusicSessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "MusicSession";
+    objects: {};
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        channelId: string | null;
+        textChannelId: string | null;
+        panelChannelId: string | null;
+        panelMessageId: string | null;
+        queue: runtime.JsonValue;
+        index: number;
+        positionSeconds: number;
+        state: $Enums.MusicPlayerState;
+        loop: $Enums.MusicLoopMode;
+        shuffle: boolean;
+        volume: number;
+        updatedAt: Date;
+    }, ExtArgs["result"]["musicSession"]>;
+    composites: {};
+};
+export type MusicSessionGetPayload<S extends boolean | null | undefined | MusicSessionDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload, S>;
+export type MusicSessionCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<MusicSessionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: MusicSessionCountAggregateInputType | true;
+};
+export interface MusicSessionDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['MusicSession'];
+        meta: {
+            name: 'MusicSession';
+        };
+    };
+    /**
+     * Find zero or one MusicSession that matches the filter.
+     * @param {MusicSessionFindUniqueArgs} args - Arguments to find a MusicSession
+     * @example
+     * // Get one MusicSession
+     * const musicSession = await prisma.musicSession.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MusicSessionFindUniqueArgs>(args: Prisma.SelectSubset<T, MusicSessionFindUniqueArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one MusicSession that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MusicSessionFindUniqueOrThrowArgs} args - Arguments to find a MusicSession
+     * @example
+     * // Get one MusicSession
+     * const musicSession = await prisma.musicSession.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MusicSessionFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, MusicSessionFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first MusicSession that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionFindFirstArgs} args - Arguments to find a MusicSession
+     * @example
+     * // Get one MusicSession
+     * const musicSession = await prisma.musicSession.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MusicSessionFindFirstArgs>(args?: Prisma.SelectSubset<T, MusicSessionFindFirstArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first MusicSession that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionFindFirstOrThrowArgs} args - Arguments to find a MusicSession
+     * @example
+     * // Get one MusicSession
+     * const musicSession = await prisma.musicSession.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MusicSessionFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, MusicSessionFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more MusicSessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MusicSessions
+     * const musicSessions = await prisma.musicSession.findMany()
+     *
+     * // Get first 10 MusicSessions
+     * const musicSessions = await prisma.musicSession.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const musicSessionWithGuildIdOnly = await prisma.musicSession.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends MusicSessionFindManyArgs>(args?: Prisma.SelectSubset<T, MusicSessionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a MusicSession.
+     * @param {MusicSessionCreateArgs} args - Arguments to create a MusicSession.
+     * @example
+     * // Create one MusicSession
+     * const MusicSession = await prisma.musicSession.create({
+     *   data: {
+     *     // ... data to create a MusicSession
+     *   }
+     * })
+     *
+     */
+    create<T extends MusicSessionCreateArgs>(args: Prisma.SelectSubset<T, MusicSessionCreateArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many MusicSessions.
+     * @param {MusicSessionCreateManyArgs} args - Arguments to create many MusicSessions.
+     * @example
+     * // Create many MusicSessions
+     * const musicSession = await prisma.musicSession.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends MusicSessionCreateManyArgs>(args?: Prisma.SelectSubset<T, MusicSessionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many MusicSessions and returns the data saved in the database.
+     * @param {MusicSessionCreateManyAndReturnArgs} args - Arguments to create many MusicSessions.
+     * @example
+     * // Create many MusicSessions
+     * const musicSession = await prisma.musicSession.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many MusicSessions and only return the `guildId`
+     * const musicSessionWithGuildIdOnly = await prisma.musicSession.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends MusicSessionCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, MusicSessionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a MusicSession.
+     * @param {MusicSessionDeleteArgs} args - Arguments to delete one MusicSession.
+     * @example
+     * // Delete one MusicSession
+     * const MusicSession = await prisma.musicSession.delete({
+     *   where: {
+     *     // ... filter to delete one MusicSession
+     *   }
+     * })
+     *
+     */
+    delete<T extends MusicSessionDeleteArgs>(args: Prisma.SelectSubset<T, MusicSessionDeleteArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one MusicSession.
+     * @param {MusicSessionUpdateArgs} args - Arguments to update one MusicSession.
+     * @example
+     * // Update one MusicSession
+     * const musicSession = await prisma.musicSession.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends MusicSessionUpdateArgs>(args: Prisma.SelectSubset<T, MusicSessionUpdateArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more MusicSessions.
+     * @param {MusicSessionDeleteManyArgs} args - Arguments to filter MusicSessions to delete.
+     * @example
+     * // Delete a few MusicSessions
+     * const { count } = await prisma.musicSession.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends MusicSessionDeleteManyArgs>(args?: Prisma.SelectSubset<T, MusicSessionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more MusicSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MusicSessions
+     * const musicSession = await prisma.musicSession.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends MusicSessionUpdateManyArgs>(args: Prisma.SelectSubset<T, MusicSessionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more MusicSessions and returns the data updated in the database.
+     * @param {MusicSessionUpdateManyAndReturnArgs} args - Arguments to update many MusicSessions.
+     * @example
+     * // Update many MusicSessions
+     * const musicSession = await prisma.musicSession.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more MusicSessions and only return the `guildId`
+     * const musicSessionWithGuildIdOnly = await prisma.musicSession.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends MusicSessionUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, MusicSessionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one MusicSession.
+     * @param {MusicSessionUpsertArgs} args - Arguments to update or create a MusicSession.
+     * @example
+     * // Update or create a MusicSession
+     * const musicSession = await prisma.musicSession.upsert({
+     *   create: {
+     *     // ... data to create a MusicSession
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MusicSession we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MusicSessionUpsertArgs>(args: Prisma.SelectSubset<T, MusicSessionUpsertArgs<ExtArgs>>): Prisma.Prisma__MusicSessionClient<runtime.Types.Result.GetResult<Prisma.$MusicSessionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of MusicSessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionCountArgs} args - Arguments to filter MusicSessions to count.
+     * @example
+     * // Count the number of MusicSessions
+     * const count = await prisma.musicSession.count({
+     *   where: {
+     *     // ... the filter for the MusicSessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends MusicSessionCountArgs>(args?: Prisma.Subset<T, MusicSessionCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], MusicSessionCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a MusicSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MusicSessionAggregateArgs>(args: Prisma.Subset<T, MusicSessionAggregateArgs>): Prisma.PrismaPromise<GetMusicSessionAggregateType<T>>;
+    /**
+     * Group by MusicSession.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MusicSessionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends MusicSessionGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: MusicSessionGroupByArgs['orderBy'];
+    } : {
+        orderBy?: MusicSessionGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, MusicSessionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMusicSessionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the MusicSession model
+     */
+    readonly fields: MusicSessionFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for MusicSession.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__MusicSessionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the MusicSession model
+ */
+export interface MusicSessionFieldRefs {
+    readonly guildId: Prisma.FieldRef<"MusicSession", 'String'>;
+    readonly channelId: Prisma.FieldRef<"MusicSession", 'String'>;
+    readonly textChannelId: Prisma.FieldRef<"MusicSession", 'String'>;
+    readonly panelChannelId: Prisma.FieldRef<"MusicSession", 'String'>;
+    readonly panelMessageId: Prisma.FieldRef<"MusicSession", 'String'>;
+    readonly queue: Prisma.FieldRef<"MusicSession", 'Json'>;
+    readonly index: Prisma.FieldRef<"MusicSession", 'Int'>;
+    readonly positionSeconds: Prisma.FieldRef<"MusicSession", 'Int'>;
+    readonly state: Prisma.FieldRef<"MusicSession", 'MusicPlayerState'>;
+    readonly loop: Prisma.FieldRef<"MusicSession", 'MusicLoopMode'>;
+    readonly shuffle: Prisma.FieldRef<"MusicSession", 'Boolean'>;
+    readonly volume: Prisma.FieldRef<"MusicSession", 'Int'>;
+    readonly updatedAt: Prisma.FieldRef<"MusicSession", 'DateTime'>;
+}
+/**
+ * MusicSession findUnique
+ */
+export type MusicSessionFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter, which MusicSession to fetch.
+     */
+    where: Prisma.MusicSessionWhereUniqueInput;
+};
+/**
+ * MusicSession findUniqueOrThrow
+ */
+export type MusicSessionFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter, which MusicSession to fetch.
+     */
+    where: Prisma.MusicSessionWhereUniqueInput;
+};
+/**
+ * MusicSession findFirst
+ */
+export type MusicSessionFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter, which MusicSession to fetch.
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of MusicSessions to fetch.
+     */
+    orderBy?: Prisma.MusicSessionOrderByWithRelationInput | Prisma.MusicSessionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for MusicSessions.
+     */
+    cursor?: Prisma.MusicSessionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` MusicSessions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` MusicSessions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of MusicSessions.
+     */
+    distinct?: Prisma.MusicSessionScalarFieldEnum | Prisma.MusicSessionScalarFieldEnum[];
+};
+/**
+ * MusicSession findFirstOrThrow
+ */
+export type MusicSessionFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter, which MusicSession to fetch.
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of MusicSessions to fetch.
+     */
+    orderBy?: Prisma.MusicSessionOrderByWithRelationInput | Prisma.MusicSessionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for MusicSessions.
+     */
+    cursor?: Prisma.MusicSessionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` MusicSessions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` MusicSessions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of MusicSessions.
+     */
+    distinct?: Prisma.MusicSessionScalarFieldEnum | Prisma.MusicSessionScalarFieldEnum[];
+};
+/**
+ * MusicSession findMany
+ */
+export type MusicSessionFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter, which MusicSessions to fetch.
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of MusicSessions to fetch.
+     */
+    orderBy?: Prisma.MusicSessionOrderByWithRelationInput | Prisma.MusicSessionOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing MusicSessions.
+     */
+    cursor?: Prisma.MusicSessionWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` MusicSessions from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` MusicSessions.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of MusicSessions.
+     */
+    distinct?: Prisma.MusicSessionScalarFieldEnum | Prisma.MusicSessionScalarFieldEnum[];
+};
+/**
+ * MusicSession create
+ */
+export type MusicSessionCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * The data needed to create a MusicSession.
+     */
+    data: Prisma.XOR<Prisma.MusicSessionCreateInput, Prisma.MusicSessionUncheckedCreateInput>;
+};
+/**
+ * MusicSession createMany
+ */
+export type MusicSessionCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MusicSessions.
+     */
+    data: Prisma.MusicSessionCreateManyInput | Prisma.MusicSessionCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * MusicSession createManyAndReturn
+ */
+export type MusicSessionCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * The data used to create many MusicSessions.
+     */
+    data: Prisma.MusicSessionCreateManyInput | Prisma.MusicSessionCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * MusicSession update
+ */
+export type MusicSessionUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * The data needed to update a MusicSession.
+     */
+    data: Prisma.XOR<Prisma.MusicSessionUpdateInput, Prisma.MusicSessionUncheckedUpdateInput>;
+    /**
+     * Choose, which MusicSession to update.
+     */
+    where: Prisma.MusicSessionWhereUniqueInput;
+};
+/**
+ * MusicSession updateMany
+ */
+export type MusicSessionUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MusicSessions.
+     */
+    data: Prisma.XOR<Prisma.MusicSessionUpdateManyMutationInput, Prisma.MusicSessionUncheckedUpdateManyInput>;
+    /**
+     * Filter which MusicSessions to update
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * Limit how many MusicSessions to update.
+     */
+    limit?: number;
+};
+/**
+ * MusicSession updateManyAndReturn
+ */
+export type MusicSessionUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * The data used to update MusicSessions.
+     */
+    data: Prisma.XOR<Prisma.MusicSessionUpdateManyMutationInput, Prisma.MusicSessionUncheckedUpdateManyInput>;
+    /**
+     * Filter which MusicSessions to update
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * Limit how many MusicSessions to update.
+     */
+    limit?: number;
+};
+/**
+ * MusicSession upsert
+ */
+export type MusicSessionUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * The filter to search for the MusicSession to update in case it exists.
+     */
+    where: Prisma.MusicSessionWhereUniqueInput;
+    /**
+     * In case the MusicSession found by the `where` argument doesn't exist, create a new MusicSession with this data.
+     */
+    create: Prisma.XOR<Prisma.MusicSessionCreateInput, Prisma.MusicSessionUncheckedCreateInput>;
+    /**
+     * In case the MusicSession was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.MusicSessionUpdateInput, Prisma.MusicSessionUncheckedUpdateInput>;
+};
+/**
+ * MusicSession delete
+ */
+export type MusicSessionDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+    /**
+     * Filter which MusicSession to delete.
+     */
+    where: Prisma.MusicSessionWhereUniqueInput;
+};
+/**
+ * MusicSession deleteMany
+ */
+export type MusicSessionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which MusicSessions to delete
+     */
+    where?: Prisma.MusicSessionWhereInput;
+    /**
+     * Limit how many MusicSessions to delete.
+     */
+    limit?: number;
+};
+/**
+ * MusicSession without action
+ */
+export type MusicSessionDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MusicSession
+     */
+    select?: Prisma.MusicSessionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the MusicSession
+     */
+    omit?: Prisma.MusicSessionOmit<ExtArgs> | null;
+};
+//# sourceMappingURL=MusicSession.d.ts.map

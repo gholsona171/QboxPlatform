@@ -1,0 +1,114 @@
+import { colorValue } from "@qbox/shared/discord-rest";
+import { renderPlaceholders } from "@qbox/shared/messages";
+import { platformLabel } from "./validation.js";
+/** Embed colors per platform. */
+export const PLATFORM_COLORS = { twitch: "#9146FF", kick: "#53FC18", youtube: "#FF0000" };
+/** The creator's channel page. */
+export function creatorUrl(platform, handle, platformId) {
+    if (platform === "twitch")
+        return `https://www.twitch.tv/${handle}`;
+    if (platform === "kick")
+        return `https://kick.com/${platformId}`;
+    return `https://www.youtube.com/channel/${platformId}`;
+}
+/** "2h 5m", "45m". */
+export function formatDuration(ms) {
+    const minutes = Math.max(0, Math.round(ms / 60_000));
+    const hours = Math.floor(minutes / 60);
+    return hours > 0 ? `${hours}h ${minutes % 60}m` : `${minutes}m`;
+}
+/** Adds a timestamp query so Discord fetches a fresh preview image. */
+export function cacheBusted(url, now) {
+    return `${url}${url.includes("?") ? "&" : "?"}t=${Math.floor(now.getTime() / 1000)}`;
+}
+function author(subscription) {
+    return {
+        name: subscription.displayName,
+        url: creatorUrl(subscription.platform, subscription.handle, subscription.platformId),
+        ...(subscription.avatarUrl ? { icon_url: subscription.avatarUrl } : {}),
+    };
+}
+export function liveValues(subscription, stream, server) {
+    return {
+        creator: subscription.displayName,
+        platform: platformLabel(subscription.platform),
+        title: stream.title,
+        game: stream.game ?? "",
+        viewers: stream.viewers ?? "",
+        url: stream.url,
+        thumbnail: stream.thumbnailUrl ?? "",
+        startedAt: stream.startedAt ?? null,
+        server: server ?? "",
+        ping: subscription.pingRoleId ? `<@&${subscription.pingRoleId}>` : "",
+    };
+}
+/** Default "is live" announcement: platform-colored embed with the stream details. */
+export function liveMessage(subscription, stream, values, now) {
+    const platform = platformLabel(subscription.platform);
+    const ping = subscription.pingRoleId ? `<@&${subscription.pingRoleId}> ` : "";
+    const content = subscription.messageText ? renderPlaceholders(subscription.messageText, values) : `${ping}**${subscription.displayName}** is live on ${platform}!`;
+    const fields = [
+        ...(stream.game ? [{ name: subscription.platform === "youtube" ? "Category" : "Game", value: stream.game.slice(0, 1024), inline: true }] : []),
+        ...(stream.viewers === undefined ? [] : [{ name: "Viewers", value: stream.viewers.toLocaleString("en-US"), inline: true }]),
+    ];
+    return {
+        content,
+        embeds: [{
+                author: author(subscription),
+                title: (stream.title || `${subscription.displayName} is live`).slice(0, 256),
+                url: stream.url,
+                color: colorValue(PLATFORM_COLORS[subscription.platform]),
+                ...(fields.length ? { fields } : {}),
+                ...(stream.thumbnailUrl ? { image: { url: cacheBusted(stream.thumbnailUrl, now) } } : {}),
+                footer: { text: platform },
+                ...(stream.startedAt ? { timestamp: stream.startedAt.toISOString() } : {}),
+            }],
+    };
+}
+export function endedValues(subscription, durationMs, url) {
+    return { creator: subscription.displayName, platform: platformLabel(subscription.platform), duration: formatDuration(durationMs), url };
+}
+/** What the live announcement becomes when the stream ends (edit behavior). */
+export function endedMessage(subscription, values) {
+    return {
+        content: `**${subscription.displayName}**'s ${values["platform"]} stream has ended.`,
+        embeds: [{
+                author: author(subscription),
+                title: "Stream ended",
+                url: String(values["url"]),
+                description: `Live for ${values["duration"]}.`,
+                color: colorValue(PLATFORM_COLORS[subscription.platform]),
+                footer: { text: platformLabel(subscription.platform) },
+            }],
+    };
+}
+export function videoValues(subscription, video) {
+    return { creator: subscription.displayName, title: video.title, url: video.url, publishedAt: video.publishedAt };
+}
+/** Default "new video" announcement. */
+export function videoMessage(subscription, video) {
+    return {
+        content: `**${subscription.displayName}** uploaded a new video!`,
+        embeds: [{
+                author: author(subscription),
+                title: video.title.slice(0, 256),
+                url: video.url,
+                color: colorValue(PLATFORM_COLORS.youtube),
+                image: { url: `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg` },
+                footer: { text: "YouTube" },
+                timestamp: video.publishedAt.toISOString(),
+            }],
+    };
+}
+/** Stream used by the portal's "Test" button when the creator is offline. */
+export function sampleStream(subscription, now) {
+    return {
+        id: `sample-${now.getTime()}`,
+        title: `Testing the live announcement for ${subscription.displayName}`,
+        game: subscription.platform === "youtube" ? "Gaming" : "Just Chatting",
+        viewers: 123,
+        startedAt: now,
+        url: creatorUrl(subscription.platform, subscription.handle, subscription.platformId),
+    };
+}
+//# sourceMappingURL=announcements.js.map
