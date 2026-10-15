@@ -63,5 +63,6 @@ export function validateSettings(input: FivemSettingsInput): void {
   if (!isValidTimeZone(input.timeZone)) invalid(`"${input.timeZone}" is not a time zone. Use a name like Europe/Berlin or UTC.`);
   if (input.restartWarningMinutes.length > 6) invalid("You can have at most 6 restart warnings.");
   for (const minutes of input.restartWarningMinutes) requireRange("restart warning minutes", minutes, 0, 120);
+  if (input.downAfterMinutes !== undefined) requireRange("downAfterMinutes", input.downAfterMinutes, 1, 60);
   if (input.restartTimes.length && !input.alertChannelId) invalid("Choose an alert channel for restart warnings.");
 }

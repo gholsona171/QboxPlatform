@@ -31,7 +31,7 @@ export { scheduledMessagesFeature } from "./scheduledMessages/ScheduledMessagesF
 export { levelsFeature } from "./levels/LevelsFeature.js";
 export { voiceRoomsFeature } from "./voiceRooms/VoiceRoomsFeature.js";
 export { knowledgeFeature, type KnowledgeFeatureOptions } from "./knowledge/KnowledgeFeature.js";
-export { fivemFeature } from "./fivem/FivemFeature.js";
+export { FivemPresence, fivemFeature } from "./fivem/FivemFeature.js";
 export { streamsFeature, type StreamsFeatureOptions } from "./streams/StreamsFeature.js";
 export { musicFeature, type MusicFeatureOptions } from "./music/MusicFeature.js";
 export { MusicControlServer } from "./music/MusicControlServer.js";

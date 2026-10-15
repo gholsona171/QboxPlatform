@@ -29,6 +29,7 @@ export type AggregateFivemSettings = {
 export type FivemSettingsAvgAggregateOutputType = {
   updateIntervalSeconds: number | null
   restartWarningMinutes: number | null
+  downAfterMinutes: number | null
   failureStreak: number | null
   revision: number | null
 }
@@ -36,6 +37,7 @@ export type FivemSettingsAvgAggregateOutputType = {
 export type FivemSettingsSumAggregateOutputType = {
   updateIntervalSeconds: number | null
   restartWarningMinutes: number[]
+  downAfterMinutes: number | null
   failureStreak: number | null
   revision: number | null
 }
@@ -50,7 +52,16 @@ export type FivemSettingsMinAggregateOutputType = {
   alertChannelId: string | null
   alertRoleId: string | null
   timeZone: string | null
+  showPlayerNames: boolean | null
+  downAfterMinutes: number | null
+  debug: boolean | null
   lastOnline: boolean | null
+  phase: string | null
+  phaseSince: Date | null
+  downSince: Date | null
+  downAlertSent: boolean | null
+  lastMessageAt: Date | null
+  lastSnapshotAt: Date | null
   onlineSince: Date | null
   failureStreak: number | null
   lastPolledAt: Date | null
@@ -69,7 +80,16 @@ export type FivemSettingsMaxAggregateOutputType = {
   alertChannelId: string | null
   alertRoleId: string | null
   timeZone: string | null
+  showPlayerNames: boolean | null
+  downAfterMinutes: number | null
+  debug: boolean | null
   lastOnline: boolean | null
+  phase: string | null
+  phaseSince: Date | null
+  downSince: Date | null
+  downAlertSent: boolean | null
+  lastMessageAt: Date | null
+  lastSnapshotAt: Date | null
   onlineSince: Date | null
   failureStreak: number | null
   lastPolledAt: Date | null
@@ -90,7 +110,16 @@ export type FivemSettingsCountAggregateOutputType = {
   restartTimes: number
   timeZone: number
   restartWarningMinutes: number
+  showPlayerNames: number
+  downAfterMinutes: number
+  debug: number
   lastOnline: number
+  phase: number
+  phaseSince: number
+  downSince: number
+  downAlertSent: number
+  lastMessageAt: number
+  lastSnapshotAt: number
   onlineSince: number
   failureStreak: number
   lastPolledAt: number
@@ -105,6 +134,7 @@ export type FivemSettingsCountAggregateOutputType = {
 export type FivemSettingsAvgAggregateInputType = {
   updateIntervalSeconds?: true
   restartWarningMinutes?: true
+  downAfterMinutes?: true
   failureStreak?: true
   revision?: true
 }
@@ -112,6 +142,7 @@ export type FivemSettingsAvgAggregateInputType = {
 export type FivemSettingsSumAggregateInputType = {
   updateIntervalSeconds?: true
   restartWarningMinutes?: true
+  downAfterMinutes?: true
   failureStreak?: true
   revision?: true
 }
@@ -126,7 +157,16 @@ export type FivemSettingsMinAggregateInputType = {
   alertChannelId?: true
   alertRoleId?: true
   timeZone?: true
+  showPlayerNames?: true
+  downAfterMinutes?: true
+  debug?: true
   lastOnline?: true
+  phase?: true
+  phaseSince?: true
+  downSince?: true
+  downAlertSent?: true
+  lastMessageAt?: true
+  lastSnapshotAt?: true
   onlineSince?: true
   failureStreak?: true
   lastPolledAt?: true
@@ -145,7 +185,16 @@ export type FivemSettingsMaxAggregateInputType = {
   alertChannelId?: true
   alertRoleId?: true
   timeZone?: true
+  showPlayerNames?: true
+  downAfterMinutes?: true
+  debug?: true
   lastOnline?: true
+  phase?: true
+  phaseSince?: true
+  downSince?: true
+  downAlertSent?: true
+  lastMessageAt?: true
+  lastSnapshotAt?: true
   onlineSince?: true
   failureStreak?: true
   lastPolledAt?: true
@@ -166,7 +215,16 @@ export type FivemSettingsCountAggregateInputType = {
   restartTimes?: true
   timeZone?: true
   restartWarningMinutes?: true
+  showPlayerNames?: true
+  downAfterMinutes?: true
+  debug?: true
   lastOnline?: true
+  phase?: true
+  phaseSince?: true
+  downSince?: true
+  downAlertSent?: true
+  lastMessageAt?: true
+  lastSnapshotAt?: true
   onlineSince?: true
   failureStreak?: true
   lastPolledAt?: true
@@ -275,7 +333,16 @@ export type FivemSettingsGroupByOutputType = {
   restartTimes: string[]
   timeZone: string
   restartWarningMinutes: number[]
+  showPlayerNames: boolean
+  downAfterMinutes: number
+  debug: boolean
   lastOnline: boolean | null
+  phase: string | null
+  phaseSince: Date | null
+  downSince: Date | null
+  downAlertSent: boolean
+  lastMessageAt: Date | null
+  lastSnapshotAt: Date | null
   onlineSince: Date | null
   failureStreak: number
   lastPolledAt: Date | null
@@ -320,7 +387,16 @@ export type FivemSettingsWhereInput = {
   restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">
   timeZone?: Prisma.StringFilter<"FivemSettings"> | string
   restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">
+  showPlayerNames?: Prisma.BoolFilter<"FivemSettings"> | boolean
+  downAfterMinutes?: Prisma.IntFilter<"FivemSettings"> | number
+  debug?: Prisma.BoolFilter<"FivemSettings"> | boolean
   lastOnline?: Prisma.BoolNullableFilter<"FivemSettings"> | boolean | null
+  phase?: Prisma.StringNullableFilter<"FivemSettings"> | string | null
+  phaseSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  downSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  downAlertSent?: Prisma.BoolFilter<"FivemSettings"> | boolean
+  lastMessageAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  lastSnapshotAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
   onlineSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
   failureStreak?: Prisma.IntFilter<"FivemSettings"> | number
   lastPolledAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
@@ -342,7 +418,16 @@ export type FivemSettingsOrderByWithRelationInput = {
   restartTimes?: Prisma.SortOrder
   timeZone?: Prisma.SortOrder
   restartWarningMinutes?: Prisma.SortOrder
+  showPlayerNames?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
+  debug?: Prisma.SortOrder
   lastOnline?: Prisma.SortOrderInput | Prisma.SortOrder
+  phase?: Prisma.SortOrderInput | Prisma.SortOrder
+  phaseSince?: Prisma.SortOrderInput | Prisma.SortOrder
+  downSince?: Prisma.SortOrderInput | Prisma.SortOrder
+  downAlertSent?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   onlineSince?: Prisma.SortOrderInput | Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   lastPolledAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -367,7 +452,16 @@ export type FivemSettingsWhereUniqueInput = Prisma.AtLeast<{
   restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">
   timeZone?: Prisma.StringFilter<"FivemSettings"> | string
   restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">
+  showPlayerNames?: Prisma.BoolFilter<"FivemSettings"> | boolean
+  downAfterMinutes?: Prisma.IntFilter<"FivemSettings"> | number
+  debug?: Prisma.BoolFilter<"FivemSettings"> | boolean
   lastOnline?: Prisma.BoolNullableFilter<"FivemSettings"> | boolean | null
+  phase?: Prisma.StringNullableFilter<"FivemSettings"> | string | null
+  phaseSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  downSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  downAlertSent?: Prisma.BoolFilter<"FivemSettings"> | boolean
+  lastMessageAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
+  lastSnapshotAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
   onlineSince?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
   failureStreak?: Prisma.IntFilter<"FivemSettings"> | number
   lastPolledAt?: Prisma.DateTimeNullableFilter<"FivemSettings"> | Date | string | null
@@ -389,7 +483,16 @@ export type FivemSettingsOrderByWithAggregationInput = {
   restartTimes?: Prisma.SortOrder
   timeZone?: Prisma.SortOrder
   restartWarningMinutes?: Prisma.SortOrder
+  showPlayerNames?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
+  debug?: Prisma.SortOrder
   lastOnline?: Prisma.SortOrderInput | Prisma.SortOrder
+  phase?: Prisma.SortOrderInput | Prisma.SortOrder
+  phaseSince?: Prisma.SortOrderInput | Prisma.SortOrder
+  downSince?: Prisma.SortOrderInput | Prisma.SortOrder
+  downAlertSent?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastSnapshotAt?: Prisma.SortOrderInput | Prisma.SortOrder
   onlineSince?: Prisma.SortOrderInput | Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   lastPolledAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -419,7 +522,16 @@ export type FivemSettingsScalarWhereWithAggregatesInput = {
   restartTimes?: Prisma.StringNullableListFilter<"FivemSettings">
   timeZone?: Prisma.StringWithAggregatesFilter<"FivemSettings"> | string
   restartWarningMinutes?: Prisma.IntNullableListFilter<"FivemSettings">
+  showPlayerNames?: Prisma.BoolWithAggregatesFilter<"FivemSettings"> | boolean
+  downAfterMinutes?: Prisma.IntWithAggregatesFilter<"FivemSettings"> | number
+  debug?: Prisma.BoolWithAggregatesFilter<"FivemSettings"> | boolean
   lastOnline?: Prisma.BoolNullableWithAggregatesFilter<"FivemSettings"> | boolean | null
+  phase?: Prisma.StringNullableWithAggregatesFilter<"FivemSettings"> | string | null
+  phaseSince?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
+  downSince?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
+  downAlertSent?: Prisma.BoolWithAggregatesFilter<"FivemSettings"> | boolean
+  lastMessageAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
+  lastSnapshotAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
   onlineSince?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
   failureStreak?: Prisma.IntWithAggregatesFilter<"FivemSettings"> | number
   lastPolledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FivemSettings"> | Date | string | null
@@ -441,7 +553,16 @@ export type FivemSettingsCreateInput = {
   restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[]
   timeZone?: string
   restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[]
+  showPlayerNames?: boolean
+  downAfterMinutes?: number
+  debug?: boolean
   lastOnline?: boolean | null
+  phase?: string | null
+  phaseSince?: Date | string | null
+  downSince?: Date | string | null
+  downAlertSent?: boolean
+  lastMessageAt?: Date | string | null
+  lastSnapshotAt?: Date | string | null
   onlineSince?: Date | string | null
   failureStreak?: number
   lastPolledAt?: Date | string | null
@@ -463,7 +584,16 @@ export type FivemSettingsUncheckedCreateInput = {
   restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[]
   timeZone?: string
   restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[]
+  showPlayerNames?: boolean
+  downAfterMinutes?: number
+  debug?: boolean
   lastOnline?: boolean | null
+  phase?: string | null
+  phaseSince?: Date | string | null
+  downSince?: Date | string | null
+  downAlertSent?: boolean
+  lastMessageAt?: Date | string | null
+  lastSnapshotAt?: Date | string | null
   onlineSince?: Date | string | null
   failureStreak?: number
   lastPolledAt?: Date | string | null
@@ -485,7 +615,16 @@ export type FivemSettingsUpdateInput = {
   restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[]
   timeZone?: Prisma.StringFieldUpdateOperationsInput | string
   restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[]
+  showPlayerNames?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  downAfterMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  debug?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  phase?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phaseSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureStreak?: Prisma.IntFieldUpdateOperationsInput | number
   lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -507,7 +646,16 @@ export type FivemSettingsUncheckedUpdateInput = {
   restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[]
   timeZone?: Prisma.StringFieldUpdateOperationsInput | string
   restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[]
+  showPlayerNames?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  downAfterMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  debug?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  phase?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phaseSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureStreak?: Prisma.IntFieldUpdateOperationsInput | number
   lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -529,7 +677,16 @@ export type FivemSettingsCreateManyInput = {
   restartTimes?: Prisma.FivemSettingsCreaterestartTimesInput | string[]
   timeZone?: string
   restartWarningMinutes?: Prisma.FivemSettingsCreaterestartWarningMinutesInput | number[]
+  showPlayerNames?: boolean
+  downAfterMinutes?: number
+  debug?: boolean
   lastOnline?: boolean | null
+  phase?: string | null
+  phaseSince?: Date | string | null
+  downSince?: Date | string | null
+  downAlertSent?: boolean
+  lastMessageAt?: Date | string | null
+  lastSnapshotAt?: Date | string | null
   onlineSince?: Date | string | null
   failureStreak?: number
   lastPolledAt?: Date | string | null
@@ -551,7 +708,16 @@ export type FivemSettingsUpdateManyMutationInput = {
   restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[]
   timeZone?: Prisma.StringFieldUpdateOperationsInput | string
   restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[]
+  showPlayerNames?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  downAfterMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  debug?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  phase?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phaseSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureStreak?: Prisma.IntFieldUpdateOperationsInput | number
   lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -573,7 +739,16 @@ export type FivemSettingsUncheckedUpdateManyInput = {
   restartTimes?: Prisma.FivemSettingsUpdaterestartTimesInput | string[]
   timeZone?: Prisma.StringFieldUpdateOperationsInput | string
   restartWarningMinutes?: Prisma.FivemSettingsUpdaterestartWarningMinutesInput | number[]
+  showPlayerNames?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  downAfterMinutes?: Prisma.IntFieldUpdateOperationsInput | number
+  debug?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastOnline?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  phase?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phaseSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  downAlertSent?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSnapshotAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   onlineSince?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   failureStreak?: Prisma.IntFieldUpdateOperationsInput | number
   lastPolledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -603,7 +778,16 @@ export type FivemSettingsCountOrderByAggregateInput = {
   restartTimes?: Prisma.SortOrder
   timeZone?: Prisma.SortOrder
   restartWarningMinutes?: Prisma.SortOrder
+  showPlayerNames?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
+  debug?: Prisma.SortOrder
   lastOnline?: Prisma.SortOrder
+  phase?: Prisma.SortOrder
+  phaseSince?: Prisma.SortOrder
+  downSince?: Prisma.SortOrder
+  downAlertSent?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
+  lastSnapshotAt?: Prisma.SortOrder
   onlineSince?: Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   lastPolledAt?: Prisma.SortOrder
@@ -616,6 +800,7 @@ export type FivemSettingsCountOrderByAggregateInput = {
 export type FivemSettingsAvgOrderByAggregateInput = {
   updateIntervalSeconds?: Prisma.SortOrder
   restartWarningMinutes?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   revision?: Prisma.SortOrder
 }
@@ -630,7 +815,16 @@ export type FivemSettingsMaxOrderByAggregateInput = {
   alertChannelId?: Prisma.SortOrder
   alertRoleId?: Prisma.SortOrder
   timeZone?: Prisma.SortOrder
+  showPlayerNames?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
+  debug?: Prisma.SortOrder
   lastOnline?: Prisma.SortOrder
+  phase?: Prisma.SortOrder
+  phaseSince?: Prisma.SortOrder
+  downSince?: Prisma.SortOrder
+  downAlertSent?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
+  lastSnapshotAt?: Prisma.SortOrder
   onlineSince?: Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   lastPolledAt?: Prisma.SortOrder
@@ -649,7 +843,16 @@ export type FivemSettingsMinOrderByAggregateInput = {
   alertChannelId?: Prisma.SortOrder
   alertRoleId?: Prisma.SortOrder
   timeZone?: Prisma.SortOrder
+  showPlayerNames?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
+  debug?: Prisma.SortOrder
   lastOnline?: Prisma.SortOrder
+  phase?: Prisma.SortOrder
+  phaseSince?: Prisma.SortOrder
+  downSince?: Prisma.SortOrder
+  downAlertSent?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
+  lastSnapshotAt?: Prisma.SortOrder
   onlineSince?: Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   lastPolledAt?: Prisma.SortOrder
@@ -661,6 +864,7 @@ export type FivemSettingsMinOrderByAggregateInput = {
 export type FivemSettingsSumOrderByAggregateInput = {
   updateIntervalSeconds?: Prisma.SortOrder
   restartWarningMinutes?: Prisma.SortOrder
+  downAfterMinutes?: Prisma.SortOrder
   failureStreak?: Prisma.SortOrder
   revision?: Prisma.SortOrder
 }
@@ -706,7 +910,16 @@ export type FivemSettingsSelect<ExtArgs extends runtime.Types.Extensions.Interna
   restartTimes?: boolean
   timeZone?: boolean
   restartWarningMinutes?: boolean
+  showPlayerNames?: boolean
+  downAfterMinutes?: boolean
+  debug?: boolean
   lastOnline?: boolean
+  phase?: boolean
+  phaseSince?: boolean
+  downSince?: boolean
+  downAlertSent?: boolean
+  lastMessageAt?: boolean
+  lastSnapshotAt?: boolean
   onlineSince?: boolean
   failureStreak?: boolean
   lastPolledAt?: boolean
@@ -728,7 +941,16 @@ export type FivemSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   restartTimes?: boolean
   timeZone?: boolean
   restartWarningMinutes?: boolean
+  showPlayerNames?: boolean
+  downAfterMinutes?: boolean
+  debug?: boolean
   lastOnline?: boolean
+  phase?: boolean
+  phaseSince?: boolean
+  downSince?: boolean
+  downAlertSent?: boolean
+  lastMessageAt?: boolean
+  lastSnapshotAt?: boolean
   onlineSince?: boolean
   failureStreak?: boolean
   lastPolledAt?: boolean
@@ -750,7 +972,16 @@ export type FivemSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   restartTimes?: boolean
   timeZone?: boolean
   restartWarningMinutes?: boolean
+  showPlayerNames?: boolean
+  downAfterMinutes?: boolean
+  debug?: boolean
   lastOnline?: boolean
+  phase?: boolean
+  phaseSince?: boolean
+  downSince?: boolean
+  downAlertSent?: boolean
+  lastMessageAt?: boolean
+  lastSnapshotAt?: boolean
   onlineSince?: boolean
   failureStreak?: boolean
   lastPolledAt?: boolean
@@ -772,7 +1003,16 @@ export type FivemSettingsSelectScalar = {
   restartTimes?: boolean
   timeZone?: boolean
   restartWarningMinutes?: boolean
+  showPlayerNames?: boolean
+  downAfterMinutes?: boolean
+  debug?: boolean
   lastOnline?: boolean
+  phase?: boolean
+  phaseSince?: boolean
+  downSince?: boolean
+  downAlertSent?: boolean
+  lastMessageAt?: boolean
+  lastSnapshotAt?: boolean
   onlineSince?: boolean
   failureStreak?: boolean
   lastPolledAt?: boolean
@@ -782,7 +1022,7 @@ export type FivemSettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type FivemSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "serverAddress" | "connectUrl" | "statusChannelId" | "statusMessageId" | "updateIntervalSeconds" | "alertChannelId" | "alertRoleId" | "restartTimes" | "timeZone" | "restartWarningMinutes" | "lastOnline" | "onlineSince" | "failureStreak" | "lastPolledAt" | "sentRestartWarnings" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["fivemSettings"]>
+export type FivemSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "serverAddress" | "connectUrl" | "statusChannelId" | "statusMessageId" | "updateIntervalSeconds" | "alertChannelId" | "alertRoleId" | "restartTimes" | "timeZone" | "restartWarningMinutes" | "showPlayerNames" | "downAfterMinutes" | "debug" | "lastOnline" | "phase" | "phaseSince" | "downSince" | "downAlertSent" | "lastMessageAt" | "lastSnapshotAt" | "onlineSince" | "failureStreak" | "lastPolledAt" | "sentRestartWarnings" | "revision" | "createdAt" | "updatedAt", ExtArgs["result"]["fivemSettings"]>
 
 export type $FivemSettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FivemSettings"
@@ -799,7 +1039,16 @@ export type $FivemSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inter
     restartTimes: string[]
     timeZone: string
     restartWarningMinutes: number[]
+    showPlayerNames: boolean
+    downAfterMinutes: number
+    debug: boolean
     lastOnline: boolean | null
+    phase: string | null
+    phaseSince: Date | null
+    downSince: Date | null
+    downAlertSent: boolean
+    lastMessageAt: Date | null
+    lastSnapshotAt: Date | null
     onlineSince: Date | null
     failureStreak: number
     lastPolledAt: Date | null
@@ -1241,7 +1490,16 @@ export interface FivemSettingsFieldRefs {
   readonly restartTimes: Prisma.FieldRef<"FivemSettings", 'String[]'>
   readonly timeZone: Prisma.FieldRef<"FivemSettings", 'String'>
   readonly restartWarningMinutes: Prisma.FieldRef<"FivemSettings", 'Int[]'>
+  readonly showPlayerNames: Prisma.FieldRef<"FivemSettings", 'Boolean'>
+  readonly downAfterMinutes: Prisma.FieldRef<"FivemSettings", 'Int'>
+  readonly debug: Prisma.FieldRef<"FivemSettings", 'Boolean'>
   readonly lastOnline: Prisma.FieldRef<"FivemSettings", 'Boolean'>
+  readonly phase: Prisma.FieldRef<"FivemSettings", 'String'>
+  readonly phaseSince: Prisma.FieldRef<"FivemSettings", 'DateTime'>
+  readonly downSince: Prisma.FieldRef<"FivemSettings", 'DateTime'>
+  readonly downAlertSent: Prisma.FieldRef<"FivemSettings", 'Boolean'>
+  readonly lastMessageAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>
+  readonly lastSnapshotAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>
   readonly onlineSince: Prisma.FieldRef<"FivemSettings", 'DateTime'>
   readonly failureStreak: Prisma.FieldRef<"FivemSettings", 'Int'>
   readonly lastPolledAt: Prisma.FieldRef<"FivemSettings", 'DateTime'>

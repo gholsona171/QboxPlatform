@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { FivemError, type FivemService } from "@qbox/fivem";
+import { FivemError, nextRestart, previousPhase, type FivemService } from "@qbox/fivem";
 
 import type { ApiFeature, ApiFeatureContext } from "../features/ApiFeature.js";
 import { errorOf, featureCall, parseInput as parse, snowflakeSchema as snowflake } from "../features/routeHelpers.js";
@@ -18,6 +18,9 @@ const settingsSchema = z.strictObject({
   restartTimes: z.array(z.string().max(5)).max(24),
   timeZone: z.string().min(1).max(64),
   restartWarningMinutes: z.array(z.number().int()).max(6),
+  showPlayerNames: z.boolean().optional(),
+  downAfterMinutes: z.number().int().optional(),
+  debug: z.boolean().optional(),
   expectedRevision: z.number().int().min(0),
 });
 
@@ -40,7 +43,11 @@ function registerFivemRoutes(server: FastifyInstance, context: ApiFeatureContext
         connectUrl: settings.connectUrl,
         restartTimes: settings.restartTimes,
         timeZone: settings.timeZone,
-        onlineSince: state.lastOnline ? state.onlineSince : undefined,
+        phase: previousPhase(state),
+        phaseSince: state.phaseSince,
+        downSince: state.downSince,
+        onlineSince: previousPhase(state) === "online" ? state.onlineSince : undefined,
+        nextRestart: nextRestart(new Date(), settings),
         lastPolledAt: state.lastPolledAt,
         ...(manage ? { settings } : {}),
         can: { manage },

@@ -1,6 +1,6 @@
 import { getJson, sendJson } from "./api.js";
 import { appPath } from "./config.js";
-import { channelSelect, dateTime, intValue, loadDirectory, numberField, roleSelect, textField } from "./forms.js";
+import { boolValue, channelSelect, checkbox, dateTime, intValue, loadDirectory, numberField, relative, roleSelect, textField } from "./forms.js";
 import { playerChart } from "./playerChart.js";
 import { badge, escapeHtml, notify, row, table } from "./ui.js";
 import { BRAND } from "./brand.js";
@@ -64,11 +64,26 @@ function uptime(since) {
   return days ? `${days}d ${hours}h` : hours ? `${hours}h ${minutes % 60}m` : `${minutes}m`;
 }
 
+const PHASES = {
+  online: ["success", "Online"],
+  starting: ["warning", "Starting up"],
+  restarting: ["warning", "Restarting"],
+  offline: ["danger", "Offline"],
+};
+
+/** The bot's view (online / restarting / starting / offline) when it agrees with the live answer, else the live answer. */
+function phaseBadge(s) {
+  const remembered = view.overview.phase;
+  const phase = s.online ? (remembered === "starting" && s.partial ? "starting" : "online") : remembered === "restarting" || remembered === "offline" ? remembered : "offline";
+  const [kind, label] = PHASES[phase];
+  return `<span class="badge ${kind}">${escapeHtml(label)}</span>`;
+}
+
 function statusCard() {
   if (view.statusError) return `<div class="empty-state">${escapeHtml(view.statusError.message)}</div>`;
   const s = view.status;
   const metric = (label, value) => `<div class="card metric"><span class="metric-label">${escapeHtml(label)}</span><strong class="metric-value">${escapeHtml(String(value))}</strong></div>`;
-  return `<div class="split-line"><h2>${escapeHtml(s.hostname || "FiveM server")}</h2>${badge(s.online ? "online" : "offline")}</div>
+  return `<div class="split-line"><h2>${escapeHtml(s.hostname || "FiveM server")}</h2>${phaseBadge(s)}</div>
     ${s.online ? "" : `<p class="microcopy">${escapeHtml(s.error ?? "The server is not answering.")}</p>`}
     <section class="grid cols-4">
       ${metric("Players", s.online ? `${s.playerCount}/${s.maxPlayers}` : "—")}
@@ -79,7 +94,7 @@ function statusCard() {
     <div class="toolbar">
       <button class="button compact" data-f-action="refresh">Refresh</button>
       ${view.overview.connectUrl ? `<a class="button primary compact" href="${escapeHtml(view.overview.connectUrl)}" target="_blank" rel="noopener noreferrer">Connect</a>` : ""}
-      <small class="microcopy">Checked ${escapeHtml(dateTime(s.checkedAt))}${view.overview.restartTimes.length ? ` · Restarts ${escapeHtml(view.overview.restartTimes.join(", "))} (${escapeHtml(view.overview.timeZone)})` : ""}</small>
+      <small class="microcopy">Checked ${escapeHtml(dateTime(s.checkedAt))}${view.overview.restartTimes.length ? ` · Restarts ${escapeHtml(view.overview.restartTimes.join(", "))} (${escapeHtml(view.overview.timeZone)})` : ""}${view.overview.nextRestart ? ` · Next restart ${escapeHtml(relative(view.overview.nextRestart))}` : ""}</small>
     </div>`;
 }
 
@@ -125,12 +140,17 @@ function settingsTab() {
     ${numberField("updateIntervalSeconds", "Update every (seconds, 30-3600)", s.updateIntervalSeconds, 30, 3600)}
     <h3>Alerts</h3>
     ${channelSelect("alertChannelId", "Alert channel (down, back up, restarts)", s.alertChannelId, "TEXT", "Not set")}
-    ${roleSelect("alertRoleId", "Role to ping when the server goes down or comes back", s.alertRoleId)}
+    ${roleSelect("alertRoleId", "Role to ping when the server goes down (and when it is back after an outage)", s.alertRoleId)}
+    ${numberField("downAfterMinutes", "Count as down after this many minutes not answering (1-60)", s.downAfterMinutes, 1, 60)}
+    <p class="microcopy full">Until then (and during a scheduled restart) the status shows Restarting and nobody is pinged.</p>
+    ${checkbox("showPlayerNames", "List player names in the Discord status message (/fivem players and this page always show them)", s.showPlayerNames)}
     <h3>Restart schedule</h3>
     ${textField("restartTimes", "Daily restart times (HH:MM, comma separated)", s.restartTimes.join(", "), "06:00, 18:00", false, "full")}
     ${textField("timeZone", "Time zone", s.timeZone, "Europe/Berlin")}
-    ${textField("restartWarningMinutes", "Warn this many minutes before (comma separated, 0 = now)", s.restartWarningMinutes.join(", "), "15, 5, 1")}
-    <p class="microcopy full">Your browser's time zone is ${escapeHtml(Intl.DateTimeFormat().resolvedOptions().timeZone)}.</p>
+    ${textField("restartWarningMinutes", "Warn this many minutes before (comma separated, 0 = now)", s.restartWarningMinutes.join(", "), "15, 5")}
+    <p class="microcopy full">Your browser's time zone is ${escapeHtml(Intl.DateTimeFormat().resolvedOptions().timeZone)}. Example: 00:00, 08:00, 16:00 in America/Los_Angeles, warned 15 and 5 minutes before.</p>
+    <h3>Debug</h3>
+    ${checkbox("debug", "Debug: log every check and why the status was chosen (alerts sent or held back). Takes effect at the next check.", s.debug)}
     <button class="button primary full">Save settings</button>
   </form>`;
 }
@@ -198,6 +218,9 @@ async function save(form) {
       restartTimes: list("restartTimes"),
       timeZone: text("timeZone") || "UTC",
       restartWarningMinutes: list("restartWarningMinutes").map(Number),
+      showPlayerNames: boolValue(form, "showPlayerNames"),
+      downAfterMinutes: intValue(data, "downAfterMinutes", 3),
+      debug: boolValue(form, "debug"),
       expectedRevision: view.overview.settings.revision,
     });
     notify("FiveM settings saved.");

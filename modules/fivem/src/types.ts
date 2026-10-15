@@ -17,18 +17,48 @@ export interface FivemSettings {
   readonly timeZone: string;
   /** Minutes before each restart to post a warning (0 = "restarting now"). */
   readonly restartWarningMinutes: readonly number[];
+  /** List player names in the channel status message (`/fivem players` and the portal always do). */
+  readonly showPlayerNames: boolean;
+  /** Minutes the server may be unreachable outside a restart window before it counts as down. */
+  readonly downAfterMinutes: number;
+  /** Log every check and state decision (live, no restart). */
+  readonly debug: boolean;
   readonly revision: number;
 }
 
-export interface FivemSettingsInput extends Omit<FivemSettings, "revision"> {
+export interface FivemSettingsInput extends Omit<FivemSettings, "revision" | "showPlayerNames" | "downAfterMinutes" | "debug"> {
+  readonly showPlayerNames?: boolean | undefined;
+  readonly downAfterMinutes?: number | undefined;
+  readonly debug?: boolean | undefined;
   readonly expectedRevision?: number | undefined;
 }
+
+/**
+ * What the bot thinks the server is doing:
+ * `online` (green), `restarting` (yellow: not answering, either inside a
+ * scheduled restart window or for less than `downAfterMinutes`), `starting`
+ * (yellow: answering but not fully up yet), `offline` (red: a real outage).
+ */
+export type FivemPhase = "online" | "restarting" | "starting" | "offline";
 
 /** Monitoring state stored next to the settings. Not part of the settings revision. */
 export interface FivemMonitorState {
   readonly statusMessageId?: string | undefined;
+  /** `phase === "online"`, kept for older readers. */
   readonly lastOnline?: boolean | undefined;
+  readonly phase?: FivemPhase | undefined;
+  /** When the current phase began. */
+  readonly phaseSince?: Date | undefined;
+  /** First failed check of the current down spell. */
+  readonly downSince?: Date | undefined;
+  /** The "Server is down" alert was sent for the current down spell (the "Back online" post pings the role). */
+  readonly downAlertSent?: boolean | undefined;
+  /** When the server last (re)started: reported by the server when it shares an uptime, otherwise detected by the bot. */
   readonly onlineSince?: Date | undefined;
+  /** Last edit of the status message. */
+  readonly lastMessageAt?: Date | undefined;
+  /** Last stored player-count snapshot. */
+  readonly lastSnapshotAt?: Date | undefined;
   /** Failed polls in a row. */
   readonly failureStreak: number;
   readonly lastPolledAt?: Date | undefined;
@@ -56,6 +86,12 @@ export interface FivemServerStatus {
   readonly gametype?: string | undefined;
   readonly mapname?: string | undefined;
   readonly version?: string | undefined;
+  /** Answers, but not every endpoint yet (or no slots): still starting up. */
+  readonly partial?: boolean | undefined;
+  /** When the server says it started (from an `Uptime` server var), if it shares one. */
+  readonly startedAt?: Date | undefined;
+  /** `banner_detail` from the server vars, when it is an https URL. */
+  readonly bannerUrl?: string | undefined;
   /** Why the server could not be reached. */
   readonly error?: string | undefined;
   readonly checkedAt: Date;
@@ -90,14 +126,34 @@ export interface FivemEmbed {
   readonly description: string;
   readonly color: string;
   readonly fields?: readonly { readonly name: string; readonly value: string; readonly inline?: boolean }[] | undefined;
+  /** Large image, for example `attachment://players.png`. */
+  readonly image?: string | undefined;
+  readonly thumbnail?: string | undefined;
   readonly footer?: string | undefined;
   readonly timestamp?: Date | undefined;
 }
 
+/** A PNG attached to a message. */
+export interface FivemImage {
+  readonly name: string;
+  readonly data: Buffer;
+}
+
+export interface FivemStatusMessageOptions {
+  readonly image?: FivemImage | undefined;
+  readonly refreshImage?: boolean | undefined;
+}
+
 /** Discord operations the FiveM feature needs. */
 export interface FivemGateway {
-  /** Edits the status message, or posts a new one when it is missing. Returns the message ID. */
-  upsertStatusMessage(channelId: string, messageId: string | undefined, embed: FivemEmbed, connectUrl: string | undefined): Promise<string>;
+  /**
+   * Edits the status message, or posts a new one when there is none or it was
+   * deleted (Unknown Message). Any other failure is thrown, so the next check
+   * edits the same message instead of posting a duplicate. A new post always
+   * carries `image`; an edit replaces the attachment only with
+   * `refreshImage`, otherwise the attached graph is kept. Returns the message ID.
+   */
+  upsertStatusMessage(channelId: string, messageId: string | undefined, embed: FivemEmbed, connectUrl: string | undefined, options?: FivemStatusMessageOptions): Promise<string>;
   /** Posts an alert; `roleId` is pinged when given. */
   postAlert(channelId: string, content: string, embed: FivemEmbed, roleId: string | undefined): Promise<void>;
 }
@@ -116,4 +172,17 @@ export interface PlayerHistory {
   readonly points: readonly PlayerHistoryPoint[];
   readonly peak: number;
   readonly uptimePercent?: number | undefined;
+}
+
+/** Structured log sink (pino-compatible). */
+export interface FivemLogger {
+  info(fields: Record<string, unknown>, message: string): void;
+  warn(fields: Record<string, unknown>, message: string): void;
+}
+
+/** One server's result from a tick, for the bot's presence. */
+export interface FivemTickResult {
+  readonly guildId: string;
+  readonly phase: FivemPhase;
+  readonly status: FivemServerStatus;
 }

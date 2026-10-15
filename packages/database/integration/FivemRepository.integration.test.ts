@@ -39,11 +39,14 @@ describe("PrismaFivemRepository", () => {
   it("round-trips settings and keeps state out of the revision", async () => {
     const { revision: _revision, ...defaults } = defaultFivemSettings(guildId);
     const saved = await service.saveSettings({ ...defaults, serverAddress: "127.0.0.1:30120", statusChannelId: "1262656532902842425", alertChannelId: "1262656532902842426", restartTimes: ["06:00"], expectedRevision: 0 });
-    expect(saved).toMatchObject({ revision: 1, serverAddress: "127.0.0.1:30120", restartTimes: ["06:00"], restartWarningMinutes: [15, 5, 1] });
+    expect(saved).toMatchObject({ revision: 1, serverAddress: "127.0.0.1:30120", restartTimes: ["06:00"], restartWarningMinutes: [15, 5], showPlayerNames: false, downAfterMinutes: 3, debug: false });
     await service.tick();
     const config = await service.config(guildId);
     expect(config.settings.revision).toBe(1);
-    expect(config.state).toMatchObject({ statusMessageId: "1432100000000000001", lastOnline: true, failureStreak: 0 });
+    expect(config.state).toMatchObject({ statusMessageId: "1432100000000000001", lastOnline: true, phase: "online", failureStreak: 0, downAlertSent: false });
+    expect(config.state.onlineSince).toBeInstanceOf(Date);
+    const toggled = await service.saveSettings({ ...config.settings, showPlayerNames: true, debug: true, downAfterMinutes: 5, expectedRevision: 1 });
+    expect(toggled).toMatchObject({ revision: 2, showPlayerNames: true, debug: true, downAfterMinutes: 5 });
     await expect(service.saveSettings({ ...defaults, expectedRevision: 0 })).rejects.toMatchObject({ code: "CONFLICT" });
   });
 
@@ -52,13 +55,15 @@ describe("PrismaFivemRepository", () => {
     await service.saveSettings({ ...defaults, serverAddress: "127.0.0.1:30120", alertChannelId: "1262656532902842426" });
     await service.tick();
     online = false;
-    for (let index = 0; index < 2; index += 1) {
+    // Not answering: "restarting" first, then a real outage after 3 minutes.
+    for (let index = 0; index < 4; index += 1) {
       clock = new Date(clock.getTime() + 60_000);
       await service.tick();
     }
-    expect(alerts).toEqual(["🔴 The FiveM server is down."]);
+    expect(alerts).toEqual(["🔴 **Server is down**"]);
+    expect((await service.config(guildId)).state).toMatchObject({ phase: "offline", downAlertSent: true });
     const history = await service.history(guildId, "24h");
-    expect(history).toMatchObject({ peak: 1, uptimePercent: 33.3 });
+    expect(history).toMatchObject({ peak: 1, uptimePercent: 20 });
     clock = new Date(clock.getTime() + 9 * 86_400_000);
     await service.tick();
     expect(await client.fivemStatusSnapshot.count({ where: { guildId } })).toBe(1);

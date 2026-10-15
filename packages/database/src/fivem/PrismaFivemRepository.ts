@@ -2,6 +2,7 @@ import {
   FivemError,
   type FivemGuildConfig,
   type FivemMonitorState,
+  type FivemPhase,
   type FivemRepository,
   type FivemSettings,
   type FivemSettingsInput,
@@ -32,6 +33,9 @@ export class PrismaFivemRepository implements FivemRepository {
       restartTimes: [...input.restartTimes],
       timeZone: input.timeZone,
       restartWarningMinutes: [...input.restartWarningMinutes],
+      ...(input.showPlayerNames === undefined ? {} : { showPlayerNames: input.showPlayerNames }),
+      ...(input.downAfterMinutes === undefined ? {} : { downAfterMinutes: input.downAfterMinutes }),
+      ...(input.debug === undefined ? {} : { debug: input.debug }),
     };
     const existing = await this.client.fivemSettings.findUnique({ where: { guildId: input.guildId }, select: { revision: true } });
     if (!existing) {
@@ -53,6 +57,12 @@ export class PrismaFivemRepository implements FivemRepository {
     if ("statusMessageId" in state) data.statusMessageId = state.statusMessageId ?? null;
     if ("lastOnline" in state) data.lastOnline = state.lastOnline ?? null;
     if ("onlineSince" in state) data.onlineSince = state.onlineSince ?? null;
+    if ("phase" in state) data.phase = state.phase ?? null;
+    if ("phaseSince" in state) data.phaseSince = state.phaseSince ?? null;
+    if ("downSince" in state) data.downSince = state.downSince ?? null;
+    if (state.downAlertSent !== undefined) data.downAlertSent = state.downAlertSent;
+    if ("lastMessageAt" in state) data.lastMessageAt = state.lastMessageAt ?? null;
+    if ("lastSnapshotAt" in state) data.lastSnapshotAt = state.lastSnapshotAt ?? null;
     if (state.failureStreak !== undefined) data.failureStreak = state.failureStreak;
     if ("lastPolledAt" in state) data.lastPolledAt = state.lastPolledAt ?? null;
     if (state.sentRestartWarnings !== undefined) data.sentRestartWarnings = [...state.sentRestartWarnings];
@@ -97,15 +107,28 @@ function mapConfig(row: SettingsRow): FivemGuildConfig {
       restartTimes: row.restartTimes,
       timeZone: row.timeZone,
       restartWarningMinutes: row.restartWarningMinutes,
+      showPlayerNames: row.showPlayerNames,
+      downAfterMinutes: row.downAfterMinutes,
+      debug: row.debug,
       revision: row.revision,
     },
     state: {
       ...(row.statusMessageId ? { statusMessageId: row.statusMessageId } : {}),
       ...(row.lastOnline === null ? {} : { lastOnline: row.lastOnline }),
+      ...(isPhase(row.phase) ? { phase: row.phase } : {}),
+      ...(row.phaseSince ? { phaseSince: row.phaseSince } : {}),
+      ...(row.downSince ? { downSince: row.downSince } : {}),
+      downAlertSent: row.downAlertSent,
       ...(row.onlineSince ? { onlineSince: row.onlineSince } : {}),
+      ...(row.lastMessageAt ? { lastMessageAt: row.lastMessageAt } : {}),
+      ...(row.lastSnapshotAt ? { lastSnapshotAt: row.lastSnapshotAt } : {}),
       failureStreak: row.failureStreak,
       ...(row.lastPolledAt ? { lastPolledAt: row.lastPolledAt } : {}),
       sentRestartWarnings: row.sentRestartWarnings,
     },
   };
+}
+
+function isPhase(value: string | null): value is FivemPhase {
+  return value === "online" || value === "restarting" || value === "starting" || value === "offline";
 }

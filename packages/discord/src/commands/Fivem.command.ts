@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } from "discord.js";
-import { FivemError, playerLines, statusEmbed, type FivemService } from "@qbox/fivem";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } from "discord.js";
+import { FivemError, connectCommand, playerLines, type FivemService } from "@qbox/fivem";
 
 import type { CommandExecutionContext, CommandExecutionPolicy, DiscordCommand } from "./DiscordCommand.js";
 import { toEmbedBuilder } from "../features/featureEmbeds.js";
@@ -44,13 +44,13 @@ export class FivemCommand implements DiscordCommand {
       if (!settings.connectUrl && !settings.serverAddress) throw new FivemError("INVALID_STATE", "The server's connect details are not set yet.");
       const lines = [
         ...(settings.connectUrl ? [`Click **Connect**, or open ${settings.connectUrl}`] : []),
-        ...(settings.serverAddress ? [`In FiveM press **F8** and type \`connect ${settings.serverAddress}\``] : []),
+        `In FiveM press **F8** and type:\n\`\`\`\n${connectCommand(settings) ?? ""}\n\`\`\``,
       ];
       await context.editReply({ content: lines.join("\n"), components: button });
       return;
     }
-    const status = await this.fivem.status(guildId);
     if (route === "players") {
+      const status = await this.fivem.status(guildId);
       await context.editReply({
         embeds: [toEmbedBuilder({
           title: `${status.hostname || "FiveM server"} — ${status.online ? `${status.playerCount}/${status.maxPlayers} players` : "offline"}`,
@@ -60,8 +60,12 @@ export class FivemCommand implements DiscordCommand {
       });
       return;
     }
-    const onlineSince = config.state.lastOnline ? config.state.onlineSince : undefined;
-    await context.editReply({ embeds: [toEmbedBuilder(statusEmbed(settings, status, status.online ? onlineSince : undefined))], components: button });
+    const live = await this.fivem.liveStatus(guildId);
+    await context.editReply({
+      embeds: [toEmbedBuilder(live.embed)],
+      components: button,
+      files: live.image ? [new AttachmentBuilder(live.image.data, { name: live.image.name })] : [],
+    });
   }
 }
 

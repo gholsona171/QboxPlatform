@@ -48,7 +48,10 @@ describe("fivem routes", () => {
     expect((await server.inject(json("POST", "/api/v1/fivem/test", { serverAddress: "1.2.3.4:30120" }))).json().data.online).toBe(true);
     expect(queried).toEqual(["play.example.com:30120", "1.2.3.4:30120"]);
     const overview = (await server.inject({ method: "GET", url: "/api/v1/fivem/overview", headers: host })).json().data;
-    expect(overview).toMatchObject({ configured: true, connectUrl: "https://cfx.re/join/abc123", can: { manage: true }, settings: { revision: 1 } });
+    expect(overview).toMatchObject({ configured: true, connectUrl: "https://cfx.re/join/abc123", can: { manage: true }, settings: { revision: 1, showPlayerNames: false, debug: false, downAfterMinutes: 3 } });
+    const toggled = await server.inject(json("PUT", "/api/v1/fivem/settings", { ...defaults, serverAddress: "play.example.com:30120", showPlayerNames: true, debug: true, downAfterMinutes: 5, expectedRevision: 1 }));
+    expect(toggled.json().data).toMatchObject({ showPlayerNames: true, debug: true, downAfterMinutes: 5, revision: 2 });
+    expect((await server.inject(json("PUT", "/api/v1/fivem/settings", { ...defaults, downAfterMinutes: 0, expectedRevision: 2 }))).statusCode).toBe(400);
   });
 
   it("hides settings from members and rejects their changes", async () => {

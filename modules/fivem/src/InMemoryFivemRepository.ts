@@ -16,7 +16,13 @@ export class InMemoryFivemRepository implements FivemRepository {
     if (input.expectedRevision !== undefined && input.expectedRevision !== current.settings.revision)
       throw new FivemError("CONFLICT", "FiveM settings changed since they were loaded.", { currentRevision: current.settings.revision });
     const { expectedRevision: _expected, ...rest } = input;
-    const settings = { ...rest, revision: current.settings.revision + 1 };
+    const settings: FivemSettings = {
+      ...rest,
+      showPlayerNames: rest.showPlayerNames ?? current.settings.showPlayerNames,
+      downAfterMinutes: rest.downAfterMinutes ?? current.settings.downAfterMinutes,
+      debug: rest.debug ?? current.settings.debug,
+      revision: current.settings.revision + 1,
+    };
     this.configs.set(input.guildId, { settings, state: current.state });
     return settings;
   }
