@@ -32,3 +32,37 @@ One Guildhall installation serves any number of Discord servers. Invite the bot 
 ## Design
 
 Guildhall is built from independent modules that talk through a shared core: a Discord bot, a Fastify API, a framework-free portal, and a PostgreSQL database. See `docs/Architecture.md`.
+
+## Why I built it this way
+
+**The problem.** People who run Discord communities end up stacking several bots for tickets,
+moderation, staff and events, each with its own settings and its own view of the data. I wanted
+one bot and one web portal that handle all of it for any number of servers, with each server's
+data kept separate.
+
+**Trade-offs I made:**
+
+- **PostgreSQL, not SQLite.** The bot and the API are separate processes writing at the same time,
+  and permission changes need to be atomic with their audit record. Integration tests run against
+  a real PostgreSQL in CI, not a stand-in (`docs/DatabaseDecisionRecord.md`).
+- **Each server's data is scoped by its Discord server ID, in one place.** Database access goes
+  through repositories that take the server explicitly, instead of every route adding its own
+  filter. Who can manage a server is checked against Discord (owner and administrators).
+- **Migrations are checked, not trusted.** CI validates the Prisma schema, applies every migration
+  to a clean database, and fails if the schema and migrations drift apart.
+- **Features are modules.** Each feature (tickets, moderation, levels, and so on) is its own module
+  with its own routes, commands and tests, so one can change without touching the others. The cost
+  is more structure up front than a single-file bot.
+- **No front-end framework in the portal.** It is plain JavaScript served by the API, so there is
+  one less build to keep working.
+
+**What I'd change next:**
+
+- Add PostgreSQL row-level security as a second check behind the per-server scoping in code.
+- Write a backup and restore runbook for the production database and test a restore.
+- Move timed jobs (reminders, giveaways, scheduled messages) out of the bot into the worker
+  process, which is only a stub today.
+- Keep one lockfile (pnpm) and drop `package-lock.json`.
+
+I build with AI coding tools, and the commit history shows it. I set the design, review the diffs,
+and CI has to pass (build, typecheck, migrations, unit and database tests) before anything ships.
