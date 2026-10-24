@@ -107,6 +107,32 @@ describe("validateBlueprint", () => {
   });
 });
 
+describe("ticket setup validation", () => {
+  const tickets = {
+    panel: { name: "Support", title: "Need help?", description: "Open a ticket.", color: "#5865F2", style: "BUTTONS" as const, placeholder: "Pick" },
+    types: [{ key: "ticket-help", name: "Help", buttonStyle: "PRIMARY" as const, defaultPriority: "NORMAL" as const, supportRoles: ["staff-admin"], requiredRoles: [], questions: [{ id: "details", label: "What happened?", style: "PARAGRAPH" as const, required: true }] }],
+  };
+  const type = tickets.types[0] as (typeof tickets.types)[number];
+
+  it("accepts a valid setup and checks every limit", () => {
+    expect(() => validateBlueprint(blueprint({ tickets }))).not.toThrow();
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [{ ...type, supportRoles: ["ghost"] }] } }))).toThrow("not in the blueprint");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [type, { ...type }] } }))).toThrow("Two ticket types use the key");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [type, { ...type, key: "other" }] } }))).toThrow("Two ticket types are called");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: Array.from({ length: 26 }, (_, index) => ({ ...type, key: `t-${index}`, name: `T ${index}` })) } }))).toThrow("at most 25 ticket types");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [{ ...type, questions: Array.from({ length: 6 }, (_, index) => ({ ...type.questions[0], id: `q-${index}` }) as (typeof type.questions)[number]) }] } }))).toThrow("at most 5 questions");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [{ ...type, questions: [{ ...type.questions[0], label: "x".repeat(46) } as (typeof type.questions)[number]] }] } }))).toThrow("45");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, types: [{ ...type, emoji: "not an emoji" }] } }))).toThrow("emoji");
+    expect(() => validateBlueprint(blueprint({ tickets: { ...tickets, panel: { ...tickets.panel, title: "" } } }))).toThrow("panel title");
+  });
+
+  it("allows one category per ticket status", () => {
+    const status = (key: string, purpose: "tickets" | "tickets-progress") => ({ key, name: key.toUpperCase(), overwrites: [], channels: [], purpose });
+    expect(() => validateBlueprint(blueprint({ categories: [status("cat-a", "tickets"), status("cat-b", "tickets-progress")] }))).not.toThrow();
+    expect(() => validateBlueprint(blueprint({ categories: [status("cat-a", "tickets"), status("cat-b", "tickets")] }))).toThrow("Only one category");
+  });
+});
+
 describe("permission presets", () => {
   it("turns permission names into Discord bitfields", () => {
     expect(permissionBits(["ViewChannel", "SendMessages"])).toBe(String((1n << 10n) | (1n << 11n)));

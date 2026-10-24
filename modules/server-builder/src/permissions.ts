@@ -87,6 +87,18 @@ export const PRESETS = {
     ...staffKeys.map((key) => ({ target: key, allow: [...CHAT], deny: [] })),
     { target: BOT, allow: [...BOT_WRITE], deny: [] },
   ],
+  /**
+   * Hidden from everyone (and from the `hide` roles, such as Verified on a
+   * gated category) except `read` roles, which can read and react, and `post`
+   * roles, which can also post. For buyer-only downloads and support.
+   */
+  ROLES_ONLY: (access: { readonly read: readonly string[]; readonly post: readonly string[]; readonly hide?: readonly string[] }): readonly BuilderOverwrite[] => mergeOverwrites(
+    [{ target: EVERYONE, allow: [], deny: ["ViewChannel", ...POST] }],
+    (access.hide ?? []).map((key) => ({ target: key, allow: [], deny: ["ViewChannel" as const] })),
+    access.read.map((key) => ({ target: key, allow: ["ViewChannel" as const, "ReadMessageHistory" as const, "AddReactions" as const], deny: [] })),
+    access.post.map((key) => ({ target: key, allow: [...CHAT, ...POST, "AttachFiles" as const, "EmbedLinks" as const], deny: [] })),
+    [{ target: BOT, allow: [...BOT_WRITE], deny: [] }],
+  ),
   /** Hidden from @everyone until they have the Verified role. */
   VERIFIED_ONLY: (verifiedKey: string): readonly BuilderOverwrite[] => [
     { target: EVERYONE, allow: [], deny: ["ViewChannel"] },

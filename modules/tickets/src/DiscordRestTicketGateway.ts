@@ -196,6 +196,10 @@ export class DiscordRestTicketGateway implements TicketDiscordGateway {
       await this.rest.patch(`/channels/${input.channelId}`, { body: { parent_id: input.openParentChannelId } });
   }
 
+  public async moveSpace(channelId: string, parentChannelId: string): Promise<void> {
+    await this.rest.patch(`/channels/${channelId}`, { body: { parent_id: parentChannelId } });
+  }
+
   public async deleteSpace(channelId: string, delaySeconds: number): Promise<void> {
     const remove = () => this.rest.delete(`/channels/${channelId}`, { reason: `${BRAND.name} ticket closed.` });
     if (delaySeconds <= 0) {

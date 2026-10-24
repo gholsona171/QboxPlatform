@@ -415,3 +415,81 @@ describe("DiscordRestTicketGateway", () => {
     expect(scheduled).toEqual([10_000]);
   });
 });
+
+describe("TicketService status categories", () => {
+  const PROGRESS = "500000000000000009";
+  const TYPE_CATEGORY = "500000000000000010";
+
+  class MovingGateway extends FakeGateway {
+    public readonly moves: { channelId: string; parentChannelId: string }[] = [];
+    public readonly reopened: { openParentChannelId?: string | undefined }[] = [];
+    public failMove = false;
+    public async moveSpace(channelId: string, parentChannelId: string) {
+      if (this.failMove) throw new Error("Maximum number of channels in category reached");
+      this.moves.push({ channelId, parentChannelId });
+    }
+    public override async reopenSpace(input?: { openParentChannelId?: string | undefined }) { this.reopened.push({ openParentChannelId: input?.openParentChannelId }); }
+  }
+
+  async function movingSetup(overrides: Partial<TicketSettingsInput> = {}) {
+    const repository = new InMemoryTicketRepository();
+    const gateway = new MovingGateway();
+    const service = new TicketService(repository, gateway);
+    await service.saveSettings(settingsInput({ progressCategoryChannelId: PROGRESS, ...overrides }));
+    return { repository, gateway, service };
+  }
+
+  const staff = actor(STAFF, [SUPPORT_ROLE]);
+
+  it("moves a ticket to the in-progress category when claimed or waiting, and back when open again", async () => {
+    const { service, gateway } = await movingSetup();
+    expect((await service.settings(GUILD)).progressCategoryChannelId).toBe(PROGRESS);
+    const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER), answers: {} });
+    expect(gateway.spaces[0]?.parentChannelId).toBe(CATEGORY_CHANNEL);
+    const channelId = ticket.channelId as string;
+    await service.claim(GUILD, ticket.id, staff);
+    expect(gateway.moves).toEqual([{ channelId, parentChannelId: PROGRESS }]);
+    await service.setPending(GUILD, ticket.id, staff, true);
+    expect(gateway.moves).toHaveLength(1);
+    await service.unclaim(GUILD, ticket.id, staff);
+    expect(gateway.moves).toHaveLength(1);
+    await service.setPending(GUILD, ticket.id, staff, false);
+    expect(gateway.moves.at(-1)).toEqual({ channelId, parentChannelId: CATEGORY_CHANNEL });
+    await service.setPending(GUILD, ticket.id, staff, true);
+    expect(gateway.moves.at(-1)).toEqual({ channelId, parentChannelId: PROGRESS });
+    const closed = await service.close(GUILD, ticket.id, staff);
+    expect(gateway.closed.at(-1)?.closedParentChannelId).toBe(CLOSED_CATEGORY);
+    expect(closed.status).toBe("CLOSED");
+    const events = (await service.detail(GUILD, ticket.id)).events.filter((event) => event.action === "moved");
+    expect(events.map((event) => event.details.to)).toEqual([PROGRESS, CATEGORY_CHANNEL, PROGRESS]);
+  });
+
+  it("moves back to the ticket type's own category, and reopens a claimed ticket in progress", async () => {
+    const { service, gateway } = await movingSetup();
+    const type = await service.saveCategory({ guildId: GUILD, name: "Store", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [], parentChannelId: TYPE_CATEGORY });
+    const ticket = await service.openTicket({ guildId: GUILD, actor: actor(USER), categoryId: type.id, answers: {} });
+    await service.claim(GUILD, ticket.id, staff);
+    await service.unclaim(GUILD, ticket.id, staff);
+    expect(gateway.moves.map((move) => move.parentChannelId)).toEqual([PROGRESS, TYPE_CATEGORY]);
+    await service.transfer(GUILD, ticket.id, staff, STAFF_2);
+    expect(gateway.moves.at(-1)?.parentChannelId).toBe(PROGRESS);
+    await service.close(GUILD, ticket.id, staff);
+    await service.reopen(GUILD, ticket.id, staff);
+    expect(gateway.reopened.at(-1)?.openParentChannelId).toBe(PROGRESS);
+  });
+
+  it("leaves tickets where they opened without an in-progress category, and never fails a claim on a failed move", async () => {
+    const none = await movingSetup({ progressCategoryChannelId: undefined });
+    const ticket = await none.service.openTicket({ guildId: GUILD, actor: actor(USER), answers: {} });
+    await none.service.claim(GUILD, ticket.id, staff);
+    expect(none.gateway.moves).toEqual([]);
+    const failing = await movingSetup();
+    failing.gateway.failMove = true;
+    const other = await failing.service.openTicket({ guildId: GUILD, actor: actor(USER), answers: {} });
+    const claimed = await failing.service.claim(GUILD, other.id, staff);
+    expect(claimed.status).toBe("CLAIMED");
+    const failed = (await failing.service.detail(GUILD, other.id)).events.find((event) => event.action === "discord-sync-failed");
+    expect(failed?.details).toMatchObject({ step: "status-category" });
+    await expect(failing.service.saveSettings(settingsInput({ progressCategoryChannelId: "nope" }))).rejects.toThrow("progressCategoryChannelId");
+  });
+});

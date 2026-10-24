@@ -69,8 +69,12 @@ export const BUILDER_CHANNEL_PURPOSES = [
 ] as const;
 export type BuilderChannelPurpose = (typeof BUILDER_CHANNEL_PURPOSES)[number];
 
-/** `tickets`: the category new ticket channels are created in. */
-export const BUILDER_CATEGORY_PURPOSES = ["tickets"] as const;
+/**
+ * Ticket status categories: `tickets` is where new ticket channels open,
+ * `tickets-progress` where claimed and waiting tickets move, and
+ * `tickets-closed` where closed tickets move.
+ */
+export const BUILDER_CATEGORY_PURPOSES = ["tickets", "tickets-progress", "tickets-closed"] as const;
 export type BuilderCategoryPurpose = (typeof BUILDER_CATEGORY_PURPOSES)[number];
 
 /** `staff` roles are staff ranks, highest first. */
@@ -150,16 +154,78 @@ export interface BuilderCategory {
   readonly purpose?: BuilderCategoryPurpose | undefined;
 }
 
+export type BuilderTicketButtonStyle = "PRIMARY" | "SECONDARY" | "SUCCESS" | "DANGER";
+export const BUILDER_TICKET_BUTTON_STYLES: readonly BuilderTicketButtonStyle[] = ["PRIMARY", "SECONDARY", "SUCCESS", "DANGER"];
+export type BuilderTicketPriority = "LOW" | "NORMAL" | "HIGH" | "URGENT";
+export const BUILDER_TICKET_PRIORITIES: readonly BuilderTicketPriority[] = ["LOW", "NORMAL", "HIGH", "URGENT"];
+export type BuilderTicketPanelStyle = "BUTTONS" | "SELECT_MENU";
+export const BUILDER_TICKET_PANEL_STYLES: readonly BuilderTicketPanelStyle[] = ["BUTTONS", "SELECT_MENU"];
+
+/** One question in a ticket type's opening form (Discord allows 5 per form). */
+export interface BuilderTicketQuestion {
+  /** Lowercase letters, numbers, and dashes; unique within the type. */
+  readonly id: string;
+  /** Up to 45 characters (Discord's form label limit). */
+  readonly label: string;
+  readonly placeholder?: string | undefined;
+  readonly style: "SHORT" | "PARAGRAPH";
+  readonly required: boolean;
+}
+
+/** A ticket type (a button or menu option on the panel). */
+export interface BuilderTicketType {
+  /** Stable slug, unique among ticket types. */
+  readonly key: string;
+  /** Up to 80 characters. */
+  readonly name: string;
+  /** Up to 100 characters. */
+  readonly description?: string | undefined;
+  readonly emoji?: string | undefined;
+  readonly buttonStyle: BuilderTicketButtonStyle;
+  readonly defaultPriority: BuilderTicketPriority;
+  /** Role keys from the blueprint that answer this type, on top of the staff ranks. */
+  readonly supportRoles: readonly string[];
+  /** Role keys a member needs one of to open this type. Empty means everyone. */
+  readonly requiredRoles: readonly string[];
+  readonly questions: readonly BuilderTicketQuestion[];
+}
+
+/** The ticket panel posted in the panel channel. */
+export interface BuilderTicketPanel {
+  /** The panel's name in Tickets settings (up to 80 characters). */
+  readonly name: string;
+  /** Up to 256 characters. */
+  readonly title: string;
+  /** Up to 4000 characters. */
+  readonly description: string;
+  readonly color: string;
+  readonly style: BuilderTicketPanelStyle;
+  /** Menu placeholder (up to 150 characters). */
+  readonly placeholder: string;
+}
+
+/**
+ * A ready-made ticket setup: the panel and its ticket types. The status
+ * categories are blueprint categories with a ticket purpose.
+ */
+export interface BuilderTicketSetup {
+  readonly panel: BuilderTicketPanel;
+  readonly types: readonly BuilderTicketType[];
+}
+
 /** A complete server layout. Roles are listed highest first. */
 export interface BuilderBlueprint {
   readonly roles: readonly BuilderRole[];
   readonly categories: readonly BuilderCategory[];
+  /** Tickets made by the build (needs the tickets feature link). Blueprints saved before this existed have none. */
+  readonly tickets?: BuilderTicketSetup | undefined;
 }
 
 /* ---------- Questionnaire ---------- */
 
-export type BuilderServerType = "FIVEM_RP" | "GAMING" | "COMMUNITY" | "BUSINESS";
-export const BUILDER_SERVER_TYPES: readonly BuilderServerType[] = ["FIVEM_RP", "GAMING", "COMMUNITY", "BUSINESS"];
+/** ASSET_STUDIO: a team that makes and sells FiveM assets (scripts, MLOs, vehicles, clothing, props). */
+export type BuilderServerType = "FIVEM_RP" | "GAMING" | "COMMUNITY" | "BUSINESS" | "ASSET_STUDIO";
+export const BUILDER_SERVER_TYPES: readonly BuilderServerType[] = ["FIVEM_RP", "GAMING", "COMMUNITY", "BUSINESS", "ASSET_STUDIO"];
 
 export const BUILDER_SECTIONS = [
   "information",
@@ -599,16 +665,47 @@ export interface BuilderResolvedIds {
   readonly channelParents: Readonly<Partial<Record<BuilderChannelPurpose, string>>>;
   /** Staff rank roles, highest first. */
   readonly staffRoles: readonly { readonly id: string; readonly name: string; readonly color: string }[];
+  /** The blueprint's ticket setup with its role keys turned into Discord role IDs (roles that were not made are left out). */
+  readonly tickets?: BuilderResolvedTicketSetup | undefined;
   readonly verifiedRoleId?: string | undefined;
   readonly unverifiedRoleId?: string | undefined;
   /** Discord ID to name, for summaries. */
   readonly names: Readonly<Record<string, string>>;
 }
 
+export interface BuilderResolvedTicketType extends Omit<BuilderTicketType, "supportRoles" | "requiredRoles"> {
+  readonly supportRoleIds: readonly string[];
+  readonly requiredRoleIds: readonly string[];
+}
+
+export interface BuilderResolvedTicketSetup {
+  readonly panel: BuilderTicketPanel;
+  readonly types: readonly BuilderResolvedTicketType[];
+}
+
+/** Something a feature link made (a ticket type, a panel), so undo can remove it. */
+export interface BuilderLinkCreated {
+  /** Kind of thing, e.g. `ticket-type` or `ticket-panel`. */
+  readonly kind: string;
+  /** The feature's own ID for it. */
+  readonly id: string;
+  readonly name: string;
+}
+
+export interface BuilderLinkResult {
+  readonly summary: string;
+  readonly created: readonly BuilderLinkCreated[];
+}
+
 /** Saves the new layout into an existing Qbox feature's settings. */
 export interface BuilderLinkPort {
-  /** Applies one link and returns a plain summary such as "Moderation log channel set to #mod-log". */
-  apply(link: BuilderLink, ids: BuilderResolvedIds): Promise<string>;
+  /**
+   * Applies one link and returns a plain summary such as "Moderation log
+   * channel set to #mod-log", plus anything it made that undo should remove.
+   */
+  apply(link: BuilderLink, ids: BuilderResolvedIds): Promise<string | BuilderLinkResult>;
+  /** Removes something a link made. Called by undo; a thing that is already gone counts as removed. */
+  remove?(guildId: string, link: BuilderLink, created: BuilderLinkCreated): Promise<void>;
 }
 
 export interface BuilderLinkOption {

@@ -1,9 +1,12 @@
-import type { BuilderAnswers, BuilderBlueprint, BuilderChannel, BuilderChannelType, BuilderForumSetup, BuilderOverwrite, BuilderSummary } from "./types.js";
+import type { BuilderAnswers, BuilderBlueprint, BuilderChannel, BuilderChannelType, BuilderForumSetup, BuilderOverwrite, BuilderSummary, BuilderTicketSetup } from "./types.js";
 import {
   BOT,
   BUILDER_CHANNEL_EMOJIS,
   BUILDER_EMOJI_SEPARATORS,
   BUILDER_STAFF_ACCESS,
+  BUILDER_TICKET_BUTTON_STYLES,
+  BUILDER_TICKET_PANEL_STYLES,
+  BUILDER_TICKET_PRIORITIES,
   BUILDER_CATEGORY_PURPOSES,
   BUILDER_CHANNEL_PURPOSES,
   BUILDER_CHANNEL_TYPES,
@@ -50,6 +53,18 @@ export const BUILDER_LIMITS = {
   forumPostContent: 2000,
   /** The "Describe your server" prompt. */
   description: 2000,
+  /** Ticket types per server (the Tickets feature's limit, and Discord's 25 buttons or menu options per panel). */
+  ticketTypes: 25,
+  ticketTypeName: 80,
+  ticketTypeDescription: 100,
+  /** Questions per ticket form (Discord's limit for a pop-up form). */
+  ticketQuestions: 5,
+  ticketQuestionLabel: 45,
+  ticketQuestionPlaceholder: 100,
+  ticketPanelName: 80,
+  ticketPanelTitle: 256,
+  ticketPanelDescription: 4000,
+  ticketPanelPlaceholder: 150,
 } as const;
 
 const SNOWFLAKE = /^\d{17,20}$/;
@@ -124,9 +139,23 @@ function normalizeForum(forum: BuilderForumSetup): BuilderForumSetup {
   };
 }
 
+function normalizeTickets(tickets: BuilderTicketSetup): BuilderTicketSetup {
+  return {
+    panel: { ...tickets.panel, name: tickets.panel.name.trim(), title: tickets.panel.title.trim(), description: tickets.panel.description.trim(), color: tickets.panel.color.toUpperCase(), placeholder: tickets.panel.placeholder.trim() },
+    types: tickets.types.map((type) => ({
+      ...type,
+      name: type.name.trim(),
+      ...(type.description?.trim() ? { description: type.description.trim() } : { description: undefined }),
+      ...(type.emoji?.trim() ? { emoji: type.emoji.trim() } : { emoji: undefined }),
+      questions: type.questions.map((question) => ({ ...question, label: question.label.trim(), ...(question.placeholder?.trim() ? { placeholder: question.placeholder.trim() } : { placeholder: undefined }) })),
+    })),
+  };
+}
+
 /** Trims names and turns text channel names into Discord style. */
 export function normalizeBlueprint(blueprint: BuilderBlueprint): BuilderBlueprint {
   return {
+    ...(blueprint.tickets ? { tickets: normalizeTickets(blueprint.tickets) } : {}),
     roles: blueprint.roles.map((role) => ({ ...role, name: role.name.trim(), color: role.color.toUpperCase() })),
     categories: blueprint.categories.map((category) => ({
       ...category,
@@ -233,6 +262,60 @@ export function validateBlueprint(blueprint: BuilderBlueprint): void {
     }
   }
   if (total > BUILDER_LIMITS.channels) invalid(`That is ${total} channels and categories. Discord allows ${BUILDER_LIMITS.channels}.`);
+  const categoryPurposes = new Set<string>();
+  for (const category of blueprint.categories) {
+    if (category.purpose === undefined) continue;
+    if (categoryPurposes.has(category.purpose)) invalid(`Only one category can be the ${category.purpose} category.`);
+    categoryPurposes.add(category.purpose);
+  }
+  if (blueprint.tickets) requireTickets(blueprint.tickets, roleKeys);
+}
+
+const QUESTION_ID = /^[a-z0-9][a-z0-9-]{0,31}$/;
+
+function requireText(what: string, value: string | undefined, max: number, optional = false): void {
+  if (value === undefined && optional) return;
+  if (typeof value !== "string" || value.length < 1 || value.length > max) invalid(`${what} must be between 1 and ${max} characters.`);
+}
+
+/** Checks the ticket panel and types against the Tickets feature's and Discord's limits. */
+function requireTickets(tickets: BuilderTicketSetup, roleKeys: ReadonlySet<string>): void {
+  const { panel, types } = tickets;
+  requireText("The ticket panel name", panel.name, BUILDER_LIMITS.ticketPanelName);
+  requireText("The ticket panel title", panel.title, BUILDER_LIMITS.ticketPanelTitle);
+  requireText("The ticket panel text", panel.description, BUILDER_LIMITS.ticketPanelDescription);
+  requireText("The ticket panel menu text", panel.placeholder, BUILDER_LIMITS.ticketPanelPlaceholder);
+  if (!HEX.test(panel.color)) invalid("The ticket panel needs a hex color like #5865F2.");
+  if (!BUILDER_TICKET_PANEL_STYLES.includes(panel.style)) invalid("The ticket panel style must be buttons or a menu.");
+  if (types.length > BUILDER_LIMITS.ticketTypes) invalid(`A server can have at most ${BUILDER_LIMITS.ticketTypes} ticket types.`);
+  const keys = new Set<string>();
+  const names = new Set<string>();
+  for (const type of types) {
+    if (!KEY.test(type.key)) invalid(`Ticket type key "${type.key}" must use lowercase letters, numbers, and dashes.`);
+    if (keys.has(type.key)) invalid(`Two ticket types use the key "${type.key}".`);
+    keys.add(type.key);
+    requireText("Ticket type names", type.name, BUILDER_LIMITS.ticketTypeName);
+    if (names.has(type.name.toLowerCase())) invalid(`Two ticket types are called "${type.name}".`);
+    names.add(type.name.toLowerCase());
+    requireText(`The description of the ${type.name} ticket type`, type.description, BUILDER_LIMITS.ticketTypeDescription, true);
+    requireEmoji(`The emoji of the ${type.name} ticket type`, type.emoji);
+    if (!BUILDER_TICKET_BUTTON_STYLES.includes(type.buttonStyle)) invalid(`The ${type.name} ticket type has an unknown button color.`);
+    if (!BUILDER_TICKET_PRIORITIES.includes(type.defaultPriority)) invalid(`The ${type.name} ticket type has an unknown priority.`);
+    for (const key of [...type.supportRoles, ...type.requiredRoles])
+      if (!roleKeys.has(key)) invalid(`The ${type.name} ticket type names a role that is not in the blueprint (${key}).`);
+    if (type.supportRoles.length > 25 || type.requiredRoles.length > 25) invalid(`The ${type.name} ticket type lists too many roles.`);
+    if (type.questions.length > BUILDER_LIMITS.ticketQuestions) invalid(`The ${type.name} ticket form can have at most ${BUILDER_LIMITS.ticketQuestions} questions.`);
+    const ids = new Set<string>();
+    for (const question of type.questions) {
+      if (!QUESTION_ID.test(question.id)) invalid(`Question IDs in the ${type.name} form use lowercase letters, numbers, and dashes.`);
+      if (ids.has(question.id)) invalid(`The ${type.name} form uses the question ID "${question.id}" twice.`);
+      ids.add(question.id);
+      requireText(`Questions in the ${type.name} form`, question.label, BUILDER_LIMITS.ticketQuestionLabel);
+      requireText(`Question hints in the ${type.name} form`, question.placeholder, BUILDER_LIMITS.ticketQuestionPlaceholder, true);
+      if (question.style !== "SHORT" && question.style !== "PARAGRAPH") invalid(`Questions in the ${type.name} form are short or paragraph answers.`);
+      if (typeof question.required !== "boolean") invalid(`Say whether each question in the ${type.name} form is required.`);
+    }
+  }
 }
 
 /** Counts and plain warnings for the preview. */

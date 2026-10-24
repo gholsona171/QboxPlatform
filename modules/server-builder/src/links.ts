@@ -13,7 +13,7 @@ interface LinkDefinition {
 const LINKS: readonly LinkDefinition[] = [
   { link: "moderation", label: "Moderation", description: "Log channel = #mod-log. Staff ranks become protected roles.", needs: ["mod-log"], needsRole: "staff" },
   { link: "verification", label: "Verification", description: "Panel in #verify, Verified and Unverified roles, log to #mod-log. Turns verification on and posts the panel.", needs: ["verify"], needsRole: "verified" },
-  { link: "tickets", label: "Tickets", description: "Transcripts to #ticket-transcripts, tickets open in the support category, staff can answer. Adds a Support ticket type and panel if you have none.", needs: ["ticket-transcripts", "tickets-panel"] },
+  { link: "tickets", label: "Tickets", description: "Transcripts to #ticket-transcripts, staff can answer, tickets open in the new-tickets category and move to the in-progress and closed categories. Adds the blueprint's ticket types you don't have yet and posts its panel if you have none. Undo removes what it added.", needs: ["ticket-transcripts", "tickets-panel"] },
   { link: "applications", label: "Applications", description: "Forms without a review channel use #applications-review. Staff review forms with no reviewer roles.", needs: ["applications-review"] },
   { link: "staff", label: "Staff", description: "Log channel = #staff-log. Creates staff ranks from the staff roles if you have none.", needs: ["staff-log"], needsRole: "staff" },
   { link: "levels", label: "Levels", description: "Level-up messages go to #level-ups and levels are turned on.", needs: ["level-up"] },

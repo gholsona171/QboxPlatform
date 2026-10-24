@@ -10,7 +10,7 @@ const TABS = [
   ["build", "Build"],
   ["history", "History"],
 ];
-const SERVER_TYPES = [["FIVEM_RP", "FiveM roleplay"], ["GAMING", "Gaming"], ["COMMUNITY", "Community"], ["BUSINESS", "Business or team"]];
+const SERVER_TYPES = [["FIVEM_RP", "FiveM roleplay"], ["GAMING", "Gaming"], ["COMMUNITY", "Community"], ["BUSINESS", "Business or team"], ["ASSET_STUDIO", "FiveM asset studio"]];
 const SECTIONS = [
   ["information", "Welcome, rules, and announcements"],
   ["verification", "Verification (members click a button to get in)"],
@@ -138,7 +138,7 @@ function questionsTab() {
       ${selectField("serverType", "Server type", SERVER_TYPES, a.serverType)}
       ${textField("serverName", "Server name", a.serverName, "My City", true)}
       ${textArea("staffRanks", "Staff ranks, highest first (one per line)", a.staffRanks.join("\n"))}
-      ${textArea("departments", "Departments, each gets a role and private channels (one per line)", a.departments.join("\n"), "Police\nEMS")}
+      ${textArea("departments", a.serverType === "ASSET_STUDIO" ? "Product lines, each gets buyer and team roles, public and buyer-only channels, team channels, and a support ticket type (one per line; remove the ones you don't make)" : "Departments, each gets a role and private channels (one per line)", a.departments.join("\n"), a.serverType === "ASSET_STUDIO" ? "Scripts\nMLOs" : "Police\nEMS")}
       ${checkbox("staffAccess", "Staff can see every department channel", a.staffAccess !== "NONE")}
       ${numberField("voiceLounges", "Voice lounges", a.voiceLounges, 0, view.overview.limits.voiceLounges)}
       <fieldset class="full"><legend>Include</legend>
@@ -200,8 +200,35 @@ function blueprintTab() {
       <div class="grid">
         ${blueprint.categories.map((category) => categoryCard(category, access)).join("")}
       </div>
-      <div class="card"><h3>Roles (highest first)</h3>${table(["Role", "Type", ""], roleRows, "No roles.")}</div>
+      <div class="grid">
+        <div class="card"><h3>Roles (highest first)</h3>${table(["Role", "Type", ""], roleRows, "No roles.")}</div>
+        ${ticketsCard(blueprint)}
+      </div>
     </section>`;
+}
+
+const STATUS_LABELS_BY_PURPOSE = { tickets: "New tickets open here", "tickets-progress": "Claimed and waiting tickets move here", "tickets-closed": "Closed tickets move here" };
+
+/** The ticket panel and ticket types the build makes (needs the Tickets feature on the Build tab). */
+function ticketsCard(blueprint) {
+  const setup = blueprint.tickets;
+  const roleNames = new Map(blueprint.roles.map((role) => [role.key, role.name]));
+  const statuses = blueprint.categories.filter((category) => STATUS_LABELS_BY_PURPOSE[category.purpose]);
+  if (!setup) return `<div class="card"><h3>Tickets</h3><p class="microcopy">No ready-made ticket setup. Turn on Support tickets on the Questions tab to get a panel, ticket types, and status categories.</p></div>`;
+  const types = setup.types.map((type) => `<li class="builder-ticket-type">
+      <span class="builder-ticket-emoji" aria-hidden="true">${escapeHtml(type.emoji ?? "🎫")}</span>
+      <input class="inline-name" data-b-rename-ticket="${escapeHtml(type.key)}" value="${escapeHtml(type.name)}" maxlength="80" aria-label="Ticket type name">
+      <button type="button" class="button compact" data-b-remove-ticket="${escapeHtml(type.key)}">Remove</button>
+      <small class="microcopy">${escapeHtml(type.description ?? "")}${type.supportRoles.length ? ` · Answered by staff and ${escapeHtml(type.supportRoles.map((key) => roleNames.get(key) ?? key).join(", "))}` : " · Answered by staff"}${type.questions.length ? ` · ${type.questions.length} question${type.questions.length === 1 ? "" : "s"}` : ""}</small>
+    </li>`).join("");
+  return `<div class="card">
+    <div class="split-line"><h3>Tickets</h3><button type="button" class="button compact danger" data-b-remove-tickets>Remove ticket setup</button></div>
+    <label>Panel title<input class="inline-name strong" data-b-ticket-panel-title value="${escapeHtml(setup.panel.title)}" maxlength="256" aria-label="Ticket panel title"></label>
+    <p class="microcopy">${escapeHtml(setup.panel.description)}</p>
+    <p class="microcopy">Posted in the panel channel as ${setup.panel.style === "SELECT_MENU" ? "a menu" : "buttons"}. Staff can change everything later on the Tickets page.</p>
+    <ul class="builder-channels">${types || `<li class="microcopy">No ticket types.</li>`}</ul>
+    ${statuses.length ? `<p class="microcopy"><strong>Status categories:</strong> ${statuses.map((category) => `${escapeHtml(category.name)} (${escapeHtml(STATUS_LABELS_BY_PURPOSE[category.purpose].toLowerCase())})`).join("; ")}.</p>` : ""}
+  </div>`;
 }
 
 function categoryCard(category, access) {
@@ -231,7 +258,8 @@ function categoryCard(category, access) {
       </span>
     </div>
     ${panel}
-    <ul class="builder-channels">${channels || `<li class="microcopy">No channels.</li>`}</ul>
+    ${STATUS_LABELS_BY_PURPOSE[category.purpose] ? `<p class="microcopy">${badge("ticket status")} ${escapeHtml(STATUS_LABELS_BY_PURPOSE[category.purpose])}. Staff only.</p>` : ""}
+    <ul class="builder-channels">${channels || `<li class="microcopy">${STATUS_LABELS_BY_PURPOSE[category.purpose] ? "Empty until tickets open. Ticket channels are made here." : "No channels."}</li>`}</ul>
     <form class="toolbar" data-b-form="add-channel" data-category="${escapeHtml(category.key)}">
       <input name="name" placeholder="New channel name" maxlength="100" required>
       <select name="type" aria-label="Channel type">${CHANNEL_TYPES.map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}</select>
@@ -637,6 +665,23 @@ function bind() {
   }));
   rename("[data-b-rename-role]", "bRenameRole", (blueprint, key, value) => { blueprint.roles.find((role) => role.key === key).name = value; });
   rename("[data-b-rename-category]", "bRenameCategory", (blueprint, key, value) => { blueprint.categories.find((category) => category.key === key).name = value; });
+  rename("[data-b-rename-ticket]", "bRenameTicket", (blueprint, key, value) => {
+    const type = blueprint.tickets?.types.find((item) => item.key === key);
+    if (type) type.name = value.slice(0, 80);
+  });
+  container.querySelectorAll("[data-b-ticket-panel-title]").forEach((input) => input.addEventListener("change", () => {
+    const value = input.value.trim();
+    if (!value) return render();
+    void editBlueprint((blueprint) => { if (blueprint.tickets) blueprint.tickets.panel.title = value.slice(0, 256); }, "Saved.");
+  }));
+  container.querySelectorAll("[data-b-remove-ticket]").forEach((button) => button.addEventListener("click", () => {
+    const key = button.dataset.bRemoveTicket;
+    void editBlueprint((blueprint) => { if (blueprint.tickets) blueprint.tickets.types = blueprint.tickets.types.filter((type) => type.key !== key); }, "Ticket type removed.");
+  }));
+  container.querySelectorAll("[data-b-remove-tickets]").forEach((button) => button.addEventListener("click", async () => {
+    if (!(await confirmAction({ title: "Remove the ticket setup?", body: "The build will not make the ticket panel or ticket types. The ticket categories stay; remove them separately if you don't want them.", confirmText: "Remove" }))) return;
+    void editBlueprint((blueprint) => { delete blueprint.tickets; }, "Ticket setup removed.");
+  }));
   rename("[data-b-rename-channel]", "bRenameChannel", (blueprint, key, value) => {
     for (const category of blueprint.categories) for (const channel of category.channels) if (channel.key === key) channel.name = value;
   });
@@ -711,6 +756,10 @@ function bind() {
     void editBlueprint((blueprint) => {
       const strip = (overwrites) => overwrites.filter((overwrite) => overwrite.target !== key);
       blueprint.roles = blueprint.roles.filter((role) => role.key !== key);
+      for (const type of blueprint.tickets?.types ?? []) {
+        type.supportRoles = type.supportRoles.filter((item) => item !== key);
+        type.requiredRoles = type.requiredRoles.filter((item) => item !== key);
+      }
       for (const category of blueprint.categories) {
         category.overwrites = strip(category.overwrites);
         for (const channel of category.channels) channel.overwrites = strip(channel.overwrites);

@@ -15,7 +15,7 @@ export {
   type BuilderErrorCode,
 } from "./validation.js";
 export { PERMISSION_BITS, PRESETS, describeAccess, effectiveOverwrites, mergeOverwrites, permissionBits } from "./permissions.js";
-export { BUILDER_TEMPLATES, channelEmoji, defaultForumSetup, emojiChannelName, generateBlueprint, templateFor, wantsEmoji } from "./generator.js";
+export { BUILDER_TEMPLATES, STUDIO_PRODUCT_LINES, channelEmoji, defaultForumSetup, emojiChannelName, generateBlueprint, templateFor, wantsEmoji } from "./generator.js";
 export { linkLabel, linkOptions } from "./links.js";
 export {
   NO_DESIGNER,

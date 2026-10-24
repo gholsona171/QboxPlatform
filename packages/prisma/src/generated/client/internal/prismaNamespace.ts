@@ -8475,6 +8475,7 @@ export const TicketSettingsScalarFieldEnum = {
   enabled: 'enabled',
   mode: 'mode',
   openCategoryChannelId: 'openCategoryChannelId',
+  progressCategoryChannelId: 'progressCategoryChannelId',
   closedCategoryChannelId: 'closedCategoryChannelId',
   threadParentChannelId: 'threadParentChannelId',
   transcriptChannelId: 'transcriptChannelId',

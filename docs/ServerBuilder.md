@@ -32,7 +32,7 @@ platform owner can wipe (see **Wiping a server**).
 
 1. **Questions:** describe your server and let the AI design it (see
    **Describe your server** below), or pick a starting point (FiveM roleplay,
-   gaming, community, or business), then change the answers: server name,
+   gaming, community, business, or FiveM asset studio), then change the answers: server name,
    staff ranks (highest first), departments, whether staff can see every
    department channel, voice lounges, which sections to include, and how
    emoji are used in names. **Make blueprint** saves it as your draft.
@@ -40,7 +40,9 @@ platform owner can wipe (see **Wiping a server**).
    channel, with who can see and who can post in each channel. Rename things
    in place, change a channel's type, remove roles, channels, or categories,
    add channels, and edit who can see each channel (**Access**) and how
-   forums are set up (**Forum setup**). Counts are shown against Discord's
+   forums are set up (**Forum setup**). The **Tickets** card lists the ready-made
+   ticket panel and ticket types (rename or remove them) and the three ticket
+   status categories. Counts are shown against Discord's
    limits, with warnings. Every change is saved, so you can come back later.
 3. **Build:** the bot check tells you if Guildhall is missing permissions. Choose a
    mode and which features to connect, then click **Build**. Progress and
@@ -58,6 +60,81 @@ platform owner can wipe (see **Wiping a server**).
 
 Neither mode ever deletes or changes anything that is already in your
 server.
+
+## FiveM asset studio
+
+For a team that makes and sells FiveM assets. The answers follow the same
+questionnaire as every other starting point: **each product line is a
+department**, so the starting point lists `Scripts`, `MLOs`, `Vehicles`,
+`Clothing & EUP`, and `Props` under departments (all on). Delete a line to
+switch that product line off; add your own (for example `Weapons`) and it gets
+the same treatment with generic names (`Weapons Team`, `Weapons Buyer`,
+`Weapons Support`). The sections, voice lounges, and emoji questions work as
+usual (FiveM status and birthdays start off).
+
+**Roles** (highest first): staff ranks Owner, Studio Manager, Lead Developer,
+Developer, Moderator, Support (Owner is Administrator, Studio Manager gets
+admin permissions, Support the trial set); one team role per product line
+(Script Developer, MLO Builder, Vehicle Artist, Clothing Artist, Prop Artist);
+Partner, Content Creator, Customer, one buyer role per product line (`Scripts
+Buyer` ...), Server Owner, Beta Tester; Release Ping, Giveaway Ping, Event
+Ping; Member (the verified role) and Unverified.
+
+**Categories** (members see public ones after verifying):
+
+| Category | Channels | Who sees / posts |
+| --- | --- | --- |
+| Start Here | welcome, rules, verify | everyone / staff |
+| Information | announcements, releases (announcement), changelogs, free-releases, events, giveaways, polls | members / staff (releases, changelogs, free releases: staff and the product teams) |
+| Store | store, pricing, bundles, faq, vouches | members / staff; vouches: Customer and buyers |
+| Showcase (media section) | showcase, community-showcase | members / showcase: staff and teams (everyone reacts); community showcase: members |
+| Community | general, off-topic, memes, introductions, dev-talk, server-owners, partners, bot-commands, suggestions, starboard, level-ups | members; server-owners: Server Owner and the team |
+| One per product line (e.g. Scripts) | scripts-chat, scripts-help (forum), scripts-downloads, scripts-support | chat and help: members; downloads: that line's buyers read, staff and that line's team post; support: that line's buyers, staff, and team |
+| Customers | customer-announcements, customer-chat, how-to-download, beta-testing | Customer, buyers, and Beta Tester (plus staff and teams); announcements and how-to-download are read-only for customers; beta-testing is Beta Tester only |
+| Commissions | commission-info, commission-requests (forum) | members / commission-info: staff |
+| Feedback | bug-reports, feature-requests, feedback (forums; text without the forums section) | members |
+| Support | open-a-ticket, apply-here | members / staff |
+| New Inquiries, In Progress, Finished | ticket status categories (empty; ticket channels live here) | staff |
+| Events | Showcase Stage, event-chat | members |
+| Voice | Join to Create, Community Lounge 1-2 | members |
+| One team category per product line (e.g. Scripts Team) | scripts-dev, scripts-wip, scripts-tasks, Scripts Dev Room | that team and staff |
+| Studio (staff area) | team-announcements, team-chat, planning, roadmap, qa-testing, commission-board, staff-commands, Team Voice, Team Meeting | staff and every team; team-announcements: Owner and Studio Manager post |
+| Logs | mod-log, server-log, ticket-transcripts, applications-review, staff-log, store-log | staff / Guildhall (store-log is for store webhooks) |
+
+Forums carry product-line tags (Script, MLO, Vehicle, Clothing, Prop) where
+they fit (showcase, bug reports, feature requests, commission requests).
+
+## Ticket setup
+
+With the **Support tickets** section on, every starting point comes with a
+ticket setup that the build creates when the **Tickets** feature is connected:
+
+- **A panel** in `#open-a-ticket` with a title and text that fit the server
+  (buttons; a menu when there are more than 10 types).
+- **Ticket types** with their own emoji, button color, priority, support roles,
+  and up to 5 form questions:
+
+| Starting point | Panel title | Ticket types |
+| --- | --- | --- |
+| FiveM roleplay | `<server> Support` | General Support, Player Report, Ban Appeal, Staff Application, Donation / Store, Bug Report, one `<department> Department` per department (answered by that department's role) |
+| Gaming | Need a hand? | General Help, Report a Player, Ban Appeal, Bug Report, Claim a Prize (giveaways on), Staff Application (applications on), one per department |
+| Community | Need help? | General Support, Report a Member, Appeal a Punishment, Partnership Request, Something Else, one per department |
+| Business | Contact the team | General Question, Technical Support, Billing & Invoices, Feature Request, one per department (Sales, Customer Success, Development) |
+| FiveM asset studio | `<server> Support & Orders` | Purchase / Store Question, one support type per product line that is on (Script, MLO, Vehicle, Clothing & EUP, Prop Support, answered by that line's team), Custom Commission, Bug Report, Partnership / Content Creator, Refund / Licence Transfer |
+
+- **Three status categories:** new tickets open in the first, claimed tickets
+  and tickets waiting on the member move to the second, and closed tickets move
+  to the third. Names per starting point: New Tickets / Tickets In Progress /
+  Closed Tickets (roleplay), Open Tickets / Being Handled / Closed Tickets
+  (gaming), Open Tickets / In Progress / Closed Tickets (community), New
+  Requests / In Progress / Resolved (business), New Inquiries / In Progress /
+  Finished (asset studio). They are ordinary blueprint categories (rename or
+  remove them like any other) with a ticket purpose, visible to staff only.
+
+A server keeps at most 25 ticket types (the Tickets limit and Discord's 25
+buttons or menu options per panel), so a starting point with many departments
+stops at 25. The setup is saved in the blueprint (`tickets`), so drafts saved
+before it existed simply have none.
 
 ## Describe your server
 
@@ -177,7 +254,7 @@ into each feature's settings. Other settings you already made are kept.
 | --- | --- |
 | Moderation | Log channel = `#mod-log`; staff roles become protected roles |
 | Verification | Turned on; panel in `#verify` (posted if possible); Verified and Unverified roles; log to `#mod-log` |
-| Tickets | Transcripts in `#ticket-transcripts`; tickets open in the Support category; staff roles can answer; a Support ticket type and a panel in `#open-a-ticket` if you have none |
+| Tickets | Transcripts in `#ticket-transcripts`; staff roles can answer; tickets open in the new-tickets status category, move to the in-progress one when claimed or waiting, and to the closed one when closed (a category you already picked that still exists is kept); the blueprint's ticket types you don't have yet (matched by name; existing ones are left as you set them up); its panel in `#open-a-ticket` if you have no panel. Blueprints without a ticket setup get a Support type and panel if you have none, as before |
 | Applications | Forms with no review channel use `#applications-review`; forms with no reviewer roles use the staff roles |
 | Staff | Log channel = `#staff-log`; ranks from the staff roles if you have no ranks |
 | Levels | Turned on; level-up messages in `#level-ups` |
@@ -189,8 +266,13 @@ into each feature's settings. Other settings you already made are kept.
 | Starboard | Starred messages go to `#starboard` |
 | Rules | An existing rules message moves to `#rules` (post it again with `/rules`) |
 
-A link that fails is shown in the log and does not stop the rest. Links are
-not undone by **Undo this build**.
+A link that fails is shown in the log and does not stop the rest. Settings a
+link changed are not undone by **Undo this build**, but the ticket types and
+the ticket panel the Tickets link made are listed in the build log ("Ticket
+type: ...", "Ticket panel: ...") and undo removes them (the panel's Discord
+message too). Everything the build made in Tickets is ordinary Tickets data:
+staff edit it afterwards on the Tickets page, and a later build never
+overwrites those edits.
 
 When verification is turned on, everything except the Start Here category is
 hidden until members verify. Existing members need to verify too, or be given
@@ -199,7 +281,9 @@ the Verified role.
 ## Undo
 
 **Undo this build** deletes only the roles, categories, and channels that
-build created, found by the IDs saved when they were made. Things that were
+build created, found by the IDs saved when they were made, plus the ticket
+panel (and its message) and ticket types the Tickets link made; ticket types
+are removed from any other panel that offered them first. Things that were
 skipped because they already existed are never touched. Deleted channels
 lose their messages. If some items can't be deleted, the build is marked
 "finished with problems" and you can try again.
@@ -261,6 +345,9 @@ every 10 minutes.
   names are lowercase with hyphens.
 - Forum guidelines up to 4096 characters, 20 tags with names of 1-20
   characters, first post title 1-100 and content 1-2000 characters.
+- Ticket setup: up to 25 ticket types (names up to 80 characters,
+  descriptions up to 100), 5 questions per type with labels up to 45
+  characters; panel title up to 256 and text up to 4000 characters.
 - One build or undo runs at a time. Builds run in the API in the background;
   if the API restarts during one, it is marked failed and whatever was created
   can be undone.

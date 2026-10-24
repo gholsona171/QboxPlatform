@@ -38,6 +38,7 @@ const settingsSchema = z.strictObject({
   enabled: z.boolean(),
   mode: z.enum(["CHANNEL", "THREAD"]),
   openCategoryChannelId: optionalSnowflake,
+  progressCategoryChannelId: optionalSnowflake,
   closedCategoryChannelId: optionalSnowflake,
   threadParentChannelId: optionalSnowflake,
   transcriptChannelId: optionalSnowflake,

@@ -33,6 +33,8 @@ import type {
   BuilderStarter,
   BuilderSummary,
   BuilderTemplate,
+  BuilderTicketSetup,
+  BuilderResolvedTicketSetup,
   ChannelCreateInput,
   DiscordOverwrite,
   ExistingChannel,
@@ -297,7 +299,8 @@ export class BuilderService {
     this.active.add(guildId);
     try {
       const { blueprint } = draft;
-      const plannedBuild = blueprint.roles.length + blueprint.categories.reduce((sum, category) => sum + 1 + category.channels.length, 0) + links.length;
+      const plannedBuild = blueprint.roles.length + blueprint.categories.reduce((sum, category) => sum + 1 + category.channels.length, 0) + links.length
+        + (blueprint.tickets && links.includes("tickets") ? blueprint.tickets.types.length + 1 : 0);
       const run = await this.repository.createRun({ guildId, mode: input.mode, links, planned: plannedWipe + plannedBuild, startedById: starter.userId, startedByName: starter.displayName, ...(snapshot ? { snapshot } : {}) });
       if (wipeFirst && snapshot) {
         const captured = snapshot;
@@ -382,7 +385,7 @@ export class BuilderService {
     const run = await this.requireRun(guildId, id);
     if (run.status === "QUEUED" || run.status === "RUNNING") throw new BuilderError("INVALID_STATE", "Wait for this run to finish before undoing it.");
     if (run.status === "UNDONE") throw new BuilderError("INVALID_STATE", "This build was already undone.");
-    const items = (await this.repository.listItems(run.id)).filter((item) => item.status === "CREATED" && item.kind !== "LINK" && item.discordId);
+    const items = (await this.repository.listItems(run.id)).filter((item) => item.status === "CREATED" && item.discordId && (item.kind !== "LINK" || isLinkCreation(item.key)));
     if (items.length === 0) throw new BuilderError("INVALID_STATE", "This build did not create anything that can be removed.");
     await this.requireIdle(guildId);
     this.active.add(guildId);
@@ -679,12 +682,16 @@ export class BuilderService {
       }),
       verifiedRoleId: roleIdFor(blueprint, roleIds, "verified"),
       unverifiedRoleId: roleIdFor(blueprint, roleIds, "unverified"),
+      ...(blueprint.tickets ? { tickets: resolveTickets(blueprint.tickets, roleIds) } : {}),
       names,
     };
     for (const link of run.links) {
       try {
         if (!this.links) throw new BuilderError("DEPENDENCY_UNAVAILABLE", "Feature links are not available right now.");
-        const summary = await this.links.apply(link, ids);
+        const result = await this.links.apply(link, ids);
+        const { summary, created: made } = typeof result === "string" ? { summary: result, created: [] } : result;
+        /* What the link made (ticket types, the panel) is listed so undo can remove it. */
+        for (const item of made) await record("LINK", `${link}:${item.kind}`, item.name, "CREATED", { discordId: item.id, note: "Made by the build. Undo removes it." });
         await record("LINK", link, linkLabel(link), "CREATED", { note: summary });
       } catch (error) {
         await record("LINK", link, linkLabel(link), "FAILED", { error: messageOf(error) });
@@ -715,6 +722,19 @@ export class BuilderService {
     const reason = `${BRAND.name} server builder undo`;
     const order: readonly BuilderItemKind[] = ["CHANNEL", "CATEGORY", "ROLE"];
     let remaining = 0;
+    /* Things feature links made (ticket panel, ticket types) go first, so a panel message is removed while its channel still exists. */
+    const made = items.filter((item) => item.kind === "LINK").sort((a, b) => linkRemovalOrder(a.key) - linkRemovalOrder(b.key));
+    for (const item of made) {
+      const [link, kind] = item.key.split(":") as [BuilderLink, string];
+      try {
+        if (!this.links?.remove) throw new BuilderError("DEPENDENCY_UNAVAILABLE", "Feature links are not available right now.");
+        await this.links.remove(run.guildId, link, { kind, id: item.discordId as string, name: item.name });
+        await this.repository.updateItem(item.id, { status: "DELETED", error: null });
+      } catch (error) {
+        remaining += 1;
+        await this.repository.updateItem(item.id, { error: `Could not remove: ${messageOf(error)}` });
+      }
+    }
     for (const kind of order)
       for (const item of items.filter((candidate) => candidate.kind === kind)) {
         const discordId = item.discordId as string;
@@ -775,6 +795,28 @@ function withoutSnapshot(run: BuilderRun): BuilderRun {
   if (run.snapshot === undefined) return run;
   const { snapshot: _snapshot, ...rest } = run;
   return rest;
+}
+
+/** LINK items keyed `<link>:<kind>` are things a link made (not the link itself). */
+function isLinkCreation(key: string): boolean {
+  return /^[a-z-]+:[a-z-]+$/.test(key);
+}
+
+/** Panels before ticket types, since a panel offers the types. */
+function linkRemovalOrder(key: string): number {
+  return key.endsWith(":ticket-panel") ? 0 : 1;
+}
+
+/** The ticket setup with role keys turned into the Discord role IDs the build made or found. */
+function resolveTickets(tickets: BuilderTicketSetup, roleIds: ReadonlyMap<string, string>): BuilderResolvedTicketSetup {
+  const ids = (keys: readonly string[]) => keys.flatMap((key) => {
+    const id = roleIds.get(key);
+    return id ? [id] : [];
+  });
+  return {
+    panel: tickets.panel,
+    types: tickets.types.map(({ supportRoles, requiredRoles, ...type }) => ({ ...type, supportRoleIds: ids(supportRoles), requiredRoleIds: ids(requiredRoles) })),
+  };
 }
 
 function roleIdFor(blueprint: BuilderBlueprint, roleIds: ReadonlyMap<string, string>, purpose: "verified" | "unverified"): string | undefined {

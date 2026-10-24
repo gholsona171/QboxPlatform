@@ -519,6 +519,7 @@ function settingsTab() {
       ${checkbox("enabled", "Tickets are on", s.enabled)}
       ${selectField("mode", "Tickets open as", [["CHANNEL", "Private channels"], ["THREAD", "Private threads"]], s.mode)}
       ${channelSelect("openCategoryChannelId", "Default Discord category (channel mode)", s.openCategoryChannelId, "CATEGORY", "Not set")}
+      ${channelSelect("progressCategoryChannelId", "Move claimed and waiting tickets to category (channel mode)", s.progressCategoryChannelId, "CATEGORY", "Leave where they opened")}
       ${channelSelect("threadParentChannelId", "Default channel for threads (thread mode)", s.threadParentChannelId, "TEXT", "Not set")}
       ${rolePicker("supportRoleIds", "Support team roles", s.supportRoleIds, "These roles see and answer every ticket.")}
       ${checkbox("pingSupportOnOpen", "Ping the support team when a ticket opens", s.pingSupportOnOpen)}
@@ -749,6 +750,7 @@ function settingsPayload(form, data) {
     enabled: bool("enabled"),
     mode: data.get("mode"),
     ...optionalId(data, "openCategoryChannelId"),
+    ...optionalId(data, "progressCategoryChannelId"),
     ...optionalId(data, "closedCategoryChannelId"),
     ...optionalId(data, "threadParentChannelId"),
     ...optionalId(data, "transcriptChannelId"),

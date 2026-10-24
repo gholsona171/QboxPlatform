@@ -5,7 +5,7 @@ import { DiscordCommunityService, type CommunityRepository, type CommunitySettin
 import { FivemService, InMemoryFivemRepository } from "@qbox/fivem";
 import { InMemoryLevelRepository, LevelService } from "@qbox/levels";
 import { InMemoryModerationRepository, ModerationService } from "@qbox/moderation";
-import type { BuilderResolvedIds } from "@qbox/server-builder";
+import { generateBlueprint, templateFor, type BuilderLinkResult, type BuilderResolvedIds, type BuilderServerType } from "@qbox/server-builder";
 import { InMemoryStaffRepository, StaffService } from "@qbox/staff";
 import { InMemoryTicketRepository, TicketError, TicketService, defaultTicketSettings, type TicketDiscordGateway, type TicketPanelPublishInput } from "@qbox/tickets";
 import { InMemoryVerificationRepository, VerificationService } from "@qbox/verification";
@@ -274,5 +274,108 @@ describe("ServiceBuilderLinks after a server was wiped and rebuilt", () => {
     expect(summary).toContain("1 form had a deleted review channel and was moved to #500000000000000006.");
     expect(summary).toContain("1 application panel is in a deleted channel; pick a new channel for it and post again.");
     expect((await services.applications.forms(GUILD)).find((item) => item.id === form.id)?.reviewChannelId).toBe(ID.review);
+  });
+
+  describe("ready-made ticket setups", () => {
+    const PROGRESS = "500000000000000022";
+    const CLOSED = "500000000000000023";
+    /** Every preset's ticket setup, with its role keys mapped to made-up role IDs (as the build would). */
+    const setupIds = (type: BuilderServerType): BuilderResolvedIds => {
+      const blueprint = generateBlueprint(templateFor(type).answers);
+      const roleId = (key: string) => `4100000000000${String(blueprint.roles.findIndex((role) => role.key === key)).padStart(5, "0")}`;
+      const tickets = blueprint.tickets;
+      if (!tickets) throw new Error("no ticket setup");
+      return {
+        ...ids,
+        categories: { tickets: ID.ticketsCategory, "tickets-progress": PROGRESS, "tickets-closed": CLOSED },
+        tickets: { panel: tickets.panel, types: tickets.types.map(({ supportRoles, requiredRoles, ...type }) => ({ ...type, supportRoleIds: supportRoles.map(roleId), requiredRoleIds: requiredRoles.map(roleId) })) },
+      };
+    };
+    class Gateway {
+      public readonly published: TicketPanelPublishInput[] = [];
+      public readonly deleted: string[] = [];
+      public async publishPanel(input: TicketPanelPublishInput) {
+        this.published.push(input);
+        return { messageId: `80000000000000000${this.published.length}` };
+      }
+      public async deletePanelMessage(_channelId: string, messageId: string) { this.deleted.push(messageId); }
+    }
+
+    it.each(["FIVEM_RP", "GAMING", "COMMUNITY", "BUSINESS", "ASSET_STUDIO"] as const)("%s: makes its ticket types, posts its panel, and wires the status categories", async (type) => {
+      const gateway = new Gateway();
+      const { services, links } = setup({ ticketGateway: gateway as unknown as TicketDiscordGateway });
+      const resolved = setupIds(type);
+      const result = await links.apply("tickets", resolved) as BuilderLinkResult;
+      expect(typeof result).toBe("object");
+      const types = await services.tickets.categories(GUILD);
+      expect(types.map((item) => item.name)).toEqual(resolved.tickets?.types.map((item) => item.name));
+      const [panel] = await services.tickets.panels(GUILD);
+      expect(panel).toMatchObject({ channelId: ID.panel, title: resolved.tickets?.panel.title, categoryIds: types.map((item) => item.id), messageId: expect.any(String) });
+      expect(gateway.published[0]?.categories.map((item) => item.name)).toEqual(types.map((item) => item.name));
+      expect(await services.tickets.settings(GUILD)).toMatchObject({ openCategoryChannelId: ID.ticketsCategory, progressCategoryChannelId: PROGRESS, closedCategoryChannelId: CLOSED });
+      expect(result.created.map((item) => item.kind)).toEqual([...types.map(() => "ticket-type"), "ticket-panel"]);
+      expect(result.summary).toContain(`${types.length} ticket types added`);
+      expect(result.summary).toContain("claimed and waiting tickets move to");
+      const withQuestions = types.find((item) => item.questions.length > 0);
+      expect(withQuestions?.questions[0]).toMatchObject({ id: expect.any(String), label: expect.any(String) });
+    });
+
+    it("gives the studio's product support types their team role", async () => {
+      const { services, links } = setup({ ticketGateway: new Gateway() as unknown as TicketDiscordGateway });
+      const resolved = setupIds("ASSET_STUDIO");
+      await links.apply("tickets", resolved);
+      const scriptSupport = (await services.tickets.categories(GUILD)).find((item) => item.name === "Script Support");
+      expect(scriptSupport?.supportRoleIds).toEqual(resolved.tickets?.types.find((item) => item.name === "Script Support")?.supportRoleIds);
+      expect(scriptSupport?.supportRoleIds).toHaveLength(1);
+    });
+
+    it("keeps staff edits when the build runs again", async () => {
+      const { services, links } = setup({ ticketGateway: new Gateway() as unknown as TicketDiscordGateway });
+      const resolved = setupIds("ASSET_STUDIO");
+      await links.apply("tickets", resolved);
+      const bug = (await services.tickets.categories(GUILD)).find((item) => item.name === "Bug Report");
+      if (!bug) throw new Error("missing");
+      const { position: _position, ...rest } = bug;
+      await services.tickets.saveCategory({ ...rest, description: "Edited by staff", emoji: "🪲" });
+      const [panel] = await services.tickets.panels(GUILD);
+      if (!panel) throw new Error("missing");
+      const { messageId: _message, publishedAt: _published, ...panelRest } = panel;
+      await services.tickets.savePanel({ ...panelRest, title: "Our own title" });
+      const { nextNumber: _next, revision, ...settings } = await services.tickets.settings(GUILD);
+      await services.tickets.saveSettings({ ...settings, progressCategoryChannelId: ID.voiceCategory, source: "WEB", expectedRevision: revision });
+      const again = await links.apply("tickets", { ...resolved, names: resolved.names }) as BuilderLinkResult;
+      expect(again.created).toEqual([]);
+      expect((await services.tickets.categories(GUILD)).find((item) => item.id === bug.id)).toMatchObject({ description: "Edited by staff", emoji: "🪲" });
+      expect(await services.tickets.categories(GUILD)).toHaveLength(resolved.tickets?.types.length ?? 0);
+      expect((await services.tickets.panels(GUILD)).map((item) => item.title)).toEqual(["Our own title"]);
+      expect((await services.tickets.settings(GUILD)).progressCategoryChannelId).toBe(ID.voiceCategory);
+    });
+
+    it("undo removes the panel (and its message) and the ticket types it made", async () => {
+      const gateway = new Gateway();
+      const { services, links } = setup({ ticketGateway: gateway as unknown as TicketDiscordGateway });
+      const result = await links.apply("tickets", setupIds("GAMING")) as BuilderLinkResult;
+      const ownType = await services.tickets.saveCategory({ guildId: GUILD, name: "Staff made", buttonStyle: "PRIMARY", enabled: true, supportRoleIds: [], alertUserIds: [], defaultPriority: "NORMAL", questions: [], requiredRoleIds: [] });
+      const panelItem = result.created.find((item) => item.kind === "ticket-panel");
+      const [panel] = await services.tickets.panels(GUILD);
+      for (const item of [panelItem, ...result.created.filter((created) => created.kind === "ticket-type")]) if (item) await links.remove(GUILD, "tickets", item);
+      expect(gateway.deleted).toEqual([panel?.messageId]);
+      expect(await services.tickets.panels(GUILD)).toEqual([]);
+      expect((await services.tickets.categories(GUILD)).map((item) => item.id)).toEqual([ownType.id]);
+      if (panelItem) await expect(links.remove(GUILD, "tickets", panelItem)).resolves.toBeUndefined();
+    });
+
+    it("stops other panels offering a ticket type that undo removes", async () => {
+      const { services, links } = setup({ ticketGateway: new Gateway() as unknown as TicketDiscordGateway });
+      const result = await links.apply("tickets", setupIds("COMMUNITY")) as BuilderLinkResult;
+      const types = await services.tickets.categories(GUILD);
+      const own = await services.tickets.savePanel({ guildId: GUILD, name: "Own", channelId: ID.rules, title: "Own", description: "Own panel", color: "#5865F2", style: "BUTTONS", placeholder: "Pick", categoryIds: types.map((item) => item.id), rows: [types.slice(0, 3).map((item) => item.id), types.slice(3).map((item) => item.id)] });
+      const first = result.created.find((item) => item.kind === "ticket-type" && item.id === types[0]?.id);
+      if (!first) throw new Error("missing");
+      await links.remove(GUILD, "tickets", first);
+      const kept = (await services.tickets.panels(GUILD)).find((item) => item.id === own.id);
+      expect(kept?.categoryIds).toEqual(types.slice(1).map((item) => item.id));
+      expect(kept?.rows?.flat()).toEqual(types.slice(1).map((item) => item.id));
+    });
   });
 });

@@ -47,6 +47,7 @@ After the first deploy that adds these commands, redeploy slash commands with th
 - **Private channels or private threads.** Channel names come from a template (`{number}`, `{reasonNumber}`, `{reason}`, `{username}`).
 - **Numbering per reason.** Every ticket gets a server-wide number, and every reason counts its own tickets too: the fifth "Donations" ticket is Donations #5. A reason with no channel-name template of its own names channels `{reason}-{reasonNumber}` (for example `donations-5`), so each reason numbers itself without any manual naming.
 - **Staff tools:** claim, unclaim, transfer, add/remove members, rename, priority (low/normal/high/urgent), "waiting on member" status, tags, internal notes (never shown to the member), replies from the portal, reopen, delete channel.
+- **Status categories** (channel mode): new tickets open in the default category (or the ticket reason's own), claimed tickets and tickets waiting on the member move to the in-progress category, and closed tickets move to the closed category. See **Status categories** below.
 - **Closing:** member close on/off, confirmation, required reason, keep (read-only, optional move to a closed category) or delete after a delay.
 - **Claim lock:** optionally only the claimer can reply after a claim (channel mode).
 - **Staff chat:** a private thread per ticket where staff talk without the member (see below).
@@ -58,6 +59,36 @@ After the first deploy that adds these commands, redeploy slash commands with th
 - **Limits and blocks:** open tickets per member, blocked members, blocked roles.
 - **Logs** of opens, claims, escalations, closes, reopens, and ratings to a log channel.
 - **Statistics:** counts by status and type, average rating, average first response time, average resolution time, top staff.
+
+## Status categories
+
+In channel mode a ticket can move between three Discord categories as its
+status changes. Set them under **Settings**:
+
+| Setting | API field | Tickets in it |
+| --- | --- | --- |
+| Default Discord category | `openCategoryChannelId` | New (open, unclaimed) tickets. A ticket reason's own category overrides it. |
+| Move claimed and waiting tickets to category | `progressCategoryChannelId` | Claimed tickets (claim or transfer) and tickets marked waiting on the member |
+| Move closed tickets to category | `closedCategoryChannelId` | Closed tickets (archive mode) |
+
+- Claim, transfer, or **waiting on member** moves an open ticket to the
+  in-progress category. Unclaiming a ticket that is not waiting, or resuming an
+  unclaimed waiting ticket, moves it back to where it opened (the reason's
+  category, else the default category).
+- Closing moves it to the closed category as before; reopening a claimed
+  ticket puts it back in the in-progress category, an unclaimed one where it
+  opened.
+- Leave the in-progress category empty to keep tickets where they opened (the
+  behaviour before this setting existed). Thread mode never moves tickets.
+- The channel keeps its own permissions when it moves. A move Discord refuses
+  (for example a full category: 50 channels) is recorded in the ticket
+  history as `discord-sync-failed` with step `status-category`; the status
+  change itself still happens. Successful moves are recorded as `moved`.
+
+The server builder creates the three categories and fills these settings for
+you (see "Ticket setup" in [Server Builder](ServerBuilder.md)); stored in
+`ticket_settings.progress_category_channel_id` (migration
+`20261024120000_ticket_status_categories`).
 
 ## Staff chat
 
@@ -157,7 +188,8 @@ builder, the build connects Tickets to the new channels (it asks Discord which
 channels still exist):
 
 - **Ticket panel:** the first panel whose channel was deleted moves to the new panel channel (for example `#open-a-ticket`), forgets its old message, and is posted there. The build summary says "ticket panel moved to #open-a-ticket and posted". With no panels at all, a Support panel is created and posted as before. Panels in channels that still exist are left alone.
-- **Settings:** a deleted open-ticket category moves to the new tickets category; a deleted transcript or log channel moves to the new transcripts channel; a deleted closed-ticket category is cleared (the build makes none).
+- **Settings:** a deleted open-ticket, in-progress, or closed-ticket category moves to the new status category the build made (or is cleared when it made none); a deleted transcript or log channel moves to the new transcripts channel. An empty in-progress or closed category is set to the built one; one you picked that still exists is kept.
+- **Ticket types and panel:** when the blueprint has a ticket setup (every starting point does), its ticket types are added unless one with the same name already exists (existing ones are never changed), and its panel is posted when you have no panel. Undo of that build removes the types and panel it added, including the panel message.
 - **Ticket reasons:** a reason whose own Discord category was deleted moves to the new tickets category (or has the override cleared).
 - **Verification:** a deleted verification, log, or welcome channel is replaced by the new one when the build made one, otherwise cleared; the summary says what to pick again.
 - **Applications:** forms whose review channel was deleted move to the new review channel. Application panels in deleted channels are only reported, because the build does not make an application panel channel.

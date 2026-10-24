@@ -408,6 +408,7 @@ export class TicketService {
       ...(ticket.firstResponseAt ? {} : { firstResponseAt: this.now() }),
     });
     await this.event(id, "claimed", actor, { previous: ticket.claimedById ?? null });
+    await this.followStatus(ticket, updated, settings, actor);
     if (updated.channelId) {
       const channelId = updated.channelId;
       if (settings.claimRestrictsReplies && settings.mode === "CHANNEL")
@@ -429,6 +430,7 @@ export class TicketService {
       status: ticket.status === "PENDING" ? "PENDING" : "OPEN",
     });
     await this.event(id, "unclaimed", actor, { previous: ticket.claimedById });
+    await this.followStatus(ticket, updated, settings, actor);
     if (updated.channelId) {
       if (settings.claimRestrictsReplies && settings.mode === "CHANNEL")
         await this.restrictStaff(updated, settings, actor, updated.channelId, "FULL");
@@ -439,10 +441,11 @@ export class TicketService {
 
   public async transfer(guildId: string, id: string, actor: TicketActor, targetUserId: string): Promise<Ticket> {
     requireSnowflake("userId", targetUserId);
-    const { ticket } = await this.staffContext(guildId, id, actor);
+    const { ticket, settings } = await this.staffContext(guildId, id, actor);
     requireActive(ticket);
     const updated = await this.repository.updateTicket(id, { claimedById: targetUserId, status: ticket.status === "PENDING" ? "PENDING" : "CLAIMED" });
     await this.event(id, "transferred", actor, { from: ticket.claimedById ?? null, to: targetUserId });
+    await this.followStatus(ticket, updated, settings, actor);
     await this.notice(updated, actor, `This ticket was transferred to <@${targetUserId}>.`);
     await this.addStaffThreadMember(updated, targetUserId, actor);
     return updated;
@@ -495,12 +498,13 @@ export class TicketService {
   }
 
   public async setPending(guildId: string, id: string, actor: TicketActor, pending: boolean): Promise<Ticket> {
-    const { ticket } = await this.staffContext(guildId, id, actor);
+    const { ticket, settings } = await this.staffContext(guildId, id, actor);
     requireActive(ticket);
     const status: TicketStatus = pending ? "PENDING" : ticket.claimedById ? "CLAIMED" : "OPEN";
     if (status === ticket.status) return ticket;
     const updated = await this.repository.updateTicket(id, { status, lastActivityAt: this.now() });
     await this.event(id, pending ? "awaiting-response" : "resumed", actor, {});
+    await this.followStatus(ticket, updated, settings, actor);
     await this.notice(updated, actor, pending ? `Waiting for a reply from <@${ticket.openerId}>.` : "This ticket is active again.");
     return updated;
   }
@@ -712,7 +716,9 @@ export class TicketService {
     const channelId = ticket.channelId;
     const gateway = this.requireGateway();
     const category = await this.categoryFor(ticket);
-    const openParent = category?.parentChannelId ?? (settings.mode === "THREAD" ? settings.threadParentChannelId : settings.openCategoryChannelId);
+    const openParent = ticket.claimedById && settings.mode === "CHANNEL" && settings.progressCategoryChannelId
+      ? settings.progressCategoryChannelId
+      : category?.parentChannelId ?? (settings.mode === "THREAD" ? settings.threadParentChannelId : settings.openCategoryChannelId);
     await gateway.reopenSpace({ guildId, channelId, mode: settings.mode, ...(openParent ? { openParentChannelId: openParent } : {}) });
     if (settings.mode === "CHANNEL")
       for (const userId of [ticket.openerId, ...ticket.participantIds])
@@ -1068,6 +1074,28 @@ export class TicketService {
     const channelId = settings.logChannelId;
     if (!gateway || !channelId) return;
     await this.attempt(ticket.id, systemActor(), "log", () => gateway.postNotice({ channelId, title, content, color }).then(() => undefined));
+  }
+
+  /**
+   * Status categories (channel mode): a ticket that is claimed or waiting on
+   * the member moves to the in-progress category, and back to the category it
+   * opened in when it is open again. Nothing moves when no in-progress category
+   * is set. A failed move is recorded and never stops the status change.
+   */
+  private async followStatus(previous: Ticket, updated: Ticket, settings: TicketSettings, actor: TicketActor): Promise<void> {
+    const progress = settings.progressCategoryChannelId;
+    const move = this.gateway?.moveSpace?.bind(this.gateway);
+    const channelId = updated.channelId;
+    if (!progress || !move || !channelId || settings.mode !== "CHANNEL") return;
+    const inProgress = (status: TicketStatus) => status === "CLAIMED" || status === "PENDING";
+    if (inProgress(previous.status) === inProgress(updated.status)) return;
+    const category = await this.categoryFor(updated);
+    const target = inProgress(updated.status) ? progress : category?.parentChannelId ?? settings.openCategoryChannelId;
+    if (!target) return;
+    await this.attempt(updated.id, actor, "status-category", async () => {
+      await move(channelId, target);
+      await this.event(updated.id, "moved", actor, { to: target, status: updated.status });
+    });
   }
 
   private async attempt(ticketId: string, actor: TicketActor, step: string, operation: () => Promise<void>): Promise<void> {

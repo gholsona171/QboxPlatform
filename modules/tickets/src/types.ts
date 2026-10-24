@@ -28,6 +28,11 @@ export interface TicketSettings {
   readonly mode: TicketMode;
   /** Discord category that new ticket channels are created under. */
   readonly openCategoryChannelId?: string | undefined;
+  /**
+   * Discord category that claimed tickets and tickets waiting on the member
+   * move to (channel mode). Empty keeps them where they opened.
+   */
+  readonly progressCategoryChannelId?: string | undefined;
   /** Discord category that closed ticket channels move to (archive mode). */
   readonly closedCategoryChannelId?: string | undefined;
   /** Text channel that private ticket threads are created in (thread mode). */
@@ -456,6 +461,8 @@ export interface TicketDiscordGateway {
   addThreadMember?(threadId: string, userId: string): Promise<void>;
   /** Archives and locks (true), or unarchives and unlocks (false), a thread. */
   setThreadArchived?(threadId: string, archived: boolean): Promise<void>;
+  /** Moves a ticket channel into another Discord category, keeping its permissions (status categories). */
+  moveSpace?(channelId: string, parentChannelId: string): Promise<void>;
 }
 
 /** Who is acting on a ticket, as seen by the service. */

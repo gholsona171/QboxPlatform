@@ -62,6 +62,7 @@ function requireRoleList(name: string, values: readonly string[], max = 25): voi
 export function validateSettings(input: TicketSettingsInput): void {
   requireSnowflake("guildId", input.guildId);
   optionalSnowflake("openCategoryChannelId", input.openCategoryChannelId);
+  optionalSnowflake("progressCategoryChannelId", input.progressCategoryChannelId);
   optionalSnowflake("closedCategoryChannelId", input.closedCategoryChannelId);
   optionalSnowflake("threadParentChannelId", input.threadParentChannelId);
   optionalSnowflake("transcriptChannelId", input.transcriptChannelId);

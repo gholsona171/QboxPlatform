@@ -15,6 +15,9 @@ import {
   BUILDER_SECTIONS,
   BUILDER_SERVER_TYPES,
   BUILDER_STAFF_ACCESS,
+  BUILDER_TICKET_BUTTON_STYLES,
+  BUILDER_TICKET_PANEL_STYLES,
+  BUILDER_TICKET_PRIORITIES,
   BuilderError,
   type BuilderService,
 } from "@qbox/server-builder";
@@ -63,6 +66,34 @@ const channelSchema = z.strictObject({
   forum: forumSchema.optional(),
 });
 
+const ticketsSchema = z.strictObject({
+  panel: z.strictObject({
+    name: z.string().min(1).max(80),
+    title: z.string().min(1).max(256),
+    description: z.string().min(1).max(4000),
+    color: z.string().max(7),
+    style: enumOf(BUILDER_TICKET_PANEL_STYLES),
+    placeholder: z.string().min(1).max(150),
+  }),
+  types: z.array(z.strictObject({
+    key,
+    name: z.string().min(1).max(80),
+    description: z.string().max(100).optional(),
+    emoji: emoji.optional(),
+    buttonStyle: enumOf(BUILDER_TICKET_BUTTON_STYLES),
+    defaultPriority: enumOf(BUILDER_TICKET_PRIORITIES),
+    supportRoles: z.array(key).max(25),
+    requiredRoles: z.array(key).max(25),
+    questions: z.array(z.strictObject({
+      id: z.string().min(1).max(32),
+      label: z.string().min(1).max(45),
+      placeholder: z.string().max(100).optional(),
+      style: z.enum(["SHORT", "PARAGRAPH"]),
+      required: z.boolean(),
+    })).max(5),
+  })).max(25),
+});
+
 const blueprintSchema = z.strictObject({
   roles: z.array(z.strictObject({
     key,
@@ -80,6 +111,7 @@ const blueprintSchema = z.strictObject({
     channels: z.array(channelSchema).max(50),
     purpose: enumOf(BUILDER_CATEGORY_PURPOSES).optional(),
   })).max(500),
+  tickets: ticketsSchema.optional(),
 });
 
 const answersSchema = z.strictObject({

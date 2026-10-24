@@ -306,6 +306,53 @@ describe("BuilderService builds", () => {
     await expect(service.undo(GUILD, run.id)).rejects.toMatchObject({ code: "INVALID_STATE" });
   });
 
+  it("passes the ticket setup with real role IDs, and undo removes what the tickets link made first", async () => {
+    const repository = new InMemoryBuilderRepository();
+    const gateway = new MemoryGateway();
+    const removed: string[] = [];
+    const order: string[] = [];
+    let seen: BuilderResolvedIds | undefined;
+    const links: BuilderLinkPort = {
+      apply: async (_link, ids) => {
+        seen = ids;
+        return { summary: "Tickets: 1 ticket type added.", created: [{ kind: "ticket-type", id: "type-1", name: "Ticket type: Help" }, { kind: "ticket-panel", id: "panel-1", name: "Ticket panel: Support" }] };
+      },
+      remove: async (_guild, link, created) => {
+        removed.push(`${link}:${created.kind}:${created.id}`);
+        order.push("link");
+      },
+    };
+    const originalDelete = gateway.deleteChannel.bind(gateway);
+    gateway.deleteChannel = async (id: string, reason: string) => {
+      order.push("channel");
+      return originalDelete(id, reason);
+    };
+    const tasks: Promise<void>[] = [];
+    const service = new BuilderService(repository, gateway, links, { schedule: (task) => void tasks.push(task()) });
+    const withTickets: BuilderBlueprint = {
+      ...small,
+      categories: [...small.categories, { key: "cat-new", name: "NEW TICKETS", overwrites: [], channels: [], purpose: "tickets" }, { key: "cat-support", name: "SUPPORT", overwrites: [], channels: [{ key: "open-a-ticket", name: "open-a-ticket", type: "TEXT", slowmodeSeconds: 0, nsfw: false, userLimit: 0, overwrites: [], purpose: "tickets-panel" }] }],
+      tickets: {
+        panel: { name: "Support", title: "Need help?", description: "Open a ticket.", color: "#5865F2", style: "BUTTONS", placeholder: "Pick" },
+        types: [{ key: "ticket-help", name: "Help", buttonStyle: "PRIMARY", defaultPriority: "NORMAL", supportRoles: ["staff-mod"], requiredRoles: [], questions: [{ id: "details", label: "What happened?", style: "PARAGRAPH", required: true }] }],
+      },
+    };
+    await service.saveDraft({ guildId: GUILD, answers: templateFor("COMMUNITY").answers, blueprint: withTickets, expectedRevision: 0 });
+    const run = await service.startRun(GUILD, { mode: "ADD", links: ["tickets"] }, starter);
+    expect(run.planned).toBe(2 + 4 + 6 + 1 + 2);
+    await Promise.all(tasks.splice(0));
+    const mod = gateway.roles.find((role) => role.name === "Moderator");
+    expect(seen?.tickets?.types[0]).toMatchObject({ name: "Help", supportRoleIds: [mod?.id], requiredRoleIds: [] });
+    expect(seen?.categories.tickets).toBe(gateway.channels.find((channel) => channel.name === "NEW TICKETS")?.id);
+    const items = (await service.run(GUILD, run.id)).items.filter((item) => item.kind === "LINK");
+    expect(items.map((item) => [item.key, item.status])).toEqual([["tickets:ticket-type", "CREATED"], ["tickets:ticket-panel", "CREATED"], ["tickets", "CREATED"]]);
+    await service.undo(GUILD, run.id);
+    await Promise.all(tasks.splice(0));
+    expect(removed).toEqual(["tickets:ticket-panel:panel-1", "tickets:ticket-type:type-1"]);
+    expect(order.slice(0, 2)).toEqual(["link", "link"]);
+    expect((await service.run(GUILD, run.id)).run.status).toBe("UNDONE");
+  });
+
   it("reports every finished run so cached server lists can be dropped", async () => {
     const repository = new InMemoryBuilderRepository();
     const gateway = new MemoryGateway();

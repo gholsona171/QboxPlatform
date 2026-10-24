@@ -150,14 +150,14 @@ export function applyDesign(blueprint: BuilderBlueprint, design: DesignedBluepri
   return { blueprint: current, dropped };
 }
 
-/** Drops generated channels by slug, ignoring emoji. Categories left empty go too. */
+/** Drops generated channels by slug, ignoring emoji. Categories left empty go too (ticket status categories, which start empty, stay). */
 function removeChannels(blueprint: BuilderBlueprint, slugs: readonly string[]): BuilderBlueprint {
   const wanted = new Set(slugs.map((slug) => channelSlug(plainChannelName(slug))).filter(Boolean));
   if (wanted.size === 0) return blueprint;
   const keep = (channel: BuilderChannel) => !wanted.has(channelSlug(plainChannelName(channel.name))) && !wanted.has(channel.key);
   return {
     ...blueprint,
-    categories: blueprint.categories.map((category) => ({ ...category, channels: category.channels.filter(keep) })).filter((category) => category.channels.length > 0),
+    categories: blueprint.categories.filter((category) => category.channels.length === 0 || category.channels.some(keep)).map((category) => ({ ...category, channels: category.channels.filter(keep) })),
   };
 }
 
@@ -241,7 +241,7 @@ function addCategory(blueprint: BuilderBlueprint, category: DesignedCategory, an
 const SECTION_MEANING: Readonly<Record<BuilderSection, string>> = {
   information: "welcome, rules, announcements, and updates channels",
   verification: "a Verified role and a verify channel; everything but Start Here is hidden until members verify",
-  tickets: "an open-a-ticket panel channel, a Support category that new tickets open in, and ticket transcripts",
+  tickets: "an open-a-ticket panel channel with a ready-made ticket panel and ticket types for this server type, three ticket status categories (new, in progress, closed), and ticket transcripts",
   applications: "an apply-here channel and a staff-only applications-review channel",
   levels: "a level-ups channel",
   giveaways: "a giveaways channel and a Giveaway Ping role",
@@ -277,7 +277,8 @@ export function designerSystemPrompt(base: BuilderAnswers): string {
     "You design Discord server layouts for a server builder. The owner describes what they want; you answer with JSON only, no prose and no markdown.",
     "The builder already makes a full layout from a server type, staff ranks, departments, voice lounges, and sections. Your job is to pick those and add only what the description needs on top.",
     "",
-    "Server types: FIVEM_RP (FiveM roleplay city), GAMING (a game community), COMMUNITY (a general community), BUSINESS (a company or team).",
+    "Server types: FIVEM_RP (FiveM roleplay city), GAMING (a game community), COMMUNITY (a general community), BUSINESS (a company or team), ASSET_STUDIO (a team that makes and sells FiveM assets: scripts, MLOs, vehicles, clothing, props).",
+    "For ASSET_STUDIO, departments are the product lines the studio sells (default: Scripts, MLOs, Vehicles, Clothing & EUP, Props; list only the ones the owner makes). Each product line gets a public category (chat, help, buyer-only downloads and support), a buyer role, a team role (Script Developer, MLO Builder ...), a private team category, a support ticket type, and forum tags.",
     `Channels made for every layout of this server type: ${always.join(", ")}.`,
     "Each department gets a mentionable role and a private category with <department>-chat, -briefings, -reports, -training, a voice room, and a briefing room. Staff ranks get roles, highest first, with sensible permissions.",
     "",
@@ -295,7 +296,7 @@ export function designerSystemPrompt(base: BuilderAnswers): string {
     "",
     "Return exactly this JSON shape:",
     JSON.stringify({
-      serverType: "FIVEM_RP | GAMING | COMMUNITY | BUSINESS",
+      serverType: "FIVEM_RP | GAMING | COMMUNITY | BUSINESS | ASSET_STUDIO",
       serverName: "string",
       staffRanks: ["highest first, 1 to 8"],
       departments: ["0 to 12"],

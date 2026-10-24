@@ -71,7 +71,7 @@ describe("server builder routes", () => {
     const { server, calls } = setup();
     const overview = await server.inject({ method: "GET", url: "/api/v1/builder/overview", headers: host });
     expect(overview.statusCode).toBe(200);
-    expect(overview.json().data.templates.map((template: { type: string }) => template.type)).toEqual(["FIVEM_RP", "GAMING", "COMMUNITY", "BUSINESS"]);
+    expect(overview.json().data.templates.map((template: { type: string }) => template.type)).toEqual(["FIVEM_RP", "GAMING", "COMMUNITY", "BUSINESS", "ASSET_STUDIO"]);
     expect(overview.json().data.preflight.ready).toBe(true);
     await server.inject(json("POST", "/api/v1/builder/generate", { answers: templateFor("GAMING").answers }));
     expect(calls).toEqual([{ permission: "builder.manage", mutation: false }, { permission: "builder.manage", mutation: true }]);

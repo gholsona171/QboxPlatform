@@ -4,7 +4,15 @@ import { LOG_EVENTS, type DiscordCommunityService } from "@qbox/discord-communit
 import type { FivemService } from "@qbox/fivem";
 import type { LevelService } from "@qbox/levels";
 import type { ModerationService } from "@qbox/moderation";
-import { BuilderError, type BuilderChannelPurpose, type BuilderLink, type BuilderLinkPort, type BuilderResolvedIds } from "@qbox/server-builder";
+import {
+  BuilderError,
+  type BuilderChannelPurpose,
+  type BuilderLink,
+  type BuilderLinkCreated,
+  type BuilderLinkPort,
+  type BuilderLinkResult,
+  type BuilderResolvedIds,
+} from "@qbox/server-builder";
 import type { StaffService } from "@qbox/staff";
 import { MISSING_PANEL_CHANNEL_MESSAGE } from "@qbox/shared/discord-rest";
 import { TicketError, type TicketPanel, type TicketService } from "@qbox/tickets";
@@ -63,7 +71,29 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     return (channelId) => (channelId === undefined ? undefined : existing.has(channelId));
   }
 
-  public async apply(link: BuilderLink, ids: BuilderResolvedIds): Promise<string> {
+  /** Undo: removes a ticket panel (and its Discord message) or a ticket type the build made. Already gone counts as removed. */
+  public async remove(guildId: string, link: BuilderLink, created: BuilderLinkCreated): Promise<void> {
+    if (link !== "tickets") throw new BuilderError("INVALID_INPUT", "That feature has nothing to remove.");
+    const { tickets } = this.services;
+    const gone = (error: unknown) => {
+      if (error instanceof TicketError && error.code === "NOT_FOUND") return;
+      throw error;
+    };
+    if (created.kind === "ticket-panel") {
+      await tickets.deletePanel(guildId, created.id).catch(gone);
+      return;
+    }
+    if (created.kind !== "ticket-type") throw new BuilderError("INVALID_INPUT", "That ticket item cannot be removed.");
+    /* Panels that still offer the type (one staff made or edited) stop offering it first. */
+    for (const panel of await tickets.panels(guildId)) {
+      if (!panel.categoryIds.includes(created.id)) continue;
+      const rows = panel.rows?.map((row) => row.filter((id) => id !== created.id)).filter((row) => row.length > 0) ?? null;
+      await tickets.savePanel({ ...panelInput(panel), categoryIds: panel.categoryIds.filter((id) => id !== created.id), rows: rows && rows.length > 0 ? rows : null });
+    }
+    await tickets.deleteCategory(guildId, created.id).catch(gone);
+  }
+
+  public async apply(link: BuilderLink, ids: BuilderResolvedIds): Promise<string | BuilderLinkResult> {
     switch (link) {
       case "moderation": return this.moderation(ids);
       case "verification": return this.verification(ids);
@@ -127,7 +157,7 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     return `Verification turned on with the ${verifiedRoleIds.map((id) => role(ids, id)).join(", ")} role${panel}. Existing members need to verify or be given the role.${repairs}`;
   }
 
-  private async tickets(ids: BuilderResolvedIds): Promise<string> {
+  private async tickets(ids: BuilderResolvedIds): Promise<string | BuilderLinkResult> {
     const { tickets } = this.services;
     const { nextNumber: _next, revision, ...current } = await tickets.settings(ids.guildId);
     const exists = await this.channelCheck(ids.guildId);
@@ -141,8 +171,12 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     };
     const transcripts = ids.channels["ticket-transcripts"];
     const builtCategory = ids.categories.tickets;
+    const builtProgress = ids.categories["tickets-progress"];
+    const builtClosed = ids.categories["tickets-closed"];
     const openCategory = repoint("open ticket category", current.openCategoryChannelId, builtCategory) ?? builtCategory;
-    const closedCategory = repoint("closed ticket category", current.closedCategoryChannelId, undefined);
+    /* Status categories: a category staff already picked (and that still exists) is kept. */
+    const progressCategory = repoint("in-progress ticket category", current.progressCategoryChannelId, builtProgress) ?? builtProgress;
+    const closedCategory = repoint("closed ticket category", current.closedCategoryChannelId, builtClosed) ?? builtClosed;
     const transcriptChannel = transcripts ?? repoint("transcript channel", current.transcriptChannelId, undefined);
     const logChannel = repoint("ticket log channel", current.logChannelId, transcripts) ?? transcripts;
     const staffIds = ids.staffRoles.map((role) => role.id);
@@ -152,6 +186,7 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
       transcriptChannelId: transcriptChannel,
       logChannelId: logChannel,
       openCategoryChannelId: openCategory,
+      progressCategoryChannelId: progressCategory,
       closedCategoryChannelId: closedCategory,
       supportRoleIds: unique([...current.supportRoleIds, ...staffIds]).slice(0, 25),
       source: "SYSTEM",
@@ -159,9 +194,46 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
     });
     if (transcripts) parts.push(`transcripts go to ${channel(ids, transcripts)}`);
     if (openCategory && openCategory === builtCategory && !gone(current.openCategoryChannelId)) parts.push(`new tickets open in ${channel(ids, openCategory)}`);
+    if (progressCategory && progressCategory === builtProgress && !gone(current.progressCategoryChannelId) && current.progressCategoryChannelId !== builtProgress) parts.push(`claimed and waiting tickets move to ${channel(ids, progressCategory)}`);
+    if (closedCategory && closedCategory === builtClosed && !gone(current.closedCategoryChannelId) && current.closedCategoryChannelId !== builtClosed) parts.push(`closed tickets move to ${channel(ids, closedCategory)}`);
     if (staffIds.length) parts.push("staff can answer tickets");
     const categories = await tickets.categories(ids.guildId);
-    if (categories.length === 0) {
+    const created: BuilderLinkCreated[] = [];
+    /* The blueprint's ticket types: a type staff already have (same name) is left exactly as they set it up. */
+    const setupTypeIds: string[] = [];
+    if (ids.tickets) {
+      let count = categories.length;
+      let made = 0;
+      for (const type of ids.tickets.types) {
+        const existing = categories.find((category) => category.name.toLowerCase() === type.name.toLowerCase());
+        if (existing) {
+          setupTypeIds.push(existing.id);
+          continue;
+        }
+        if (count >= 25) {
+          parts.push(`${type.name} was not added (a server can have 25 ticket types)`);
+          continue;
+        }
+        const saved = await tickets.saveCategory({
+          guildId: ids.guildId,
+          name: type.name,
+          ...(type.description ? { description: type.description } : {}),
+          ...(type.emoji ? { emoji: type.emoji } : {}),
+          buttonStyle: type.buttonStyle,
+          enabled: true,
+          supportRoleIds: type.supportRoleIds,
+          alertUserIds: [],
+          defaultPriority: type.defaultPriority,
+          questions: type.questions.map((question) => ({ ...question })),
+          requiredRoleIds: type.requiredRoleIds,
+        });
+        created.push({ kind: "ticket-type", id: saved.id, name: `Ticket type: ${saved.name}` });
+        setupTypeIds.push(saved.id);
+        count += 1;
+        made += 1;
+      }
+      if (made > 0) parts.push(`${plural(made, "ticket type")} added`);
+    } else if (categories.length === 0) {
       await tickets.saveCategory({
         guildId: ids.guildId,
         name: "Support",
@@ -188,8 +260,9 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
       parts.push(builtCategory ? `${count} now open in ${channel(ids, builtCategory)} (${staleReasons.length === 1 ? "its" : "their"} category was deleted)` : `${count} no longer point at a deleted category`);
     }
     const panelChannel = ids.channels["tickets-panel"];
-    if (panelChannel) parts.push(await this.ticketPanel(ids, panelChannel, gone, exists));
-    return sentence("Tickets", parts);
+    if (panelChannel) parts.push(await this.ticketPanel(ids, panelChannel, gone, exists, setupTypeIds, created));
+    const summary = sentence("Tickets", parts);
+    return ids.tickets ? { summary, created } : summary;
   }
 
   /**
@@ -197,7 +270,7 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
    * when there are none, posts a panel that was never posted, or moves the first
    * panel whose channel was deleted to the new channel and posts it there.
    */
-  private async ticketPanel(ids: BuilderResolvedIds, panelChannel: string, gone: (id: string | undefined) => boolean, exists: ChannelCheck): Promise<string> {
+  private async ticketPanel(ids: BuilderResolvedIds, panelChannel: string, gone: (id: string | undefined) => boolean, exists: ChannelCheck, setupTypeIds: readonly string[] = [], created: BuilderLinkCreated[] = []): Promise<string> {
     const { tickets } = this.services;
     const panels = await tickets.panels(ids.guildId);
     const where = channel(ids, panelChannel);
@@ -205,6 +278,22 @@ export class ServiceBuilderLinks implements BuilderLinkPort {
       () => success,
       (error: unknown) => `${saving} but not posted (${reason(error)})`,
     );
+    if (panels.length === 0 && ids.tickets && setupTypeIds.length > 0) {
+      const panel = ids.tickets.panel;
+      const saved = await tickets.savePanel({
+        guildId: ids.guildId,
+        name: panel.name,
+        channelId: panelChannel,
+        title: panel.title,
+        description: panel.description,
+        color: panel.color,
+        style: panel.style,
+        placeholder: panel.placeholder,
+        categoryIds: setupTypeIds.slice(0, 25),
+      });
+      created.push({ kind: "ticket-panel", id: saved.id, name: `Ticket panel: ${saved.name}` });
+      return post(saved, `panel "${saved.title}" posted in ${where}`, `panel "${saved.title}" saved for ${where}`);
+    }
     if (panels.length === 0) {
       const saved = await tickets.savePanel({
         guildId: ids.guildId,

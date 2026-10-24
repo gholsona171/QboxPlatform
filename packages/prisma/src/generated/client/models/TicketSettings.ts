@@ -51,6 +51,7 @@ export type TicketSettingsMinAggregateOutputType = {
   enabled: boolean | null
   mode: $Enums.TicketMode | null
   openCategoryChannelId: string | null
+  progressCategoryChannelId: string | null
   closedCategoryChannelId: string | null
   threadParentChannelId: string | null
   transcriptChannelId: string | null
@@ -87,6 +88,7 @@ export type TicketSettingsMaxAggregateOutputType = {
   enabled: boolean | null
   mode: $Enums.TicketMode | null
   openCategoryChannelId: string | null
+  progressCategoryChannelId: string | null
   closedCategoryChannelId: string | null
   threadParentChannelId: string | null
   transcriptChannelId: string | null
@@ -123,6 +125,7 @@ export type TicketSettingsCountAggregateOutputType = {
   enabled: number
   mode: number
   openCategoryChannelId: number
+  progressCategoryChannelId: number
   closedCategoryChannelId: number
   threadParentChannelId: number
   transcriptChannelId: number
@@ -184,6 +187,7 @@ export type TicketSettingsMinAggregateInputType = {
   enabled?: true
   mode?: true
   openCategoryChannelId?: true
+  progressCategoryChannelId?: true
   closedCategoryChannelId?: true
   threadParentChannelId?: true
   transcriptChannelId?: true
@@ -220,6 +224,7 @@ export type TicketSettingsMaxAggregateInputType = {
   enabled?: true
   mode?: true
   openCategoryChannelId?: true
+  progressCategoryChannelId?: true
   closedCategoryChannelId?: true
   threadParentChannelId?: true
   transcriptChannelId?: true
@@ -256,6 +261,7 @@ export type TicketSettingsCountAggregateInputType = {
   enabled?: true
   mode?: true
   openCategoryChannelId?: true
+  progressCategoryChannelId?: true
   closedCategoryChannelId?: true
   threadParentChannelId?: true
   transcriptChannelId?: true
@@ -382,6 +388,7 @@ export type TicketSettingsGroupByOutputType = {
   enabled: boolean
   mode: $Enums.TicketMode
   openCategoryChannelId: string | null
+  progressCategoryChannelId: string | null
   closedCategoryChannelId: string | null
   threadParentChannelId: string | null
   transcriptChannelId: string | null
@@ -444,6 +451,7 @@ export type TicketSettingsWhereInput = {
   enabled?: Prisma.BoolFilter<"TicketSettings"> | boolean
   mode?: Prisma.EnumTicketModeFilter<"TicketSettings"> | $Enums.TicketMode
   openCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
+  progressCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   closedCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   threadParentChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   transcriptChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
@@ -484,6 +492,7 @@ export type TicketSettingsOrderByWithRelationInput = {
   enabled?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   openCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  progressCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   closedCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   threadParentChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   transcriptChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -527,6 +536,7 @@ export type TicketSettingsWhereUniqueInput = Prisma.AtLeast<{
   enabled?: Prisma.BoolFilter<"TicketSettings"> | boolean
   mode?: Prisma.EnumTicketModeFilter<"TicketSettings"> | $Enums.TicketMode
   openCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
+  progressCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   closedCategoryChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   threadParentChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
   transcriptChannelId?: Prisma.StringNullableFilter<"TicketSettings"> | string | null
@@ -567,6 +577,7 @@ export type TicketSettingsOrderByWithAggregationInput = {
   enabled?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   openCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  progressCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   closedCategoryChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   threadParentChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   transcriptChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -614,6 +625,7 @@ export type TicketSettingsScalarWhereWithAggregatesInput = {
   enabled?: Prisma.BoolWithAggregatesFilter<"TicketSettings"> | boolean
   mode?: Prisma.EnumTicketModeWithAggregatesFilter<"TicketSettings"> | $Enums.TicketMode
   openCategoryChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketSettings"> | string | null
+  progressCategoryChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketSettings"> | string | null
   closedCategoryChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketSettings"> | string | null
   threadParentChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketSettings"> | string | null
   transcriptChannelId?: Prisma.StringNullableWithAggregatesFilter<"TicketSettings"> | string | null
@@ -652,6 +664,7 @@ export type TicketSettingsCreateInput = {
   enabled?: boolean
   mode?: $Enums.TicketMode
   openCategoryChannelId?: string | null
+  progressCategoryChannelId?: string | null
   closedCategoryChannelId?: string | null
   threadParentChannelId?: string | null
   transcriptChannelId?: string | null
@@ -692,6 +705,7 @@ export type TicketSettingsUncheckedCreateInput = {
   enabled?: boolean
   mode?: $Enums.TicketMode
   openCategoryChannelId?: string | null
+  progressCategoryChannelId?: string | null
   closedCategoryChannelId?: string | null
   threadParentChannelId?: string | null
   transcriptChannelId?: string | null
@@ -730,6 +744,7 @@ export type TicketSettingsUpdateInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -770,6 +785,7 @@ export type TicketSettingsUncheckedUpdateInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -809,6 +825,7 @@ export type TicketSettingsCreateManyInput = {
   enabled?: boolean
   mode?: $Enums.TicketMode
   openCategoryChannelId?: string | null
+  progressCategoryChannelId?: string | null
   closedCategoryChannelId?: string | null
   threadParentChannelId?: string | null
   transcriptChannelId?: string | null
@@ -847,6 +864,7 @@ export type TicketSettingsUpdateManyMutationInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -886,6 +904,7 @@ export type TicketSettingsUncheckedUpdateManyInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -930,6 +949,7 @@ export type TicketSettingsCountOrderByAggregateInput = {
   enabled?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   openCategoryChannelId?: Prisma.SortOrder
+  progressCategoryChannelId?: Prisma.SortOrder
   closedCategoryChannelId?: Prisma.SortOrder
   threadParentChannelId?: Prisma.SortOrder
   transcriptChannelId?: Prisma.SortOrder
@@ -979,6 +999,7 @@ export type TicketSettingsMaxOrderByAggregateInput = {
   enabled?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   openCategoryChannelId?: Prisma.SortOrder
+  progressCategoryChannelId?: Prisma.SortOrder
   closedCategoryChannelId?: Prisma.SortOrder
   threadParentChannelId?: Prisma.SortOrder
   transcriptChannelId?: Prisma.SortOrder
@@ -1015,6 +1036,7 @@ export type TicketSettingsMinOrderByAggregateInput = {
   enabled?: Prisma.SortOrder
   mode?: Prisma.SortOrder
   openCategoryChannelId?: Prisma.SortOrder
+  progressCategoryChannelId?: Prisma.SortOrder
   closedCategoryChannelId?: Prisma.SortOrder
   threadParentChannelId?: Prisma.SortOrder
   transcriptChannelId?: Prisma.SortOrder
@@ -1127,6 +1149,7 @@ export type TicketSettingsCreateWithoutGuildInput = {
   enabled?: boolean
   mode?: $Enums.TicketMode
   openCategoryChannelId?: string | null
+  progressCategoryChannelId?: string | null
   closedCategoryChannelId?: string | null
   threadParentChannelId?: string | null
   transcriptChannelId?: string | null
@@ -1165,6 +1188,7 @@ export type TicketSettingsUncheckedCreateWithoutGuildInput = {
   enabled?: boolean
   mode?: $Enums.TicketMode
   openCategoryChannelId?: string | null
+  progressCategoryChannelId?: string | null
   closedCategoryChannelId?: string | null
   threadParentChannelId?: string | null
   transcriptChannelId?: string | null
@@ -1219,6 +1243,7 @@ export type TicketSettingsUpdateWithoutGuildInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1257,6 +1282,7 @@ export type TicketSettingsUncheckedUpdateWithoutGuildInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mode?: Prisma.EnumTicketModeFieldUpdateOperationsInput | $Enums.TicketMode
   openCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  progressCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedCategoryChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   threadParentChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   transcriptChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1298,6 +1324,7 @@ export type TicketSettingsSelect<ExtArgs extends runtime.Types.Extensions.Intern
   enabled?: boolean
   mode?: boolean
   openCategoryChannelId?: boolean
+  progressCategoryChannelId?: boolean
   closedCategoryChannelId?: boolean
   threadParentChannelId?: boolean
   transcriptChannelId?: boolean
@@ -1338,6 +1365,7 @@ export type TicketSettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   enabled?: boolean
   mode?: boolean
   openCategoryChannelId?: boolean
+  progressCategoryChannelId?: boolean
   closedCategoryChannelId?: boolean
   threadParentChannelId?: boolean
   transcriptChannelId?: boolean
@@ -1378,6 +1406,7 @@ export type TicketSettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   enabled?: boolean
   mode?: boolean
   openCategoryChannelId?: boolean
+  progressCategoryChannelId?: boolean
   closedCategoryChannelId?: boolean
   threadParentChannelId?: boolean
   transcriptChannelId?: boolean
@@ -1418,6 +1447,7 @@ export type TicketSettingsSelectScalar = {
   enabled?: boolean
   mode?: boolean
   openCategoryChannelId?: boolean
+  progressCategoryChannelId?: boolean
   closedCategoryChannelId?: boolean
   threadParentChannelId?: boolean
   transcriptChannelId?: boolean
@@ -1452,7 +1482,7 @@ export type TicketSettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type TicketSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "mode" | "openCategoryChannelId" | "closedCategoryChannelId" | "threadParentChannelId" | "transcriptChannelId" | "logChannelId" | "supportRoleIds" | "pingSupportOnOpen" | "maxOpenPerUser" | "nameTemplate" | "openMessage" | "embedColor" | "allowUserClose" | "requireCloseReason" | "closeConfirmation" | "closeAction" | "deleteDelaySeconds" | "claimEnabled" | "claimRestrictsReplies" | "transcriptsEnabled" | "transcriptDmUser" | "feedbackEnabled" | "autoCloseHours" | "autoCloseWarningHours" | "autoCloseExcludeClaimed" | "blockedUserIds" | "blockedRoleIds" | "staffThreadEnabled" | "retentionMonths" | "nextNumber" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketSettings"]>
+export type TicketSettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "mode" | "openCategoryChannelId" | "progressCategoryChannelId" | "closedCategoryChannelId" | "threadParentChannelId" | "transcriptChannelId" | "logChannelId" | "supportRoleIds" | "pingSupportOnOpen" | "maxOpenPerUser" | "nameTemplate" | "openMessage" | "embedColor" | "allowUserClose" | "requireCloseReason" | "closeConfirmation" | "closeAction" | "deleteDelaySeconds" | "claimEnabled" | "claimRestrictsReplies" | "transcriptsEnabled" | "transcriptDmUser" | "feedbackEnabled" | "autoCloseHours" | "autoCloseWarningHours" | "autoCloseExcludeClaimed" | "blockedUserIds" | "blockedRoleIds" | "staffThreadEnabled" | "retentionMonths" | "nextNumber" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["ticketSettings"]>
 export type TicketSettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -1473,6 +1503,10 @@ export type $TicketSettingsPayload<ExtArgs extends runtime.Types.Extensions.Inte
     enabled: boolean
     mode: $Enums.TicketMode
     openCategoryChannelId: string | null
+    /**
+     * Category claimed tickets and tickets waiting on the member move to (status categories); empty keeps them in place.
+     */
+    progressCategoryChannelId: string | null
     closedCategoryChannelId: string | null
     threadParentChannelId: string | null
     transcriptChannelId: string | null
@@ -1939,6 +1973,7 @@ export interface TicketSettingsFieldRefs {
   readonly enabled: Prisma.FieldRef<"TicketSettings", 'Boolean'>
   readonly mode: Prisma.FieldRef<"TicketSettings", 'TicketMode'>
   readonly openCategoryChannelId: Prisma.FieldRef<"TicketSettings", 'String'>
+  readonly progressCategoryChannelId: Prisma.FieldRef<"TicketSettings", 'String'>
   readonly closedCategoryChannelId: Prisma.FieldRef<"TicketSettings", 'String'>
   readonly threadParentChannelId: Prisma.FieldRef<"TicketSettings", 'String'>
   readonly transcriptChannelId: Prisma.FieldRef<"TicketSettings", 'String'>
