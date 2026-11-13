@@ -1,0 +1,1 @@
+{"version":3,"file":"CompatibilityDisableGuard.d.ts","sourceRoot":"","sources":["../../src/compatibility/CompatibilityDisableGuard.ts"],"names":[],"mappings":"AAAA,4EAA4E;AAC5E,qBAAa,8BAA+B,SAAQ,KAAK;IACvD,SAAgB,IAAI,kCAAkC;gBAEnC,OAAO,EAAE,MAAM;CAInC;AAED,oFAAoF;AACpF,wBAAgB,gCAAgC,CAC9C,gBAAgB,EAAE,MAAM,EACxB,wBAAwB,EAAE,MAAM,GAC/B,IAAI,CASN"}

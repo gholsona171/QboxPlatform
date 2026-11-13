@@ -1,0 +1,1506 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model VoiceHub
+ *
+ */
+export type VoiceHubModel = runtime.Types.Result.DefaultSelection<Prisma.$VoiceHubPayload>;
+export type AggregateVoiceHub = {
+    _count: VoiceHubCountAggregateOutputType | null;
+    _avg: VoiceHubAvgAggregateOutputType | null;
+    _sum: VoiceHubSumAggregateOutputType | null;
+    _min: VoiceHubMinAggregateOutputType | null;
+    _max: VoiceHubMaxAggregateOutputType | null;
+};
+export type VoiceHubAvgAggregateOutputType = {
+    userLimit: number | null;
+    bitrateKbps: number | null;
+    deleteDelaySeconds: number | null;
+};
+export type VoiceHubSumAggregateOutputType = {
+    userLimit: number | null;
+    bitrateKbps: number | null;
+    deleteDelaySeconds: number | null;
+};
+export type VoiceHubMinAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    enabled: boolean | null;
+    channelId: string | null;
+    categoryId: string | null;
+    nameTemplate: string | null;
+    userLimit: number | null;
+    bitrateKbps: number | null;
+    privateByDefault: boolean | null;
+    deleteDelaySeconds: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type VoiceHubMaxAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    enabled: boolean | null;
+    channelId: string | null;
+    categoryId: string | null;
+    nameTemplate: string | null;
+    userLimit: number | null;
+    bitrateKbps: number | null;
+    privateByDefault: boolean | null;
+    deleteDelaySeconds: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type VoiceHubCountAggregateOutputType = {
+    id: number;
+    guildId: number;
+    name: number;
+    enabled: number;
+    channelId: number;
+    categoryId: number;
+    nameTemplate: number;
+    userLimit: number;
+    bitrateKbps: number;
+    privateByDefault: number;
+    deleteDelaySeconds: number;
+    allowedRoleIds: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type VoiceHubAvgAggregateInputType = {
+    userLimit?: true;
+    bitrateKbps?: true;
+    deleteDelaySeconds?: true;
+};
+export type VoiceHubSumAggregateInputType = {
+    userLimit?: true;
+    bitrateKbps?: true;
+    deleteDelaySeconds?: true;
+};
+export type VoiceHubMinAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    enabled?: true;
+    channelId?: true;
+    categoryId?: true;
+    nameTemplate?: true;
+    userLimit?: true;
+    bitrateKbps?: true;
+    privateByDefault?: true;
+    deleteDelaySeconds?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type VoiceHubMaxAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    enabled?: true;
+    channelId?: true;
+    categoryId?: true;
+    nameTemplate?: true;
+    userLimit?: true;
+    bitrateKbps?: true;
+    privateByDefault?: true;
+    deleteDelaySeconds?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type VoiceHubCountAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    enabled?: true;
+    channelId?: true;
+    categoryId?: true;
+    nameTemplate?: true;
+    userLimit?: true;
+    bitrateKbps?: true;
+    privateByDefault?: true;
+    deleteDelaySeconds?: true;
+    allowedRoleIds?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type VoiceHubAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which VoiceHub to aggregate.
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of VoiceHubs to fetch.
+     */
+    orderBy?: Prisma.VoiceHubOrderByWithRelationInput | Prisma.VoiceHubOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.VoiceHubWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` VoiceHubs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` VoiceHubs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned VoiceHubs
+    **/
+    _count?: true | VoiceHubCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: VoiceHubAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: VoiceHubSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: VoiceHubMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: VoiceHubMaxAggregateInputType;
+};
+export type GetVoiceHubAggregateType<T extends VoiceHubAggregateArgs> = {
+    [P in keyof T & keyof AggregateVoiceHub]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateVoiceHub[P]> : Prisma.GetScalarType<T[P], AggregateVoiceHub[P]>;
+};
+export type VoiceHubGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.VoiceHubWhereInput;
+    orderBy?: Prisma.VoiceHubOrderByWithAggregationInput | Prisma.VoiceHubOrderByWithAggregationInput[];
+    by: Prisma.VoiceHubScalarFieldEnum[] | Prisma.VoiceHubScalarFieldEnum;
+    having?: Prisma.VoiceHubScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: VoiceHubCountAggregateInputType | true;
+    _avg?: VoiceHubAvgAggregateInputType;
+    _sum?: VoiceHubSumAggregateInputType;
+    _min?: VoiceHubMinAggregateInputType;
+    _max?: VoiceHubMaxAggregateInputType;
+};
+export type VoiceHubGroupByOutputType = {
+    id: string;
+    guildId: string;
+    name: string;
+    enabled: boolean;
+    channelId: string;
+    categoryId: string | null;
+    nameTemplate: string;
+    userLimit: number;
+    bitrateKbps: number;
+    privateByDefault: boolean;
+    deleteDelaySeconds: number;
+    allowedRoleIds: string[];
+    createdAt: Date;
+    updatedAt: Date;
+    _count: VoiceHubCountAggregateOutputType | null;
+    _avg: VoiceHubAvgAggregateOutputType | null;
+    _sum: VoiceHubSumAggregateOutputType | null;
+    _min: VoiceHubMinAggregateOutputType | null;
+    _max: VoiceHubMaxAggregateOutputType | null;
+};
+export type GetVoiceHubGroupByPayload<T extends VoiceHubGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<VoiceHubGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof VoiceHubGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], VoiceHubGroupByOutputType[P]> : Prisma.GetScalarType<T[P], VoiceHubGroupByOutputType[P]>;
+}>>;
+export type VoiceHubWhereInput = {
+    AND?: Prisma.VoiceHubWhereInput | Prisma.VoiceHubWhereInput[];
+    OR?: Prisma.VoiceHubWhereInput[];
+    NOT?: Prisma.VoiceHubWhereInput | Prisma.VoiceHubWhereInput[];
+    id?: Prisma.UuidFilter<"VoiceHub"> | string;
+    guildId?: Prisma.StringFilter<"VoiceHub"> | string;
+    name?: Prisma.StringFilter<"VoiceHub"> | string;
+    enabled?: Prisma.BoolFilter<"VoiceHub"> | boolean;
+    channelId?: Prisma.StringFilter<"VoiceHub"> | string;
+    categoryId?: Prisma.StringNullableFilter<"VoiceHub"> | string | null;
+    nameTemplate?: Prisma.StringFilter<"VoiceHub"> | string;
+    userLimit?: Prisma.IntFilter<"VoiceHub"> | number;
+    bitrateKbps?: Prisma.IntFilter<"VoiceHub"> | number;
+    privateByDefault?: Prisma.BoolFilter<"VoiceHub"> | boolean;
+    deleteDelaySeconds?: Prisma.IntFilter<"VoiceHub"> | number;
+    allowedRoleIds?: Prisma.StringNullableListFilter<"VoiceHub">;
+    createdAt?: Prisma.DateTimeFilter<"VoiceHub"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"VoiceHub"> | Date | string;
+    rooms?: Prisma.VoiceRoomListRelationFilter;
+};
+export type VoiceHubOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    categoryId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    nameTemplate?: Prisma.SortOrder;
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    privateByDefault?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+    allowedRoleIds?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    rooms?: Prisma.VoiceRoomOrderByRelationAggregateInput;
+};
+export type VoiceHubWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    guildId_channelId?: Prisma.VoiceHubGuildIdChannelIdCompoundUniqueInput;
+    AND?: Prisma.VoiceHubWhereInput | Prisma.VoiceHubWhereInput[];
+    OR?: Prisma.VoiceHubWhereInput[];
+    NOT?: Prisma.VoiceHubWhereInput | Prisma.VoiceHubWhereInput[];
+    guildId?: Prisma.StringFilter<"VoiceHub"> | string;
+    name?: Prisma.StringFilter<"VoiceHub"> | string;
+    enabled?: Prisma.BoolFilter<"VoiceHub"> | boolean;
+    channelId?: Prisma.StringFilter<"VoiceHub"> | string;
+    categoryId?: Prisma.StringNullableFilter<"VoiceHub"> | string | null;
+    nameTemplate?: Prisma.StringFilter<"VoiceHub"> | string;
+    userLimit?: Prisma.IntFilter<"VoiceHub"> | number;
+    bitrateKbps?: Prisma.IntFilter<"VoiceHub"> | number;
+    privateByDefault?: Prisma.BoolFilter<"VoiceHub"> | boolean;
+    deleteDelaySeconds?: Prisma.IntFilter<"VoiceHub"> | number;
+    allowedRoleIds?: Prisma.StringNullableListFilter<"VoiceHub">;
+    createdAt?: Prisma.DateTimeFilter<"VoiceHub"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"VoiceHub"> | Date | string;
+    rooms?: Prisma.VoiceRoomListRelationFilter;
+}, "id" | "guildId_channelId">;
+export type VoiceHubOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    categoryId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    nameTemplate?: Prisma.SortOrder;
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    privateByDefault?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+    allowedRoleIds?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.VoiceHubCountOrderByAggregateInput;
+    _avg?: Prisma.VoiceHubAvgOrderByAggregateInput;
+    _max?: Prisma.VoiceHubMaxOrderByAggregateInput;
+    _min?: Prisma.VoiceHubMinOrderByAggregateInput;
+    _sum?: Prisma.VoiceHubSumOrderByAggregateInput;
+};
+export type VoiceHubScalarWhereWithAggregatesInput = {
+    AND?: Prisma.VoiceHubScalarWhereWithAggregatesInput | Prisma.VoiceHubScalarWhereWithAggregatesInput[];
+    OR?: Prisma.VoiceHubScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.VoiceHubScalarWhereWithAggregatesInput | Prisma.VoiceHubScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"VoiceHub"> | string;
+    guildId?: Prisma.StringWithAggregatesFilter<"VoiceHub"> | string;
+    name?: Prisma.StringWithAggregatesFilter<"VoiceHub"> | string;
+    enabled?: Prisma.BoolWithAggregatesFilter<"VoiceHub"> | boolean;
+    channelId?: Prisma.StringWithAggregatesFilter<"VoiceHub"> | string;
+    categoryId?: Prisma.StringNullableWithAggregatesFilter<"VoiceHub"> | string | null;
+    nameTemplate?: Prisma.StringWithAggregatesFilter<"VoiceHub"> | string;
+    userLimit?: Prisma.IntWithAggregatesFilter<"VoiceHub"> | number;
+    bitrateKbps?: Prisma.IntWithAggregatesFilter<"VoiceHub"> | number;
+    privateByDefault?: Prisma.BoolWithAggregatesFilter<"VoiceHub"> | boolean;
+    deleteDelaySeconds?: Prisma.IntWithAggregatesFilter<"VoiceHub"> | number;
+    allowedRoleIds?: Prisma.StringNullableListFilter<"VoiceHub">;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"VoiceHub"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VoiceHub"> | Date | string;
+};
+export type VoiceHubCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    enabled?: boolean;
+    channelId: string;
+    categoryId?: string | null;
+    nameTemplate: string;
+    userLimit?: number;
+    bitrateKbps?: number;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: number;
+    allowedRoleIds?: Prisma.VoiceHubCreateallowedRoleIdsInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    rooms?: Prisma.VoiceRoomCreateNestedManyWithoutHubInput;
+};
+export type VoiceHubUncheckedCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    enabled?: boolean;
+    channelId: string;
+    categoryId?: string | null;
+    nameTemplate: string;
+    userLimit?: number;
+    bitrateKbps?: number;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: number;
+    allowedRoleIds?: Prisma.VoiceHubCreateallowedRoleIdsInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    rooms?: Prisma.VoiceRoomUncheckedCreateNestedManyWithoutHubInput;
+};
+export type VoiceHubUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rooms?: Prisma.VoiceRoomUpdateManyWithoutHubNestedInput;
+};
+export type VoiceHubUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    rooms?: Prisma.VoiceRoomUncheckedUpdateManyWithoutHubNestedInput;
+};
+export type VoiceHubCreateManyInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    enabled?: boolean;
+    channelId: string;
+    categoryId?: string | null;
+    nameTemplate: string;
+    userLimit?: number;
+    bitrateKbps?: number;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: number;
+    allowedRoleIds?: Prisma.VoiceHubCreateallowedRoleIdsInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type VoiceHubUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type VoiceHubUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type VoiceHubGuildIdChannelIdCompoundUniqueInput = {
+    guildId: string;
+    channelId: string;
+};
+export type VoiceHubCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    categoryId?: Prisma.SortOrder;
+    nameTemplate?: Prisma.SortOrder;
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    privateByDefault?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+    allowedRoleIds?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type VoiceHubAvgOrderByAggregateInput = {
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+};
+export type VoiceHubMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    categoryId?: Prisma.SortOrder;
+    nameTemplate?: Prisma.SortOrder;
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    privateByDefault?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type VoiceHubMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    categoryId?: Prisma.SortOrder;
+    nameTemplate?: Prisma.SortOrder;
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    privateByDefault?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type VoiceHubSumOrderByAggregateInput = {
+    userLimit?: Prisma.SortOrder;
+    bitrateKbps?: Prisma.SortOrder;
+    deleteDelaySeconds?: Prisma.SortOrder;
+};
+export type VoiceHubNullableScalarRelationFilter = {
+    is?: Prisma.VoiceHubWhereInput | null;
+    isNot?: Prisma.VoiceHubWhereInput | null;
+};
+export type VoiceHubCreateallowedRoleIdsInput = {
+    set: string[];
+};
+export type VoiceHubUpdateallowedRoleIdsInput = {
+    set?: string[];
+    push?: string | string[];
+};
+export type VoiceHubCreateNestedOneWithoutRoomsInput = {
+    create?: Prisma.XOR<Prisma.VoiceHubCreateWithoutRoomsInput, Prisma.VoiceHubUncheckedCreateWithoutRoomsInput>;
+    connectOrCreate?: Prisma.VoiceHubCreateOrConnectWithoutRoomsInput;
+    connect?: Prisma.VoiceHubWhereUniqueInput;
+};
+export type VoiceHubUpdateOneWithoutRoomsNestedInput = {
+    create?: Prisma.XOR<Prisma.VoiceHubCreateWithoutRoomsInput, Prisma.VoiceHubUncheckedCreateWithoutRoomsInput>;
+    connectOrCreate?: Prisma.VoiceHubCreateOrConnectWithoutRoomsInput;
+    upsert?: Prisma.VoiceHubUpsertWithoutRoomsInput;
+    disconnect?: Prisma.VoiceHubWhereInput | boolean;
+    delete?: Prisma.VoiceHubWhereInput | boolean;
+    connect?: Prisma.VoiceHubWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.VoiceHubUpdateToOneWithWhereWithoutRoomsInput, Prisma.VoiceHubUpdateWithoutRoomsInput>, Prisma.VoiceHubUncheckedUpdateWithoutRoomsInput>;
+};
+export type VoiceHubCreateWithoutRoomsInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    enabled?: boolean;
+    channelId: string;
+    categoryId?: string | null;
+    nameTemplate: string;
+    userLimit?: number;
+    bitrateKbps?: number;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: number;
+    allowedRoleIds?: Prisma.VoiceHubCreateallowedRoleIdsInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type VoiceHubUncheckedCreateWithoutRoomsInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    enabled?: boolean;
+    channelId: string;
+    categoryId?: string | null;
+    nameTemplate: string;
+    userLimit?: number;
+    bitrateKbps?: number;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: number;
+    allowedRoleIds?: Prisma.VoiceHubCreateallowedRoleIdsInput | string[];
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type VoiceHubCreateOrConnectWithoutRoomsInput = {
+    where: Prisma.VoiceHubWhereUniqueInput;
+    create: Prisma.XOR<Prisma.VoiceHubCreateWithoutRoomsInput, Prisma.VoiceHubUncheckedCreateWithoutRoomsInput>;
+};
+export type VoiceHubUpsertWithoutRoomsInput = {
+    update: Prisma.XOR<Prisma.VoiceHubUpdateWithoutRoomsInput, Prisma.VoiceHubUncheckedUpdateWithoutRoomsInput>;
+    create: Prisma.XOR<Prisma.VoiceHubCreateWithoutRoomsInput, Prisma.VoiceHubUncheckedCreateWithoutRoomsInput>;
+    where?: Prisma.VoiceHubWhereInput;
+};
+export type VoiceHubUpdateToOneWithWhereWithoutRoomsInput = {
+    where?: Prisma.VoiceHubWhereInput;
+    data: Prisma.XOR<Prisma.VoiceHubUpdateWithoutRoomsInput, Prisma.VoiceHubUncheckedUpdateWithoutRoomsInput>;
+};
+export type VoiceHubUpdateWithoutRoomsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type VoiceHubUncheckedUpdateWithoutRoomsInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    categoryId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    nameTemplate?: Prisma.StringFieldUpdateOperationsInput | string;
+    userLimit?: Prisma.IntFieldUpdateOperationsInput | number;
+    bitrateKbps?: Prisma.IntFieldUpdateOperationsInput | number;
+    privateByDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    deleteDelaySeconds?: Prisma.IntFieldUpdateOperationsInput | number;
+    allowedRoleIds?: Prisma.VoiceHubUpdateallowedRoleIdsInput | string[];
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type VoiceHubCountOutputType
+ */
+export type VoiceHubCountOutputType = {
+    rooms: number;
+};
+export type VoiceHubCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    rooms?: boolean | VoiceHubCountOutputTypeCountRoomsArgs;
+};
+/**
+ * VoiceHubCountOutputType without action
+ */
+export type VoiceHubCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHubCountOutputType
+     */
+    select?: Prisma.VoiceHubCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * VoiceHubCountOutputType without action
+ */
+export type VoiceHubCountOutputTypeCountRoomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.VoiceRoomWhereInput;
+};
+export type VoiceHubSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    categoryId?: boolean;
+    nameTemplate?: boolean;
+    userLimit?: boolean;
+    bitrateKbps?: boolean;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: boolean;
+    allowedRoleIds?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    rooms?: boolean | Prisma.VoiceHub$roomsArgs<ExtArgs>;
+    _count?: boolean | Prisma.VoiceHubCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["voiceHub"]>;
+export type VoiceHubSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    categoryId?: boolean;
+    nameTemplate?: boolean;
+    userLimit?: boolean;
+    bitrateKbps?: boolean;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: boolean;
+    allowedRoleIds?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["voiceHub"]>;
+export type VoiceHubSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    categoryId?: boolean;
+    nameTemplate?: boolean;
+    userLimit?: boolean;
+    bitrateKbps?: boolean;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: boolean;
+    allowedRoleIds?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["voiceHub"]>;
+export type VoiceHubSelectScalar = {
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    categoryId?: boolean;
+    nameTemplate?: boolean;
+    userLimit?: boolean;
+    bitrateKbps?: boolean;
+    privateByDefault?: boolean;
+    deleteDelaySeconds?: boolean;
+    allowedRoleIds?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type VoiceHubOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "enabled" | "channelId" | "categoryId" | "nameTemplate" | "userLimit" | "bitrateKbps" | "privateByDefault" | "deleteDelaySeconds" | "allowedRoleIds" | "createdAt" | "updatedAt", ExtArgs["result"]["voiceHub"]>;
+export type VoiceHubInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    rooms?: boolean | Prisma.VoiceHub$roomsArgs<ExtArgs>;
+    _count?: boolean | Prisma.VoiceHubCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type VoiceHubIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type VoiceHubIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type $VoiceHubPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "VoiceHub";
+    objects: {
+        rooms: Prisma.$VoiceRoomPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        guildId: string;
+        name: string;
+        enabled: boolean;
+        channelId: string;
+        categoryId: string | null;
+        nameTemplate: string;
+        userLimit: number;
+        bitrateKbps: number;
+        privateByDefault: boolean;
+        deleteDelaySeconds: number;
+        allowedRoleIds: string[];
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["voiceHub"]>;
+    composites: {};
+};
+export type VoiceHubGetPayload<S extends boolean | null | undefined | VoiceHubDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload, S>;
+export type VoiceHubCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<VoiceHubFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: VoiceHubCountAggregateInputType | true;
+};
+export interface VoiceHubDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['VoiceHub'];
+        meta: {
+            name: 'VoiceHub';
+        };
+    };
+    /**
+     * Find zero or one VoiceHub that matches the filter.
+     * @param {VoiceHubFindUniqueArgs} args - Arguments to find a VoiceHub
+     * @example
+     * // Get one VoiceHub
+     * const voiceHub = await prisma.voiceHub.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends VoiceHubFindUniqueArgs>(args: Prisma.SelectSubset<T, VoiceHubFindUniqueArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one VoiceHub that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {VoiceHubFindUniqueOrThrowArgs} args - Arguments to find a VoiceHub
+     * @example
+     * // Get one VoiceHub
+     * const voiceHub = await prisma.voiceHub.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends VoiceHubFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, VoiceHubFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first VoiceHub that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubFindFirstArgs} args - Arguments to find a VoiceHub
+     * @example
+     * // Get one VoiceHub
+     * const voiceHub = await prisma.voiceHub.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends VoiceHubFindFirstArgs>(args?: Prisma.SelectSubset<T, VoiceHubFindFirstArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first VoiceHub that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubFindFirstOrThrowArgs} args - Arguments to find a VoiceHub
+     * @example
+     * // Get one VoiceHub
+     * const voiceHub = await prisma.voiceHub.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends VoiceHubFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, VoiceHubFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more VoiceHubs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all VoiceHubs
+     * const voiceHubs = await prisma.voiceHub.findMany()
+     *
+     * // Get first 10 VoiceHubs
+     * const voiceHubs = await prisma.voiceHub.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const voiceHubWithIdOnly = await prisma.voiceHub.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends VoiceHubFindManyArgs>(args?: Prisma.SelectSubset<T, VoiceHubFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a VoiceHub.
+     * @param {VoiceHubCreateArgs} args - Arguments to create a VoiceHub.
+     * @example
+     * // Create one VoiceHub
+     * const VoiceHub = await prisma.voiceHub.create({
+     *   data: {
+     *     // ... data to create a VoiceHub
+     *   }
+     * })
+     *
+     */
+    create<T extends VoiceHubCreateArgs>(args: Prisma.SelectSubset<T, VoiceHubCreateArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many VoiceHubs.
+     * @param {VoiceHubCreateManyArgs} args - Arguments to create many VoiceHubs.
+     * @example
+     * // Create many VoiceHubs
+     * const voiceHub = await prisma.voiceHub.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends VoiceHubCreateManyArgs>(args?: Prisma.SelectSubset<T, VoiceHubCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many VoiceHubs and returns the data saved in the database.
+     * @param {VoiceHubCreateManyAndReturnArgs} args - Arguments to create many VoiceHubs.
+     * @example
+     * // Create many VoiceHubs
+     * const voiceHub = await prisma.voiceHub.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many VoiceHubs and only return the `id`
+     * const voiceHubWithIdOnly = await prisma.voiceHub.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends VoiceHubCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, VoiceHubCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a VoiceHub.
+     * @param {VoiceHubDeleteArgs} args - Arguments to delete one VoiceHub.
+     * @example
+     * // Delete one VoiceHub
+     * const VoiceHub = await prisma.voiceHub.delete({
+     *   where: {
+     *     // ... filter to delete one VoiceHub
+     *   }
+     * })
+     *
+     */
+    delete<T extends VoiceHubDeleteArgs>(args: Prisma.SelectSubset<T, VoiceHubDeleteArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one VoiceHub.
+     * @param {VoiceHubUpdateArgs} args - Arguments to update one VoiceHub.
+     * @example
+     * // Update one VoiceHub
+     * const voiceHub = await prisma.voiceHub.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends VoiceHubUpdateArgs>(args: Prisma.SelectSubset<T, VoiceHubUpdateArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more VoiceHubs.
+     * @param {VoiceHubDeleteManyArgs} args - Arguments to filter VoiceHubs to delete.
+     * @example
+     * // Delete a few VoiceHubs
+     * const { count } = await prisma.voiceHub.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends VoiceHubDeleteManyArgs>(args?: Prisma.SelectSubset<T, VoiceHubDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more VoiceHubs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many VoiceHubs
+     * const voiceHub = await prisma.voiceHub.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends VoiceHubUpdateManyArgs>(args: Prisma.SelectSubset<T, VoiceHubUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more VoiceHubs and returns the data updated in the database.
+     * @param {VoiceHubUpdateManyAndReturnArgs} args - Arguments to update many VoiceHubs.
+     * @example
+     * // Update many VoiceHubs
+     * const voiceHub = await prisma.voiceHub.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more VoiceHubs and only return the `id`
+     * const voiceHubWithIdOnly = await prisma.voiceHub.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends VoiceHubUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, VoiceHubUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one VoiceHub.
+     * @param {VoiceHubUpsertArgs} args - Arguments to update or create a VoiceHub.
+     * @example
+     * // Update or create a VoiceHub
+     * const voiceHub = await prisma.voiceHub.upsert({
+     *   create: {
+     *     // ... data to create a VoiceHub
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the VoiceHub we want to update
+     *   }
+     * })
+     */
+    upsert<T extends VoiceHubUpsertArgs>(args: Prisma.SelectSubset<T, VoiceHubUpsertArgs<ExtArgs>>): Prisma.Prisma__VoiceHubClient<runtime.Types.Result.GetResult<Prisma.$VoiceHubPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of VoiceHubs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubCountArgs} args - Arguments to filter VoiceHubs to count.
+     * @example
+     * // Count the number of VoiceHubs
+     * const count = await prisma.voiceHub.count({
+     *   where: {
+     *     // ... the filter for the VoiceHubs we want to count
+     *   }
+     * })
+    **/
+    count<T extends VoiceHubCountArgs>(args?: Prisma.Subset<T, VoiceHubCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], VoiceHubCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a VoiceHub.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends VoiceHubAggregateArgs>(args: Prisma.Subset<T, VoiceHubAggregateArgs>): Prisma.PrismaPromise<GetVoiceHubAggregateType<T>>;
+    /**
+     * Group by VoiceHub.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {VoiceHubGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends VoiceHubGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: VoiceHubGroupByArgs['orderBy'];
+    } : {
+        orderBy?: VoiceHubGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, VoiceHubGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetVoiceHubGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the VoiceHub model
+     */
+    readonly fields: VoiceHubFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for VoiceHub.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__VoiceHubClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    rooms<T extends Prisma.VoiceHub$roomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VoiceHub$roomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VoiceRoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the VoiceHub model
+ */
+export interface VoiceHubFieldRefs {
+    readonly id: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly guildId: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly name: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly enabled: Prisma.FieldRef<"VoiceHub", 'Boolean'>;
+    readonly channelId: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly categoryId: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly nameTemplate: Prisma.FieldRef<"VoiceHub", 'String'>;
+    readonly userLimit: Prisma.FieldRef<"VoiceHub", 'Int'>;
+    readonly bitrateKbps: Prisma.FieldRef<"VoiceHub", 'Int'>;
+    readonly privateByDefault: Prisma.FieldRef<"VoiceHub", 'Boolean'>;
+    readonly deleteDelaySeconds: Prisma.FieldRef<"VoiceHub", 'Int'>;
+    readonly allowedRoleIds: Prisma.FieldRef<"VoiceHub", 'String[]'>;
+    readonly createdAt: Prisma.FieldRef<"VoiceHub", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"VoiceHub", 'DateTime'>;
+}
+/**
+ * VoiceHub findUnique
+ */
+export type VoiceHubFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter, which VoiceHub to fetch.
+     */
+    where: Prisma.VoiceHubWhereUniqueInput;
+};
+/**
+ * VoiceHub findUniqueOrThrow
+ */
+export type VoiceHubFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter, which VoiceHub to fetch.
+     */
+    where: Prisma.VoiceHubWhereUniqueInput;
+};
+/**
+ * VoiceHub findFirst
+ */
+export type VoiceHubFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter, which VoiceHub to fetch.
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of VoiceHubs to fetch.
+     */
+    orderBy?: Prisma.VoiceHubOrderByWithRelationInput | Prisma.VoiceHubOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for VoiceHubs.
+     */
+    cursor?: Prisma.VoiceHubWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` VoiceHubs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` VoiceHubs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of VoiceHubs.
+     */
+    distinct?: Prisma.VoiceHubScalarFieldEnum | Prisma.VoiceHubScalarFieldEnum[];
+};
+/**
+ * VoiceHub findFirstOrThrow
+ */
+export type VoiceHubFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter, which VoiceHub to fetch.
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of VoiceHubs to fetch.
+     */
+    orderBy?: Prisma.VoiceHubOrderByWithRelationInput | Prisma.VoiceHubOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for VoiceHubs.
+     */
+    cursor?: Prisma.VoiceHubWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` VoiceHubs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` VoiceHubs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of VoiceHubs.
+     */
+    distinct?: Prisma.VoiceHubScalarFieldEnum | Prisma.VoiceHubScalarFieldEnum[];
+};
+/**
+ * VoiceHub findMany
+ */
+export type VoiceHubFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter, which VoiceHubs to fetch.
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of VoiceHubs to fetch.
+     */
+    orderBy?: Prisma.VoiceHubOrderByWithRelationInput | Prisma.VoiceHubOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing VoiceHubs.
+     */
+    cursor?: Prisma.VoiceHubWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` VoiceHubs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` VoiceHubs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of VoiceHubs.
+     */
+    distinct?: Prisma.VoiceHubScalarFieldEnum | Prisma.VoiceHubScalarFieldEnum[];
+};
+/**
+ * VoiceHub create
+ */
+export type VoiceHubCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a VoiceHub.
+     */
+    data: Prisma.XOR<Prisma.VoiceHubCreateInput, Prisma.VoiceHubUncheckedCreateInput>;
+};
+/**
+ * VoiceHub createMany
+ */
+export type VoiceHubCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many VoiceHubs.
+     */
+    data: Prisma.VoiceHubCreateManyInput | Prisma.VoiceHubCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * VoiceHub createManyAndReturn
+ */
+export type VoiceHubCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * The data used to create many VoiceHubs.
+     */
+    data: Prisma.VoiceHubCreateManyInput | Prisma.VoiceHubCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * VoiceHub update
+ */
+export type VoiceHubUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a VoiceHub.
+     */
+    data: Prisma.XOR<Prisma.VoiceHubUpdateInput, Prisma.VoiceHubUncheckedUpdateInput>;
+    /**
+     * Choose, which VoiceHub to update.
+     */
+    where: Prisma.VoiceHubWhereUniqueInput;
+};
+/**
+ * VoiceHub updateMany
+ */
+export type VoiceHubUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update VoiceHubs.
+     */
+    data: Prisma.XOR<Prisma.VoiceHubUpdateManyMutationInput, Prisma.VoiceHubUncheckedUpdateManyInput>;
+    /**
+     * Filter which VoiceHubs to update
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * Limit how many VoiceHubs to update.
+     */
+    limit?: number;
+};
+/**
+ * VoiceHub updateManyAndReturn
+ */
+export type VoiceHubUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * The data used to update VoiceHubs.
+     */
+    data: Prisma.XOR<Prisma.VoiceHubUpdateManyMutationInput, Prisma.VoiceHubUncheckedUpdateManyInput>;
+    /**
+     * Filter which VoiceHubs to update
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * Limit how many VoiceHubs to update.
+     */
+    limit?: number;
+};
+/**
+ * VoiceHub upsert
+ */
+export type VoiceHubUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the VoiceHub to update in case it exists.
+     */
+    where: Prisma.VoiceHubWhereUniqueInput;
+    /**
+     * In case the VoiceHub found by the `where` argument doesn't exist, create a new VoiceHub with this data.
+     */
+    create: Prisma.XOR<Prisma.VoiceHubCreateInput, Prisma.VoiceHubUncheckedCreateInput>;
+    /**
+     * In case the VoiceHub was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.VoiceHubUpdateInput, Prisma.VoiceHubUncheckedUpdateInput>;
+};
+/**
+ * VoiceHub delete
+ */
+export type VoiceHubDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+    /**
+     * Filter which VoiceHub to delete.
+     */
+    where: Prisma.VoiceHubWhereUniqueInput;
+};
+/**
+ * VoiceHub deleteMany
+ */
+export type VoiceHubDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which VoiceHubs to delete
+     */
+    where?: Prisma.VoiceHubWhereInput;
+    /**
+     * Limit how many VoiceHubs to delete.
+     */
+    limit?: number;
+};
+/**
+ * VoiceHub.rooms
+ */
+export type VoiceHub$roomsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceRoom
+     */
+    select?: Prisma.VoiceRoomSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceRoom
+     */
+    omit?: Prisma.VoiceRoomOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceRoomInclude<ExtArgs> | null;
+    where?: Prisma.VoiceRoomWhereInput;
+    orderBy?: Prisma.VoiceRoomOrderByWithRelationInput | Prisma.VoiceRoomOrderByWithRelationInput[];
+    cursor?: Prisma.VoiceRoomWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.VoiceRoomScalarFieldEnum | Prisma.VoiceRoomScalarFieldEnum[];
+};
+/**
+ * VoiceHub without action
+ */
+export type VoiceHubDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the VoiceHub
+     */
+    select?: Prisma.VoiceHubSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the VoiceHub
+     */
+    omit?: Prisma.VoiceHubOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.VoiceHubInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=VoiceHub.d.ts.map

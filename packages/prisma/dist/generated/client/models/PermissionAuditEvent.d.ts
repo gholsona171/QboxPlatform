@@ -1,0 +1,2870 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model PermissionAuditEvent
+ *
+ */
+export type PermissionAuditEventModel = runtime.Types.Result.DefaultSelection<Prisma.$PermissionAuditEventPayload>;
+export type AggregatePermissionAuditEvent = {
+    _count: PermissionAuditEventCountAggregateOutputType | null;
+    _min: PermissionAuditEventMinAggregateOutputType | null;
+    _max: PermissionAuditEventMaxAggregateOutputType | null;
+};
+export type PermissionAuditEventMinAggregateOutputType = {
+    id: string | null;
+    action: $Enums.PermissionAuditAction | null;
+    actorType: $Enums.PermissionAuditActorType | null;
+    actorPrincipalId: string | null;
+    actorPrincipalType: $Enums.PermissionPrincipalType | null;
+    actorExternalId: string | null;
+    actorGuildDiscordId: string | null;
+    actorService: string | null;
+    targetPrincipalId: string | null;
+    targetPrincipalType: $Enums.PermissionPrincipalType | null;
+    targetExternalId: string | null;
+    targetGuildDiscordId: string | null;
+    scope: $Enums.PermissionScopeType | null;
+    scopeGuildId: string | null;
+    scopeGuildDiscordId: string | null;
+    permissionDefinitionId: string | null;
+    permissionKey: string | null;
+    assignmentId: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode | null;
+    reason: string | null;
+    correlationId: string | null;
+    occurredAt: Date | null;
+    createdAt: Date | null;
+};
+export type PermissionAuditEventMaxAggregateOutputType = {
+    id: string | null;
+    action: $Enums.PermissionAuditAction | null;
+    actorType: $Enums.PermissionAuditActorType | null;
+    actorPrincipalId: string | null;
+    actorPrincipalType: $Enums.PermissionPrincipalType | null;
+    actorExternalId: string | null;
+    actorGuildDiscordId: string | null;
+    actorService: string | null;
+    targetPrincipalId: string | null;
+    targetPrincipalType: $Enums.PermissionPrincipalType | null;
+    targetExternalId: string | null;
+    targetGuildDiscordId: string | null;
+    scope: $Enums.PermissionScopeType | null;
+    scopeGuildId: string | null;
+    scopeGuildDiscordId: string | null;
+    permissionDefinitionId: string | null;
+    permissionKey: string | null;
+    assignmentId: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode | null;
+    reason: string | null;
+    correlationId: string | null;
+    occurredAt: Date | null;
+    createdAt: Date | null;
+};
+export type PermissionAuditEventCountAggregateOutputType = {
+    id: number;
+    action: number;
+    actorType: number;
+    actorPrincipalId: number;
+    actorPrincipalType: number;
+    actorExternalId: number;
+    actorGuildDiscordId: number;
+    actorService: number;
+    targetPrincipalId: number;
+    targetPrincipalType: number;
+    targetExternalId: number;
+    targetGuildDiscordId: number;
+    scope: number;
+    scopeGuildId: number;
+    scopeGuildDiscordId: number;
+    permissionDefinitionId: number;
+    permissionKey: number;
+    assignmentId: number;
+    reasonCode: number;
+    reason: number;
+    correlationId: number;
+    beforeSnapshot: number;
+    afterSnapshot: number;
+    occurredAt: number;
+    createdAt: number;
+    _all: number;
+};
+export type PermissionAuditEventMinAggregateInputType = {
+    id?: true;
+    action?: true;
+    actorType?: true;
+    actorPrincipalId?: true;
+    actorPrincipalType?: true;
+    actorExternalId?: true;
+    actorGuildDiscordId?: true;
+    actorService?: true;
+    targetPrincipalId?: true;
+    targetPrincipalType?: true;
+    targetExternalId?: true;
+    targetGuildDiscordId?: true;
+    scope?: true;
+    scopeGuildId?: true;
+    scopeGuildDiscordId?: true;
+    permissionDefinitionId?: true;
+    permissionKey?: true;
+    assignmentId?: true;
+    reasonCode?: true;
+    reason?: true;
+    correlationId?: true;
+    occurredAt?: true;
+    createdAt?: true;
+};
+export type PermissionAuditEventMaxAggregateInputType = {
+    id?: true;
+    action?: true;
+    actorType?: true;
+    actorPrincipalId?: true;
+    actorPrincipalType?: true;
+    actorExternalId?: true;
+    actorGuildDiscordId?: true;
+    actorService?: true;
+    targetPrincipalId?: true;
+    targetPrincipalType?: true;
+    targetExternalId?: true;
+    targetGuildDiscordId?: true;
+    scope?: true;
+    scopeGuildId?: true;
+    scopeGuildDiscordId?: true;
+    permissionDefinitionId?: true;
+    permissionKey?: true;
+    assignmentId?: true;
+    reasonCode?: true;
+    reason?: true;
+    correlationId?: true;
+    occurredAt?: true;
+    createdAt?: true;
+};
+export type PermissionAuditEventCountAggregateInputType = {
+    id?: true;
+    action?: true;
+    actorType?: true;
+    actorPrincipalId?: true;
+    actorPrincipalType?: true;
+    actorExternalId?: true;
+    actorGuildDiscordId?: true;
+    actorService?: true;
+    targetPrincipalId?: true;
+    targetPrincipalType?: true;
+    targetExternalId?: true;
+    targetGuildDiscordId?: true;
+    scope?: true;
+    scopeGuildId?: true;
+    scopeGuildDiscordId?: true;
+    permissionDefinitionId?: true;
+    permissionKey?: true;
+    assignmentId?: true;
+    reasonCode?: true;
+    reason?: true;
+    correlationId?: true;
+    beforeSnapshot?: true;
+    afterSnapshot?: true;
+    occurredAt?: true;
+    createdAt?: true;
+    _all?: true;
+};
+export type PermissionAuditEventAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which PermissionAuditEvent to aggregate.
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PermissionAuditEvents to fetch.
+     */
+    orderBy?: Prisma.PermissionAuditEventOrderByWithRelationInput | Prisma.PermissionAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.PermissionAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PermissionAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PermissionAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned PermissionAuditEvents
+    **/
+    _count?: true | PermissionAuditEventCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: PermissionAuditEventMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: PermissionAuditEventMaxAggregateInputType;
+};
+export type GetPermissionAuditEventAggregateType<T extends PermissionAuditEventAggregateArgs> = {
+    [P in keyof T & keyof AggregatePermissionAuditEvent]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregatePermissionAuditEvent[P]> : Prisma.GetScalarType<T[P], AggregatePermissionAuditEvent[P]>;
+};
+export type PermissionAuditEventGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.PermissionAuditEventWhereInput;
+    orderBy?: Prisma.PermissionAuditEventOrderByWithAggregationInput | Prisma.PermissionAuditEventOrderByWithAggregationInput[];
+    by: Prisma.PermissionAuditEventScalarFieldEnum[] | Prisma.PermissionAuditEventScalarFieldEnum;
+    having?: Prisma.PermissionAuditEventScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: PermissionAuditEventCountAggregateInputType | true;
+    _min?: PermissionAuditEventMinAggregateInputType;
+    _max?: PermissionAuditEventMaxAggregateInputType;
+};
+export type PermissionAuditEventGroupByOutputType = {
+    id: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId: string | null;
+    actorPrincipalType: $Enums.PermissionPrincipalType | null;
+    actorExternalId: string | null;
+    actorGuildDiscordId: string | null;
+    actorService: string | null;
+    targetPrincipalId: string | null;
+    targetPrincipalType: $Enums.PermissionPrincipalType | null;
+    targetExternalId: string | null;
+    targetGuildDiscordId: string | null;
+    scope: $Enums.PermissionScopeType | null;
+    scopeGuildId: string | null;
+    scopeGuildDiscordId: string | null;
+    permissionDefinitionId: string | null;
+    permissionKey: string | null;
+    assignmentId: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason: string | null;
+    correlationId: string;
+    beforeSnapshot: runtime.JsonValue | null;
+    afterSnapshot: runtime.JsonValue | null;
+    occurredAt: Date;
+    createdAt: Date;
+    _count: PermissionAuditEventCountAggregateOutputType | null;
+    _min: PermissionAuditEventMinAggregateOutputType | null;
+    _max: PermissionAuditEventMaxAggregateOutputType | null;
+};
+export type GetPermissionAuditEventGroupByPayload<T extends PermissionAuditEventGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<PermissionAuditEventGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof PermissionAuditEventGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], PermissionAuditEventGroupByOutputType[P]> : Prisma.GetScalarType<T[P], PermissionAuditEventGroupByOutputType[P]>;
+}>>;
+export type PermissionAuditEventWhereInput = {
+    AND?: Prisma.PermissionAuditEventWhereInput | Prisma.PermissionAuditEventWhereInput[];
+    OR?: Prisma.PermissionAuditEventWhereInput[];
+    NOT?: Prisma.PermissionAuditEventWhereInput | Prisma.PermissionAuditEventWhereInput[];
+    id?: Prisma.UuidFilter<"PermissionAuditEvent"> | string;
+    action?: Prisma.EnumPermissionAuditActionFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorService?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    scope?: Prisma.EnumPermissionScopeTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    scopeGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionDefinitionId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionKey?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    assignmentId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFilter<"PermissionAuditEvent"> | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"PermissionAuditEvent"> | string;
+    beforeSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    afterSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    occurredAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+    actorPrincipal?: Prisma.XOR<Prisma.PermissionPrincipalNullableScalarRelationFilter, Prisma.PermissionPrincipalWhereInput> | null;
+    targetPrincipal?: Prisma.XOR<Prisma.PermissionPrincipalNullableScalarRelationFilter, Prisma.PermissionPrincipalWhereInput> | null;
+    scopeGuild?: Prisma.XOR<Prisma.GuildNullableScalarRelationFilter, Prisma.GuildWhereInput> | null;
+    permissionDefinition?: Prisma.XOR<Prisma.PermissionDefinitionNullableScalarRelationFilter, Prisma.PermissionDefinitionWhereInput> | null;
+    assignment?: Prisma.XOR<Prisma.PermissionAssignmentNullableScalarRelationFilter, Prisma.PermissionAssignmentWhereInput> | null;
+};
+export type PermissionAuditEventOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPrincipalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorPrincipalType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorExternalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorService?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPrincipalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPrincipalType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetExternalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scope?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scopeGuildId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scopeGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    permissionDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    permissionKey?: Prisma.SortOrderInput | Prisma.SortOrder;
+    assignmentId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    reason?: Prisma.SortOrderInput | Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    beforeSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder;
+    afterSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    actorPrincipal?: Prisma.PermissionPrincipalOrderByWithRelationInput;
+    targetPrincipal?: Prisma.PermissionPrincipalOrderByWithRelationInput;
+    scopeGuild?: Prisma.GuildOrderByWithRelationInput;
+    permissionDefinition?: Prisma.PermissionDefinitionOrderByWithRelationInput;
+    assignment?: Prisma.PermissionAssignmentOrderByWithRelationInput;
+};
+export type PermissionAuditEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    AND?: Prisma.PermissionAuditEventWhereInput | Prisma.PermissionAuditEventWhereInput[];
+    OR?: Prisma.PermissionAuditEventWhereInput[];
+    NOT?: Prisma.PermissionAuditEventWhereInput | Prisma.PermissionAuditEventWhereInput[];
+    action?: Prisma.EnumPermissionAuditActionFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorService?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    scope?: Prisma.EnumPermissionScopeTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    scopeGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionDefinitionId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionKey?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    assignmentId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFilter<"PermissionAuditEvent"> | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"PermissionAuditEvent"> | string;
+    beforeSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    afterSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    occurredAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+    actorPrincipal?: Prisma.XOR<Prisma.PermissionPrincipalNullableScalarRelationFilter, Prisma.PermissionPrincipalWhereInput> | null;
+    targetPrincipal?: Prisma.XOR<Prisma.PermissionPrincipalNullableScalarRelationFilter, Prisma.PermissionPrincipalWhereInput> | null;
+    scopeGuild?: Prisma.XOR<Prisma.GuildNullableScalarRelationFilter, Prisma.GuildWhereInput> | null;
+    permissionDefinition?: Prisma.XOR<Prisma.PermissionDefinitionNullableScalarRelationFilter, Prisma.PermissionDefinitionWhereInput> | null;
+    assignment?: Prisma.XOR<Prisma.PermissionAssignmentNullableScalarRelationFilter, Prisma.PermissionAssignmentWhereInput> | null;
+}, "id">;
+export type PermissionAuditEventOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPrincipalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorPrincipalType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorExternalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    actorService?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPrincipalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetPrincipalType?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetExternalId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    targetGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scope?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scopeGuildId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    scopeGuildDiscordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    permissionDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    permissionKey?: Prisma.SortOrderInput | Prisma.SortOrder;
+    assignmentId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    reason?: Prisma.SortOrderInput | Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    beforeSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder;
+    afterSnapshot?: Prisma.SortOrderInput | Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    _count?: Prisma.PermissionAuditEventCountOrderByAggregateInput;
+    _max?: Prisma.PermissionAuditEventMaxOrderByAggregateInput;
+    _min?: Prisma.PermissionAuditEventMinOrderByAggregateInput;
+};
+export type PermissionAuditEventScalarWhereWithAggregatesInput = {
+    AND?: Prisma.PermissionAuditEventScalarWhereWithAggregatesInput | Prisma.PermissionAuditEventScalarWhereWithAggregatesInput[];
+    OR?: Prisma.PermissionAuditEventScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.PermissionAuditEventScalarWhereWithAggregatesInput | Prisma.PermissionAuditEventScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"PermissionAuditEvent"> | string;
+    action?: Prisma.EnumPermissionAuditActionWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.UuidNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    actorPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    actorGuildDiscordId?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    actorService?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalId?: Prisma.UuidNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    targetGuildDiscordId?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    scope?: Prisma.EnumPermissionScopeTypeNullableWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.UuidNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    scopeGuildDiscordId?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    permissionDefinitionId?: Prisma.UuidNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    permissionKey?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    assignmentId?: Prisma.UuidNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeWithAggregatesFilter<"PermissionAuditEvent"> | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.StringNullableWithAggregatesFilter<"PermissionAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidWithAggregatesFilter<"PermissionAuditEvent"> | string;
+    beforeSnapshot?: Prisma.JsonNullableWithAggregatesFilter<"PermissionAuditEvent">;
+    afterSnapshot?: Prisma.JsonNullableWithAggregatesFilter<"PermissionAuditEvent">;
+    occurredAt?: Prisma.DateTimeWithAggregatesFilter<"PermissionAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"PermissionAuditEvent"> | Date | string;
+};
+export type PermissionAuditEventCreateInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditActorEventsInput;
+    targetPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditTargetEventsInput;
+    scopeGuild?: Prisma.GuildCreateNestedOneWithoutAuditScopeEventsInput;
+    permissionDefinition?: Prisma.PermissionDefinitionCreateNestedOneWithoutAuditEventsInput;
+    assignment?: Prisma.PermissionAssignmentCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditTargetEventsNestedInput;
+    scopeGuild?: Prisma.GuildUpdateOneWithoutAuditScopeEventsNestedInput;
+    permissionDefinition?: Prisma.PermissionDefinitionUpdateOneWithoutAuditEventsNestedInput;
+    assignment?: Prisma.PermissionAssignmentUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventCreateManyInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventListRelationFilter = {
+    every?: Prisma.PermissionAuditEventWhereInput;
+    some?: Prisma.PermissionAuditEventWhereInput;
+    none?: Prisma.PermissionAuditEventWhereInput;
+};
+export type PermissionAuditEventOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type PermissionAuditEventCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPrincipalId?: Prisma.SortOrder;
+    actorPrincipalType?: Prisma.SortOrder;
+    actorExternalId?: Prisma.SortOrder;
+    actorGuildDiscordId?: Prisma.SortOrder;
+    actorService?: Prisma.SortOrder;
+    targetPrincipalId?: Prisma.SortOrder;
+    targetPrincipalType?: Prisma.SortOrder;
+    targetExternalId?: Prisma.SortOrder;
+    targetGuildDiscordId?: Prisma.SortOrder;
+    scope?: Prisma.SortOrder;
+    scopeGuildId?: Prisma.SortOrder;
+    scopeGuildDiscordId?: Prisma.SortOrder;
+    permissionDefinitionId?: Prisma.SortOrder;
+    permissionKey?: Prisma.SortOrder;
+    assignmentId?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    reason?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    beforeSnapshot?: Prisma.SortOrder;
+    afterSnapshot?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type PermissionAuditEventMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPrincipalId?: Prisma.SortOrder;
+    actorPrincipalType?: Prisma.SortOrder;
+    actorExternalId?: Prisma.SortOrder;
+    actorGuildDiscordId?: Prisma.SortOrder;
+    actorService?: Prisma.SortOrder;
+    targetPrincipalId?: Prisma.SortOrder;
+    targetPrincipalType?: Prisma.SortOrder;
+    targetExternalId?: Prisma.SortOrder;
+    targetGuildDiscordId?: Prisma.SortOrder;
+    scope?: Prisma.SortOrder;
+    scopeGuildId?: Prisma.SortOrder;
+    scopeGuildDiscordId?: Prisma.SortOrder;
+    permissionDefinitionId?: Prisma.SortOrder;
+    permissionKey?: Prisma.SortOrder;
+    assignmentId?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    reason?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type PermissionAuditEventMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    action?: Prisma.SortOrder;
+    actorType?: Prisma.SortOrder;
+    actorPrincipalId?: Prisma.SortOrder;
+    actorPrincipalType?: Prisma.SortOrder;
+    actorExternalId?: Prisma.SortOrder;
+    actorGuildDiscordId?: Prisma.SortOrder;
+    actorService?: Prisma.SortOrder;
+    targetPrincipalId?: Prisma.SortOrder;
+    targetPrincipalType?: Prisma.SortOrder;
+    targetExternalId?: Prisma.SortOrder;
+    targetGuildDiscordId?: Prisma.SortOrder;
+    scope?: Prisma.SortOrder;
+    scopeGuildId?: Prisma.SortOrder;
+    scopeGuildDiscordId?: Prisma.SortOrder;
+    permissionDefinitionId?: Prisma.SortOrder;
+    permissionKey?: Prisma.SortOrder;
+    assignmentId?: Prisma.SortOrder;
+    reasonCode?: Prisma.SortOrder;
+    reason?: Prisma.SortOrder;
+    correlationId?: Prisma.SortOrder;
+    occurredAt?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+};
+export type PermissionAuditEventCreateNestedManyWithoutScopeGuildInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput> | Prisma.PermissionAuditEventCreateWithoutScopeGuildInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput | Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyScopeGuildInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUncheckedCreateNestedManyWithoutScopeGuildInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput> | Prisma.PermissionAuditEventCreateWithoutScopeGuildInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput | Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyScopeGuildInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUpdateManyWithoutScopeGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput> | Prisma.PermissionAuditEventCreateWithoutScopeGuildInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput | Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutScopeGuildInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutScopeGuildInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyScopeGuildInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutScopeGuildInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutScopeGuildInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutScopeGuildInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutScopeGuildInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput> | Prisma.PermissionAuditEventCreateWithoutScopeGuildInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput | Prisma.PermissionAuditEventCreateOrConnectWithoutScopeGuildInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutScopeGuildInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutScopeGuildInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyScopeGuildInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutScopeGuildInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutScopeGuildInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutScopeGuildInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutScopeGuildInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventCreateNestedManyWithoutActorPrincipalInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyActorPrincipalInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventCreateNestedManyWithoutTargetPrincipalInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyTargetPrincipalInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUncheckedCreateNestedManyWithoutActorPrincipalInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyActorPrincipalInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUncheckedCreateNestedManyWithoutTargetPrincipalInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyTargetPrincipalInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUpdateManyWithoutActorPrincipalNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutActorPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyActorPrincipalInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutActorPrincipalInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutActorPrincipalInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUpdateManyWithoutTargetPrincipalNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutTargetPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyTargetPrincipalInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutTargetPrincipalInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutTargetPrincipalInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutActorPrincipalNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutActorPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyActorPrincipalInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutActorPrincipalInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutActorPrincipalInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutActorPrincipalInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutTargetPrincipalNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput> | Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput | Prisma.PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutTargetPrincipalInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyTargetPrincipalInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutTargetPrincipalInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutTargetPrincipalInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutTargetPrincipalInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventCreateNestedManyWithoutPermissionDefinitionInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput> | Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyPermissionDefinitionInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUncheckedCreateNestedManyWithoutPermissionDefinitionInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput> | Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyPermissionDefinitionInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUpdateManyWithoutPermissionDefinitionNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput> | Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutPermissionDefinitionInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyPermissionDefinitionInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutPermissionDefinitionInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutPermissionDefinitionInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutPermissionDefinitionNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput> | Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutPermissionDefinitionInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyPermissionDefinitionInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutPermissionDefinitionInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutPermissionDefinitionInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutPermissionDefinitionInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventCreateNestedManyWithoutAssignmentInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput> | Prisma.PermissionAuditEventCreateWithoutAssignmentInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput | Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyAssignmentInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUncheckedCreateNestedManyWithoutAssignmentInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput> | Prisma.PermissionAuditEventCreateWithoutAssignmentInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput | Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyAssignmentInputEnvelope;
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+};
+export type PermissionAuditEventUpdateManyWithoutAssignmentNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput> | Prisma.PermissionAuditEventCreateWithoutAssignmentInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput | Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutAssignmentInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutAssignmentInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyAssignmentInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutAssignmentInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutAssignmentInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutAssignmentInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutAssignmentInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutAssignmentNestedInput = {
+    create?: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput> | Prisma.PermissionAuditEventCreateWithoutAssignmentInput[] | Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput[];
+    connectOrCreate?: Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput | Prisma.PermissionAuditEventCreateOrConnectWithoutAssignmentInput[];
+    upsert?: Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutAssignmentInput | Prisma.PermissionAuditEventUpsertWithWhereUniqueWithoutAssignmentInput[];
+    createMany?: Prisma.PermissionAuditEventCreateManyAssignmentInputEnvelope;
+    set?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    disconnect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    delete?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    connect?: Prisma.PermissionAuditEventWhereUniqueInput | Prisma.PermissionAuditEventWhereUniqueInput[];
+    update?: Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutAssignmentInput | Prisma.PermissionAuditEventUpdateWithWhereUniqueWithoutAssignmentInput[];
+    updateMany?: Prisma.PermissionAuditEventUpdateManyWithWhereWithoutAssignmentInput | Prisma.PermissionAuditEventUpdateManyWithWhereWithoutAssignmentInput[];
+    deleteMany?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+};
+export type EnumPermissionAuditActionFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionAuditAction;
+};
+export type EnumPermissionAuditActorTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionAuditActorType;
+};
+export type NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionPrincipalType | null;
+};
+export type NullableEnumPermissionScopeTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionScopeType | null;
+};
+export type EnumPermissionMutationReasonCodeFieldUpdateOperationsInput = {
+    set?: $Enums.PermissionMutationReasonCode;
+};
+export type PermissionAuditEventCreateWithoutScopeGuildInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditActorEventsInput;
+    targetPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditTargetEventsInput;
+    permissionDefinition?: Prisma.PermissionDefinitionCreateNestedOneWithoutAuditEventsInput;
+    assignment?: Prisma.PermissionAssignmentCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateWithoutScopeGuildInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateOrConnectWithoutScopeGuildInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput>;
+};
+export type PermissionAuditEventCreateManyScopeGuildInputEnvelope = {
+    data: Prisma.PermissionAuditEventCreateManyScopeGuildInput | Prisma.PermissionAuditEventCreateManyScopeGuildInput[];
+    skipDuplicates?: boolean;
+};
+export type PermissionAuditEventUpsertWithWhereUniqueWithoutScopeGuildInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutScopeGuildInput>;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedCreateWithoutScopeGuildInput>;
+};
+export type PermissionAuditEventUpdateWithWhereUniqueWithoutScopeGuildInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutScopeGuildInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutScopeGuildInput>;
+};
+export type PermissionAuditEventUpdateManyWithWhereWithoutScopeGuildInput = {
+    where: Prisma.PermissionAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildInput>;
+};
+export type PermissionAuditEventScalarWhereInput = {
+    AND?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+    OR?: Prisma.PermissionAuditEventScalarWhereInput[];
+    NOT?: Prisma.PermissionAuditEventScalarWhereInput | Prisma.PermissionAuditEventScalarWhereInput[];
+    id?: Prisma.UuidFilter<"PermissionAuditEvent"> | string;
+    action?: Prisma.EnumPermissionAuditActionFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFilter<"PermissionAuditEvent"> | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    actorService?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetPrincipalType?: Prisma.EnumPermissionPrincipalTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    targetGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    scope?: Prisma.EnumPermissionScopeTypeNullableFilter<"PermissionAuditEvent"> | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    scopeGuildDiscordId?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionDefinitionId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    permissionKey?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    assignmentId?: Prisma.UuidNullableFilter<"PermissionAuditEvent"> | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFilter<"PermissionAuditEvent"> | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.StringNullableFilter<"PermissionAuditEvent"> | string | null;
+    correlationId?: Prisma.UuidFilter<"PermissionAuditEvent"> | string;
+    beforeSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    afterSnapshot?: Prisma.JsonNullableFilter<"PermissionAuditEvent">;
+    occurredAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+    createdAt?: Prisma.DateTimeFilter<"PermissionAuditEvent"> | Date | string;
+};
+export type PermissionAuditEventCreateWithoutActorPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    targetPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditTargetEventsInput;
+    scopeGuild?: Prisma.GuildCreateNestedOneWithoutAuditScopeEventsInput;
+    permissionDefinition?: Prisma.PermissionDefinitionCreateNestedOneWithoutAuditEventsInput;
+    assignment?: Prisma.PermissionAssignmentCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateOrConnectWithoutActorPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput>;
+};
+export type PermissionAuditEventCreateManyActorPrincipalInputEnvelope = {
+    data: Prisma.PermissionAuditEventCreateManyActorPrincipalInput | Prisma.PermissionAuditEventCreateManyActorPrincipalInput[];
+    skipDuplicates?: boolean;
+};
+export type PermissionAuditEventCreateWithoutTargetPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditActorEventsInput;
+    scopeGuild?: Prisma.GuildCreateNestedOneWithoutAuditScopeEventsInput;
+    permissionDefinition?: Prisma.PermissionDefinitionCreateNestedOneWithoutAuditEventsInput;
+    assignment?: Prisma.PermissionAssignmentCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateOrConnectWithoutTargetPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput>;
+};
+export type PermissionAuditEventCreateManyTargetPrincipalInputEnvelope = {
+    data: Prisma.PermissionAuditEventCreateManyTargetPrincipalInput | Prisma.PermissionAuditEventCreateManyTargetPrincipalInput[];
+    skipDuplicates?: boolean;
+};
+export type PermissionAuditEventUpsertWithWhereUniqueWithoutActorPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutActorPrincipalInput>;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutActorPrincipalInput>;
+};
+export type PermissionAuditEventUpdateWithWhereUniqueWithoutActorPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutActorPrincipalInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutActorPrincipalInput>;
+};
+export type PermissionAuditEventUpdateManyWithWhereWithoutActorPrincipalInput = {
+    where: Prisma.PermissionAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyWithoutActorPrincipalInput>;
+};
+export type PermissionAuditEventUpsertWithWhereUniqueWithoutTargetPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutTargetPrincipalInput>;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedCreateWithoutTargetPrincipalInput>;
+};
+export type PermissionAuditEventUpdateWithWhereUniqueWithoutTargetPrincipalInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutTargetPrincipalInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutTargetPrincipalInput>;
+};
+export type PermissionAuditEventUpdateManyWithWhereWithoutTargetPrincipalInput = {
+    where: Prisma.PermissionAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyWithoutTargetPrincipalInput>;
+};
+export type PermissionAuditEventCreateWithoutPermissionDefinitionInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditActorEventsInput;
+    targetPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditTargetEventsInput;
+    scopeGuild?: Prisma.GuildCreateNestedOneWithoutAuditScopeEventsInput;
+    assignment?: Prisma.PermissionAssignmentCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateOrConnectWithoutPermissionDefinitionInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput>;
+};
+export type PermissionAuditEventCreateManyPermissionDefinitionInputEnvelope = {
+    data: Prisma.PermissionAuditEventCreateManyPermissionDefinitionInput | Prisma.PermissionAuditEventCreateManyPermissionDefinitionInput[];
+    skipDuplicates?: boolean;
+};
+export type PermissionAuditEventUpsertWithWhereUniqueWithoutPermissionDefinitionInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutPermissionDefinitionInput>;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedCreateWithoutPermissionDefinitionInput>;
+};
+export type PermissionAuditEventUpdateWithWhereUniqueWithoutPermissionDefinitionInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutPermissionDefinitionInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutPermissionDefinitionInput>;
+};
+export type PermissionAuditEventUpdateManyWithWhereWithoutPermissionDefinitionInput = {
+    where: Prisma.PermissionAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyWithoutPermissionDefinitionInput>;
+};
+export type PermissionAuditEventCreateWithoutAssignmentInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditActorEventsInput;
+    targetPrincipal?: Prisma.PermissionPrincipalCreateNestedOneWithoutAuditTargetEventsInput;
+    scopeGuild?: Prisma.GuildCreateNestedOneWithoutAuditScopeEventsInput;
+    permissionDefinition?: Prisma.PermissionDefinitionCreateNestedOneWithoutAuditEventsInput;
+};
+export type PermissionAuditEventUncheckedCreateWithoutAssignmentInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateOrConnectWithoutAssignmentInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput>;
+};
+export type PermissionAuditEventCreateManyAssignmentInputEnvelope = {
+    data: Prisma.PermissionAuditEventCreateManyAssignmentInput | Prisma.PermissionAuditEventCreateManyAssignmentInput[];
+    skipDuplicates?: boolean;
+};
+export type PermissionAuditEventUpsertWithWhereUniqueWithoutAssignmentInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutAssignmentInput>;
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedCreateWithoutAssignmentInput>;
+};
+export type PermissionAuditEventUpdateWithWhereUniqueWithoutAssignmentInput = {
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateWithoutAssignmentInput, Prisma.PermissionAuditEventUncheckedUpdateWithoutAssignmentInput>;
+};
+export type PermissionAuditEventUpdateManyWithWhereWithoutAssignmentInput = {
+    where: Prisma.PermissionAuditEventScalarWhereInput;
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyWithoutAssignmentInput>;
+};
+export type PermissionAuditEventCreateManyScopeGuildInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateWithoutScopeGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditTargetEventsNestedInput;
+    permissionDefinition?: Prisma.PermissionDefinitionUpdateOneWithoutAuditEventsNestedInput;
+    assignment?: Prisma.PermissionAssignmentUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateWithoutScopeGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutScopeGuildInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventCreateManyActorPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventCreateManyTargetPrincipalInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateWithoutActorPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    targetPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditTargetEventsNestedInput;
+    scopeGuild?: Prisma.GuildUpdateOneWithoutAuditScopeEventsNestedInput;
+    permissionDefinition?: Prisma.PermissionDefinitionUpdateOneWithoutAuditEventsNestedInput;
+    assignment?: Prisma.PermissionAssignmentUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateWithoutActorPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutActorPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUpdateWithoutTargetPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditActorEventsNestedInput;
+    scopeGuild?: Prisma.GuildUpdateOneWithoutAuditScopeEventsNestedInput;
+    permissionDefinition?: Prisma.PermissionDefinitionUpdateOneWithoutAuditEventsNestedInput;
+    assignment?: Prisma.PermissionAssignmentUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateWithoutTargetPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutTargetPrincipalInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventCreateManyPermissionDefinitionInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionKey?: string | null;
+    assignmentId?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateWithoutPermissionDefinitionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditTargetEventsNestedInput;
+    scopeGuild?: Prisma.GuildUpdateOneWithoutAuditScopeEventsNestedInput;
+    assignment?: Prisma.PermissionAssignmentUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateWithoutPermissionDefinitionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutPermissionDefinitionInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    assignmentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventCreateManyAssignmentInput = {
+    id?: string;
+    action: $Enums.PermissionAuditAction;
+    actorType: $Enums.PermissionAuditActorType;
+    actorPrincipalId?: string | null;
+    actorPrincipalType?: $Enums.PermissionPrincipalType | null;
+    actorExternalId?: string | null;
+    actorGuildDiscordId?: string | null;
+    actorService?: string | null;
+    targetPrincipalId?: string | null;
+    targetPrincipalType?: $Enums.PermissionPrincipalType | null;
+    targetExternalId?: string | null;
+    targetGuildDiscordId?: string | null;
+    scope?: $Enums.PermissionScopeType | null;
+    scopeGuildId?: string | null;
+    scopeGuildDiscordId?: string | null;
+    permissionDefinitionId?: string | null;
+    permissionKey?: string | null;
+    reasonCode: $Enums.PermissionMutationReasonCode;
+    reason?: string | null;
+    correlationId: string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt: Date | string;
+    createdAt?: Date | string;
+};
+export type PermissionAuditEventUpdateWithoutAssignmentInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    actorPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditActorEventsNestedInput;
+    targetPrincipal?: Prisma.PermissionPrincipalUpdateOneWithoutAuditTargetEventsNestedInput;
+    scopeGuild?: Prisma.GuildUpdateOneWithoutAuditScopeEventsNestedInput;
+    permissionDefinition?: Prisma.PermissionDefinitionUpdateOneWithoutAuditEventsNestedInput;
+};
+export type PermissionAuditEventUncheckedUpdateWithoutAssignmentInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventUncheckedUpdateManyWithoutAssignmentInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    action?: Prisma.EnumPermissionAuditActionFieldUpdateOperationsInput | $Enums.PermissionAuditAction;
+    actorType?: Prisma.EnumPermissionAuditActorTypeFieldUpdateOperationsInput | $Enums.PermissionAuditActorType;
+    actorPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    actorExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    actorService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetPrincipalType?: Prisma.NullableEnumPermissionPrincipalTypeFieldUpdateOperationsInput | $Enums.PermissionPrincipalType | null;
+    targetExternalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    targetGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scope?: Prisma.NullableEnumPermissionScopeTypeFieldUpdateOperationsInput | $Enums.PermissionScopeType | null;
+    scopeGuildId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    scopeGuildDiscordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    permissionKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    reasonCode?: Prisma.EnumPermissionMutationReasonCodeFieldUpdateOperationsInput | $Enums.PermissionMutationReasonCode;
+    reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    correlationId?: Prisma.StringFieldUpdateOperationsInput | string;
+    beforeSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    afterSnapshot?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue;
+    occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type PermissionAuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    actorType?: boolean;
+    actorPrincipalId?: boolean;
+    actorPrincipalType?: boolean;
+    actorExternalId?: boolean;
+    actorGuildDiscordId?: boolean;
+    actorService?: boolean;
+    targetPrincipalId?: boolean;
+    targetPrincipalType?: boolean;
+    targetExternalId?: boolean;
+    targetGuildDiscordId?: boolean;
+    scope?: boolean;
+    scopeGuildId?: boolean;
+    scopeGuildDiscordId?: boolean;
+    permissionDefinitionId?: boolean;
+    permissionKey?: boolean;
+    assignmentId?: boolean;
+    reasonCode?: boolean;
+    reason?: boolean;
+    correlationId?: boolean;
+    beforeSnapshot?: boolean;
+    afterSnapshot?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+}, ExtArgs["result"]["permissionAuditEvent"]>;
+export type PermissionAuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    actorType?: boolean;
+    actorPrincipalId?: boolean;
+    actorPrincipalType?: boolean;
+    actorExternalId?: boolean;
+    actorGuildDiscordId?: boolean;
+    actorService?: boolean;
+    targetPrincipalId?: boolean;
+    targetPrincipalType?: boolean;
+    targetExternalId?: boolean;
+    targetGuildDiscordId?: boolean;
+    scope?: boolean;
+    scopeGuildId?: boolean;
+    scopeGuildDiscordId?: boolean;
+    permissionDefinitionId?: boolean;
+    permissionKey?: boolean;
+    assignmentId?: boolean;
+    reasonCode?: boolean;
+    reason?: boolean;
+    correlationId?: boolean;
+    beforeSnapshot?: boolean;
+    afterSnapshot?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+}, ExtArgs["result"]["permissionAuditEvent"]>;
+export type PermissionAuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    action?: boolean;
+    actorType?: boolean;
+    actorPrincipalId?: boolean;
+    actorPrincipalType?: boolean;
+    actorExternalId?: boolean;
+    actorGuildDiscordId?: boolean;
+    actorService?: boolean;
+    targetPrincipalId?: boolean;
+    targetPrincipalType?: boolean;
+    targetExternalId?: boolean;
+    targetGuildDiscordId?: boolean;
+    scope?: boolean;
+    scopeGuildId?: boolean;
+    scopeGuildDiscordId?: boolean;
+    permissionDefinitionId?: boolean;
+    permissionKey?: boolean;
+    assignmentId?: boolean;
+    reasonCode?: boolean;
+    reason?: boolean;
+    correlationId?: boolean;
+    beforeSnapshot?: boolean;
+    afterSnapshot?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+}, ExtArgs["result"]["permissionAuditEvent"]>;
+export type PermissionAuditEventSelectScalar = {
+    id?: boolean;
+    action?: boolean;
+    actorType?: boolean;
+    actorPrincipalId?: boolean;
+    actorPrincipalType?: boolean;
+    actorExternalId?: boolean;
+    actorGuildDiscordId?: boolean;
+    actorService?: boolean;
+    targetPrincipalId?: boolean;
+    targetPrincipalType?: boolean;
+    targetExternalId?: boolean;
+    targetGuildDiscordId?: boolean;
+    scope?: boolean;
+    scopeGuildId?: boolean;
+    scopeGuildDiscordId?: boolean;
+    permissionDefinitionId?: boolean;
+    permissionKey?: boolean;
+    assignmentId?: boolean;
+    reasonCode?: boolean;
+    reason?: boolean;
+    correlationId?: boolean;
+    beforeSnapshot?: boolean;
+    afterSnapshot?: boolean;
+    occurredAt?: boolean;
+    createdAt?: boolean;
+};
+export type PermissionAuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "action" | "actorType" | "actorPrincipalId" | "actorPrincipalType" | "actorExternalId" | "actorGuildDiscordId" | "actorService" | "targetPrincipalId" | "targetPrincipalType" | "targetExternalId" | "targetGuildDiscordId" | "scope" | "scopeGuildId" | "scopeGuildDiscordId" | "permissionDefinitionId" | "permissionKey" | "assignmentId" | "reasonCode" | "reason" | "correlationId" | "beforeSnapshot" | "afterSnapshot" | "occurredAt" | "createdAt", ExtArgs["result"]["permissionAuditEvent"]>;
+export type PermissionAuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+};
+export type PermissionAuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+};
+export type PermissionAuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    actorPrincipal?: boolean | Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>;
+    targetPrincipal?: boolean | Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>;
+    scopeGuild?: boolean | Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>;
+    permissionDefinition?: boolean | Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>;
+    assignment?: boolean | Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>;
+};
+export type $PermissionAuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "PermissionAuditEvent";
+    objects: {
+        actorPrincipal: Prisma.$PermissionPrincipalPayload<ExtArgs> | null;
+        targetPrincipal: Prisma.$PermissionPrincipalPayload<ExtArgs> | null;
+        scopeGuild: Prisma.$GuildPayload<ExtArgs> | null;
+        permissionDefinition: Prisma.$PermissionDefinitionPayload<ExtArgs> | null;
+        assignment: Prisma.$PermissionAssignmentPayload<ExtArgs> | null;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        action: $Enums.PermissionAuditAction;
+        actorType: $Enums.PermissionAuditActorType;
+        actorPrincipalId: string | null;
+        actorPrincipalType: $Enums.PermissionPrincipalType | null;
+        actorExternalId: string | null;
+        actorGuildDiscordId: string | null;
+        actorService: string | null;
+        targetPrincipalId: string | null;
+        targetPrincipalType: $Enums.PermissionPrincipalType | null;
+        targetExternalId: string | null;
+        targetGuildDiscordId: string | null;
+        scope: $Enums.PermissionScopeType | null;
+        scopeGuildId: string | null;
+        scopeGuildDiscordId: string | null;
+        permissionDefinitionId: string | null;
+        permissionKey: string | null;
+        assignmentId: string | null;
+        reasonCode: $Enums.PermissionMutationReasonCode;
+        reason: string | null;
+        correlationId: string;
+        beforeSnapshot: runtime.JsonValue | null;
+        afterSnapshot: runtime.JsonValue | null;
+        occurredAt: Date;
+        createdAt: Date;
+    }, ExtArgs["result"]["permissionAuditEvent"]>;
+    composites: {};
+};
+export type PermissionAuditEventGetPayload<S extends boolean | null | undefined | PermissionAuditEventDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload, S>;
+export type PermissionAuditEventCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<PermissionAuditEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: PermissionAuditEventCountAggregateInputType | true;
+};
+export interface PermissionAuditEventDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['PermissionAuditEvent'];
+        meta: {
+            name: 'PermissionAuditEvent';
+        };
+    };
+    /**
+     * Find zero or one PermissionAuditEvent that matches the filter.
+     * @param {PermissionAuditEventFindUniqueArgs} args - Arguments to find a PermissionAuditEvent
+     * @example
+     * // Get one PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PermissionAuditEventFindUniqueArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventFindUniqueArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one PermissionAuditEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PermissionAuditEventFindUniqueOrThrowArgs} args - Arguments to find a PermissionAuditEvent
+     * @example
+     * // Get one PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PermissionAuditEventFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first PermissionAuditEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventFindFirstArgs} args - Arguments to find a PermissionAuditEvent
+     * @example
+     * // Get one PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PermissionAuditEventFindFirstArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventFindFirstArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first PermissionAuditEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventFindFirstOrThrowArgs} args - Arguments to find a PermissionAuditEvent
+     * @example
+     * // Get one PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PermissionAuditEventFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more PermissionAuditEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PermissionAuditEvents
+     * const permissionAuditEvents = await prisma.permissionAuditEvent.findMany()
+     *
+     * // Get first 10 PermissionAuditEvents
+     * const permissionAuditEvents = await prisma.permissionAuditEvent.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const permissionAuditEventWithIdOnly = await prisma.permissionAuditEvent.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends PermissionAuditEventFindManyArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a PermissionAuditEvent.
+     * @param {PermissionAuditEventCreateArgs} args - Arguments to create a PermissionAuditEvent.
+     * @example
+     * // Create one PermissionAuditEvent
+     * const PermissionAuditEvent = await prisma.permissionAuditEvent.create({
+     *   data: {
+     *     // ... data to create a PermissionAuditEvent
+     *   }
+     * })
+     *
+     */
+    create<T extends PermissionAuditEventCreateArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventCreateArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many PermissionAuditEvents.
+     * @param {PermissionAuditEventCreateManyArgs} args - Arguments to create many PermissionAuditEvents.
+     * @example
+     * // Create many PermissionAuditEvents
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends PermissionAuditEventCreateManyArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many PermissionAuditEvents and returns the data saved in the database.
+     * @param {PermissionAuditEventCreateManyAndReturnArgs} args - Arguments to create many PermissionAuditEvents.
+     * @example
+     * // Create many PermissionAuditEvents
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many PermissionAuditEvents and only return the `id`
+     * const permissionAuditEventWithIdOnly = await prisma.permissionAuditEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends PermissionAuditEventCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a PermissionAuditEvent.
+     * @param {PermissionAuditEventDeleteArgs} args - Arguments to delete one PermissionAuditEvent.
+     * @example
+     * // Delete one PermissionAuditEvent
+     * const PermissionAuditEvent = await prisma.permissionAuditEvent.delete({
+     *   where: {
+     *     // ... filter to delete one PermissionAuditEvent
+     *   }
+     * })
+     *
+     */
+    delete<T extends PermissionAuditEventDeleteArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventDeleteArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one PermissionAuditEvent.
+     * @param {PermissionAuditEventUpdateArgs} args - Arguments to update one PermissionAuditEvent.
+     * @example
+     * // Update one PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends PermissionAuditEventUpdateArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventUpdateArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more PermissionAuditEvents.
+     * @param {PermissionAuditEventDeleteManyArgs} args - Arguments to filter PermissionAuditEvents to delete.
+     * @example
+     * // Delete a few PermissionAuditEvents
+     * const { count } = await prisma.permissionAuditEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends PermissionAuditEventDeleteManyArgs>(args?: Prisma.SelectSubset<T, PermissionAuditEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more PermissionAuditEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PermissionAuditEvents
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends PermissionAuditEventUpdateManyArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more PermissionAuditEvents and returns the data updated in the database.
+     * @param {PermissionAuditEventUpdateManyAndReturnArgs} args - Arguments to update many PermissionAuditEvents.
+     * @example
+     * // Update many PermissionAuditEvents
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more PermissionAuditEvents and only return the `id`
+     * const permissionAuditEventWithIdOnly = await prisma.permissionAuditEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends PermissionAuditEventUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one PermissionAuditEvent.
+     * @param {PermissionAuditEventUpsertArgs} args - Arguments to update or create a PermissionAuditEvent.
+     * @example
+     * // Update or create a PermissionAuditEvent
+     * const permissionAuditEvent = await prisma.permissionAuditEvent.upsert({
+     *   create: {
+     *     // ... data to create a PermissionAuditEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PermissionAuditEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PermissionAuditEventUpsertArgs>(args: Prisma.SelectSubset<T, PermissionAuditEventUpsertArgs<ExtArgs>>): Prisma.Prisma__PermissionAuditEventClient<runtime.Types.Result.GetResult<Prisma.$PermissionAuditEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of PermissionAuditEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventCountArgs} args - Arguments to filter PermissionAuditEvents to count.
+     * @example
+     * // Count the number of PermissionAuditEvents
+     * const count = await prisma.permissionAuditEvent.count({
+     *   where: {
+     *     // ... the filter for the PermissionAuditEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends PermissionAuditEventCountArgs>(args?: Prisma.Subset<T, PermissionAuditEventCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], PermissionAuditEventCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a PermissionAuditEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PermissionAuditEventAggregateArgs>(args: Prisma.Subset<T, PermissionAuditEventAggregateArgs>): Prisma.PrismaPromise<GetPermissionAuditEventAggregateType<T>>;
+    /**
+     * Group by PermissionAuditEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PermissionAuditEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends PermissionAuditEventGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: PermissionAuditEventGroupByArgs['orderBy'];
+    } : {
+        orderBy?: PermissionAuditEventGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, PermissionAuditEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPermissionAuditEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the PermissionAuditEvent model
+     */
+    readonly fields: PermissionAuditEventFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for PermissionAuditEvent.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__PermissionAuditEventClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    actorPrincipal<T extends Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionAuditEvent$actorPrincipalArgs<ExtArgs>>): Prisma.Prisma__PermissionPrincipalClient<runtime.Types.Result.GetResult<Prisma.$PermissionPrincipalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    targetPrincipal<T extends Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionAuditEvent$targetPrincipalArgs<ExtArgs>>): Prisma.Prisma__PermissionPrincipalClient<runtime.Types.Result.GetResult<Prisma.$PermissionPrincipalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    scopeGuild<T extends Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionAuditEvent$scopeGuildArgs<ExtArgs>>): Prisma.Prisma__GuildClient<runtime.Types.Result.GetResult<Prisma.$GuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    permissionDefinition<T extends Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionAuditEvent$permissionDefinitionArgs<ExtArgs>>): Prisma.Prisma__PermissionDefinitionClient<runtime.Types.Result.GetResult<Prisma.$PermissionDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    assignment<T extends Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PermissionAuditEvent$assignmentArgs<ExtArgs>>): Prisma.Prisma__PermissionAssignmentClient<runtime.Types.Result.GetResult<Prisma.$PermissionAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the PermissionAuditEvent model
+ */
+export interface PermissionAuditEventFieldRefs {
+    readonly id: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly action: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionAuditAction'>;
+    readonly actorType: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionAuditActorType'>;
+    readonly actorPrincipalId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly actorPrincipalType: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionPrincipalType'>;
+    readonly actorExternalId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly actorGuildDiscordId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly actorService: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly targetPrincipalId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly targetPrincipalType: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionPrincipalType'>;
+    readonly targetExternalId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly targetGuildDiscordId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly scope: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionScopeType'>;
+    readonly scopeGuildId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly scopeGuildDiscordId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly permissionDefinitionId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly permissionKey: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly assignmentId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly reasonCode: Prisma.FieldRef<"PermissionAuditEvent", 'PermissionMutationReasonCode'>;
+    readonly reason: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly correlationId: Prisma.FieldRef<"PermissionAuditEvent", 'String'>;
+    readonly beforeSnapshot: Prisma.FieldRef<"PermissionAuditEvent", 'Json'>;
+    readonly afterSnapshot: Prisma.FieldRef<"PermissionAuditEvent", 'Json'>;
+    readonly occurredAt: Prisma.FieldRef<"PermissionAuditEvent", 'DateTime'>;
+    readonly createdAt: Prisma.FieldRef<"PermissionAuditEvent", 'DateTime'>;
+}
+/**
+ * PermissionAuditEvent findUnique
+ */
+export type PermissionAuditEventFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which PermissionAuditEvent to fetch.
+     */
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+};
+/**
+ * PermissionAuditEvent findUniqueOrThrow
+ */
+export type PermissionAuditEventFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which PermissionAuditEvent to fetch.
+     */
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+};
+/**
+ * PermissionAuditEvent findFirst
+ */
+export type PermissionAuditEventFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which PermissionAuditEvent to fetch.
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PermissionAuditEvents to fetch.
+     */
+    orderBy?: Prisma.PermissionAuditEventOrderByWithRelationInput | Prisma.PermissionAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for PermissionAuditEvents.
+     */
+    cursor?: Prisma.PermissionAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PermissionAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PermissionAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PermissionAuditEvents.
+     */
+    distinct?: Prisma.PermissionAuditEventScalarFieldEnum | Prisma.PermissionAuditEventScalarFieldEnum[];
+};
+/**
+ * PermissionAuditEvent findFirstOrThrow
+ */
+export type PermissionAuditEventFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which PermissionAuditEvent to fetch.
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PermissionAuditEvents to fetch.
+     */
+    orderBy?: Prisma.PermissionAuditEventOrderByWithRelationInput | Prisma.PermissionAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for PermissionAuditEvents.
+     */
+    cursor?: Prisma.PermissionAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PermissionAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PermissionAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PermissionAuditEvents.
+     */
+    distinct?: Prisma.PermissionAuditEventScalarFieldEnum | Prisma.PermissionAuditEventScalarFieldEnum[];
+};
+/**
+ * PermissionAuditEvent findMany
+ */
+export type PermissionAuditEventFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter, which PermissionAuditEvents to fetch.
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PermissionAuditEvents to fetch.
+     */
+    orderBy?: Prisma.PermissionAuditEventOrderByWithRelationInput | Prisma.PermissionAuditEventOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing PermissionAuditEvents.
+     */
+    cursor?: Prisma.PermissionAuditEventWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PermissionAuditEvents from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PermissionAuditEvents.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PermissionAuditEvents.
+     */
+    distinct?: Prisma.PermissionAuditEventScalarFieldEnum | Prisma.PermissionAuditEventScalarFieldEnum[];
+};
+/**
+ * PermissionAuditEvent create
+ */
+export type PermissionAuditEventCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a PermissionAuditEvent.
+     */
+    data: Prisma.XOR<Prisma.PermissionAuditEventCreateInput, Prisma.PermissionAuditEventUncheckedCreateInput>;
+};
+/**
+ * PermissionAuditEvent createMany
+ */
+export type PermissionAuditEventCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PermissionAuditEvents.
+     */
+    data: Prisma.PermissionAuditEventCreateManyInput | Prisma.PermissionAuditEventCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * PermissionAuditEvent createManyAndReturn
+ */
+export type PermissionAuditEventCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * The data used to create many PermissionAuditEvents.
+     */
+    data: Prisma.PermissionAuditEventCreateManyInput | Prisma.PermissionAuditEventCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * PermissionAuditEvent update
+ */
+export type PermissionAuditEventUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a PermissionAuditEvent.
+     */
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateInput, Prisma.PermissionAuditEventUncheckedUpdateInput>;
+    /**
+     * Choose, which PermissionAuditEvent to update.
+     */
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+};
+/**
+ * PermissionAuditEvent updateMany
+ */
+export type PermissionAuditEventUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PermissionAuditEvents.
+     */
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyInput>;
+    /**
+     * Filter which PermissionAuditEvents to update
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * Limit how many PermissionAuditEvents to update.
+     */
+    limit?: number;
+};
+/**
+ * PermissionAuditEvent updateManyAndReturn
+ */
+export type PermissionAuditEventUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * The data used to update PermissionAuditEvents.
+     */
+    data: Prisma.XOR<Prisma.PermissionAuditEventUpdateManyMutationInput, Prisma.PermissionAuditEventUncheckedUpdateManyInput>;
+    /**
+     * Filter which PermissionAuditEvents to update
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * Limit how many PermissionAuditEvents to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * PermissionAuditEvent upsert
+ */
+export type PermissionAuditEventUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the PermissionAuditEvent to update in case it exists.
+     */
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+    /**
+     * In case the PermissionAuditEvent found by the `where` argument doesn't exist, create a new PermissionAuditEvent with this data.
+     */
+    create: Prisma.XOR<Prisma.PermissionAuditEventCreateInput, Prisma.PermissionAuditEventUncheckedCreateInput>;
+    /**
+     * In case the PermissionAuditEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.PermissionAuditEventUpdateInput, Prisma.PermissionAuditEventUncheckedUpdateInput>;
+};
+/**
+ * PermissionAuditEvent delete
+ */
+export type PermissionAuditEventDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+    /**
+     * Filter which PermissionAuditEvent to delete.
+     */
+    where: Prisma.PermissionAuditEventWhereUniqueInput;
+};
+/**
+ * PermissionAuditEvent deleteMany
+ */
+export type PermissionAuditEventDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which PermissionAuditEvents to delete
+     */
+    where?: Prisma.PermissionAuditEventWhereInput;
+    /**
+     * Limit how many PermissionAuditEvents to delete.
+     */
+    limit?: number;
+};
+/**
+ * PermissionAuditEvent.actorPrincipal
+ */
+export type PermissionAuditEvent$actorPrincipalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionPrincipal
+     */
+    select?: Prisma.PermissionPrincipalSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionPrincipal
+     */
+    omit?: Prisma.PermissionPrincipalOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionPrincipalInclude<ExtArgs> | null;
+    where?: Prisma.PermissionPrincipalWhereInput;
+};
+/**
+ * PermissionAuditEvent.targetPrincipal
+ */
+export type PermissionAuditEvent$targetPrincipalArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionPrincipal
+     */
+    select?: Prisma.PermissionPrincipalSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionPrincipal
+     */
+    omit?: Prisma.PermissionPrincipalOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionPrincipalInclude<ExtArgs> | null;
+    where?: Prisma.PermissionPrincipalWhereInput;
+};
+/**
+ * PermissionAuditEvent.scopeGuild
+ */
+export type PermissionAuditEvent$scopeGuildArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Guild
+     */
+    select?: Prisma.GuildSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the Guild
+     */
+    omit?: Prisma.GuildOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.GuildInclude<ExtArgs> | null;
+    where?: Prisma.GuildWhereInput;
+};
+/**
+ * PermissionAuditEvent.permissionDefinition
+ */
+export type PermissionAuditEvent$permissionDefinitionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionDefinition
+     */
+    select?: Prisma.PermissionDefinitionSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionDefinition
+     */
+    omit?: Prisma.PermissionDefinitionOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionDefinitionInclude<ExtArgs> | null;
+    where?: Prisma.PermissionDefinitionWhereInput;
+};
+/**
+ * PermissionAuditEvent.assignment
+ */
+export type PermissionAuditEvent$assignmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAssignment
+     */
+    select?: Prisma.PermissionAssignmentSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAssignment
+     */
+    omit?: Prisma.PermissionAssignmentOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAssignmentInclude<ExtArgs> | null;
+    where?: Prisma.PermissionAssignmentWhereInput;
+};
+/**
+ * PermissionAuditEvent without action
+ */
+export type PermissionAuditEventDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PermissionAuditEvent
+     */
+    select?: Prisma.PermissionAuditEventSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PermissionAuditEvent
+     */
+    omit?: Prisma.PermissionAuditEventOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.PermissionAuditEventInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=PermissionAuditEvent.d.ts.map

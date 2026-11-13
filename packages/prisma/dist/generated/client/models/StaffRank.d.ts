@@ -1,0 +1,1334 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model StaffRank
+ *
+ */
+export type StaffRankModel = runtime.Types.Result.DefaultSelection<Prisma.$StaffRankPayload>;
+export type AggregateStaffRank = {
+    _count: StaffRankCountAggregateOutputType | null;
+    _avg: StaffRankAvgAggregateOutputType | null;
+    _sum: StaffRankSumAggregateOutputType | null;
+    _min: StaffRankMinAggregateOutputType | null;
+    _max: StaffRankMaxAggregateOutputType | null;
+};
+export type StaffRankAvgAggregateOutputType = {
+    position: number | null;
+};
+export type StaffRankSumAggregateOutputType = {
+    position: number | null;
+};
+export type StaffRankMinAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    roleId: string | null;
+    color: string | null;
+    description: string | null;
+    position: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type StaffRankMaxAggregateOutputType = {
+    id: string | null;
+    guildId: string | null;
+    name: string | null;
+    roleId: string | null;
+    color: string | null;
+    description: string | null;
+    position: number | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type StaffRankCountAggregateOutputType = {
+    id: number;
+    guildId: number;
+    name: number;
+    roleId: number;
+    color: number;
+    description: number;
+    position: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type StaffRankAvgAggregateInputType = {
+    position?: true;
+};
+export type StaffRankSumAggregateInputType = {
+    position?: true;
+};
+export type StaffRankMinAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    roleId?: true;
+    color?: true;
+    description?: true;
+    position?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type StaffRankMaxAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    roleId?: true;
+    color?: true;
+    description?: true;
+    position?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type StaffRankCountAggregateInputType = {
+    id?: true;
+    guildId?: true;
+    name?: true;
+    roleId?: true;
+    color?: true;
+    description?: true;
+    position?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type StaffRankAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which StaffRank to aggregate.
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StaffRanks to fetch.
+     */
+    orderBy?: Prisma.StaffRankOrderByWithRelationInput | Prisma.StaffRankOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.StaffRankWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StaffRanks from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StaffRanks.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned StaffRanks
+    **/
+    _count?: true | StaffRankCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: StaffRankAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: StaffRankSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: StaffRankMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: StaffRankMaxAggregateInputType;
+};
+export type GetStaffRankAggregateType<T extends StaffRankAggregateArgs> = {
+    [P in keyof T & keyof AggregateStaffRank]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateStaffRank[P]> : Prisma.GetScalarType<T[P], AggregateStaffRank[P]>;
+};
+export type StaffRankGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.StaffRankWhereInput;
+    orderBy?: Prisma.StaffRankOrderByWithAggregationInput | Prisma.StaffRankOrderByWithAggregationInput[];
+    by: Prisma.StaffRankScalarFieldEnum[] | Prisma.StaffRankScalarFieldEnum;
+    having?: Prisma.StaffRankScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: StaffRankCountAggregateInputType | true;
+    _avg?: StaffRankAvgAggregateInputType;
+    _sum?: StaffRankSumAggregateInputType;
+    _min?: StaffRankMinAggregateInputType;
+    _max?: StaffRankMaxAggregateInputType;
+};
+export type StaffRankGroupByOutputType = {
+    id: string;
+    guildId: string;
+    name: string;
+    roleId: string | null;
+    color: string;
+    description: string | null;
+    position: number;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: StaffRankCountAggregateOutputType | null;
+    _avg: StaffRankAvgAggregateOutputType | null;
+    _sum: StaffRankSumAggregateOutputType | null;
+    _min: StaffRankMinAggregateOutputType | null;
+    _max: StaffRankMaxAggregateOutputType | null;
+};
+export type GetStaffRankGroupByPayload<T extends StaffRankGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<StaffRankGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof StaffRankGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], StaffRankGroupByOutputType[P]> : Prisma.GetScalarType<T[P], StaffRankGroupByOutputType[P]>;
+}>>;
+export type StaffRankWhereInput = {
+    AND?: Prisma.StaffRankWhereInput | Prisma.StaffRankWhereInput[];
+    OR?: Prisma.StaffRankWhereInput[];
+    NOT?: Prisma.StaffRankWhereInput | Prisma.StaffRankWhereInput[];
+    id?: Prisma.UuidFilter<"StaffRank"> | string;
+    guildId?: Prisma.StringFilter<"StaffRank"> | string;
+    name?: Prisma.StringFilter<"StaffRank"> | string;
+    roleId?: Prisma.StringNullableFilter<"StaffRank"> | string | null;
+    color?: Prisma.StringFilter<"StaffRank"> | string;
+    description?: Prisma.StringNullableFilter<"StaffRank"> | string | null;
+    position?: Prisma.IntFilter<"StaffRank"> | number;
+    createdAt?: Prisma.DateTimeFilter<"StaffRank"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"StaffRank"> | Date | string;
+    members?: Prisma.StaffMemberListRelationFilter;
+};
+export type StaffRankOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    roleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    color?: Prisma.SortOrder;
+    description?: Prisma.SortOrderInput | Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    members?: Prisma.StaffMemberOrderByRelationAggregateInput;
+};
+export type StaffRankWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    guildId_name?: Prisma.StaffRankGuildIdNameCompoundUniqueInput;
+    AND?: Prisma.StaffRankWhereInput | Prisma.StaffRankWhereInput[];
+    OR?: Prisma.StaffRankWhereInput[];
+    NOT?: Prisma.StaffRankWhereInput | Prisma.StaffRankWhereInput[];
+    guildId?: Prisma.StringFilter<"StaffRank"> | string;
+    name?: Prisma.StringFilter<"StaffRank"> | string;
+    roleId?: Prisma.StringNullableFilter<"StaffRank"> | string | null;
+    color?: Prisma.StringFilter<"StaffRank"> | string;
+    description?: Prisma.StringNullableFilter<"StaffRank"> | string | null;
+    position?: Prisma.IntFilter<"StaffRank"> | number;
+    createdAt?: Prisma.DateTimeFilter<"StaffRank"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"StaffRank"> | Date | string;
+    members?: Prisma.StaffMemberListRelationFilter;
+}, "id" | "guildId_name">;
+export type StaffRankOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    roleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    color?: Prisma.SortOrder;
+    description?: Prisma.SortOrderInput | Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.StaffRankCountOrderByAggregateInput;
+    _avg?: Prisma.StaffRankAvgOrderByAggregateInput;
+    _max?: Prisma.StaffRankMaxOrderByAggregateInput;
+    _min?: Prisma.StaffRankMinOrderByAggregateInput;
+    _sum?: Prisma.StaffRankSumOrderByAggregateInput;
+};
+export type StaffRankScalarWhereWithAggregatesInput = {
+    AND?: Prisma.StaffRankScalarWhereWithAggregatesInput | Prisma.StaffRankScalarWhereWithAggregatesInput[];
+    OR?: Prisma.StaffRankScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.StaffRankScalarWhereWithAggregatesInput | Prisma.StaffRankScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"StaffRank"> | string;
+    guildId?: Prisma.StringWithAggregatesFilter<"StaffRank"> | string;
+    name?: Prisma.StringWithAggregatesFilter<"StaffRank"> | string;
+    roleId?: Prisma.StringNullableWithAggregatesFilter<"StaffRank"> | string | null;
+    color?: Prisma.StringWithAggregatesFilter<"StaffRank"> | string;
+    description?: Prisma.StringNullableWithAggregatesFilter<"StaffRank"> | string | null;
+    position?: Prisma.IntWithAggregatesFilter<"StaffRank"> | number;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"StaffRank"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StaffRank"> | Date | string;
+};
+export type StaffRankCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    roleId?: string | null;
+    color?: string;
+    description?: string | null;
+    position: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    members?: Prisma.StaffMemberCreateNestedManyWithoutRankInput;
+};
+export type StaffRankUncheckedCreateInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    roleId?: string | null;
+    color?: string;
+    description?: string | null;
+    position: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    members?: Prisma.StaffMemberUncheckedCreateNestedManyWithoutRankInput;
+};
+export type StaffRankUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    members?: Prisma.StaffMemberUpdateManyWithoutRankNestedInput;
+};
+export type StaffRankUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    members?: Prisma.StaffMemberUncheckedUpdateManyWithoutRankNestedInput;
+};
+export type StaffRankCreateManyInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    roleId?: string | null;
+    color?: string;
+    description?: string | null;
+    position: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StaffRankUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StaffRankUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StaffRankGuildIdNameCompoundUniqueInput = {
+    guildId: string;
+    name: string;
+};
+export type StaffRankCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    roleId?: Prisma.SortOrder;
+    color?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StaffRankAvgOrderByAggregateInput = {
+    position?: Prisma.SortOrder;
+};
+export type StaffRankMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    roleId?: Prisma.SortOrder;
+    color?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StaffRankMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    guildId?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    roleId?: Prisma.SortOrder;
+    color?: Prisma.SortOrder;
+    description?: Prisma.SortOrder;
+    position?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type StaffRankSumOrderByAggregateInput = {
+    position?: Prisma.SortOrder;
+};
+export type StaffRankScalarRelationFilter = {
+    is?: Prisma.StaffRankWhereInput;
+    isNot?: Prisma.StaffRankWhereInput;
+};
+export type StaffRankCreateNestedOneWithoutMembersInput = {
+    create?: Prisma.XOR<Prisma.StaffRankCreateWithoutMembersInput, Prisma.StaffRankUncheckedCreateWithoutMembersInput>;
+    connectOrCreate?: Prisma.StaffRankCreateOrConnectWithoutMembersInput;
+    connect?: Prisma.StaffRankWhereUniqueInput;
+};
+export type StaffRankUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: Prisma.XOR<Prisma.StaffRankCreateWithoutMembersInput, Prisma.StaffRankUncheckedCreateWithoutMembersInput>;
+    connectOrCreate?: Prisma.StaffRankCreateOrConnectWithoutMembersInput;
+    upsert?: Prisma.StaffRankUpsertWithoutMembersInput;
+    connect?: Prisma.StaffRankWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.StaffRankUpdateToOneWithWhereWithoutMembersInput, Prisma.StaffRankUpdateWithoutMembersInput>, Prisma.StaffRankUncheckedUpdateWithoutMembersInput>;
+};
+export type StaffRankCreateWithoutMembersInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    roleId?: string | null;
+    color?: string;
+    description?: string | null;
+    position: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StaffRankUncheckedCreateWithoutMembersInput = {
+    id?: string;
+    guildId: string;
+    name: string;
+    roleId?: string | null;
+    color?: string;
+    description?: string | null;
+    position: number;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type StaffRankCreateOrConnectWithoutMembersInput = {
+    where: Prisma.StaffRankWhereUniqueInput;
+    create: Prisma.XOR<Prisma.StaffRankCreateWithoutMembersInput, Prisma.StaffRankUncheckedCreateWithoutMembersInput>;
+};
+export type StaffRankUpsertWithoutMembersInput = {
+    update: Prisma.XOR<Prisma.StaffRankUpdateWithoutMembersInput, Prisma.StaffRankUncheckedUpdateWithoutMembersInput>;
+    create: Prisma.XOR<Prisma.StaffRankCreateWithoutMembersInput, Prisma.StaffRankUncheckedCreateWithoutMembersInput>;
+    where?: Prisma.StaffRankWhereInput;
+};
+export type StaffRankUpdateToOneWithWhereWithoutMembersInput = {
+    where?: Prisma.StaffRankWhereInput;
+    data: Prisma.XOR<Prisma.StaffRankUpdateWithoutMembersInput, Prisma.StaffRankUncheckedUpdateWithoutMembersInput>;
+};
+export type StaffRankUpdateWithoutMembersInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type StaffRankUncheckedUpdateWithoutMembersInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    roleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    color?: Prisma.StringFieldUpdateOperationsInput | string;
+    description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    position?: Prisma.IntFieldUpdateOperationsInput | number;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+/**
+ * Count Type StaffRankCountOutputType
+ */
+export type StaffRankCountOutputType = {
+    members: number;
+};
+export type StaffRankCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    members?: boolean | StaffRankCountOutputTypeCountMembersArgs;
+};
+/**
+ * StaffRankCountOutputType without action
+ */
+export type StaffRankCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRankCountOutputType
+     */
+    select?: Prisma.StaffRankCountOutputTypeSelect<ExtArgs> | null;
+};
+/**
+ * StaffRankCountOutputType without action
+ */
+export type StaffRankCountOutputTypeCountMembersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.StaffMemberWhereInput;
+};
+export type StaffRankSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    roleId?: boolean;
+    color?: boolean;
+    description?: boolean;
+    position?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    members?: boolean | Prisma.StaffRank$membersArgs<ExtArgs>;
+    _count?: boolean | Prisma.StaffRankCountOutputTypeDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["staffRank"]>;
+export type StaffRankSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    roleId?: boolean;
+    color?: boolean;
+    description?: boolean;
+    position?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["staffRank"]>;
+export type StaffRankSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    roleId?: boolean;
+    color?: boolean;
+    description?: boolean;
+    position?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+}, ExtArgs["result"]["staffRank"]>;
+export type StaffRankSelectScalar = {
+    id?: boolean;
+    guildId?: boolean;
+    name?: boolean;
+    roleId?: boolean;
+    color?: boolean;
+    description?: boolean;
+    position?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type StaffRankOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "guildId" | "name" | "roleId" | "color" | "description" | "position" | "createdAt" | "updatedAt", ExtArgs["result"]["staffRank"]>;
+export type StaffRankInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    members?: boolean | Prisma.StaffRank$membersArgs<ExtArgs>;
+    _count?: boolean | Prisma.StaffRankCountOutputTypeDefaultArgs<ExtArgs>;
+};
+export type StaffRankIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type StaffRankIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
+export type $StaffRankPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "StaffRank";
+    objects: {
+        members: Prisma.$StaffMemberPayload<ExtArgs>[];
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        guildId: string;
+        name: string;
+        roleId: string | null;
+        color: string;
+        description: string | null;
+        /**
+         * 0 is the highest rank.
+         */
+        position: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["staffRank"]>;
+    composites: {};
+};
+export type StaffRankGetPayload<S extends boolean | null | undefined | StaffRankDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$StaffRankPayload, S>;
+export type StaffRankCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<StaffRankFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: StaffRankCountAggregateInputType | true;
+};
+export interface StaffRankDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['StaffRank'];
+        meta: {
+            name: 'StaffRank';
+        };
+    };
+    /**
+     * Find zero or one StaffRank that matches the filter.
+     * @param {StaffRankFindUniqueArgs} args - Arguments to find a StaffRank
+     * @example
+     * // Get one StaffRank
+     * const staffRank = await prisma.staffRank.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StaffRankFindUniqueArgs>(args: Prisma.SelectSubset<T, StaffRankFindUniqueArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one StaffRank that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StaffRankFindUniqueOrThrowArgs} args - Arguments to find a StaffRank
+     * @example
+     * // Get one StaffRank
+     * const staffRank = await prisma.staffRank.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StaffRankFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, StaffRankFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first StaffRank that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankFindFirstArgs} args - Arguments to find a StaffRank
+     * @example
+     * // Get one StaffRank
+     * const staffRank = await prisma.staffRank.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StaffRankFindFirstArgs>(args?: Prisma.SelectSubset<T, StaffRankFindFirstArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first StaffRank that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankFindFirstOrThrowArgs} args - Arguments to find a StaffRank
+     * @example
+     * // Get one StaffRank
+     * const staffRank = await prisma.staffRank.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StaffRankFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, StaffRankFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more StaffRanks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all StaffRanks
+     * const staffRanks = await prisma.staffRank.findMany()
+     *
+     * // Get first 10 StaffRanks
+     * const staffRanks = await prisma.staffRank.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const staffRankWithIdOnly = await prisma.staffRank.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends StaffRankFindManyArgs>(args?: Prisma.SelectSubset<T, StaffRankFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a StaffRank.
+     * @param {StaffRankCreateArgs} args - Arguments to create a StaffRank.
+     * @example
+     * // Create one StaffRank
+     * const StaffRank = await prisma.staffRank.create({
+     *   data: {
+     *     // ... data to create a StaffRank
+     *   }
+     * })
+     *
+     */
+    create<T extends StaffRankCreateArgs>(args: Prisma.SelectSubset<T, StaffRankCreateArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many StaffRanks.
+     * @param {StaffRankCreateManyArgs} args - Arguments to create many StaffRanks.
+     * @example
+     * // Create many StaffRanks
+     * const staffRank = await prisma.staffRank.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends StaffRankCreateManyArgs>(args?: Prisma.SelectSubset<T, StaffRankCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many StaffRanks and returns the data saved in the database.
+     * @param {StaffRankCreateManyAndReturnArgs} args - Arguments to create many StaffRanks.
+     * @example
+     * // Create many StaffRanks
+     * const staffRank = await prisma.staffRank.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many StaffRanks and only return the `id`
+     * const staffRankWithIdOnly = await prisma.staffRank.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends StaffRankCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, StaffRankCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a StaffRank.
+     * @param {StaffRankDeleteArgs} args - Arguments to delete one StaffRank.
+     * @example
+     * // Delete one StaffRank
+     * const StaffRank = await prisma.staffRank.delete({
+     *   where: {
+     *     // ... filter to delete one StaffRank
+     *   }
+     * })
+     *
+     */
+    delete<T extends StaffRankDeleteArgs>(args: Prisma.SelectSubset<T, StaffRankDeleteArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one StaffRank.
+     * @param {StaffRankUpdateArgs} args - Arguments to update one StaffRank.
+     * @example
+     * // Update one StaffRank
+     * const staffRank = await prisma.staffRank.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends StaffRankUpdateArgs>(args: Prisma.SelectSubset<T, StaffRankUpdateArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more StaffRanks.
+     * @param {StaffRankDeleteManyArgs} args - Arguments to filter StaffRanks to delete.
+     * @example
+     * // Delete a few StaffRanks
+     * const { count } = await prisma.staffRank.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends StaffRankDeleteManyArgs>(args?: Prisma.SelectSubset<T, StaffRankDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more StaffRanks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many StaffRanks
+     * const staffRank = await prisma.staffRank.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends StaffRankUpdateManyArgs>(args: Prisma.SelectSubset<T, StaffRankUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more StaffRanks and returns the data updated in the database.
+     * @param {StaffRankUpdateManyAndReturnArgs} args - Arguments to update many StaffRanks.
+     * @example
+     * // Update many StaffRanks
+     * const staffRank = await prisma.staffRank.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more StaffRanks and only return the `id`
+     * const staffRankWithIdOnly = await prisma.staffRank.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends StaffRankUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, StaffRankUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one StaffRank.
+     * @param {StaffRankUpsertArgs} args - Arguments to update or create a StaffRank.
+     * @example
+     * // Update or create a StaffRank
+     * const staffRank = await prisma.staffRank.upsert({
+     *   create: {
+     *     // ... data to create a StaffRank
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the StaffRank we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StaffRankUpsertArgs>(args: Prisma.SelectSubset<T, StaffRankUpsertArgs<ExtArgs>>): Prisma.Prisma__StaffRankClient<runtime.Types.Result.GetResult<Prisma.$StaffRankPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of StaffRanks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankCountArgs} args - Arguments to filter StaffRanks to count.
+     * @example
+     * // Count the number of StaffRanks
+     * const count = await prisma.staffRank.count({
+     *   where: {
+     *     // ... the filter for the StaffRanks we want to count
+     *   }
+     * })
+    **/
+    count<T extends StaffRankCountArgs>(args?: Prisma.Subset<T, StaffRankCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], StaffRankCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a StaffRank.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StaffRankAggregateArgs>(args: Prisma.Subset<T, StaffRankAggregateArgs>): Prisma.PrismaPromise<GetStaffRankAggregateType<T>>;
+    /**
+     * Group by StaffRank.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffRankGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends StaffRankGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: StaffRankGroupByArgs['orderBy'];
+    } : {
+        orderBy?: StaffRankGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, StaffRankGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStaffRankGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the StaffRank model
+     */
+    readonly fields: StaffRankFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for StaffRank.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__StaffRankClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    members<T extends Prisma.StaffRank$membersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StaffRank$membersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StaffMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the StaffRank model
+ */
+export interface StaffRankFieldRefs {
+    readonly id: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly guildId: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly name: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly roleId: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly color: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly description: Prisma.FieldRef<"StaffRank", 'String'>;
+    readonly position: Prisma.FieldRef<"StaffRank", 'Int'>;
+    readonly createdAt: Prisma.FieldRef<"StaffRank", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"StaffRank", 'DateTime'>;
+}
+/**
+ * StaffRank findUnique
+ */
+export type StaffRankFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter, which StaffRank to fetch.
+     */
+    where: Prisma.StaffRankWhereUniqueInput;
+};
+/**
+ * StaffRank findUniqueOrThrow
+ */
+export type StaffRankFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter, which StaffRank to fetch.
+     */
+    where: Prisma.StaffRankWhereUniqueInput;
+};
+/**
+ * StaffRank findFirst
+ */
+export type StaffRankFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter, which StaffRank to fetch.
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StaffRanks to fetch.
+     */
+    orderBy?: Prisma.StaffRankOrderByWithRelationInput | Prisma.StaffRankOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for StaffRanks.
+     */
+    cursor?: Prisma.StaffRankWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StaffRanks from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StaffRanks.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StaffRanks.
+     */
+    distinct?: Prisma.StaffRankScalarFieldEnum | Prisma.StaffRankScalarFieldEnum[];
+};
+/**
+ * StaffRank findFirstOrThrow
+ */
+export type StaffRankFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter, which StaffRank to fetch.
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StaffRanks to fetch.
+     */
+    orderBy?: Prisma.StaffRankOrderByWithRelationInput | Prisma.StaffRankOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for StaffRanks.
+     */
+    cursor?: Prisma.StaffRankWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StaffRanks from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StaffRanks.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StaffRanks.
+     */
+    distinct?: Prisma.StaffRankScalarFieldEnum | Prisma.StaffRankScalarFieldEnum[];
+};
+/**
+ * StaffRank findMany
+ */
+export type StaffRankFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter, which StaffRanks to fetch.
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of StaffRanks to fetch.
+     */
+    orderBy?: Prisma.StaffRankOrderByWithRelationInput | Prisma.StaffRankOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing StaffRanks.
+     */
+    cursor?: Prisma.StaffRankWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` StaffRanks from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` StaffRanks.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of StaffRanks.
+     */
+    distinct?: Prisma.StaffRankScalarFieldEnum | Prisma.StaffRankScalarFieldEnum[];
+};
+/**
+ * StaffRank create
+ */
+export type StaffRankCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a StaffRank.
+     */
+    data: Prisma.XOR<Prisma.StaffRankCreateInput, Prisma.StaffRankUncheckedCreateInput>;
+};
+/**
+ * StaffRank createMany
+ */
+export type StaffRankCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many StaffRanks.
+     */
+    data: Prisma.StaffRankCreateManyInput | Prisma.StaffRankCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * StaffRank createManyAndReturn
+ */
+export type StaffRankCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * The data used to create many StaffRanks.
+     */
+    data: Prisma.StaffRankCreateManyInput | Prisma.StaffRankCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * StaffRank update
+ */
+export type StaffRankUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a StaffRank.
+     */
+    data: Prisma.XOR<Prisma.StaffRankUpdateInput, Prisma.StaffRankUncheckedUpdateInput>;
+    /**
+     * Choose, which StaffRank to update.
+     */
+    where: Prisma.StaffRankWhereUniqueInput;
+};
+/**
+ * StaffRank updateMany
+ */
+export type StaffRankUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update StaffRanks.
+     */
+    data: Prisma.XOR<Prisma.StaffRankUpdateManyMutationInput, Prisma.StaffRankUncheckedUpdateManyInput>;
+    /**
+     * Filter which StaffRanks to update
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * Limit how many StaffRanks to update.
+     */
+    limit?: number;
+};
+/**
+ * StaffRank updateManyAndReturn
+ */
+export type StaffRankUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * The data used to update StaffRanks.
+     */
+    data: Prisma.XOR<Prisma.StaffRankUpdateManyMutationInput, Prisma.StaffRankUncheckedUpdateManyInput>;
+    /**
+     * Filter which StaffRanks to update
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * Limit how many StaffRanks to update.
+     */
+    limit?: number;
+};
+/**
+ * StaffRank upsert
+ */
+export type StaffRankUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the StaffRank to update in case it exists.
+     */
+    where: Prisma.StaffRankWhereUniqueInput;
+    /**
+     * In case the StaffRank found by the `where` argument doesn't exist, create a new StaffRank with this data.
+     */
+    create: Prisma.XOR<Prisma.StaffRankCreateInput, Prisma.StaffRankUncheckedCreateInput>;
+    /**
+     * In case the StaffRank was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.StaffRankUpdateInput, Prisma.StaffRankUncheckedUpdateInput>;
+};
+/**
+ * StaffRank delete
+ */
+export type StaffRankDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+    /**
+     * Filter which StaffRank to delete.
+     */
+    where: Prisma.StaffRankWhereUniqueInput;
+};
+/**
+ * StaffRank deleteMany
+ */
+export type StaffRankDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which StaffRanks to delete
+     */
+    where?: Prisma.StaffRankWhereInput;
+    /**
+     * Limit how many StaffRanks to delete.
+     */
+    limit?: number;
+};
+/**
+ * StaffRank.members
+ */
+export type StaffRank$membersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffMember
+     */
+    select?: Prisma.StaffMemberSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffMember
+     */
+    omit?: Prisma.StaffMemberOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffMemberInclude<ExtArgs> | null;
+    where?: Prisma.StaffMemberWhereInput;
+    orderBy?: Prisma.StaffMemberOrderByWithRelationInput | Prisma.StaffMemberOrderByWithRelationInput[];
+    cursor?: Prisma.StaffMemberWhereUniqueInput;
+    take?: number;
+    skip?: number;
+    distinct?: Prisma.StaffMemberScalarFieldEnum | Prisma.StaffMemberScalarFieldEnum[];
+};
+/**
+ * StaffRank without action
+ */
+export type StaffRankDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffRank
+     */
+    select?: Prisma.StaffRankSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the StaffRank
+     */
+    omit?: Prisma.StaffRankOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.StaffRankInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=StaffRank.d.ts.map

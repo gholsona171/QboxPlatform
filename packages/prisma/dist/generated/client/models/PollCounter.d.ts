@@ -1,0 +1,952 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model PollCounter
+ *
+ */
+export type PollCounterModel = runtime.Types.Result.DefaultSelection<Prisma.$PollCounterPayload>;
+export type AggregatePollCounter = {
+    _count: PollCounterCountAggregateOutputType | null;
+    _avg: PollCounterAvgAggregateOutputType | null;
+    _sum: PollCounterSumAggregateOutputType | null;
+    _min: PollCounterMinAggregateOutputType | null;
+    _max: PollCounterMaxAggregateOutputType | null;
+};
+export type PollCounterAvgAggregateOutputType = {
+    nextNumber: number | null;
+};
+export type PollCounterSumAggregateOutputType = {
+    nextNumber: number | null;
+};
+export type PollCounterMinAggregateOutputType = {
+    guildId: string | null;
+    nextNumber: number | null;
+};
+export type PollCounterMaxAggregateOutputType = {
+    guildId: string | null;
+    nextNumber: number | null;
+};
+export type PollCounterCountAggregateOutputType = {
+    guildId: number;
+    nextNumber: number;
+    _all: number;
+};
+export type PollCounterAvgAggregateInputType = {
+    nextNumber?: true;
+};
+export type PollCounterSumAggregateInputType = {
+    nextNumber?: true;
+};
+export type PollCounterMinAggregateInputType = {
+    guildId?: true;
+    nextNumber?: true;
+};
+export type PollCounterMaxAggregateInputType = {
+    guildId?: true;
+    nextNumber?: true;
+};
+export type PollCounterCountAggregateInputType = {
+    guildId?: true;
+    nextNumber?: true;
+    _all?: true;
+};
+export type PollCounterAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which PollCounter to aggregate.
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PollCounters to fetch.
+     */
+    orderBy?: Prisma.PollCounterOrderByWithRelationInput | Prisma.PollCounterOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.PollCounterWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PollCounters from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PollCounters.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned PollCounters
+    **/
+    _count?: true | PollCounterCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: PollCounterAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: PollCounterSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: PollCounterMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: PollCounterMaxAggregateInputType;
+};
+export type GetPollCounterAggregateType<T extends PollCounterAggregateArgs> = {
+    [P in keyof T & keyof AggregatePollCounter]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregatePollCounter[P]> : Prisma.GetScalarType<T[P], AggregatePollCounter[P]>;
+};
+export type PollCounterGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.PollCounterWhereInput;
+    orderBy?: Prisma.PollCounterOrderByWithAggregationInput | Prisma.PollCounterOrderByWithAggregationInput[];
+    by: Prisma.PollCounterScalarFieldEnum[] | Prisma.PollCounterScalarFieldEnum;
+    having?: Prisma.PollCounterScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: PollCounterCountAggregateInputType | true;
+    _avg?: PollCounterAvgAggregateInputType;
+    _sum?: PollCounterSumAggregateInputType;
+    _min?: PollCounterMinAggregateInputType;
+    _max?: PollCounterMaxAggregateInputType;
+};
+export type PollCounterGroupByOutputType = {
+    guildId: string;
+    nextNumber: number;
+    _count: PollCounterCountAggregateOutputType | null;
+    _avg: PollCounterAvgAggregateOutputType | null;
+    _sum: PollCounterSumAggregateOutputType | null;
+    _min: PollCounterMinAggregateOutputType | null;
+    _max: PollCounterMaxAggregateOutputType | null;
+};
+export type GetPollCounterGroupByPayload<T extends PollCounterGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<PollCounterGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof PollCounterGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], PollCounterGroupByOutputType[P]> : Prisma.GetScalarType<T[P], PollCounterGroupByOutputType[P]>;
+}>>;
+export type PollCounterWhereInput = {
+    AND?: Prisma.PollCounterWhereInput | Prisma.PollCounterWhereInput[];
+    OR?: Prisma.PollCounterWhereInput[];
+    NOT?: Prisma.PollCounterWhereInput | Prisma.PollCounterWhereInput[];
+    guildId?: Prisma.StringFilter<"PollCounter"> | string;
+    nextNumber?: Prisma.IntFilter<"PollCounter"> | number;
+};
+export type PollCounterOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.PollCounterWhereInput | Prisma.PollCounterWhereInput[];
+    OR?: Prisma.PollCounterWhereInput[];
+    NOT?: Prisma.PollCounterWhereInput | Prisma.PollCounterWhereInput[];
+    nextNumber?: Prisma.IntFilter<"PollCounter"> | number;
+}, "guildId">;
+export type PollCounterOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    nextNumber?: Prisma.SortOrder;
+    _count?: Prisma.PollCounterCountOrderByAggregateInput;
+    _avg?: Prisma.PollCounterAvgOrderByAggregateInput;
+    _max?: Prisma.PollCounterMaxOrderByAggregateInput;
+    _min?: Prisma.PollCounterMinOrderByAggregateInput;
+    _sum?: Prisma.PollCounterSumOrderByAggregateInput;
+};
+export type PollCounterScalarWhereWithAggregatesInput = {
+    AND?: Prisma.PollCounterScalarWhereWithAggregatesInput | Prisma.PollCounterScalarWhereWithAggregatesInput[];
+    OR?: Prisma.PollCounterScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.PollCounterScalarWhereWithAggregatesInput | Prisma.PollCounterScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.StringWithAggregatesFilter<"PollCounter"> | string;
+    nextNumber?: Prisma.IntWithAggregatesFilter<"PollCounter"> | number;
+};
+export type PollCounterCreateInput = {
+    guildId: string;
+    nextNumber?: number;
+};
+export type PollCounterUncheckedCreateInput = {
+    guildId: string;
+    nextNumber?: number;
+};
+export type PollCounterUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    nextNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type PollCounterUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    nextNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type PollCounterCreateManyInput = {
+    guildId: string;
+    nextNumber?: number;
+};
+export type PollCounterUpdateManyMutationInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    nextNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type PollCounterUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    nextNumber?: Prisma.IntFieldUpdateOperationsInput | number;
+};
+export type PollCounterCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterAvgOrderByAggregateInput = {
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterSumOrderByAggregateInput = {
+    nextNumber?: Prisma.SortOrder;
+};
+export type PollCounterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    nextNumber?: boolean;
+}, ExtArgs["result"]["pollCounter"]>;
+export type PollCounterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    nextNumber?: boolean;
+}, ExtArgs["result"]["pollCounter"]>;
+export type PollCounterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    nextNumber?: boolean;
+}, ExtArgs["result"]["pollCounter"]>;
+export type PollCounterSelectScalar = {
+    guildId?: boolean;
+    nextNumber?: boolean;
+};
+export type PollCounterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "nextNumber", ExtArgs["result"]["pollCounter"]>;
+export type $PollCounterPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "PollCounter";
+    objects: {};
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        nextNumber: number;
+    }, ExtArgs["result"]["pollCounter"]>;
+    composites: {};
+};
+export type PollCounterGetPayload<S extends boolean | null | undefined | PollCounterDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$PollCounterPayload, S>;
+export type PollCounterCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<PollCounterFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: PollCounterCountAggregateInputType | true;
+};
+export interface PollCounterDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['PollCounter'];
+        meta: {
+            name: 'PollCounter';
+        };
+    };
+    /**
+     * Find zero or one PollCounter that matches the filter.
+     * @param {PollCounterFindUniqueArgs} args - Arguments to find a PollCounter
+     * @example
+     * // Get one PollCounter
+     * const pollCounter = await prisma.pollCounter.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PollCounterFindUniqueArgs>(args: Prisma.SelectSubset<T, PollCounterFindUniqueArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one PollCounter that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PollCounterFindUniqueOrThrowArgs} args - Arguments to find a PollCounter
+     * @example
+     * // Get one PollCounter
+     * const pollCounter = await prisma.pollCounter.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PollCounterFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, PollCounterFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first PollCounter that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterFindFirstArgs} args - Arguments to find a PollCounter
+     * @example
+     * // Get one PollCounter
+     * const pollCounter = await prisma.pollCounter.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PollCounterFindFirstArgs>(args?: Prisma.SelectSubset<T, PollCounterFindFirstArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first PollCounter that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterFindFirstOrThrowArgs} args - Arguments to find a PollCounter
+     * @example
+     * // Get one PollCounter
+     * const pollCounter = await prisma.pollCounter.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PollCounterFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, PollCounterFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more PollCounters that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PollCounters
+     * const pollCounters = await prisma.pollCounter.findMany()
+     *
+     * // Get first 10 PollCounters
+     * const pollCounters = await prisma.pollCounter.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const pollCounterWithGuildIdOnly = await prisma.pollCounter.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends PollCounterFindManyArgs>(args?: Prisma.SelectSubset<T, PollCounterFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a PollCounter.
+     * @param {PollCounterCreateArgs} args - Arguments to create a PollCounter.
+     * @example
+     * // Create one PollCounter
+     * const PollCounter = await prisma.pollCounter.create({
+     *   data: {
+     *     // ... data to create a PollCounter
+     *   }
+     * })
+     *
+     */
+    create<T extends PollCounterCreateArgs>(args: Prisma.SelectSubset<T, PollCounterCreateArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many PollCounters.
+     * @param {PollCounterCreateManyArgs} args - Arguments to create many PollCounters.
+     * @example
+     * // Create many PollCounters
+     * const pollCounter = await prisma.pollCounter.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends PollCounterCreateManyArgs>(args?: Prisma.SelectSubset<T, PollCounterCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many PollCounters and returns the data saved in the database.
+     * @param {PollCounterCreateManyAndReturnArgs} args - Arguments to create many PollCounters.
+     * @example
+     * // Create many PollCounters
+     * const pollCounter = await prisma.pollCounter.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many PollCounters and only return the `guildId`
+     * const pollCounterWithGuildIdOnly = await prisma.pollCounter.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends PollCounterCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, PollCounterCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a PollCounter.
+     * @param {PollCounterDeleteArgs} args - Arguments to delete one PollCounter.
+     * @example
+     * // Delete one PollCounter
+     * const PollCounter = await prisma.pollCounter.delete({
+     *   where: {
+     *     // ... filter to delete one PollCounter
+     *   }
+     * })
+     *
+     */
+    delete<T extends PollCounterDeleteArgs>(args: Prisma.SelectSubset<T, PollCounterDeleteArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one PollCounter.
+     * @param {PollCounterUpdateArgs} args - Arguments to update one PollCounter.
+     * @example
+     * // Update one PollCounter
+     * const pollCounter = await prisma.pollCounter.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends PollCounterUpdateArgs>(args: Prisma.SelectSubset<T, PollCounterUpdateArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more PollCounters.
+     * @param {PollCounterDeleteManyArgs} args - Arguments to filter PollCounters to delete.
+     * @example
+     * // Delete a few PollCounters
+     * const { count } = await prisma.pollCounter.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends PollCounterDeleteManyArgs>(args?: Prisma.SelectSubset<T, PollCounterDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more PollCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PollCounters
+     * const pollCounter = await prisma.pollCounter.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends PollCounterUpdateManyArgs>(args: Prisma.SelectSubset<T, PollCounterUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more PollCounters and returns the data updated in the database.
+     * @param {PollCounterUpdateManyAndReturnArgs} args - Arguments to update many PollCounters.
+     * @example
+     * // Update many PollCounters
+     * const pollCounter = await prisma.pollCounter.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more PollCounters and only return the `guildId`
+     * const pollCounterWithGuildIdOnly = await prisma.pollCounter.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends PollCounterUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, PollCounterUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one PollCounter.
+     * @param {PollCounterUpsertArgs} args - Arguments to update or create a PollCounter.
+     * @example
+     * // Update or create a PollCounter
+     * const pollCounter = await prisma.pollCounter.upsert({
+     *   create: {
+     *     // ... data to create a PollCounter
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PollCounter we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PollCounterUpsertArgs>(args: Prisma.SelectSubset<T, PollCounterUpsertArgs<ExtArgs>>): Prisma.Prisma__PollCounterClient<runtime.Types.Result.GetResult<Prisma.$PollCounterPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of PollCounters.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterCountArgs} args - Arguments to filter PollCounters to count.
+     * @example
+     * // Count the number of PollCounters
+     * const count = await prisma.pollCounter.count({
+     *   where: {
+     *     // ... the filter for the PollCounters we want to count
+     *   }
+     * })
+    **/
+    count<T extends PollCounterCountArgs>(args?: Prisma.Subset<T, PollCounterCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], PollCounterCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a PollCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PollCounterAggregateArgs>(args: Prisma.Subset<T, PollCounterAggregateArgs>): Prisma.PrismaPromise<GetPollCounterAggregateType<T>>;
+    /**
+     * Group by PollCounter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PollCounterGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends PollCounterGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: PollCounterGroupByArgs['orderBy'];
+    } : {
+        orderBy?: PollCounterGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, PollCounterGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPollCounterGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the PollCounter model
+     */
+    readonly fields: PollCounterFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for PollCounter.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__PollCounterClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the PollCounter model
+ */
+export interface PollCounterFieldRefs {
+    readonly guildId: Prisma.FieldRef<"PollCounter", 'String'>;
+    readonly nextNumber: Prisma.FieldRef<"PollCounter", 'Int'>;
+}
+/**
+ * PollCounter findUnique
+ */
+export type PollCounterFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter, which PollCounter to fetch.
+     */
+    where: Prisma.PollCounterWhereUniqueInput;
+};
+/**
+ * PollCounter findUniqueOrThrow
+ */
+export type PollCounterFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter, which PollCounter to fetch.
+     */
+    where: Prisma.PollCounterWhereUniqueInput;
+};
+/**
+ * PollCounter findFirst
+ */
+export type PollCounterFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter, which PollCounter to fetch.
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PollCounters to fetch.
+     */
+    orderBy?: Prisma.PollCounterOrderByWithRelationInput | Prisma.PollCounterOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for PollCounters.
+     */
+    cursor?: Prisma.PollCounterWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PollCounters from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PollCounters.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PollCounters.
+     */
+    distinct?: Prisma.PollCounterScalarFieldEnum | Prisma.PollCounterScalarFieldEnum[];
+};
+/**
+ * PollCounter findFirstOrThrow
+ */
+export type PollCounterFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter, which PollCounter to fetch.
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PollCounters to fetch.
+     */
+    orderBy?: Prisma.PollCounterOrderByWithRelationInput | Prisma.PollCounterOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for PollCounters.
+     */
+    cursor?: Prisma.PollCounterWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PollCounters from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PollCounters.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PollCounters.
+     */
+    distinct?: Prisma.PollCounterScalarFieldEnum | Prisma.PollCounterScalarFieldEnum[];
+};
+/**
+ * PollCounter findMany
+ */
+export type PollCounterFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter, which PollCounters to fetch.
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of PollCounters to fetch.
+     */
+    orderBy?: Prisma.PollCounterOrderByWithRelationInput | Prisma.PollCounterOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing PollCounters.
+     */
+    cursor?: Prisma.PollCounterWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` PollCounters from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` PollCounters.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of PollCounters.
+     */
+    distinct?: Prisma.PollCounterScalarFieldEnum | Prisma.PollCounterScalarFieldEnum[];
+};
+/**
+ * PollCounter create
+ */
+export type PollCounterCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * The data needed to create a PollCounter.
+     */
+    data: Prisma.XOR<Prisma.PollCounterCreateInput, Prisma.PollCounterUncheckedCreateInput>;
+};
+/**
+ * PollCounter createMany
+ */
+export type PollCounterCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PollCounters.
+     */
+    data: Prisma.PollCounterCreateManyInput | Prisma.PollCounterCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * PollCounter createManyAndReturn
+ */
+export type PollCounterCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * The data used to create many PollCounters.
+     */
+    data: Prisma.PollCounterCreateManyInput | Prisma.PollCounterCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * PollCounter update
+ */
+export type PollCounterUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * The data needed to update a PollCounter.
+     */
+    data: Prisma.XOR<Prisma.PollCounterUpdateInput, Prisma.PollCounterUncheckedUpdateInput>;
+    /**
+     * Choose, which PollCounter to update.
+     */
+    where: Prisma.PollCounterWhereUniqueInput;
+};
+/**
+ * PollCounter updateMany
+ */
+export type PollCounterUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PollCounters.
+     */
+    data: Prisma.XOR<Prisma.PollCounterUpdateManyMutationInput, Prisma.PollCounterUncheckedUpdateManyInput>;
+    /**
+     * Filter which PollCounters to update
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * Limit how many PollCounters to update.
+     */
+    limit?: number;
+};
+/**
+ * PollCounter updateManyAndReturn
+ */
+export type PollCounterUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * The data used to update PollCounters.
+     */
+    data: Prisma.XOR<Prisma.PollCounterUpdateManyMutationInput, Prisma.PollCounterUncheckedUpdateManyInput>;
+    /**
+     * Filter which PollCounters to update
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * Limit how many PollCounters to update.
+     */
+    limit?: number;
+};
+/**
+ * PollCounter upsert
+ */
+export type PollCounterUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * The filter to search for the PollCounter to update in case it exists.
+     */
+    where: Prisma.PollCounterWhereUniqueInput;
+    /**
+     * In case the PollCounter found by the `where` argument doesn't exist, create a new PollCounter with this data.
+     */
+    create: Prisma.XOR<Prisma.PollCounterCreateInput, Prisma.PollCounterUncheckedCreateInput>;
+    /**
+     * In case the PollCounter was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.PollCounterUpdateInput, Prisma.PollCounterUncheckedUpdateInput>;
+};
+/**
+ * PollCounter delete
+ */
+export type PollCounterDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+    /**
+     * Filter which PollCounter to delete.
+     */
+    where: Prisma.PollCounterWhereUniqueInput;
+};
+/**
+ * PollCounter deleteMany
+ */
+export type PollCounterDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which PollCounters to delete
+     */
+    where?: Prisma.PollCounterWhereInput;
+    /**
+     * Limit how many PollCounters to delete.
+     */
+    limit?: number;
+};
+/**
+ * PollCounter without action
+ */
+export type PollCounterDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PollCounter
+     */
+    select?: Prisma.PollCounterSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the PollCounter
+     */
+    omit?: Prisma.PollCounterOmit<ExtArgs> | null;
+};
+//# sourceMappingURL=PollCounter.d.ts.map

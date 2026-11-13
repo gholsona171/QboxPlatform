@@ -1,0 +1,1466 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as $Enums from "../enums.js";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model BuilderRunItem
+ *
+ */
+export type BuilderRunItemModel = runtime.Types.Result.DefaultSelection<Prisma.$BuilderRunItemPayload>;
+export type AggregateBuilderRunItem = {
+    _count: BuilderRunItemCountAggregateOutputType | null;
+    _avg: BuilderRunItemAvgAggregateOutputType | null;
+    _sum: BuilderRunItemSumAggregateOutputType | null;
+    _min: BuilderRunItemMinAggregateOutputType | null;
+    _max: BuilderRunItemMaxAggregateOutputType | null;
+};
+export type BuilderRunItemAvgAggregateOutputType = {
+    sequence: number | null;
+};
+export type BuilderRunItemSumAggregateOutputType = {
+    sequence: number | null;
+};
+export type BuilderRunItemMinAggregateOutputType = {
+    id: string | null;
+    runId: string | null;
+    sequence: number | null;
+    kind: $Enums.BuilderItemKind | null;
+    key: string | null;
+    name: string | null;
+    discordId: string | null;
+    status: $Enums.BuilderItemStatus | null;
+    error: string | null;
+    note: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type BuilderRunItemMaxAggregateOutputType = {
+    id: string | null;
+    runId: string | null;
+    sequence: number | null;
+    kind: $Enums.BuilderItemKind | null;
+    key: string | null;
+    name: string | null;
+    discordId: string | null;
+    status: $Enums.BuilderItemStatus | null;
+    error: string | null;
+    note: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type BuilderRunItemCountAggregateOutputType = {
+    id: number;
+    runId: number;
+    sequence: number;
+    kind: number;
+    key: number;
+    name: number;
+    discordId: number;
+    status: number;
+    error: number;
+    note: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type BuilderRunItemAvgAggregateInputType = {
+    sequence?: true;
+};
+export type BuilderRunItemSumAggregateInputType = {
+    sequence?: true;
+};
+export type BuilderRunItemMinAggregateInputType = {
+    id?: true;
+    runId?: true;
+    sequence?: true;
+    kind?: true;
+    key?: true;
+    name?: true;
+    discordId?: true;
+    status?: true;
+    error?: true;
+    note?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type BuilderRunItemMaxAggregateInputType = {
+    id?: true;
+    runId?: true;
+    sequence?: true;
+    kind?: true;
+    key?: true;
+    name?: true;
+    discordId?: true;
+    status?: true;
+    error?: true;
+    note?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type BuilderRunItemCountAggregateInputType = {
+    id?: true;
+    runId?: true;
+    sequence?: true;
+    kind?: true;
+    key?: true;
+    name?: true;
+    discordId?: true;
+    status?: true;
+    error?: true;
+    note?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type BuilderRunItemAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which BuilderRunItem to aggregate.
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of BuilderRunItems to fetch.
+     */
+    orderBy?: Prisma.BuilderRunItemOrderByWithRelationInput | Prisma.BuilderRunItemOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.BuilderRunItemWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` BuilderRunItems from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` BuilderRunItems.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned BuilderRunItems
+    **/
+    _count?: true | BuilderRunItemCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: BuilderRunItemAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: BuilderRunItemSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: BuilderRunItemMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: BuilderRunItemMaxAggregateInputType;
+};
+export type GetBuilderRunItemAggregateType<T extends BuilderRunItemAggregateArgs> = {
+    [P in keyof T & keyof AggregateBuilderRunItem]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateBuilderRunItem[P]> : Prisma.GetScalarType<T[P], AggregateBuilderRunItem[P]>;
+};
+export type BuilderRunItemGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.BuilderRunItemWhereInput;
+    orderBy?: Prisma.BuilderRunItemOrderByWithAggregationInput | Prisma.BuilderRunItemOrderByWithAggregationInput[];
+    by: Prisma.BuilderRunItemScalarFieldEnum[] | Prisma.BuilderRunItemScalarFieldEnum;
+    having?: Prisma.BuilderRunItemScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: BuilderRunItemCountAggregateInputType | true;
+    _avg?: BuilderRunItemAvgAggregateInputType;
+    _sum?: BuilderRunItemSumAggregateInputType;
+    _min?: BuilderRunItemMinAggregateInputType;
+    _max?: BuilderRunItemMaxAggregateInputType;
+};
+export type BuilderRunItemGroupByOutputType = {
+    id: string;
+    runId: string;
+    sequence: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId: string | null;
+    status: $Enums.BuilderItemStatus;
+    error: string | null;
+    note: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: BuilderRunItemCountAggregateOutputType | null;
+    _avg: BuilderRunItemAvgAggregateOutputType | null;
+    _sum: BuilderRunItemSumAggregateOutputType | null;
+    _min: BuilderRunItemMinAggregateOutputType | null;
+    _max: BuilderRunItemMaxAggregateOutputType | null;
+};
+export type GetBuilderRunItemGroupByPayload<T extends BuilderRunItemGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<BuilderRunItemGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof BuilderRunItemGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], BuilderRunItemGroupByOutputType[P]> : Prisma.GetScalarType<T[P], BuilderRunItemGroupByOutputType[P]>;
+}>>;
+export type BuilderRunItemWhereInput = {
+    AND?: Prisma.BuilderRunItemWhereInput | Prisma.BuilderRunItemWhereInput[];
+    OR?: Prisma.BuilderRunItemWhereInput[];
+    NOT?: Prisma.BuilderRunItemWhereInput | Prisma.BuilderRunItemWhereInput[];
+    id?: Prisma.UuidFilter<"BuilderRunItem"> | string;
+    runId?: Prisma.UuidFilter<"BuilderRunItem"> | string;
+    sequence?: Prisma.IntFilter<"BuilderRunItem"> | number;
+    kind?: Prisma.EnumBuilderItemKindFilter<"BuilderRunItem"> | $Enums.BuilderItemKind;
+    key?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    name?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    discordId?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    status?: Prisma.EnumBuilderItemStatusFilter<"BuilderRunItem"> | $Enums.BuilderItemStatus;
+    error?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    note?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    createdAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+    run?: Prisma.XOR<Prisma.BuilderRunScalarRelationFilter, Prisma.BuilderRunWhereInput>;
+};
+export type BuilderRunItemOrderByWithRelationInput = {
+    id?: Prisma.SortOrder;
+    runId?: Prisma.SortOrder;
+    sequence?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    key?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    discordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    error?: Prisma.SortOrderInput | Prisma.SortOrder;
+    note?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    run?: Prisma.BuilderRunOrderByWithRelationInput;
+};
+export type BuilderRunItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: string;
+    AND?: Prisma.BuilderRunItemWhereInput | Prisma.BuilderRunItemWhereInput[];
+    OR?: Prisma.BuilderRunItemWhereInput[];
+    NOT?: Prisma.BuilderRunItemWhereInput | Prisma.BuilderRunItemWhereInput[];
+    runId?: Prisma.UuidFilter<"BuilderRunItem"> | string;
+    sequence?: Prisma.IntFilter<"BuilderRunItem"> | number;
+    kind?: Prisma.EnumBuilderItemKindFilter<"BuilderRunItem"> | $Enums.BuilderItemKind;
+    key?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    name?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    discordId?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    status?: Prisma.EnumBuilderItemStatusFilter<"BuilderRunItem"> | $Enums.BuilderItemStatus;
+    error?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    note?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    createdAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+    run?: Prisma.XOR<Prisma.BuilderRunScalarRelationFilter, Prisma.BuilderRunWhereInput>;
+}, "id">;
+export type BuilderRunItemOrderByWithAggregationInput = {
+    id?: Prisma.SortOrder;
+    runId?: Prisma.SortOrder;
+    sequence?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    key?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    discordId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    error?: Prisma.SortOrderInput | Prisma.SortOrder;
+    note?: Prisma.SortOrderInput | Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.BuilderRunItemCountOrderByAggregateInput;
+    _avg?: Prisma.BuilderRunItemAvgOrderByAggregateInput;
+    _max?: Prisma.BuilderRunItemMaxOrderByAggregateInput;
+    _min?: Prisma.BuilderRunItemMinOrderByAggregateInput;
+    _sum?: Prisma.BuilderRunItemSumOrderByAggregateInput;
+};
+export type BuilderRunItemScalarWhereWithAggregatesInput = {
+    AND?: Prisma.BuilderRunItemScalarWhereWithAggregatesInput | Prisma.BuilderRunItemScalarWhereWithAggregatesInput[];
+    OR?: Prisma.BuilderRunItemScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.BuilderRunItemScalarWhereWithAggregatesInput | Prisma.BuilderRunItemScalarWhereWithAggregatesInput[];
+    id?: Prisma.UuidWithAggregatesFilter<"BuilderRunItem"> | string;
+    runId?: Prisma.UuidWithAggregatesFilter<"BuilderRunItem"> | string;
+    sequence?: Prisma.IntWithAggregatesFilter<"BuilderRunItem"> | number;
+    kind?: Prisma.EnumBuilderItemKindWithAggregatesFilter<"BuilderRunItem"> | $Enums.BuilderItemKind;
+    key?: Prisma.StringWithAggregatesFilter<"BuilderRunItem"> | string;
+    name?: Prisma.StringWithAggregatesFilter<"BuilderRunItem"> | string;
+    discordId?: Prisma.StringNullableWithAggregatesFilter<"BuilderRunItem"> | string | null;
+    status?: Prisma.EnumBuilderItemStatusWithAggregatesFilter<"BuilderRunItem"> | $Enums.BuilderItemStatus;
+    error?: Prisma.StringNullableWithAggregatesFilter<"BuilderRunItem"> | string | null;
+    note?: Prisma.StringNullableWithAggregatesFilter<"BuilderRunItem"> | string | null;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"BuilderRunItem"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BuilderRunItem"> | Date | string;
+};
+export type BuilderRunItemCreateInput = {
+    id?: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    run: Prisma.BuilderRunCreateNestedOneWithoutItemsInput;
+};
+export type BuilderRunItemUncheckedCreateInput = {
+    id?: string;
+    runId: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type BuilderRunItemUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    run?: Prisma.BuilderRunUpdateOneRequiredWithoutItemsNestedInput;
+};
+export type BuilderRunItemUncheckedUpdateInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    runId?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemCreateManyInput = {
+    id?: string;
+    runId: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type BuilderRunItemUpdateManyMutationInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemUncheckedUpdateManyInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    runId?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemListRelationFilter = {
+    every?: Prisma.BuilderRunItemWhereInput;
+    some?: Prisma.BuilderRunItemWhereInput;
+    none?: Prisma.BuilderRunItemWhereInput;
+};
+export type BuilderRunItemOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type BuilderRunItemCountOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    runId?: Prisma.SortOrder;
+    sequence?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    key?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    discordId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    error?: Prisma.SortOrder;
+    note?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type BuilderRunItemAvgOrderByAggregateInput = {
+    sequence?: Prisma.SortOrder;
+};
+export type BuilderRunItemMaxOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    runId?: Prisma.SortOrder;
+    sequence?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    key?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    discordId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    error?: Prisma.SortOrder;
+    note?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type BuilderRunItemMinOrderByAggregateInput = {
+    id?: Prisma.SortOrder;
+    runId?: Prisma.SortOrder;
+    sequence?: Prisma.SortOrder;
+    kind?: Prisma.SortOrder;
+    key?: Prisma.SortOrder;
+    name?: Prisma.SortOrder;
+    discordId?: Prisma.SortOrder;
+    status?: Prisma.SortOrder;
+    error?: Prisma.SortOrder;
+    note?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type BuilderRunItemSumOrderByAggregateInput = {
+    sequence?: Prisma.SortOrder;
+};
+export type BuilderRunItemCreateNestedManyWithoutRunInput = {
+    create?: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput> | Prisma.BuilderRunItemCreateWithoutRunInput[] | Prisma.BuilderRunItemUncheckedCreateWithoutRunInput[];
+    connectOrCreate?: Prisma.BuilderRunItemCreateOrConnectWithoutRunInput | Prisma.BuilderRunItemCreateOrConnectWithoutRunInput[];
+    createMany?: Prisma.BuilderRunItemCreateManyRunInputEnvelope;
+    connect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+};
+export type BuilderRunItemUncheckedCreateNestedManyWithoutRunInput = {
+    create?: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput> | Prisma.BuilderRunItemCreateWithoutRunInput[] | Prisma.BuilderRunItemUncheckedCreateWithoutRunInput[];
+    connectOrCreate?: Prisma.BuilderRunItemCreateOrConnectWithoutRunInput | Prisma.BuilderRunItemCreateOrConnectWithoutRunInput[];
+    createMany?: Prisma.BuilderRunItemCreateManyRunInputEnvelope;
+    connect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+};
+export type BuilderRunItemUpdateManyWithoutRunNestedInput = {
+    create?: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput> | Prisma.BuilderRunItemCreateWithoutRunInput[] | Prisma.BuilderRunItemUncheckedCreateWithoutRunInput[];
+    connectOrCreate?: Prisma.BuilderRunItemCreateOrConnectWithoutRunInput | Prisma.BuilderRunItemCreateOrConnectWithoutRunInput[];
+    upsert?: Prisma.BuilderRunItemUpsertWithWhereUniqueWithoutRunInput | Prisma.BuilderRunItemUpsertWithWhereUniqueWithoutRunInput[];
+    createMany?: Prisma.BuilderRunItemCreateManyRunInputEnvelope;
+    set?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    disconnect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    delete?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    connect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    update?: Prisma.BuilderRunItemUpdateWithWhereUniqueWithoutRunInput | Prisma.BuilderRunItemUpdateWithWhereUniqueWithoutRunInput[];
+    updateMany?: Prisma.BuilderRunItemUpdateManyWithWhereWithoutRunInput | Prisma.BuilderRunItemUpdateManyWithWhereWithoutRunInput[];
+    deleteMany?: Prisma.BuilderRunItemScalarWhereInput | Prisma.BuilderRunItemScalarWhereInput[];
+};
+export type BuilderRunItemUncheckedUpdateManyWithoutRunNestedInput = {
+    create?: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput> | Prisma.BuilderRunItemCreateWithoutRunInput[] | Prisma.BuilderRunItemUncheckedCreateWithoutRunInput[];
+    connectOrCreate?: Prisma.BuilderRunItemCreateOrConnectWithoutRunInput | Prisma.BuilderRunItemCreateOrConnectWithoutRunInput[];
+    upsert?: Prisma.BuilderRunItemUpsertWithWhereUniqueWithoutRunInput | Prisma.BuilderRunItemUpsertWithWhereUniqueWithoutRunInput[];
+    createMany?: Prisma.BuilderRunItemCreateManyRunInputEnvelope;
+    set?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    disconnect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    delete?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    connect?: Prisma.BuilderRunItemWhereUniqueInput | Prisma.BuilderRunItemWhereUniqueInput[];
+    update?: Prisma.BuilderRunItemUpdateWithWhereUniqueWithoutRunInput | Prisma.BuilderRunItemUpdateWithWhereUniqueWithoutRunInput[];
+    updateMany?: Prisma.BuilderRunItemUpdateManyWithWhereWithoutRunInput | Prisma.BuilderRunItemUpdateManyWithWhereWithoutRunInput[];
+    deleteMany?: Prisma.BuilderRunItemScalarWhereInput | Prisma.BuilderRunItemScalarWhereInput[];
+};
+export type EnumBuilderItemKindFieldUpdateOperationsInput = {
+    set?: $Enums.BuilderItemKind;
+};
+export type EnumBuilderItemStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BuilderItemStatus;
+};
+export type BuilderRunItemCreateWithoutRunInput = {
+    id?: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type BuilderRunItemUncheckedCreateWithoutRunInput = {
+    id?: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type BuilderRunItemCreateOrConnectWithoutRunInput = {
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+    create: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput>;
+};
+export type BuilderRunItemCreateManyRunInputEnvelope = {
+    data: Prisma.BuilderRunItemCreateManyRunInput | Prisma.BuilderRunItemCreateManyRunInput[];
+    skipDuplicates?: boolean;
+};
+export type BuilderRunItemUpsertWithWhereUniqueWithoutRunInput = {
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+    update: Prisma.XOR<Prisma.BuilderRunItemUpdateWithoutRunInput, Prisma.BuilderRunItemUncheckedUpdateWithoutRunInput>;
+    create: Prisma.XOR<Prisma.BuilderRunItemCreateWithoutRunInput, Prisma.BuilderRunItemUncheckedCreateWithoutRunInput>;
+};
+export type BuilderRunItemUpdateWithWhereUniqueWithoutRunInput = {
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+    data: Prisma.XOR<Prisma.BuilderRunItemUpdateWithoutRunInput, Prisma.BuilderRunItemUncheckedUpdateWithoutRunInput>;
+};
+export type BuilderRunItemUpdateManyWithWhereWithoutRunInput = {
+    where: Prisma.BuilderRunItemScalarWhereInput;
+    data: Prisma.XOR<Prisma.BuilderRunItemUpdateManyMutationInput, Prisma.BuilderRunItemUncheckedUpdateManyWithoutRunInput>;
+};
+export type BuilderRunItemScalarWhereInput = {
+    AND?: Prisma.BuilderRunItemScalarWhereInput | Prisma.BuilderRunItemScalarWhereInput[];
+    OR?: Prisma.BuilderRunItemScalarWhereInput[];
+    NOT?: Prisma.BuilderRunItemScalarWhereInput | Prisma.BuilderRunItemScalarWhereInput[];
+    id?: Prisma.UuidFilter<"BuilderRunItem"> | string;
+    runId?: Prisma.UuidFilter<"BuilderRunItem"> | string;
+    sequence?: Prisma.IntFilter<"BuilderRunItem"> | number;
+    kind?: Prisma.EnumBuilderItemKindFilter<"BuilderRunItem"> | $Enums.BuilderItemKind;
+    key?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    name?: Prisma.StringFilter<"BuilderRunItem"> | string;
+    discordId?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    status?: Prisma.EnumBuilderItemStatusFilter<"BuilderRunItem"> | $Enums.BuilderItemStatus;
+    error?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    note?: Prisma.StringNullableFilter<"BuilderRunItem"> | string | null;
+    createdAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"BuilderRunItem"> | Date | string;
+};
+export type BuilderRunItemCreateManyRunInput = {
+    id?: string;
+    sequence?: number;
+    kind: $Enums.BuilderItemKind;
+    key: string;
+    name: string;
+    discordId?: string | null;
+    status: $Enums.BuilderItemStatus;
+    error?: string | null;
+    note?: string | null;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type BuilderRunItemUpdateWithoutRunInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemUncheckedUpdateWithoutRunInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemUncheckedUpdateManyWithoutRunInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    sequence?: Prisma.IntFieldUpdateOperationsInput | number;
+    kind?: Prisma.EnumBuilderItemKindFieldUpdateOperationsInput | $Enums.BuilderItemKind;
+    key?: Prisma.StringFieldUpdateOperationsInput | string;
+    name?: Prisma.StringFieldUpdateOperationsInput | string;
+    discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    status?: Prisma.EnumBuilderItemStatusFieldUpdateOperationsInput | $Enums.BuilderItemStatus;
+    error?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type BuilderRunItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    runId?: boolean;
+    sequence?: boolean;
+    kind?: boolean;
+    key?: boolean;
+    name?: boolean;
+    discordId?: boolean;
+    status?: boolean;
+    error?: boolean;
+    note?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["builderRunItem"]>;
+export type BuilderRunItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    runId?: boolean;
+    sequence?: boolean;
+    kind?: boolean;
+    key?: boolean;
+    name?: boolean;
+    discordId?: boolean;
+    status?: boolean;
+    error?: boolean;
+    note?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["builderRunItem"]>;
+export type BuilderRunItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    id?: boolean;
+    runId?: boolean;
+    sequence?: boolean;
+    kind?: boolean;
+    key?: boolean;
+    name?: boolean;
+    discordId?: boolean;
+    status?: boolean;
+    error?: boolean;
+    note?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["builderRunItem"]>;
+export type BuilderRunItemSelectScalar = {
+    id?: boolean;
+    runId?: boolean;
+    sequence?: boolean;
+    kind?: boolean;
+    key?: boolean;
+    name?: boolean;
+    discordId?: boolean;
+    status?: boolean;
+    error?: boolean;
+    note?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type BuilderRunItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "runId" | "sequence" | "kind" | "key" | "name" | "discordId" | "status" | "error" | "note" | "createdAt" | "updatedAt", ExtArgs["result"]["builderRunItem"]>;
+export type BuilderRunItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+};
+export type BuilderRunItemIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+};
+export type BuilderRunItemIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    run?: boolean | Prisma.BuilderRunDefaultArgs<ExtArgs>;
+};
+export type $BuilderRunItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "BuilderRunItem";
+    objects: {
+        run: Prisma.$BuilderRunPayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        id: string;
+        runId: string;
+        sequence: number;
+        kind: $Enums.BuilderItemKind;
+        key: string;
+        name: string;
+        discordId: string | null;
+        status: $Enums.BuilderItemStatus;
+        error: string | null;
+        note: string | null;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["builderRunItem"]>;
+    composites: {};
+};
+export type BuilderRunItemGetPayload<S extends boolean | null | undefined | BuilderRunItemDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload, S>;
+export type BuilderRunItemCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<BuilderRunItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: BuilderRunItemCountAggregateInputType | true;
+};
+export interface BuilderRunItemDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['BuilderRunItem'];
+        meta: {
+            name: 'BuilderRunItem';
+        };
+    };
+    /**
+     * Find zero or one BuilderRunItem that matches the filter.
+     * @param {BuilderRunItemFindUniqueArgs} args - Arguments to find a BuilderRunItem
+     * @example
+     * // Get one BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends BuilderRunItemFindUniqueArgs>(args: Prisma.SelectSubset<T, BuilderRunItemFindUniqueArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one BuilderRunItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {BuilderRunItemFindUniqueOrThrowArgs} args - Arguments to find a BuilderRunItem
+     * @example
+     * // Get one BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends BuilderRunItemFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, BuilderRunItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first BuilderRunItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemFindFirstArgs} args - Arguments to find a BuilderRunItem
+     * @example
+     * // Get one BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends BuilderRunItemFindFirstArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemFindFirstArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first BuilderRunItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemFindFirstOrThrowArgs} args - Arguments to find a BuilderRunItem
+     * @example
+     * // Get one BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends BuilderRunItemFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more BuilderRunItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all BuilderRunItems
+     * const builderRunItems = await prisma.builderRunItem.findMany()
+     *
+     * // Get first 10 BuilderRunItems
+     * const builderRunItems = await prisma.builderRunItem.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const builderRunItemWithIdOnly = await prisma.builderRunItem.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends BuilderRunItemFindManyArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a BuilderRunItem.
+     * @param {BuilderRunItemCreateArgs} args - Arguments to create a BuilderRunItem.
+     * @example
+     * // Create one BuilderRunItem
+     * const BuilderRunItem = await prisma.builderRunItem.create({
+     *   data: {
+     *     // ... data to create a BuilderRunItem
+     *   }
+     * })
+     *
+     */
+    create<T extends BuilderRunItemCreateArgs>(args: Prisma.SelectSubset<T, BuilderRunItemCreateArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many BuilderRunItems.
+     * @param {BuilderRunItemCreateManyArgs} args - Arguments to create many BuilderRunItems.
+     * @example
+     * // Create many BuilderRunItems
+     * const builderRunItem = await prisma.builderRunItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends BuilderRunItemCreateManyArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many BuilderRunItems and returns the data saved in the database.
+     * @param {BuilderRunItemCreateManyAndReturnArgs} args - Arguments to create many BuilderRunItems.
+     * @example
+     * // Create many BuilderRunItems
+     * const builderRunItem = await prisma.builderRunItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many BuilderRunItems and only return the `id`
+     * const builderRunItemWithIdOnly = await prisma.builderRunItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends BuilderRunItemCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a BuilderRunItem.
+     * @param {BuilderRunItemDeleteArgs} args - Arguments to delete one BuilderRunItem.
+     * @example
+     * // Delete one BuilderRunItem
+     * const BuilderRunItem = await prisma.builderRunItem.delete({
+     *   where: {
+     *     // ... filter to delete one BuilderRunItem
+     *   }
+     * })
+     *
+     */
+    delete<T extends BuilderRunItemDeleteArgs>(args: Prisma.SelectSubset<T, BuilderRunItemDeleteArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one BuilderRunItem.
+     * @param {BuilderRunItemUpdateArgs} args - Arguments to update one BuilderRunItem.
+     * @example
+     * // Update one BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends BuilderRunItemUpdateArgs>(args: Prisma.SelectSubset<T, BuilderRunItemUpdateArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more BuilderRunItems.
+     * @param {BuilderRunItemDeleteManyArgs} args - Arguments to filter BuilderRunItems to delete.
+     * @example
+     * // Delete a few BuilderRunItems
+     * const { count } = await prisma.builderRunItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends BuilderRunItemDeleteManyArgs>(args?: Prisma.SelectSubset<T, BuilderRunItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more BuilderRunItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many BuilderRunItems
+     * const builderRunItem = await prisma.builderRunItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends BuilderRunItemUpdateManyArgs>(args: Prisma.SelectSubset<T, BuilderRunItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more BuilderRunItems and returns the data updated in the database.
+     * @param {BuilderRunItemUpdateManyAndReturnArgs} args - Arguments to update many BuilderRunItems.
+     * @example
+     * // Update many BuilderRunItems
+     * const builderRunItem = await prisma.builderRunItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more BuilderRunItems and only return the `id`
+     * const builderRunItemWithIdOnly = await prisma.builderRunItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends BuilderRunItemUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, BuilderRunItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one BuilderRunItem.
+     * @param {BuilderRunItemUpsertArgs} args - Arguments to update or create a BuilderRunItem.
+     * @example
+     * // Update or create a BuilderRunItem
+     * const builderRunItem = await prisma.builderRunItem.upsert({
+     *   create: {
+     *     // ... data to create a BuilderRunItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the BuilderRunItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends BuilderRunItemUpsertArgs>(args: Prisma.SelectSubset<T, BuilderRunItemUpsertArgs<ExtArgs>>): Prisma.Prisma__BuilderRunItemClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of BuilderRunItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemCountArgs} args - Arguments to filter BuilderRunItems to count.
+     * @example
+     * // Count the number of BuilderRunItems
+     * const count = await prisma.builderRunItem.count({
+     *   where: {
+     *     // ... the filter for the BuilderRunItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends BuilderRunItemCountArgs>(args?: Prisma.Subset<T, BuilderRunItemCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], BuilderRunItemCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a BuilderRunItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends BuilderRunItemAggregateArgs>(args: Prisma.Subset<T, BuilderRunItemAggregateArgs>): Prisma.PrismaPromise<GetBuilderRunItemAggregateType<T>>;
+    /**
+     * Group by BuilderRunItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {BuilderRunItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends BuilderRunItemGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: BuilderRunItemGroupByArgs['orderBy'];
+    } : {
+        orderBy?: BuilderRunItemGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, BuilderRunItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBuilderRunItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the BuilderRunItem model
+     */
+    readonly fields: BuilderRunItemFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for BuilderRunItem.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__BuilderRunItemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    run<T extends Prisma.BuilderRunDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BuilderRunDefaultArgs<ExtArgs>>): Prisma.Prisma__BuilderRunClient<runtime.Types.Result.GetResult<Prisma.$BuilderRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the BuilderRunItem model
+ */
+export interface BuilderRunItemFieldRefs {
+    readonly id: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly runId: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly sequence: Prisma.FieldRef<"BuilderRunItem", 'Int'>;
+    readonly kind: Prisma.FieldRef<"BuilderRunItem", 'BuilderItemKind'>;
+    readonly key: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly name: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly discordId: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly status: Prisma.FieldRef<"BuilderRunItem", 'BuilderItemStatus'>;
+    readonly error: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly note: Prisma.FieldRef<"BuilderRunItem", 'String'>;
+    readonly createdAt: Prisma.FieldRef<"BuilderRunItem", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"BuilderRunItem", 'DateTime'>;
+}
+/**
+ * BuilderRunItem findUnique
+ */
+export type BuilderRunItemFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter, which BuilderRunItem to fetch.
+     */
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+};
+/**
+ * BuilderRunItem findUniqueOrThrow
+ */
+export type BuilderRunItemFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter, which BuilderRunItem to fetch.
+     */
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+};
+/**
+ * BuilderRunItem findFirst
+ */
+export type BuilderRunItemFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter, which BuilderRunItem to fetch.
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of BuilderRunItems to fetch.
+     */
+    orderBy?: Prisma.BuilderRunItemOrderByWithRelationInput | Prisma.BuilderRunItemOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for BuilderRunItems.
+     */
+    cursor?: Prisma.BuilderRunItemWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` BuilderRunItems from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` BuilderRunItems.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of BuilderRunItems.
+     */
+    distinct?: Prisma.BuilderRunItemScalarFieldEnum | Prisma.BuilderRunItemScalarFieldEnum[];
+};
+/**
+ * BuilderRunItem findFirstOrThrow
+ */
+export type BuilderRunItemFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter, which BuilderRunItem to fetch.
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of BuilderRunItems to fetch.
+     */
+    orderBy?: Prisma.BuilderRunItemOrderByWithRelationInput | Prisma.BuilderRunItemOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for BuilderRunItems.
+     */
+    cursor?: Prisma.BuilderRunItemWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` BuilderRunItems from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` BuilderRunItems.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of BuilderRunItems.
+     */
+    distinct?: Prisma.BuilderRunItemScalarFieldEnum | Prisma.BuilderRunItemScalarFieldEnum[];
+};
+/**
+ * BuilderRunItem findMany
+ */
+export type BuilderRunItemFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter, which BuilderRunItems to fetch.
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of BuilderRunItems to fetch.
+     */
+    orderBy?: Prisma.BuilderRunItemOrderByWithRelationInput | Prisma.BuilderRunItemOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing BuilderRunItems.
+     */
+    cursor?: Prisma.BuilderRunItemWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` BuilderRunItems from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` BuilderRunItems.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of BuilderRunItems.
+     */
+    distinct?: Prisma.BuilderRunItemScalarFieldEnum | Prisma.BuilderRunItemScalarFieldEnum[];
+};
+/**
+ * BuilderRunItem create
+ */
+export type BuilderRunItemCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a BuilderRunItem.
+     */
+    data: Prisma.XOR<Prisma.BuilderRunItemCreateInput, Prisma.BuilderRunItemUncheckedCreateInput>;
+};
+/**
+ * BuilderRunItem createMany
+ */
+export type BuilderRunItemCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many BuilderRunItems.
+     */
+    data: Prisma.BuilderRunItemCreateManyInput | Prisma.BuilderRunItemCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * BuilderRunItem createManyAndReturn
+ */
+export type BuilderRunItemCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * The data used to create many BuilderRunItems.
+     */
+    data: Prisma.BuilderRunItemCreateManyInput | Prisma.BuilderRunItemCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * BuilderRunItem update
+ */
+export type BuilderRunItemUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a BuilderRunItem.
+     */
+    data: Prisma.XOR<Prisma.BuilderRunItemUpdateInput, Prisma.BuilderRunItemUncheckedUpdateInput>;
+    /**
+     * Choose, which BuilderRunItem to update.
+     */
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+};
+/**
+ * BuilderRunItem updateMany
+ */
+export type BuilderRunItemUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update BuilderRunItems.
+     */
+    data: Prisma.XOR<Prisma.BuilderRunItemUpdateManyMutationInput, Prisma.BuilderRunItemUncheckedUpdateManyInput>;
+    /**
+     * Filter which BuilderRunItems to update
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * Limit how many BuilderRunItems to update.
+     */
+    limit?: number;
+};
+/**
+ * BuilderRunItem updateManyAndReturn
+ */
+export type BuilderRunItemUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * The data used to update BuilderRunItems.
+     */
+    data: Prisma.XOR<Prisma.BuilderRunItemUpdateManyMutationInput, Prisma.BuilderRunItemUncheckedUpdateManyInput>;
+    /**
+     * Filter which BuilderRunItems to update
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * Limit how many BuilderRunItems to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * BuilderRunItem upsert
+ */
+export type BuilderRunItemUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the BuilderRunItem to update in case it exists.
+     */
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+    /**
+     * In case the BuilderRunItem found by the `where` argument doesn't exist, create a new BuilderRunItem with this data.
+     */
+    create: Prisma.XOR<Prisma.BuilderRunItemCreateInput, Prisma.BuilderRunItemUncheckedCreateInput>;
+    /**
+     * In case the BuilderRunItem was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.BuilderRunItemUpdateInput, Prisma.BuilderRunItemUncheckedUpdateInput>;
+};
+/**
+ * BuilderRunItem delete
+ */
+export type BuilderRunItemDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+    /**
+     * Filter which BuilderRunItem to delete.
+     */
+    where: Prisma.BuilderRunItemWhereUniqueInput;
+};
+/**
+ * BuilderRunItem deleteMany
+ */
+export type BuilderRunItemDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which BuilderRunItems to delete
+     */
+    where?: Prisma.BuilderRunItemWhereInput;
+    /**
+     * Limit how many BuilderRunItems to delete.
+     */
+    limit?: number;
+};
+/**
+ * BuilderRunItem without action
+ */
+export type BuilderRunItemDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the BuilderRunItem
+     */
+    select?: Prisma.BuilderRunItemSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the BuilderRunItem
+     */
+    omit?: Prisma.BuilderRunItemOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.BuilderRunItemInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=BuilderRunItem.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"PortalStaticRoutes.d.ts","sourceRoot":"","sources":["../../src/portal/PortalStaticRoutes.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,eAAe,EAAgC,MAAM,SAAS,CAAC;AAI7E,qEAAqE;AACrE,MAAM,WAAW,wBAAwB;IACvC,oEAAoE;IACpE,QAAQ,CAAC,SAAS,EAAE,MAAM,CAAC;CAC5B;AAyCD;;;;;;GAMG;AACH,wBAAgB,0BAA0B,CACxC,MAAM,EAAE,eAAe,EACvB,OAAO,EAAE,wBAAwB,GAChC,IAAI,CAgBN"}

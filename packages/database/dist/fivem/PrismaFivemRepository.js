@@ -1,0 +1,127 @@
+import { FivemError, } from "@qbox/fivem";
+/** PostgreSQL FiveM settings, monitor state, and status snapshots. `guildId` is the Discord guild ID. */
+export class PrismaFivemRepository {
+    client;
+    constructor(client) {
+        this.client = client;
+    }
+    async get(guildId) {
+        const row = await this.client.fivemSettings.findUnique({ where: { guildId } });
+        return row ? mapConfig(row) : undefined;
+    }
+    async saveSettings(input) {
+        const data = {
+            serverAddress: input.serverAddress ?? null,
+            connectUrl: input.connectUrl ?? null,
+            statusChannelId: input.statusChannelId ?? null,
+            updateIntervalSeconds: input.updateIntervalSeconds,
+            alertChannelId: input.alertChannelId ?? null,
+            alertRoleId: input.alertRoleId ?? null,
+            restartTimes: [...input.restartTimes],
+            timeZone: input.timeZone,
+            restartWarningMinutes: [...input.restartWarningMinutes],
+            ...(input.showPlayerNames === undefined ? {} : { showPlayerNames: input.showPlayerNames }),
+            ...(input.downAfterMinutes === undefined ? {} : { downAfterMinutes: input.downAfterMinutes }),
+            ...(input.debug === undefined ? {} : { debug: input.debug }),
+        };
+        const existing = await this.client.fivemSettings.findUnique({ where: { guildId: input.guildId }, select: { revision: true } });
+        if (!existing) {
+            if (input.expectedRevision !== undefined && input.expectedRevision !== 0)
+                throw new FivemError("CONFLICT", "FiveM settings changed since they were loaded.", { currentRevision: 0 });
+            return mapConfig(await this.client.fivemSettings.create({ data: { guildId: input.guildId, sentRestartWarnings: [], ...data } })).settings;
+        }
+        const result = await this.client.fivemSettings.updateMany({
+            where: { guildId: input.guildId, ...(input.expectedRevision === undefined ? {} : { revision: input.expectedRevision }) },
+            data: { ...data, revision: { increment: 1 } },
+        });
+        if (result.count === 0)
+            throw new FivemError("CONFLICT", "FiveM settings changed since they were loaded.", { currentRevision: existing.revision });
+        return mapConfig(await this.client.fivemSettings.findUniqueOrThrow({ where: { guildId: input.guildId } })).settings;
+    }
+    async saveState(guildId, state) {
+        const data = {};
+        if ("statusMessageId" in state)
+            data.statusMessageId = state.statusMessageId ?? null;
+        if ("lastOnline" in state)
+            data.lastOnline = state.lastOnline ?? null;
+        if ("onlineSince" in state)
+            data.onlineSince = state.onlineSince ?? null;
+        if ("phase" in state)
+            data.phase = state.phase ?? null;
+        if ("phaseSince" in state)
+            data.phaseSince = state.phaseSince ?? null;
+        if ("downSince" in state)
+            data.downSince = state.downSince ?? null;
+        if (state.downAlertSent !== undefined)
+            data.downAlertSent = state.downAlertSent;
+        if ("lastMessageAt" in state)
+            data.lastMessageAt = state.lastMessageAt ?? null;
+        if ("lastSnapshotAt" in state)
+            data.lastSnapshotAt = state.lastSnapshotAt ?? null;
+        if (state.failureStreak !== undefined)
+            data.failureStreak = state.failureStreak;
+        if ("lastPolledAt" in state)
+            data.lastPolledAt = state.lastPolledAt ?? null;
+        if (state.sentRestartWarnings !== undefined)
+            data.sentRestartWarnings = [...state.sentRestartWarnings];
+        // State belongs to saved settings; without a settings row there is nothing to monitor.
+        await this.client.fivemSettings.updateMany({ where: { guildId }, data });
+    }
+    async listMonitored() {
+        const rows = await this.client.fivemSettings.findMany({ where: { serverAddress: { not: null } }, take: 500 });
+        return rows.map(mapConfig);
+    }
+    async addSnapshot(guildId, snapshot) {
+        await this.client.fivemStatusSnapshot.create({ data: { guildId, online: snapshot.online, players: snapshot.players, maxPlayers: snapshot.maxPlayers, at: snapshot.at } });
+    }
+    async listSnapshots(guildId, since) {
+        const rows = await this.client.fivemStatusSnapshot.findMany({
+            where: { guildId, at: { gte: since } },
+            orderBy: { at: "asc" },
+            select: { online: true, players: true, maxPlayers: true, at: true },
+            take: 20_000,
+        });
+        return rows;
+    }
+    async pruneSnapshots(before) {
+        return (await this.client.fivemStatusSnapshot.deleteMany({ where: { at: { lt: before } } })).count;
+    }
+}
+function mapConfig(row) {
+    return {
+        settings: {
+            guildId: row.guildId,
+            ...(row.serverAddress ? { serverAddress: row.serverAddress } : {}),
+            ...(row.connectUrl ? { connectUrl: row.connectUrl } : {}),
+            ...(row.statusChannelId ? { statusChannelId: row.statusChannelId } : {}),
+            updateIntervalSeconds: row.updateIntervalSeconds,
+            ...(row.alertChannelId ? { alertChannelId: row.alertChannelId } : {}),
+            ...(row.alertRoleId ? { alertRoleId: row.alertRoleId } : {}),
+            restartTimes: row.restartTimes,
+            timeZone: row.timeZone,
+            restartWarningMinutes: row.restartWarningMinutes,
+            showPlayerNames: row.showPlayerNames,
+            downAfterMinutes: row.downAfterMinutes,
+            debug: row.debug,
+            revision: row.revision,
+        },
+        state: {
+            ...(row.statusMessageId ? { statusMessageId: row.statusMessageId } : {}),
+            ...(row.lastOnline === null ? {} : { lastOnline: row.lastOnline }),
+            ...(isPhase(row.phase) ? { phase: row.phase } : {}),
+            ...(row.phaseSince ? { phaseSince: row.phaseSince } : {}),
+            ...(row.downSince ? { downSince: row.downSince } : {}),
+            downAlertSent: row.downAlertSent,
+            ...(row.onlineSince ? { onlineSince: row.onlineSince } : {}),
+            ...(row.lastMessageAt ? { lastMessageAt: row.lastMessageAt } : {}),
+            ...(row.lastSnapshotAt ? { lastSnapshotAt: row.lastSnapshotAt } : {}),
+            failureStreak: row.failureStreak,
+            ...(row.lastPolledAt ? { lastPolledAt: row.lastPolledAt } : {}),
+            sentRestartWarnings: row.sentRestartWarnings,
+        },
+    };
+}
+function isPhase(value) {
+    return value === "online" || value === "restarting" || value === "starting" || value === "offline";
+}
+//# sourceMappingURL=PrismaFivemRepository.js.map

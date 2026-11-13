@@ -1,0 +1,1459 @@
+import type * as runtime from "@prisma/client/runtime/client";
+import type * as Prisma from "../internal/prismaNamespace.js";
+/**
+ * Model RulesConfig
+ *
+ */
+export type RulesConfigModel = runtime.Types.Result.DefaultSelection<Prisma.$RulesConfigPayload>;
+export type AggregateRulesConfig = {
+    _count: RulesConfigCountAggregateOutputType | null;
+    _avg: RulesConfigAvgAggregateOutputType | null;
+    _sum: RulesConfigSumAggregateOutputType | null;
+    _min: RulesConfigMinAggregateOutputType | null;
+    _max: RulesConfigMaxAggregateOutputType | null;
+};
+export type RulesConfigAvgAggregateOutputType = {
+    revision: number | null;
+};
+export type RulesConfigSumAggregateOutputType = {
+    revision: number | null;
+};
+export type RulesConfigMinAggregateOutputType = {
+    guildId: string | null;
+    enabled: boolean | null;
+    channelId: string | null;
+    messageText: string | null;
+    buttonLabel: string | null;
+    acceptedRoleId: string | null;
+    pendingRoleId: string | null;
+    messageId: string | null;
+    revision: number | null;
+    lastOperationSource: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type RulesConfigMaxAggregateOutputType = {
+    guildId: string | null;
+    enabled: boolean | null;
+    channelId: string | null;
+    messageText: string | null;
+    buttonLabel: string | null;
+    acceptedRoleId: string | null;
+    pendingRoleId: string | null;
+    messageId: string | null;
+    revision: number | null;
+    lastOperationSource: string | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+};
+export type RulesConfigCountAggregateOutputType = {
+    guildId: number;
+    enabled: number;
+    channelId: number;
+    messageText: number;
+    buttonLabel: number;
+    acceptedRoleId: number;
+    pendingRoleId: number;
+    messageId: number;
+    revision: number;
+    lastOperationSource: number;
+    createdAt: number;
+    updatedAt: number;
+    _all: number;
+};
+export type RulesConfigAvgAggregateInputType = {
+    revision?: true;
+};
+export type RulesConfigSumAggregateInputType = {
+    revision?: true;
+};
+export type RulesConfigMinAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    channelId?: true;
+    messageText?: true;
+    buttonLabel?: true;
+    acceptedRoleId?: true;
+    pendingRoleId?: true;
+    messageId?: true;
+    revision?: true;
+    lastOperationSource?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type RulesConfigMaxAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    channelId?: true;
+    messageText?: true;
+    buttonLabel?: true;
+    acceptedRoleId?: true;
+    pendingRoleId?: true;
+    messageId?: true;
+    revision?: true;
+    lastOperationSource?: true;
+    createdAt?: true;
+    updatedAt?: true;
+};
+export type RulesConfigCountAggregateInputType = {
+    guildId?: true;
+    enabled?: true;
+    channelId?: true;
+    messageText?: true;
+    buttonLabel?: true;
+    acceptedRoleId?: true;
+    pendingRoleId?: true;
+    messageId?: true;
+    revision?: true;
+    lastOperationSource?: true;
+    createdAt?: true;
+    updatedAt?: true;
+    _all?: true;
+};
+export type RulesConfigAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which RulesConfig to aggregate.
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of RulesConfigs to fetch.
+     */
+    orderBy?: Prisma.RulesConfigOrderByWithRelationInput | Prisma.RulesConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: Prisma.RulesConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` RulesConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` RulesConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned RulesConfigs
+    **/
+    _count?: true | RulesConfigCountAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: RulesConfigAvgAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: RulesConfigSumAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: RulesConfigMinAggregateInputType;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: RulesConfigMaxAggregateInputType;
+};
+export type GetRulesConfigAggregateType<T extends RulesConfigAggregateArgs> = {
+    [P in keyof T & keyof AggregateRulesConfig]: P extends '_count' | 'count' ? T[P] extends true ? number : Prisma.GetScalarType<T[P], AggregateRulesConfig[P]> : Prisma.GetScalarType<T[P], AggregateRulesConfig[P]>;
+};
+export type RulesConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    where?: Prisma.RulesConfigWhereInput;
+    orderBy?: Prisma.RulesConfigOrderByWithAggregationInput | Prisma.RulesConfigOrderByWithAggregationInput[];
+    by: Prisma.RulesConfigScalarFieldEnum[] | Prisma.RulesConfigScalarFieldEnum;
+    having?: Prisma.RulesConfigScalarWhereWithAggregatesInput;
+    take?: number;
+    skip?: number;
+    _count?: RulesConfigCountAggregateInputType | true;
+    _avg?: RulesConfigAvgAggregateInputType;
+    _sum?: RulesConfigSumAggregateInputType;
+    _min?: RulesConfigMinAggregateInputType;
+    _max?: RulesConfigMaxAggregateInputType;
+};
+export type RulesConfigGroupByOutputType = {
+    guildId: string;
+    enabled: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId: string | null;
+    messageId: string | null;
+    revision: number;
+    lastOperationSource: string;
+    createdAt: Date;
+    updatedAt: Date;
+    _count: RulesConfigCountAggregateOutputType | null;
+    _avg: RulesConfigAvgAggregateOutputType | null;
+    _sum: RulesConfigSumAggregateOutputType | null;
+    _min: RulesConfigMinAggregateOutputType | null;
+    _max: RulesConfigMaxAggregateOutputType | null;
+};
+export type GetRulesConfigGroupByPayload<T extends RulesConfigGroupByArgs> = Prisma.PrismaPromise<Array<Prisma.PickEnumerable<RulesConfigGroupByOutputType, T['by']> & {
+    [P in ((keyof T) & (keyof RulesConfigGroupByOutputType))]: P extends '_count' ? T[P] extends boolean ? number : Prisma.GetScalarType<T[P], RulesConfigGroupByOutputType[P]> : Prisma.GetScalarType<T[P], RulesConfigGroupByOutputType[P]>;
+}>>;
+export type RulesConfigWhereInput = {
+    AND?: Prisma.RulesConfigWhereInput | Prisma.RulesConfigWhereInput[];
+    OR?: Prisma.RulesConfigWhereInput[];
+    NOT?: Prisma.RulesConfigWhereInput | Prisma.RulesConfigWhereInput[];
+    guildId?: Prisma.UuidFilter<"RulesConfig"> | string;
+    enabled?: Prisma.BoolFilter<"RulesConfig"> | boolean;
+    channelId?: Prisma.StringFilter<"RulesConfig"> | string;
+    messageText?: Prisma.StringFilter<"RulesConfig"> | string;
+    buttonLabel?: Prisma.StringFilter<"RulesConfig"> | string;
+    acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string;
+    pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    revision?: Prisma.IntFilter<"RulesConfig"> | number;
+    lastOperationSource?: Prisma.StringFilter<"RulesConfig"> | string;
+    createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+};
+export type RulesConfigOrderByWithRelationInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    messageText?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    acceptedRoleId?: Prisma.SortOrder;
+    pendingRoleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    messageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    lastOperationSource?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    guild?: Prisma.GuildOrderByWithRelationInput;
+};
+export type RulesConfigWhereUniqueInput = Prisma.AtLeast<{
+    guildId?: string;
+    AND?: Prisma.RulesConfigWhereInput | Prisma.RulesConfigWhereInput[];
+    OR?: Prisma.RulesConfigWhereInput[];
+    NOT?: Prisma.RulesConfigWhereInput | Prisma.RulesConfigWhereInput[];
+    enabled?: Prisma.BoolFilter<"RulesConfig"> | boolean;
+    channelId?: Prisma.StringFilter<"RulesConfig"> | string;
+    messageText?: Prisma.StringFilter<"RulesConfig"> | string;
+    buttonLabel?: Prisma.StringFilter<"RulesConfig"> | string;
+    acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string;
+    pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    revision?: Prisma.IntFilter<"RulesConfig"> | number;
+    lastOperationSource?: Prisma.StringFilter<"RulesConfig"> | string;
+    createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+    guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>;
+}, "guildId">;
+export type RulesConfigOrderByWithAggregationInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    messageText?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    acceptedRoleId?: Prisma.SortOrder;
+    pendingRoleId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    messageId?: Prisma.SortOrderInput | Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    lastOperationSource?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+    _count?: Prisma.RulesConfigCountOrderByAggregateInput;
+    _avg?: Prisma.RulesConfigAvgOrderByAggregateInput;
+    _max?: Prisma.RulesConfigMaxOrderByAggregateInput;
+    _min?: Prisma.RulesConfigMinOrderByAggregateInput;
+    _sum?: Prisma.RulesConfigSumOrderByAggregateInput;
+};
+export type RulesConfigScalarWhereWithAggregatesInput = {
+    AND?: Prisma.RulesConfigScalarWhereWithAggregatesInput | Prisma.RulesConfigScalarWhereWithAggregatesInput[];
+    OR?: Prisma.RulesConfigScalarWhereWithAggregatesInput[];
+    NOT?: Prisma.RulesConfigScalarWhereWithAggregatesInput | Prisma.RulesConfigScalarWhereWithAggregatesInput[];
+    guildId?: Prisma.UuidWithAggregatesFilter<"RulesConfig"> | string;
+    enabled?: Prisma.BoolWithAggregatesFilter<"RulesConfig"> | boolean;
+    channelId?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string;
+    messageText?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string;
+    buttonLabel?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string;
+    acceptedRoleId?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string;
+    pendingRoleId?: Prisma.StringNullableWithAggregatesFilter<"RulesConfig"> | string | null;
+    messageId?: Prisma.StringNullableWithAggregatesFilter<"RulesConfig"> | string | null;
+    revision?: Prisma.IntWithAggregatesFilter<"RulesConfig"> | number;
+    lastOperationSource?: Prisma.StringWithAggregatesFilter<"RulesConfig"> | string;
+    createdAt?: Prisma.DateTimeWithAggregatesFilter<"RulesConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeWithAggregatesFilter<"RulesConfig"> | Date | string;
+};
+export type RulesConfigCreateInput = {
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    guild: Prisma.GuildCreateNestedOneWithoutRulesConfigsInput;
+};
+export type RulesConfigUncheckedCreateInput = {
+    guildId: string;
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type RulesConfigUpdateInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    guild?: Prisma.GuildUpdateOneRequiredWithoutRulesConfigsNestedInput;
+};
+export type RulesConfigUncheckedUpdateInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigCreateManyInput = {
+    guildId: string;
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type RulesConfigUpdateManyMutationInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigUncheckedUpdateManyInput = {
+    guildId?: Prisma.StringFieldUpdateOperationsInput | string;
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigListRelationFilter = {
+    every?: Prisma.RulesConfigWhereInput;
+    some?: Prisma.RulesConfigWhereInput;
+    none?: Prisma.RulesConfigWhereInput;
+};
+export type RulesConfigOrderByRelationAggregateInput = {
+    _count?: Prisma.SortOrder;
+};
+export type RulesConfigCountOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    messageText?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    acceptedRoleId?: Prisma.SortOrder;
+    pendingRoleId?: Prisma.SortOrder;
+    messageId?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    lastOperationSource?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type RulesConfigAvgOrderByAggregateInput = {
+    revision?: Prisma.SortOrder;
+};
+export type RulesConfigMaxOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    messageText?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    acceptedRoleId?: Prisma.SortOrder;
+    pendingRoleId?: Prisma.SortOrder;
+    messageId?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    lastOperationSource?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type RulesConfigMinOrderByAggregateInput = {
+    guildId?: Prisma.SortOrder;
+    enabled?: Prisma.SortOrder;
+    channelId?: Prisma.SortOrder;
+    messageText?: Prisma.SortOrder;
+    buttonLabel?: Prisma.SortOrder;
+    acceptedRoleId?: Prisma.SortOrder;
+    pendingRoleId?: Prisma.SortOrder;
+    messageId?: Prisma.SortOrder;
+    revision?: Prisma.SortOrder;
+    lastOperationSource?: Prisma.SortOrder;
+    createdAt?: Prisma.SortOrder;
+    updatedAt?: Prisma.SortOrder;
+};
+export type RulesConfigSumOrderByAggregateInput = {
+    revision?: Prisma.SortOrder;
+};
+export type RulesConfigCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput> | Prisma.RulesConfigCreateWithoutGuildInput[] | Prisma.RulesConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.RulesConfigCreateOrConnectWithoutGuildInput | Prisma.RulesConfigCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.RulesConfigCreateManyGuildInputEnvelope;
+    connect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+};
+export type RulesConfigUncheckedCreateNestedManyWithoutGuildInput = {
+    create?: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput> | Prisma.RulesConfigCreateWithoutGuildInput[] | Prisma.RulesConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.RulesConfigCreateOrConnectWithoutGuildInput | Prisma.RulesConfigCreateOrConnectWithoutGuildInput[];
+    createMany?: Prisma.RulesConfigCreateManyGuildInputEnvelope;
+    connect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+};
+export type RulesConfigUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput> | Prisma.RulesConfigCreateWithoutGuildInput[] | Prisma.RulesConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.RulesConfigCreateOrConnectWithoutGuildInput | Prisma.RulesConfigCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.RulesConfigUpsertWithWhereUniqueWithoutGuildInput | Prisma.RulesConfigUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.RulesConfigCreateManyGuildInputEnvelope;
+    set?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    disconnect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    delete?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    connect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    update?: Prisma.RulesConfigUpdateWithWhereUniqueWithoutGuildInput | Prisma.RulesConfigUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.RulesConfigUpdateManyWithWhereWithoutGuildInput | Prisma.RulesConfigUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.RulesConfigScalarWhereInput | Prisma.RulesConfigScalarWhereInput[];
+};
+export type RulesConfigUncheckedUpdateManyWithoutGuildNestedInput = {
+    create?: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput> | Prisma.RulesConfigCreateWithoutGuildInput[] | Prisma.RulesConfigUncheckedCreateWithoutGuildInput[];
+    connectOrCreate?: Prisma.RulesConfigCreateOrConnectWithoutGuildInput | Prisma.RulesConfigCreateOrConnectWithoutGuildInput[];
+    upsert?: Prisma.RulesConfigUpsertWithWhereUniqueWithoutGuildInput | Prisma.RulesConfigUpsertWithWhereUniqueWithoutGuildInput[];
+    createMany?: Prisma.RulesConfigCreateManyGuildInputEnvelope;
+    set?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    disconnect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    delete?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    connect?: Prisma.RulesConfigWhereUniqueInput | Prisma.RulesConfigWhereUniqueInput[];
+    update?: Prisma.RulesConfigUpdateWithWhereUniqueWithoutGuildInput | Prisma.RulesConfigUpdateWithWhereUniqueWithoutGuildInput[];
+    updateMany?: Prisma.RulesConfigUpdateManyWithWhereWithoutGuildInput | Prisma.RulesConfigUpdateManyWithWhereWithoutGuildInput[];
+    deleteMany?: Prisma.RulesConfigScalarWhereInput | Prisma.RulesConfigScalarWhereInput[];
+};
+export type RulesConfigCreateWithoutGuildInput = {
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type RulesConfigUncheckedCreateWithoutGuildInput = {
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type RulesConfigCreateOrConnectWithoutGuildInput = {
+    where: Prisma.RulesConfigWhereUniqueInput;
+    create: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput>;
+};
+export type RulesConfigCreateManyGuildInputEnvelope = {
+    data: Prisma.RulesConfigCreateManyGuildInput | Prisma.RulesConfigCreateManyGuildInput[];
+    skipDuplicates?: boolean;
+};
+export type RulesConfigUpsertWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.RulesConfigWhereUniqueInput;
+    update: Prisma.XOR<Prisma.RulesConfigUpdateWithoutGuildInput, Prisma.RulesConfigUncheckedUpdateWithoutGuildInput>;
+    create: Prisma.XOR<Prisma.RulesConfigCreateWithoutGuildInput, Prisma.RulesConfigUncheckedCreateWithoutGuildInput>;
+};
+export type RulesConfigUpdateWithWhereUniqueWithoutGuildInput = {
+    where: Prisma.RulesConfigWhereUniqueInput;
+    data: Prisma.XOR<Prisma.RulesConfigUpdateWithoutGuildInput, Prisma.RulesConfigUncheckedUpdateWithoutGuildInput>;
+};
+export type RulesConfigUpdateManyWithWhereWithoutGuildInput = {
+    where: Prisma.RulesConfigScalarWhereInput;
+    data: Prisma.XOR<Prisma.RulesConfigUpdateManyMutationInput, Prisma.RulesConfigUncheckedUpdateManyWithoutGuildInput>;
+};
+export type RulesConfigScalarWhereInput = {
+    AND?: Prisma.RulesConfigScalarWhereInput | Prisma.RulesConfigScalarWhereInput[];
+    OR?: Prisma.RulesConfigScalarWhereInput[];
+    NOT?: Prisma.RulesConfigScalarWhereInput | Prisma.RulesConfigScalarWhereInput[];
+    guildId?: Prisma.UuidFilter<"RulesConfig"> | string;
+    enabled?: Prisma.BoolFilter<"RulesConfig"> | boolean;
+    channelId?: Prisma.StringFilter<"RulesConfig"> | string;
+    messageText?: Prisma.StringFilter<"RulesConfig"> | string;
+    buttonLabel?: Prisma.StringFilter<"RulesConfig"> | string;
+    acceptedRoleId?: Prisma.StringFilter<"RulesConfig"> | string;
+    pendingRoleId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    messageId?: Prisma.StringNullableFilter<"RulesConfig"> | string | null;
+    revision?: Prisma.IntFilter<"RulesConfig"> | number;
+    lastOperationSource?: Prisma.StringFilter<"RulesConfig"> | string;
+    createdAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+    updatedAt?: Prisma.DateTimeFilter<"RulesConfig"> | Date | string;
+};
+export type RulesConfigCreateManyGuildInput = {
+    enabled?: boolean;
+    channelId: string;
+    messageText: string;
+    buttonLabel: string;
+    acceptedRoleId: string;
+    pendingRoleId?: string | null;
+    messageId?: string | null;
+    revision?: number;
+    lastOperationSource?: string;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+};
+export type RulesConfigUpdateWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigUncheckedUpdateWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigUncheckedUpdateManyWithoutGuildInput = {
+    enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    channelId?: Prisma.StringFieldUpdateOperationsInput | string;
+    messageText?: Prisma.StringFieldUpdateOperationsInput | string;
+    buttonLabel?: Prisma.StringFieldUpdateOperationsInput | string;
+    acceptedRoleId?: Prisma.StringFieldUpdateOperationsInput | string;
+    pendingRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    messageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    revision?: Prisma.IntFieldUpdateOperationsInput | number;
+    lastOperationSource?: Prisma.StringFieldUpdateOperationsInput | string;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+export type RulesConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    messageText?: boolean;
+    buttonLabel?: boolean;
+    acceptedRoleId?: boolean;
+    pendingRoleId?: boolean;
+    messageId?: boolean;
+    revision?: boolean;
+    lastOperationSource?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["rulesConfig"]>;
+export type RulesConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    messageText?: boolean;
+    buttonLabel?: boolean;
+    acceptedRoleId?: boolean;
+    pendingRoleId?: boolean;
+    messageId?: boolean;
+    revision?: boolean;
+    lastOperationSource?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["rulesConfig"]>;
+export type RulesConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
+    guildId?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    messageText?: boolean;
+    buttonLabel?: boolean;
+    acceptedRoleId?: boolean;
+    pendingRoleId?: boolean;
+    messageId?: boolean;
+    revision?: boolean;
+    lastOperationSource?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+}, ExtArgs["result"]["rulesConfig"]>;
+export type RulesConfigSelectScalar = {
+    guildId?: boolean;
+    enabled?: boolean;
+    channelId?: boolean;
+    messageText?: boolean;
+    buttonLabel?: boolean;
+    acceptedRoleId?: boolean;
+    pendingRoleId?: boolean;
+    messageId?: boolean;
+    revision?: boolean;
+    lastOperationSource?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
+};
+export type RulesConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "enabled" | "channelId" | "messageText" | "buttonLabel" | "acceptedRoleId" | "pendingRoleId" | "messageId" | "revision" | "lastOperationSource" | "createdAt" | "updatedAt", ExtArgs["result"]["rulesConfig"]>;
+export type RulesConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type RulesConfigIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type RulesConfigIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>;
+};
+export type $RulesConfigPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    name: "RulesConfig";
+    objects: {
+        guild: Prisma.$GuildPayload<ExtArgs>;
+    };
+    scalars: runtime.Types.Extensions.GetPayloadResult<{
+        guildId: string;
+        enabled: boolean;
+        channelId: string;
+        messageText: string;
+        buttonLabel: string;
+        acceptedRoleId: string;
+        pendingRoleId: string | null;
+        messageId: string | null;
+        revision: number;
+        lastOperationSource: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }, ExtArgs["result"]["rulesConfig"]>;
+    composites: {};
+};
+export type RulesConfigGetPayload<S extends boolean | null | undefined | RulesConfigDefaultArgs> = runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload, S>;
+export type RulesConfigCountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = Omit<RulesConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+    select?: RulesConfigCountAggregateInputType | true;
+};
+export interface RulesConfigDelegate<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: {
+        types: Prisma.TypeMap<ExtArgs>['model']['RulesConfig'];
+        meta: {
+            name: 'RulesConfig';
+        };
+    };
+    /**
+     * Find zero or one RulesConfig that matches the filter.
+     * @param {RulesConfigFindUniqueArgs} args - Arguments to find a RulesConfig
+     * @example
+     * // Get one RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RulesConfigFindUniqueArgs>(args: Prisma.SelectSubset<T, RulesConfigFindUniqueArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find one RulesConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RulesConfigFindUniqueOrThrowArgs} args - Arguments to find a RulesConfig
+     * @example
+     * // Get one RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RulesConfigFindUniqueOrThrowArgs>(args: Prisma.SelectSubset<T, RulesConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first RulesConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigFindFirstArgs} args - Arguments to find a RulesConfig
+     * @example
+     * // Get one RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RulesConfigFindFirstArgs>(args?: Prisma.SelectSubset<T, RulesConfigFindFirstArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find the first RulesConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigFindFirstOrThrowArgs} args - Arguments to find a RulesConfig
+     * @example
+     * // Get one RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RulesConfigFindFirstOrThrowArgs>(args?: Prisma.SelectSubset<T, RulesConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Find zero or more RulesConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RulesConfigs
+     * const rulesConfigs = await prisma.rulesConfig.findMany()
+     *
+     * // Get first 10 RulesConfigs
+     * const rulesConfigs = await prisma.rulesConfig.findMany({ take: 10 })
+     *
+     * // Only select the `guildId`
+     * const rulesConfigWithGuildIdOnly = await prisma.rulesConfig.findMany({ select: { guildId: true } })
+     *
+     */
+    findMany<T extends RulesConfigFindManyArgs>(args?: Prisma.SelectSubset<T, RulesConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>;
+    /**
+     * Create a RulesConfig.
+     * @param {RulesConfigCreateArgs} args - Arguments to create a RulesConfig.
+     * @example
+     * // Create one RulesConfig
+     * const RulesConfig = await prisma.rulesConfig.create({
+     *   data: {
+     *     // ... data to create a RulesConfig
+     *   }
+     * })
+     *
+     */
+    create<T extends RulesConfigCreateArgs>(args: Prisma.SelectSubset<T, RulesConfigCreateArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Create many RulesConfigs.
+     * @param {RulesConfigCreateManyArgs} args - Arguments to create many RulesConfigs.
+     * @example
+     * // Create many RulesConfigs
+     * const rulesConfig = await prisma.rulesConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends RulesConfigCreateManyArgs>(args?: Prisma.SelectSubset<T, RulesConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Create many RulesConfigs and returns the data saved in the database.
+     * @param {RulesConfigCreateManyAndReturnArgs} args - Arguments to create many RulesConfigs.
+     * @example
+     * // Create many RulesConfigs
+     * const rulesConfig = await prisma.rulesConfig.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many RulesConfigs and only return the `guildId`
+     * const rulesConfigWithGuildIdOnly = await prisma.rulesConfig.createManyAndReturn({
+     *   select: { guildId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends RulesConfigCreateManyAndReturnArgs>(args?: Prisma.SelectSubset<T, RulesConfigCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Delete a RulesConfig.
+     * @param {RulesConfigDeleteArgs} args - Arguments to delete one RulesConfig.
+     * @example
+     * // Delete one RulesConfig
+     * const RulesConfig = await prisma.rulesConfig.delete({
+     *   where: {
+     *     // ... filter to delete one RulesConfig
+     *   }
+     * })
+     *
+     */
+    delete<T extends RulesConfigDeleteArgs>(args: Prisma.SelectSubset<T, RulesConfigDeleteArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Update one RulesConfig.
+     * @param {RulesConfigUpdateArgs} args - Arguments to update one RulesConfig.
+     * @example
+     * // Update one RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends RulesConfigUpdateArgs>(args: Prisma.SelectSubset<T, RulesConfigUpdateArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Delete zero or more RulesConfigs.
+     * @param {RulesConfigDeleteManyArgs} args - Arguments to filter RulesConfigs to delete.
+     * @example
+     * // Delete a few RulesConfigs
+     * const { count } = await prisma.rulesConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends RulesConfigDeleteManyArgs>(args?: Prisma.SelectSubset<T, RulesConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more RulesConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RulesConfigs
+     * const rulesConfig = await prisma.rulesConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends RulesConfigUpdateManyArgs>(args: Prisma.SelectSubset<T, RulesConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<Prisma.BatchPayload>;
+    /**
+     * Update zero or more RulesConfigs and returns the data updated in the database.
+     * @param {RulesConfigUpdateManyAndReturnArgs} args - Arguments to update many RulesConfigs.
+     * @example
+     * // Update many RulesConfigs
+     * const rulesConfig = await prisma.rulesConfig.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more RulesConfigs and only return the `guildId`
+     * const rulesConfigWithGuildIdOnly = await prisma.rulesConfig.updateManyAndReturn({
+     *   select: { guildId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends RulesConfigUpdateManyAndReturnArgs>(args: Prisma.SelectSubset<T, RulesConfigUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>;
+    /**
+     * Create or update one RulesConfig.
+     * @param {RulesConfigUpsertArgs} args - Arguments to update or create a RulesConfig.
+     * @example
+     * // Update or create a RulesConfig
+     * const rulesConfig = await prisma.rulesConfig.upsert({
+     *   create: {
+     *     // ... data to create a RulesConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RulesConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RulesConfigUpsertArgs>(args: Prisma.SelectSubset<T, RulesConfigUpsertArgs<ExtArgs>>): Prisma.Prisma__RulesConfigClient<runtime.Types.Result.GetResult<Prisma.$RulesConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Count the number of RulesConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigCountArgs} args - Arguments to filter RulesConfigs to count.
+     * @example
+     * // Count the number of RulesConfigs
+     * const count = await prisma.rulesConfig.count({
+     *   where: {
+     *     // ... the filter for the RulesConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends RulesConfigCountArgs>(args?: Prisma.Subset<T, RulesConfigCountArgs>): Prisma.PrismaPromise<T extends runtime.Types.Utils.Record<'select', any> ? T['select'] extends true ? number : Prisma.GetScalarType<T['select'], RulesConfigCountAggregateOutputType> : number>;
+    /**
+     * Allows you to perform aggregations operations on a RulesConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RulesConfigAggregateArgs>(args: Prisma.Subset<T, RulesConfigAggregateArgs>): Prisma.PrismaPromise<GetRulesConfigAggregateType<T>>;
+    /**
+     * Group by RulesConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RulesConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<T extends RulesConfigGroupByArgs, HasSelectOrTake extends Prisma.Or<Prisma.Extends<'skip', Prisma.Keys<T>>, Prisma.Extends<'take', Prisma.Keys<T>>>, OrderByArg extends Prisma.True extends HasSelectOrTake ? {
+        orderBy: RulesConfigGroupByArgs['orderBy'];
+    } : {
+        orderBy?: RulesConfigGroupByArgs['orderBy'];
+    }, OrderFields extends Prisma.ExcludeUnderscoreKeys<Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>>, ByFields extends Prisma.MaybeTupleToUnion<T['by']>, ByValid extends Prisma.Has<ByFields, OrderFields>, HavingFields extends Prisma.GetHavingFields<T['having']>, HavingValid extends Prisma.Has<ByFields, HavingFields>, ByEmpty extends T['by'] extends never[] ? Prisma.True : Prisma.False, InputErrors extends ByEmpty extends Prisma.True ? `Error: "by" must not be empty.` : HavingValid extends Prisma.False ? {
+        [P in HavingFields]: P extends ByFields ? never : P extends string ? `Error: Field "${P}" used in "having" needs to be provided in "by".` : [
+            Error,
+            'Field ',
+            P,
+            ` in "having" needs to be provided in "by"`
+        ];
+    }[HavingFields] : 'take' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "take", you also need to provide "orderBy"' : 'skip' extends Prisma.Keys<T> ? 'orderBy' extends Prisma.Keys<T> ? ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields] : 'Error: If you provide "skip", you also need to provide "orderBy"' : ByValid extends Prisma.True ? {} : {
+        [P in OrderFields]: P extends ByFields ? never : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
+    }[OrderFields]>(args: Prisma.SubsetIntersection<T, RulesConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRulesConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>;
+    /**
+     * Fields of the RulesConfig model
+     */
+    readonly fields: RulesConfigFieldRefs;
+}
+/**
+ * The delegate class that acts as a "Promise-like" for RulesConfig.
+ * Why is this prefixed with `Prisma__`?
+ * Because we want to prevent naming conflicts as mentioned in
+ * https://github.com/prisma/prisma-client-js/issues/707
+ */
+export interface Prisma__RulesConfigClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise";
+    guild<T extends Prisma.GuildDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuildDefaultArgs<ExtArgs>>): Prisma.Prisma__GuildClient<runtime.Types.Result.GetResult<Prisma.$GuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>;
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
+}
+/**
+ * Fields of the RulesConfig model
+ */
+export interface RulesConfigFieldRefs {
+    readonly guildId: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly enabled: Prisma.FieldRef<"RulesConfig", 'Boolean'>;
+    readonly channelId: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly messageText: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly buttonLabel: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly acceptedRoleId: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly pendingRoleId: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly messageId: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly revision: Prisma.FieldRef<"RulesConfig", 'Int'>;
+    readonly lastOperationSource: Prisma.FieldRef<"RulesConfig", 'String'>;
+    readonly createdAt: Prisma.FieldRef<"RulesConfig", 'DateTime'>;
+    readonly updatedAt: Prisma.FieldRef<"RulesConfig", 'DateTime'>;
+}
+/**
+ * RulesConfig findUnique
+ */
+export type RulesConfigFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which RulesConfig to fetch.
+     */
+    where: Prisma.RulesConfigWhereUniqueInput;
+};
+/**
+ * RulesConfig findUniqueOrThrow
+ */
+export type RulesConfigFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which RulesConfig to fetch.
+     */
+    where: Prisma.RulesConfigWhereUniqueInput;
+};
+/**
+ * RulesConfig findFirst
+ */
+export type RulesConfigFindFirstArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which RulesConfig to fetch.
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of RulesConfigs to fetch.
+     */
+    orderBy?: Prisma.RulesConfigOrderByWithRelationInput | Prisma.RulesConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for RulesConfigs.
+     */
+    cursor?: Prisma.RulesConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` RulesConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` RulesConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of RulesConfigs.
+     */
+    distinct?: Prisma.RulesConfigScalarFieldEnum | Prisma.RulesConfigScalarFieldEnum[];
+};
+/**
+ * RulesConfig findFirstOrThrow
+ */
+export type RulesConfigFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which RulesConfig to fetch.
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of RulesConfigs to fetch.
+     */
+    orderBy?: Prisma.RulesConfigOrderByWithRelationInput | Prisma.RulesConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for RulesConfigs.
+     */
+    cursor?: Prisma.RulesConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` RulesConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` RulesConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of RulesConfigs.
+     */
+    distinct?: Prisma.RulesConfigScalarFieldEnum | Prisma.RulesConfigScalarFieldEnum[];
+};
+/**
+ * RulesConfig findMany
+ */
+export type RulesConfigFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter, which RulesConfigs to fetch.
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of RulesConfigs to fetch.
+     */
+    orderBy?: Prisma.RulesConfigOrderByWithRelationInput | Prisma.RulesConfigOrderByWithRelationInput[];
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing RulesConfigs.
+     */
+    cursor?: Prisma.RulesConfigWhereUniqueInput;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` RulesConfigs from the position of the cursor.
+     */
+    take?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` RulesConfigs.
+     */
+    skip?: number;
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of RulesConfigs.
+     */
+    distinct?: Prisma.RulesConfigScalarFieldEnum | Prisma.RulesConfigScalarFieldEnum[];
+};
+/**
+ * RulesConfig create
+ */
+export type RulesConfigCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * The data needed to create a RulesConfig.
+     */
+    data: Prisma.XOR<Prisma.RulesConfigCreateInput, Prisma.RulesConfigUncheckedCreateInput>;
+};
+/**
+ * RulesConfig createMany
+ */
+export type RulesConfigCreateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RulesConfigs.
+     */
+    data: Prisma.RulesConfigCreateManyInput | Prisma.RulesConfigCreateManyInput[];
+    skipDuplicates?: boolean;
+};
+/**
+ * RulesConfig createManyAndReturn
+ */
+export type RulesConfigCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelectCreateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * The data used to create many RulesConfigs.
+     */
+    data: Prisma.RulesConfigCreateManyInput | Prisma.RulesConfigCreateManyInput[];
+    skipDuplicates?: boolean;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigIncludeCreateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * RulesConfig update
+ */
+export type RulesConfigUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * The data needed to update a RulesConfig.
+     */
+    data: Prisma.XOR<Prisma.RulesConfigUpdateInput, Prisma.RulesConfigUncheckedUpdateInput>;
+    /**
+     * Choose, which RulesConfig to update.
+     */
+    where: Prisma.RulesConfigWhereUniqueInput;
+};
+/**
+ * RulesConfig updateMany
+ */
+export type RulesConfigUpdateManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RulesConfigs.
+     */
+    data: Prisma.XOR<Prisma.RulesConfigUpdateManyMutationInput, Prisma.RulesConfigUncheckedUpdateManyInput>;
+    /**
+     * Filter which RulesConfigs to update
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * Limit how many RulesConfigs to update.
+     */
+    limit?: number;
+};
+/**
+ * RulesConfig updateManyAndReturn
+ */
+export type RulesConfigUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelectUpdateManyAndReturn<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * The data used to update RulesConfigs.
+     */
+    data: Prisma.XOR<Prisma.RulesConfigUpdateManyMutationInput, Prisma.RulesConfigUncheckedUpdateManyInput>;
+    /**
+     * Filter which RulesConfigs to update
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * Limit how many RulesConfigs to update.
+     */
+    limit?: number;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigIncludeUpdateManyAndReturn<ExtArgs> | null;
+};
+/**
+ * RulesConfig upsert
+ */
+export type RulesConfigUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * The filter to search for the RulesConfig to update in case it exists.
+     */
+    where: Prisma.RulesConfigWhereUniqueInput;
+    /**
+     * In case the RulesConfig found by the `where` argument doesn't exist, create a new RulesConfig with this data.
+     */
+    create: Prisma.XOR<Prisma.RulesConfigCreateInput, Prisma.RulesConfigUncheckedCreateInput>;
+    /**
+     * In case the RulesConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: Prisma.XOR<Prisma.RulesConfigUpdateInput, Prisma.RulesConfigUncheckedUpdateInput>;
+};
+/**
+ * RulesConfig delete
+ */
+export type RulesConfigDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+    /**
+     * Filter which RulesConfig to delete.
+     */
+    where: Prisma.RulesConfigWhereUniqueInput;
+};
+/**
+ * RulesConfig deleteMany
+ */
+export type RulesConfigDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Filter which RulesConfigs to delete
+     */
+    where?: Prisma.RulesConfigWhereInput;
+    /**
+     * Limit how many RulesConfigs to delete.
+     */
+    limit?: number;
+};
+/**
+ * RulesConfig without action
+ */
+export type RulesConfigDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RulesConfig
+     */
+    select?: Prisma.RulesConfigSelect<ExtArgs> | null;
+    /**
+     * Omit specific fields from the RulesConfig
+     */
+    omit?: Prisma.RulesConfigOmit<ExtArgs> | null;
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: Prisma.RulesConfigInclude<ExtArgs> | null;
+};
+//# sourceMappingURL=RulesConfig.d.ts.map

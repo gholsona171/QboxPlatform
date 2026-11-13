@@ -1,0 +1,1 @@
+{"version":3,"file":"kernel.js","sourceRoot":"","sources":["../src/kernel.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,MAAM;IACV,KAAK,CAAC,KAAK;QAChB,OAAO,CAAC,GAAG,CAAC,kCAAkC,CAAC,CAAC;IAClD,CAAC;IAEM,KAAK,CAAC,IAAI;QACf,OAAO,CAAC,GAAG,CAAC,kCAAkC,CAAC,CAAC;IAClD,CAAC;CACF"}
