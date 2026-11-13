@@ -2,6 +2,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { logger } from "@qbox/logger";
+import { parseBotOwnerIds } from "@qbox/permissions";
 import { createApiApplication } from "./composition/ApiApplication.js";
 import type { ApiConfigurationInput } from "./config/ApiConfiguration.js";
 import { installApiSignalHandlers } from "./process/ApiSignalHandler.js";
@@ -36,6 +37,8 @@ export interface ApiProcessEnvironment {
   readonly AUTH_METADATA_HMAC_KEY?: string | undefined;
   readonly AUTH_OAUTH_ENCRYPTION_KEY?: string | undefined;
   readonly AUTH_KEY_VERSION?: string | undefined;
+  /** Comma-separated Discord user IDs of the people who run the bot. */
+  readonly BOT_OWNER_IDS?: string | undefined;
 }
 
 /** Parses raw process values without applying empty-string fallbacks. */
@@ -80,6 +83,7 @@ export async function main(environment: ApiProcessEnvironment): Promise<() => vo
       applicationId: environment.DISCORD_APPLICATION_ID,
     },
     databaseUrl: environment.DATABASE_URL,
+    botOwnerIds: parseBotOwnerIds(environment.BOT_OWNER_IDS),
     portalDirectory: portalDirectoryFromEnvironment(environment.API_PORTAL_DIRECTORY),
   });
   const removeSignals = installApiSignalHandlers(application, logger);

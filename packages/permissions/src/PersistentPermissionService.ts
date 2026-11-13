@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 
+import { NO_BOT_OWNERS, type BotOwners } from "./BotOwners.js";
 import { isPermission } from "./catalog/PermissionCatalog.js";
 import type { Permission } from "./catalog/PermissionCatalog.js";
 import type { PermissionCache } from "./contracts/PermissionCache.js";
@@ -29,6 +30,8 @@ import type {
 export interface PersistentPermissionServiceOptions {
   readonly cacheTtlMs?: number;
   readonly legacyAssignments?: readonly PermissionAssignment[];
+  /** People who run the bot; they pass every check in every server (see BotOwners). */
+  readonly botOwners?: BotOwners;
 }
 
 /** Typed rejection for trusted-context and privileged mutation violations. */
@@ -51,6 +54,7 @@ export class PermissionMutationAuthorizationError extends Error {
 export class PersistentPermissionService implements PermissionAuthorizer {
   private readonly cacheTtlMs: number;
   private readonly legacyAssignments: readonly PermissionAssignment[];
+  private readonly botOwners: BotOwners;
 
   public constructor(
     private readonly repository: PermissionRepository,
@@ -59,6 +63,7 @@ export class PersistentPermissionService implements PermissionAuthorizer {
   ) {
     this.cacheTtlMs = options.cacheTtlMs ?? 5_000;
     this.legacyAssignments = options.legacyAssignments ?? [];
+    this.botOwners = options.botOwners ?? NO_BOT_OWNERS;
     if (!Number.isInteger(this.cacheTtlMs) || this.cacheTtlMs <= 0) {
       throw new Error("Permission cache TTL must be a positive integer.");
     }
@@ -93,6 +98,24 @@ export class PersistentPermissionService implements PermissionAuthorizer {
         );
       }
     }
+
+    // Bot owners are decided before stored permissions are read, so neither a
+    // deny nor a database outage can lock the people who run the bot out.
+    if (
+      request.principals.some(
+        (principal) =>
+          principal.type === "discord-user" &&
+          this.botOwners.isBotOwner(principal.externalId),
+      )
+    )
+      return this.decision(
+        true,
+        "bot-owner-override",
+        [...request.required],
+        [],
+        false,
+        false,
+      );
 
     const now = request.now ?? new Date();
     const loaded = await this.loadAssignments(

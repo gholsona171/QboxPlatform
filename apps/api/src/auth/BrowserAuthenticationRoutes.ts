@@ -21,7 +21,7 @@ import {
   opaqueAuthenticationSecret,
   providerIssuedSecret,
 } from "@qbox/authentication";
-import type { GuildRepository } from "@qbox/permissions";
+import { NO_BOT_OWNERS, type BotOwners, type GuildRepository } from "@qbox/permissions";
 import type {
   Permission,
   PermissionAuthorizer,
@@ -67,6 +67,8 @@ export interface BrowserAuthenticationRouteDependencies {
   /** Servers the member and the bot share; drives the server picker and the current-server cookie. */
   readonly directory: GuildDirectory;
   readonly authorizer: PermissionAuthorizer;
+  /** People who run the bot: every server the bot is in counts as theirs (see BotOwners). */
+  readonly botOwners?: BotOwners;
   readonly roleMenus: RoleMenuService;
   readonly community: DiscordCommunityService;
   readonly roles: RoleManagementService;
@@ -82,7 +84,10 @@ export interface BrowserAuthenticationRouteDependencies {
   readonly caches?: AuthenticationCaches;
 }
 
-type RouteDependencies = BrowserAuthenticationRouteDependencies & { readonly caches: AuthenticationCaches };
+type RouteDependencies = BrowserAuthenticationRouteDependencies & {
+  readonly caches: AuthenticationCaches;
+  readonly botOwners: BotOwners;
+};
 
 const SESSION_COOKIE_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
 const OAUTH_COOKIE_MAX_AGE_SECONDS = 10 * 60;
@@ -95,7 +100,11 @@ export async function registerBrowserAuthenticationRoutes(
   server: FastifyInstance,
   input: BrowserAuthenticationRouteDependencies,
 ): Promise<void> {
-  const dependencies: RouteDependencies = { ...input, caches: input.caches ?? new AuthenticationCaches(input.sessions) };
+  const dependencies: RouteDependencies = {
+    ...input,
+    caches: input.caches ?? new AuthenticationCaches(input.sessions),
+    botOwners: input.botOwners ?? NO_BOT_OWNERS,
+  };
   const diagnostics = dependencies.configuration.diagnostics();
   await server.register(cookie);
 
@@ -224,10 +233,12 @@ export async function registerBrowserAuthenticationRoutes(
       listGuilds(request, account.identity, dependencies),
     );
     const refresh = queryFlag(request, "refresh");
+    const botOwner = isBotOwner(account.identity, dependencies);
+    // A bot owner may not be a member; verifying them would record them as absent and end their sessions.
     const membership =
       guildDiscordId === undefined
         ? undefined
-        : refresh && listing.guilds.some((entry) => entry.id === guildDiscordId)
+        : refresh && !botOwner && listing.guilds.some((entry) => entry.id === guildDiscordId)
           ? await verifyMembership(account.identity.id, guildDiscordId, "api-authentication-me", operationContext(request), request, dependencies)
           : await storedMembership(request, account.identity.id, guildDiscordId, dependencies);
     const access = guildDiscordId === undefined ? undefined : await memberAccess(request, account.identity, guildDiscordId, membership, dependencies);
@@ -272,7 +283,7 @@ export async function registerBrowserAuthenticationRoutes(
         idleExpiresAt: verified.session.idleExpiresAt.toISOString(),
         absoluteExpiresAt: verified.session.absoluteExpiresAt.toISOString(),
       },
-      permissions: { ...permissions, discordManager },
+      permissions: { ...permissions, discordManager, botOwner },
       health: { live: "/health/live", ready: "/health/ready" },
     };
   });
@@ -300,8 +311,8 @@ export async function registerBrowserAuthenticationRoutes(
     );
     const guild = listing.guilds.find((entry) => entry.id === selected);
     if (!guild) throw new AuthorizationDeniedApiError();
-    const membership = await verifyMembership(account.identity.id, selected, "api-guild-select", operationContext(request), request, dependencies);
-    if (membership.status !== "PRESENT") throw new AuthorizationDeniedApiError();
+    if (!(await confirmGuildAccess(account.identity, selected, "api-guild-select", request, dependencies)))
+      throw new AuthorizationDeniedApiError();
     writeCookie(reply, GUILD_COOKIE_NAME, selected, {
       httpOnly: true,
       secure: diagnostics.secureCookies,
@@ -822,6 +833,7 @@ async function resolveCurrentGuild(
       "Could not read the member's servers; using the stored membership instead.",
     );
     if (cookieGuild === undefined) return fallback;
+    if (isBotOwner(identity, dependencies)) return cookieGuild;
     const membership = await storedMembership(request, identity.id, cookieGuild, dependencies);
     return membership?.status === "PRESENT" ? cookieGuild : fallback;
   }
@@ -833,10 +845,8 @@ async function resolveCurrentGuild(
   const chosen = chooseStartingGuild(listing.guilds, fallback);
   if (chosen === undefined) return undefined;
   const stored = await storedMembership(request, identity.id, chosen, dependencies);
-  if (stored?.status !== "PRESENT") {
-    const membership = await verifyMembership(identity.id, chosen, "api-guild-auto-select", operationContext(request), request, dependencies);
-    if (membership.status !== "PRESENT") return undefined;
-  }
+  if (stored?.status !== "PRESENT" && !(await confirmGuildAccess(identity, chosen, "api-guild-auto-select", request, dependencies)))
+    return undefined;
   writeCookie(reply, GUILD_COOKIE_NAME, chosen, {
     httpOnly: true,
     secure: diagnostics.secureCookies,
@@ -873,10 +883,7 @@ async function verifyMembership(
   request: FastifyRequest,
   dependencies: RouteDependencies,
 ): Promise<DiscordGuildMembership> {
-  const guild = await dependencies.caches.guildRows.getOrLoad(guildDiscordId, async () =>
-    (await dependencies.guilds.findByDiscordId(guildDiscordId)) ??
-    (await dependencies.guilds.create(guildDiscordId, { source })),
-  );
+  const guild = await ensureGuildRow(guildDiscordId, source, dependencies);
   const key = membershipCacheKey(externalIdentityId, guildDiscordId);
   dependencies.caches.memberships.delete(key);
   const membership = await dependencies.memberships.verifyCurrentMembership({
@@ -894,6 +901,39 @@ async function verifyMembership(
     if (actor.type === "platform-user") dependencies.caches.sessions.forgetAccount(actor.platformUserId);
   }
   return membership;
+}
+
+/** The stored row for one server, created the first time anyone opens it. */
+function ensureGuildRow(guildDiscordId: string, source: string, dependencies: RouteDependencies) {
+  return dependencies.caches.guildRows.getOrLoad(guildDiscordId, async () =>
+    (await dependencies.guilds.findByDiscordId(guildDiscordId)) ??
+    (await dependencies.guilds.create(guildDiscordId, { source })),
+  );
+}
+
+/** Whether this signed-in Discord account runs the bot (BOT_OWNER_IDS). */
+function isBotOwner(identity: ExternalIdentity, dependencies: RouteDependencies): boolean {
+  return dependencies.botOwners.isBotOwner(identity.providerSubjectId);
+}
+
+/**
+ * Whether the member may open this server: a bot owner always may (they are
+ * never verified, since a server they are not in would record them as absent
+ * and end their sessions); anyone else must be a verified member.
+ */
+async function confirmGuildAccess(
+  identity: ExternalIdentity,
+  guildDiscordId: string,
+  source: string,
+  request: FastifyRequest,
+  dependencies: RouteDependencies,
+): Promise<boolean> {
+  if (isBotOwner(identity, dependencies)) {
+    await ensureGuildRow(guildDiscordId, source, dependencies);
+    return true;
+  }
+  const membership = await verifyMembership(identity.id, guildDiscordId, source, operationContext(request), request, dependencies);
+  return membership.status === "PRESENT";
 }
 
 /**
@@ -1007,9 +1047,11 @@ function memberAccess(
 ): Promise<{ readonly present: boolean; readonly roleIds: readonly string[] }> {
   return requestMemo(request, `access:${identity.id}:${guildDiscordId}`, async () => {
     const live = await dependencies.guildAuthority?.liveMember?.(guildDiscordId, identity.providerSubjectId).catch(() => undefined);
-    if (live) return live;
-    const present = stored?.status === "PRESENT";
-    return { present, roleIds: present ? stored.roles.map((role) => role.roleId) : [] };
+    const access = live ?? (stored?.status === "PRESENT"
+      ? { present: true, roleIds: stored.roles.map((role) => role.roleId) }
+      : { present: false, roleIds: [] });
+    // A bot owner opens every server the bot is in, even one they are not a member of.
+    return access.present || !isBotOwner(identity, dependencies) ? access : { present: true, roleIds: [] };
   });
 }
 

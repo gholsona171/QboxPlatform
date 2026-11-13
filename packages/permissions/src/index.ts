@@ -61,6 +61,7 @@ export class PermissionService {
 /** Process-local legacy singleton retained for current Discord compatibility. */
 export const permissions = new PermissionService();
 
+export * from "./BotOwners.js";
 export * from "./catalog/PermissionCatalog.js";
 export * from "./compatibility/LegacyAdministratorAssignments.js";
 export * from "./compatibility/CompatibilityDisableGuard.js";

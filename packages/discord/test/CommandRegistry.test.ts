@@ -1,7 +1,13 @@
 import type { ChatInputCommandInteraction } from "discord.js";
 import { describe, expect, it, vi } from "vitest";
 
-import type { Permission, PermissionAssignment } from "@qbox/permissions";
+import {
+  InMemoryPermissionRepository,
+  PersistentPermissionService,
+  createBotOwners,
+  type Permission,
+  type PermissionAssignment,
+} from "@qbox/permissions";
 
 import type {
   CommandExecutionContext,
@@ -183,6 +189,27 @@ describe("CommandRegistry authorization policy", () => {
 
     expect(denied).not.toHaveBeenCalled();
     expect(allowed).toHaveBeenCalledOnce();
+  });
+
+  it("runs protected commands for a bot owner with no roles, while a plain member is refused", async () => {
+    const OWNER = "100000000000000001";
+    const registry = new CommandRegistry(
+      new PersistentPermissionService(new InMemoryPermissionRepository(), undefined, {
+        botOwners: createBotOwners([OWNER]),
+      }),
+    );
+    const execute = vi.fn(async () => undefined);
+    registry.register(createCommand("secure", { policy: protectedPolicy(), execute }));
+
+    const owner = createContext({ userId: OWNER, guildId: "any-server" });
+    await registry.execute(owner.context);
+    expect(execute).toHaveBeenCalledOnce();
+    expect(owner.reply).not.toHaveBeenCalled();
+
+    const member = createContext({ userId: "200000000000000001", guildId: "any-server" });
+    await registry.execute(member.context);
+    expect(execute).toHaveBeenCalledOnce();
+    expect(member.reply).toHaveBeenCalledOnce();
   });
 });
 
