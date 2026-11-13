@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { createBotOwners } from "@qbox/permissions";
 import {
   AuthenticationServiceError,
   authenticationCorrelationId,
@@ -189,6 +190,37 @@ describe("DiscordGuildDirectory", () => {
     ]);
     const none = new DiscordGuildDirectory(dependencies({ bot: undefined }));
     expect((await none.list(identity, context, signal)).guilds).toEqual([]);
+  });
+});
+
+describe("DiscordGuildDirectory bot owners", () => {
+  const botOwners = createBotOwners([identity.providerSubjectId]);
+
+  it("lists every server the bot is in for a bot owner, all manageable, member or not", async () => {
+    const directory = new DiscordGuildDirectory(dependencies({ botOwners }));
+    const listing = await directory.list(identity, context, signal);
+    expect(listing.reauthRequired).toBe(false);
+    expect(listing.guilds).toEqual([
+      { id: "1300000000000000002", name: "Admin", icon: null, owner: false, canManage: true },
+      { id: "1300000000000000009", name: "Bot only", icon: null, owner: false, canManage: true },
+      { id: "1300000000000000003", name: "Manager", icon: null, owner: false, canManage: true },
+      { id: "1300000000000000001", name: "Owned (bot name)", icon: "bot-icon", owner: true, canManage: true },
+      { id: "1300000000000000004", name: "Plain", icon: null, owner: false, canManage: true },
+    ]);
+  });
+
+  it("still lists every bot server for a bot owner whose sign-in predates the guilds scope", async () => {
+    const directory = new DiscordGuildDirectory(dependencies({ botOwners, scopes: ["identify"] }));
+    const listing = await directory.list(identity, context, signal);
+    expect(listing.reauthRequired).toBe(false);
+    expect(listing.guilds.map((guild) => guild.id)).toContain("1300000000000000009");
+  });
+
+  it("keeps a member who is not a bot owner to shared servers and their own rights", async () => {
+    const directory = new DiscordGuildDirectory(dependencies({ botOwners: createBotOwners(["999999999999999999"]) }));
+    const listing = await directory.list(identity, context, signal);
+    expect(listing.guilds.map((guild) => guild.id)).not.toContain("1300000000000000009");
+    expect(listing.guilds.find((guild) => guild.id === "1300000000000000004")?.canManage).toBe(false);
   });
 });
 

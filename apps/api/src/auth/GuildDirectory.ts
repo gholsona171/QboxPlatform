@@ -6,7 +6,7 @@ import {
   type ExternalIdentity,
   type OpaqueAuthenticationSecret,
 } from "@qbox/authentication";
-import { PERMISSIONS, type PermissionAuthorizer, type PermissionPrincipal } from "@qbox/permissions";
+import { PERMISSIONS, type BotOwners, type PermissionAuthorizer, type PermissionPrincipal } from "@qbox/permissions";
 import type { DiscordRestClient } from "@qbox/shared/discord-rest";
 
 import type { ApiLogger } from "../logging/ApiLogger.js";
@@ -85,6 +85,8 @@ export interface DiscordGuildDirectoryDependencies {
   /** Absent when the bot token is not configured; then only the default server is offered. */
   readonly bot?: BotGuildSource | undefined;
   readonly qboxAccess?: QboxAccessCheck | undefined;
+  /** Bot owners see and manage every server the bot is in, member or not. */
+  readonly botOwners?: BotOwners | undefined;
   readonly defaultGuildId?: string | undefined;
   readonly ttlMs?: number;
   readonly now?: () => number;
@@ -145,14 +147,17 @@ export class DiscordGuildDirectory implements GuildDirectory {
     // The bot's server list does not depend on the member's; read both at once.
     const botGuilds = this.dependencies.bot?.listGuilds();
     botGuilds?.catch(() => undefined);
+    const botOwner = this.dependencies.botOwners?.isBotOwner(identity.providerSubjectId) ?? false;
     const memberGuilds = await this.memberGuilds(identity, context, signal);
-    if (memberGuilds === undefined) return Object.freeze({ guilds: [], reauthRequired: true });
-    const shared = await this.shared(memberGuilds, botGuilds);
+    if (memberGuilds === undefined && !botOwner) return Object.freeze({ guilds: [], reauthRequired: true });
+    const shared = botOwner
+      ? await this.everyBotGuild(memberGuilds ?? [], botGuilds)
+      : await this.shared(memberGuilds ?? [], botGuilds);
     const guilds = await Promise.all(
       shared.map(async ({ member, bot }) => {
         const discordManager = member.owner || hasDiscordManagerPermissions(member.permissions);
         const canManage =
-          discordManager || ((await this.dependencies.qboxAccess?.(identity, member.id)) ?? false);
+          botOwner || discordManager || ((await this.dependencies.qboxAccess?.(identity, member.id)) ?? false);
         return Object.freeze({
           id: member.id,
           name: bot?.name ?? member.name,
@@ -189,6 +194,23 @@ export class DiscordGuildDirectory implements GuildDirectory {
       }
       throw error;
     }
+  }
+
+  /**
+   * Every server the bot is in, for a bot owner. Servers the owner is not a
+   * member of are listed with no Discord rights of their own; access there
+   * comes from being a bot owner.
+   */
+  private async everyBotGuild(
+    memberGuilds: readonly DiscordUserGuild[],
+    botGuildList: Promise<readonly BotGuild[]> | undefined,
+  ): Promise<readonly { readonly member: DiscordUserGuild; readonly bot: BotGuild | undefined }[]> {
+    if (!botGuildList) return this.shared(memberGuilds, botGuildList);
+    const memberById = new Map(memberGuilds.map((guild) => [guild.id, guild] as const));
+    return (await botGuildList).map((bot) => ({
+      member: memberById.get(bot.id) ?? { id: bot.id, name: bot.name, icon: bot.icon, owner: false, permissions: "0" },
+      bot,
+    }));
   }
 
   private async shared(

@@ -46,6 +46,9 @@ export const env = {
     (process.env.PERMISSION_LEGACY_ADMIN_COMPATIBILITY_ENABLED ?? "true") !==
     "false",
 
+  /** Comma-separated Discord user IDs of the people who run the bot (see BotOwners). */
+  BOT_OWNER_IDS: process.env.BOT_OWNER_IDS ?? "",
+
   ADMIN_ROLE_IDS: (process.env.ADMIN_ROLE_IDS ?? "")
     .split(",")
     .map((roleId) => roleId.trim())

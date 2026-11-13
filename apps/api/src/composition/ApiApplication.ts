@@ -26,6 +26,7 @@ import {
   InMemoryPermissionCache,
   PERMISSION_CACHE_TTL_MS,
   PersistentPermissionService,
+  createBotOwners,
 } from "@qbox/permissions";
 import {
   ApiConfiguration,
@@ -50,6 +51,8 @@ export interface ApiApplicationInput {
   readonly api: ApiConfigurationInput;
   readonly authentication: ApiAuthenticationConfigurationInput;
   readonly databaseUrl: string | undefined;
+  /** Discord user IDs of the people who run the bot (BOT_OWNER_IDS), already validated. */
+  readonly botOwnerIds?: readonly string[] | undefined;
   /** Absolute portal asset directory served from the API origin, when present. */
   readonly portalDirectory?: string | undefined;
   readonly discord?: {
@@ -128,9 +131,11 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     create: () => persistence,
   });
   const health = new ApiLifecycleHealth(database);
+  const botOwners = createBotOwners(input.botOwnerIds ?? []);
   const authorizer = new PersistentPermissionService(
     persistence.repositories.permissions,
     cache,
+    { botOwners },
   );
   const roleMenus = new RoleMenuService(persistence.repositories.roleMenus);
   const community = new DiscordCommunityService(persistence.repositories.discordCommunity);
@@ -205,6 +210,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
     provider,
     bot: discordRest ? new DiscordRestBotGuildSource(discordRest) : undefined,
     qboxAccess: createQboxAccessCheck({ authorizer, unitOfWork: persistence.authentication.unitOfWork }),
+    botOwners,
     defaultGuildId: authenticationConfiguration.diagnostics().defaultGuildId,
     logger,
   });
@@ -226,6 +232,7 @@ export function createApiApplication(input: ApiApplicationInput): ApiApplication
         guilds: persistence.repositories.guilds,
         directory,
         authorizer,
+        botOwners,
         roleMenus,
         community,
         roles,

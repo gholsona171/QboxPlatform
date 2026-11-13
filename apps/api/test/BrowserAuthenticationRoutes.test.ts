@@ -10,6 +10,13 @@ import {
   opaqueAuthenticationSecret,
   platformUserId,
 } from "@qbox/authentication";
+import {
+  InMemoryPermissionRepository,
+  PersistentPermissionService,
+  createBotOwners,
+  type BotOwners,
+  type PermissionAuthorizer,
+} from "@qbox/permissions";
 import { ApiAuthenticationConfiguration } from "../src/auth/ApiAuthenticationConfiguration.js";
 import { chooseStartingGuild, registerBrowserAuthenticationRoutes } from "../src/auth/BrowserAuthenticationRoutes.js";
 import type { DiscordGuildAuthority } from "../src/auth/DiscordGuildAuthority.js";
@@ -390,6 +397,9 @@ interface ServerOptions {
   readonly listing?: GuildListing | (() => GuildListing);
   readonly onList?: (refresh: boolean) => void;
   readonly onVerify?: (guildId: string) => void;
+  readonly botOwners?: BotOwners;
+  /** Replaces the scripted authorizer, e.g. with the real permission service. */
+  readonly authorizer?: PermissionAuthorizer;
   readonly onListByGuild?: (guildId: string) => void;
   /** Counts reads the caches should save. */
   readonly counts?: ReadCounts;
@@ -464,6 +474,7 @@ function serverWithRoutes(options: ServerOptions = {}) {
           forget: () => undefined,
         },
         features: [echoGuildFeature],
+        ...(options.botOwners ? { botOwners: options.botOwners } : {}),
         oauthTransactions: {
           createTransaction: async () => ({
             transactionId: "11111111-1111-4111-8111-111111111111",
@@ -513,7 +524,7 @@ function serverWithRoutes(options: ServerOptions = {}) {
           findByDiscordId: async () => (counts.guildRows += 1, { id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
           create: async () => ({ id: "44444444-4444-4444-8444-444444444444", discordGuildId: "1257928923048837201", enabled: true, metadata: {}, createdAt: new Date(), updatedAt: new Date() }),
         },
-        authorizer: {
+        authorizer: options.authorizer ?? {
           authorize: async (request) => ({
             allowed: request.required.includes("discord.role-menus.manage")
               ? options.roleMenuAllowed ?? true
@@ -680,6 +691,74 @@ function membership() {
     updatedAt: new Date("2026-08-01T00:00:00.000Z"),
   } as const;
 }
+
+describe("bot owners (BOT_OWNER_IDS)", () => {
+  const SIGNED_IN_USER = "804859666655739996";
+  const BOT_ONLY_GUILD = "1300000000000000009";
+  // The signed-in account is not in this server at all; only the bot is.
+  const notAMember: DiscordGuildAuthority = { isManager: async () => false, liveMember: async () => ({ present: false, roleIds: [] }) };
+  const botOnlyListing: GuildListing = {
+    guilds: [{ id: BOT_ONLY_GUILD, name: "Bot only", icon: null, owner: false, canManage: true }],
+    reauthRequired: false,
+  };
+  const realAuthorizer = (botOwners: BotOwners) =>
+    new PersistentPermissionService(new InMemoryPermissionRepository(), undefined, { botOwners });
+
+  it("lets a bot owner open and manage a server they are not a member of, with no roles or grants", async () => {
+    const botOwners = createBotOwners([SIGNED_IN_USER]);
+    const verified: string[] = [];
+    const server = serverWithRoutes({
+      botOwners,
+      authorizer: realAuthorizer(botOwners),
+      guildAuthority: notAMember,
+      listing: botOnlyListing,
+      onVerify: (guildId) => verified.push(guildId),
+    });
+    const selected = await server.inject({ method: "POST", url: "/api/v1/guilds/select", headers: csrf, payload: { guildId: BOT_ONLY_GUILD } });
+    expect(selected.statusCode).toBe(200);
+    // Verifying would record the owner as absent there and end their sessions.
+    expect(verified).toEqual([]);
+    const headers = { ...session, cookie: `${session.cookie}; qbox_guild=${BOT_ONLY_GUILD}` };
+    const menus = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers });
+    expect(menus.statusCode).toBe(200);
+    const admin = await server.inject({ method: "GET", url: "/api/v1/admin-check", headers });
+    expect(admin.statusCode).toBe(200);
+    const me = await server.inject({ method: "GET", url: "/api/v1/me?refresh=1", headers });
+    expect(me.statusCode).toBe(200);
+    expect(verified).toEqual([]);
+    expect(me.json()).toMatchObject({
+      guild: { id: BOT_ONLY_GUILD, canManage: true },
+      permissions: {
+        botOwner: true,
+        platformOwner: { allowed: true, reason: "bot-owner-override" },
+        platformAdmin: { allowed: true, reason: "bot-owner-override" },
+      },
+    });
+    await server.close();
+  });
+
+  it("keeps a normal member who is not in the server out, even when someone else is a bot owner", async () => {
+    const botOwners = createBotOwners(["100000000000000001"]);
+    const server = serverWithRoutes({ botOwners, authorizer: realAuthorizer(botOwners), guildAuthority: notAMember, listing: botOnlyListing });
+    const headers = { ...session, cookie: `${session.cookie}; qbox_guild=${BOT_ONLY_GUILD}` };
+    const menus = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers });
+    expect(menus.statusCode).toBe(403);
+    const me = await server.inject({ method: "GET", url: "/api/v1/me", headers });
+    expect(me.json().permissions).toMatchObject({ botOwner: false, platformOwner: { allowed: false }, platformAdmin: { allowed: false } });
+    await server.close();
+  });
+
+  it("keeps a normal member who is in the server limited to the permissions they hold", async () => {
+    const botOwners = createBotOwners(["100000000000000001"]);
+    const member: DiscordGuildAuthority = { isManager: async () => false, liveMember: async () => ({ present: true, roleIds: ["1500000000000000001"] }) };
+    const server = serverWithRoutes({ botOwners, authorizer: realAuthorizer(botOwners), guildAuthority: member });
+    const menus = await server.inject({ method: "GET", url: "/api/v1/discord/role-menus", headers: session });
+    expect(menus.statusCode).toBe(403);
+    const admin = await server.inject({ method: "GET", url: "/api/v1/admin-check", headers: session });
+    expect(admin.statusCode).toBe(403);
+    await server.close();
+  });
+});
 
 describe("request and short cross-request caching", () => {
   const cookie = "qbox_session=session-secret-value-000000000000000000; qbox_guild=1257928923048837201";

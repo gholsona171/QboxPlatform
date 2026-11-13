@@ -22,6 +22,7 @@ export interface PermissionAuthorizationRequest {
 /** Stable machine-readable authorization outcome for logs, metrics, and consumers. */
 export type PermissionDecisionReason =
   | "no-permissions-required"
+  | "bot-owner-override"
   | "owner-override"
   | "administrator-override"
   | "permissions-satisfied"

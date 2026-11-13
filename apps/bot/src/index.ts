@@ -11,6 +11,7 @@ import {
   InMemoryPermissionCache,
   PERMISSION_CACHE_TTL_MS,
   PersistentPermissionService,
+  botOwnersFromSetting,
 } from "@qbox/permissions";
 import { env } from "@qbox/shared";
 
@@ -45,7 +46,10 @@ const { compatibility, persistence: compatibilityPersistence } =
 const authorizer = new PersistentPermissionService(
   persistence.repositories.permissions,
   cache,
-  { legacyAssignments: compatibility.assignments },
+  {
+    legacyAssignments: compatibility.assignments,
+    botOwners: botOwnersFromSetting(env.BOT_OWNER_IDS),
+  },
 );
 
 kernel.registerModule(
